@@ -6,14 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SpaRoot>client-app\</SpaRoot>
+    <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
-
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
-
     <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
   </ItemGroup>
 
@@ -22,10 +19,6 @@
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="client-app\src\components\_Header\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -5,13 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VueCliMiddleware;
-
 
 namespace Core
 {
@@ -30,15 +28,8 @@ namespace Core
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "client-app";
+                configuration.RootPath = "ClientApp";
             });
-            services.AddMvc();
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-            });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,17 +48,11 @@ namespace Core
             {
                 endpoints.MapControllers();
             });
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("v1/swagger.json", "My API V1");
-            });
-
 
             app.UseSpa(spa =>
             {
                 if (env.IsDevelopment())
-                    spa.Options.SourcePath = "client-app/";
+                    spa.Options.SourcePath = "ClientApp/";
                 else
                     spa.Options.SourcePath = "dist";
 

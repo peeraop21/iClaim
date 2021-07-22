@@ -40,10 +40,6 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[6.1.4, )"
-            },
             "VueCliMiddleware": {
               "target": "Package",
               "version": "[3.0.0, )"

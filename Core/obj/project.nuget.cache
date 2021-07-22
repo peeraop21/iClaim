@@ -1,13 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "4U9M3Jzp+/p9D1MpHq3FMOVNKZKl16+NG3oxJlx+dOKBos1ywbmzTEQYk+AF162m3Gg7Z8Merd7vB3HqHEKxVg==",
+  "dgSpecHash": "DqT7EQ+lkmyCsbWQ6yqJrot5sa4p4u2lDuJD+D32bSejlS4Y/JMXvDu6RUZsEF6Y0cNqSQKyxPo+DB0eE55pBg==",
   "success": true,
   "projectFilePath": "C:\\Users\\ROIN\\source\\repos\\iRVP\\Digital Claim\\Core\\Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.aspnetcore.nodeservices\\3.0.0\\microsoft.aspnetcore.nodeservices.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.aspnetcore.spaservices\\3.0.0\\microsoft.aspnetcore.spaservices.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.aspnetcore.spaservices.extensions\\3.0.0\\microsoft.aspnetcore.spaservices.extensions.3.0.0.nupkg.sha512",
-    "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.configuration\\3.0.0\\microsoft.extensions.configuration.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\3.0.0\\microsoft.extensions.configuration.abstractions.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.configuration.binder\\3.0.0\\microsoft.extensions.configuration.binder.3.0.0.nupkg.sha512",
@@ -23,12 +22,7 @@
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.options\\3.0.0\\microsoft.extensions.options.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\3.0.0\\microsoft.extensions.options.configurationextensions.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.extensions.primitives\\3.0.0\\microsoft.extensions.primitives.3.0.0.nupkg.sha512",
-    "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
-    "C:\\Users\\ROIN\\.nuget\\packages\\swashbuckle.aspnetcore\\6.1.4\\swashbuckle.aspnetcore.6.1.4.nupkg.sha512",
-    "C:\\Users\\ROIN\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.1.4\\swashbuckle.aspnetcore.swagger.6.1.4.nupkg.sha512",
-    "C:\\Users\\ROIN\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.1.4\\swashbuckle.aspnetcore.swaggergen.6.1.4.nupkg.sha512",
-    "C:\\Users\\ROIN\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.1.4\\swashbuckle.aspnetcore.swaggerui.6.1.4.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\vueclimiddleware\\3.0.0\\vueclimiddleware.3.0.0.nupkg.sha512"
   ],
   "logs": []
