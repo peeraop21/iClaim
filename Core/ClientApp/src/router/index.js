@@ -1,5 +1,5 @@
 ﻿import { createWebHistory, createRouter } from "vue-router";
-import Home from "@/components/Home.vue";
+import Home from "@/components/Home/Home.vue";
 import Counter from "@/components/Counter.vue";
 import FetchData from "@/components/FetchData.vue";
 

@@ -4,7 +4,7 @@
 </template>
 
 <script>
-    import NavMenu from './components/NavMenu.vue'
+    import NavMenu from './components/_Layout/NavMenu.vue'
 
 export default {
   name: 'App',
@@ -21,6 +21,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0px;
 }
 </style>
