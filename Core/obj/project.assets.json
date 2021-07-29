@@ -603,11 +603,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\Core.csproj",
+      "projectUniqueName": "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\Core\\Core.csproj",
       "projectName": "Core",
-      "projectPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\Core.csproj",
+      "projectPath": "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\Core\\Core.csproj",
       "packagesPath": "C:\\Users\\ROIN\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\obj\\",
+      "outputPath": "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ROIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -624,11 +624,11 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\DataAccess.EFCore\\DataAccess.EFCore.csproj": {
-              "projectPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\DataAccess.EFCore\\DataAccess.EFCore.csproj"
+            "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\DataAccess.EFCore\\DataAccess.EFCore.csproj": {
+              "projectPath": "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\DataAccess.EFCore\\DataAccess.EFCore.csproj"
             },
-            "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Services\\Services.csproj": {
-              "projectPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Services\\Services.csproj"
+            "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\Services\\Services.csproj": {
+              "projectPath": "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\Services\\Services.csproj"
             }
           }
         }

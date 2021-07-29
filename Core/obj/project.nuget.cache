@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "81WW11iYyKZxEkfcN9MVVA13HH98nFYS8pURlqf9Bj1+qW1eCbU+Kfnob/18+inAAwevn/StACJY4TOjMKGszg==",
+  "dgSpecHash": "aH6gTIzfzroRcmm3o3F2zKH/awNSjJZsgF/v8lmnT/3ghk8MmVIcP1MiQEbL0/Ljb6Vyd9t9hcY2Ds6M5eIhiQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\Core.csproj",
+  "projectFilePath": "C:\\Users\\ROIN\\source\\repos\\Digital Claim\\Core\\Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.aspnetcore.nodeservices\\3.0.0\\microsoft.aspnetcore.nodeservices.3.0.0.nupkg.sha512",
     "C:\\Users\\ROIN\\.nuget\\packages\\microsoft.aspnetcore.spaservices\\3.0.0\\microsoft.aspnetcore.spaservices.3.0.0.nupkg.sha512",
