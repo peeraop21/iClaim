@@ -46,7 +46,6 @@
         text-decoration: none;
         display: inline-block;
         border-radius: 10px;
-        font-family: "Mitr";
         font-size: 20px;
     }
 
@@ -58,12 +57,11 @@
     a[class="btn-next"]:link, a[class="btn-next"]:visited {
         background-color: #5c2e91;
         color: white;
-        padding: 10px 50px;
+        padding: 5px 50px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         border-radius: 30px;
-        font-family: "Mitr";
         font-size: 20px;
     }
 

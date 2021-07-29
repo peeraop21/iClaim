@@ -11,7 +11,7 @@
                     <div class="txt">
                         <li><label style="font-size: 14px; color: #5c2e91;">{{ rights_receive.medical_expenses }}</label></li><br><br>
                         <p>{{ rights_receive.detail }}</p>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; font-family: mitr">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 3px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a><br>
                             <a class="btn-select" href="\RightsHistory" style="padding: 7px;">{{ msg }}</a>
                         </div>
@@ -72,96 +72,6 @@ export default {
 </script>
 
 <style>
-#header2 {
-  font-family: "Mitr";
-  font-size: 25px;
-}
-
-.btn-center {
-    position: center;
-    right: 0px;
-}
-p{
-    font-family: "mitr";
-}
-
-section {
-    width: 100%;
-    height: 50%;
-    display: flex;
-    align-Items: center;
-    justify-content: center;
-    text-align: left;
-}
-.container {
-    width: 100%;
-    max-width: 100rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-.accordion-item {
-    background-color: white;
-    border-radius: .4rem;
-    border-color: #cccccc;
-    margin-bottom: .5rem;
-    padding: 1rem 1rem .5rem 1rem;
-    border-bottom: 3.5px solid #bbbbbb;
-}
-.accordion-link {
-    font-size: 13px;
-    color: black;
-    background-color: white;
-    width: 100%;
-    display: flex;
-    align-Items: center;
-    justify-content: space-between;
-    padding: 0;
-    font-family: "mitr"
-}
-.accordion-link:hover{
-    text-decoration: none;
-    color: #5c2e91;
-}
-.accordion-link ion-icon{
-    color: #5c2e91;
-    vertical-align: middle;
-    font-size: 1.5rem;
-}
-.accordion-link .ion-md-remove {
-    display: none;
-}
-.accordion-link .ion-md-add {
-    margin-top: -10px;
-}
-.answer {
-    max-height: 0;
-    overflow: hidden;
-    position: relative;
-    background-color: #eeeeee;
-    transition: max-height 650ms;
-}
-.answer::before {
-    content: "";
-    position: absolute;
-    width: .3rem;
-    height: 100%;
-    background-color: #5c2e91;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-}
-.answer p{
-    color: black;
-    font-size: 13px;
-    padding: 1rem 0 0 2rem;
-    font-family: "mitr"
-}
-.accordion-item:target .answer{
-    max-height: 15rem;
-}
-.accordion-item:target .accordion-link .ion-md-add{
-    display: none;
-}
 
 /*input[type='checkbox'] { display: none; } 
 .wrap-collabsible { margin: 0rem 0; width: 90%;} 

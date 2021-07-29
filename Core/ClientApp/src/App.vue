@@ -17,6 +17,7 @@ export default {
 <style>
 #app {
   font-family: IrisUPC;
+  font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

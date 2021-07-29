@@ -5,8 +5,8 @@
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
                 <div class="txt">
-                    <label>ชื่อ-สกุล: นายรำพี พีรำรำ</label><br>
-                    <label>เลขบัตรประจำตัวประชาชน: 1-2299-00876-32-1</label>
+                    <p>ชื่อ-สกุล: นายรำพี พีรำรำ</p>
+                    <p>เลขบัตรประจำตัวประชาชน: 1-2299-00876-32-1</p>
                 </div>
                 <!--<div class="wrap-collabsible"> 
                     <input id="collapsible" class="toggle" type="checkbox"> 
@@ -85,18 +85,16 @@ export default {
 
 <style>
 #header2 {
-  font-family: "Mitr";
   font-size: 25px;
+  font-weight: bold;
 }
 
 .txt {
   border-radius: 10px;
   border: 1px solid #cccccc;
   /*height: 300px; */
-  padding: 30px 30px 15px 30px; 
-  width: 92%;
-  font-family: 'Designil Font', 'Taviraj', sans-serif;
-  font-size: 13px;
+  padding: 25px 25px 15px 25px; 
+  width: 90%;
   text-align: left;
   line-height: 15px;
 }
@@ -119,8 +117,7 @@ a[class="btn-select"]:link, a[class="btn-select"]:visited {
   text-decoration: none;
   display: inline-block;
   border-radius: 30px;
-  font-family: "Mitr";
-  font-size: 14px;
+  /*font-size: 14px;*/
 }
 a[class="btn-select"]:hover, a[class="btn-select"]:active {
   background-color: #50287e;
@@ -136,8 +133,7 @@ a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
   text-decoration: none;
   display: inline-block;
   border-radius: 30px;
-  font-family: "Mitr";
-  font-size: 14px;
+   /*font-size: 14px;*/
 }
 a[class="btn-checked"]:hover, a[class="btn-checked"]:active {
   background-color: #a55ac4;
@@ -166,7 +162,6 @@ section {
     border-bottom: 3.5px solid #bbbbbb;
 }
 .accordion-link {
-    font-size: 1rem;
     color: black;
     background-color: white;
     width: 100%;
@@ -174,7 +169,6 @@ section {
     align-Items: center;
     justify-content: space-between;
     padding: 0;
-    font-family: "Taviraj";
     line-height: 25px;
 }
 .accordion-link:hover{
@@ -192,7 +186,7 @@ section {
 }*/
 .accordion-link .ion-md-add {
     margin-bottom: 5px;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 .answer {
     max-height: 0;
@@ -213,9 +207,7 @@ section {
 }
 .answer p{
     color: black;
-    font-size: 1rem;
     padding: 1rem 0 0 2rem;
-    font-family: "mitr"
 }
 .accordion-item:target .answer{
     max-height: 15rem;
@@ -223,18 +215,11 @@ section {
 .accordion-item:target .accordion-link .ion-md-add{
     display: none;
 }
-/*.accordion-item:target .accordion-link .ion-md-remove{
-    display: block;
-}*/
-/*input[type='checkbox'] { display: none; } 
-.wrap-collabsible { margin: 0rem 0; width: 90%;} 
-.lbl-toggle { display: block; font-weight: bold; font-family: monospace; font-size: 1.2rem; text-transform: uppercase; text-align: center; padding: 1rem; color: #DDD; background: #0069ff; cursor: pointer; border-radius: 7px; transition: all 0.25s ease-out; } 
-.lbl-toggle:hover { color: #FFF; } 
-.lbl-toggle::before { content: ' '; display: inline-block; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 5px solid currentColor; vertical-align: middle; margin-right: .7rem; transform: translateY(-2px); transition: transform .2s ease-out; } 
-.toggle:checked+.lbl-toggle::before { transform: rotate(90deg) translateX(-3px); } 
-.collapsible-content { max-height: 0px; overflow: hidden; transition: max-height .25s ease-in-out; } 
-.toggle:checked + .lbl-toggle + .collapsible-content { max-height: 350px; } 
-.toggle:checked+.lbl-toggle { border-bottom-right-radius: 0; border-bottom-left-radius: 0; } 
-.collapsible-content .content-inner { background: rgba(0, 105, 255, .2); border-bottom: 3px solid rgba(0, 105, 255, .45); border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; padding: .5rem 2rem; } 
-.collapsible-content p { margin-bottom: 0; }*/
+
+.box-container {
+    border-radius: 10px; 
+    border: 1px solid #cccccc; 
+    padding: 20px 20px 15px 20px;
+    text-align: left;
+}
 </style>

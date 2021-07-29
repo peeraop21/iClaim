@@ -1,21 +1,24 @@
 <template>
-    <div class="container" align="center">
+    <div align="center">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์การรักษาเบื้องต้น</h2>
                 <br>
                 <div align="left" class="txt">
-                    <label>ชื่อ-สกุล: นายรำพี พีรำรำ</label><br>
-                    <label>เลขบัตรประจำตัวประชาชน: 1-2299-00876-32-1</label><br>
-                    <label>ทะเบียนรถที่เกิดเหตุ : กค 5755</label><br>
-                    <label>วันที่เกิดเหตุ : 17/06/2564</label>
+                    <p>ชื่อ-สกุล: นายรำพี พีรำรำ</p>
+                    <p>เลขบัตรประจำตัวประชาชน: 1-2299-00876-32-1</p>
+                    <p>ทะเบียนรถที่เกิดเหตุ : กค 5755</p>
+                    <p>วันที่เกิดเหตุ : 17/06/2564</p>
                 </div>
                 <br>
+                <p style="text-align: right; width: 90%;">สิทธิ์คงเหลือ: 10000 บาท</p>
+                <a class="btn-next" href="\Bill">{{ msg2 }}</a>
+                <br><br>
                 <div align="left" style="width: 90%;">
                     <label>ประวัติการรักษา</label><br>
                 </div>
                 <section>
-                    <div class="container"  style="height: 100%">
+                    <div style="height: 100%; width: 90%;">
                         <div class="accordion"  v-for="boto in boto_" :key="boto.id">
                             <div class="accordion-item" :id="'list' + boto.id">
                                 <a class="accordion-link" :href="'#list' + boto.id">
@@ -36,9 +39,7 @@
                         </div>
                     </div>
                 </section>
-                <p style="text-align: right; width: 90%;">สิทธิ์คงเหลือ: 10000 บาท</p>
-                <a class="btn-next" href="\Bill">{{ msg2 }}</a>
-                <br><br>
+                
             </div>
         </div>
         <br>

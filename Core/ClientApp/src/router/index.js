@@ -8,6 +8,7 @@ import Rights from "@/components/Rights/Index.vue";
 import RightsHistory from "@/components/Rights/RightsHistory.vue";
 import Bill from "@/components/Claim/Bill.vue";
 import Bookbank from "@/components/Claim/Bookbank.vue";
+import Preview from "@/components/Claim/Preview.vue";
 const routes = [
     // {
     //     path: "/",
@@ -43,6 +44,11 @@ const routes = [
         path: "/Bookbank",
         name: "Bookbank",
         component: Bookbank,
+    },
+    {
+        path: "/Preview",
+        name: "Preview",
+        component: Preview,
     },
     {
         path: "/Counter",
