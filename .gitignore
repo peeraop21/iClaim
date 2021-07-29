@@ -23,6 +23,7 @@ mono_crash.*
 [Rr]eleases/
 x64/
 x86/
+[Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
@@ -33,7 +34,6 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
-.vscode/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -61,6 +61,12 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+
+# Tye
+.tye/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
 
 # StyleCop
 StyleCopReport.xml
@@ -139,7 +145,9 @@ _TeamCity*
 !.axoCover/settings.json
 
 # Coverlet is a free, cross platform Code Coverage Tool
-coverage*[.json, .xml, .info]
+coverage*.json
+coverage*.xml
+coverage*.info
 
 # Visual Studio code coverage results
 *.coverage
@@ -353,6 +361,9 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+# Fody - auto-generated XML schema
+FodyWeavers.xsd
+
 ##
 ## Visual studio for Mac
 ##
@@ -441,26 +452,3 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-Logs/*
-
-**/wwwroot/css/main.css
-**/wwwroot/css/main.min.css
-**/wwwroot/css/user-layout.css
-**/wwwroot/css/user-layout.min.css
-**/wwwroot/css/corporate/register.css
-**/wwwroot/css/corporate/register.min.css
-**/wwwroot/css/identity/shared.css
-**/wwwroot/css/identity/shared.min.css
-**/wwwroot/css/landing-page/home.css
-**/wwwroot/css/landing-page/home.min.css
-**/wwwroot/css/product/index.css
-**/wwwroot/css/product/index.min.css
-**/wwwroot/css/product/register.css
-**/wwwroot/css/product/register.min.css
-**/wwwroot/css/product/search.css
-**/wwwroot/css/product/search.min.css
-
-**/wwwroot/css/sass/*.css
-
-.sonarqube/
