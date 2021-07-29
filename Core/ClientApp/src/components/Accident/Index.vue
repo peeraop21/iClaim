@@ -35,7 +35,7 @@
                                     สิทธิ์คงเหลือ: {{ accident.money }} บาท</p>
                                 </div>
                                 <div style="text-align: center">
-                                    <a class="btn-select" href="\RightsReceive">{{ msg }}</a>
+                                    <a class="btn-select" href="\Rights">{{ msg }}</a>
                                     <a class="btn-checked" href="\">{{ msg2 }}</a>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  name: 'Home',
+  name: 'Accident',
   data () {
       return {
           accidents: [

@@ -2,12 +2,12 @@
 //import Home from "@/components/Home/Home.vue";
 import Counter from "@/components/Counter.vue";
 import FetchData from "@/components/FetchData.vue";
-import Introduce from "@/components/Introduce.vue";
-import AccidentList from "@/components/AccidentList.vue";
-import RightsReceive from "@/components/RightsReceive.vue";
-import Boto from "@/components/Boto.vue";
-import Bill from "@/components/Bill.vue";
-import Bookbank from "@/components/Bookbank.vue";
+import Advice from "@/components/Advice/Index.vue";
+import Accident from "@/components/Accident/Index.vue";
+import Rights from "@/components/Rights/Index.vue";
+import RightsHistory from "@/components/Rights/RightsHistory.vue";
+import Bill from "@/components/Claim/Bill.vue";
+import Bookbank from "@/components/Claim/Bookbank.vue";
 const routes = [
     // {
     //     path: "/",
@@ -15,24 +15,24 @@ const routes = [
     //     component: Home,
     // },
     {
-        path: "/",
-        name: "Introduce",
-        component: Introduce,
+        path: "/Advice",
+        name: "Advice",
+        component: Advice,
     },
     {
-        path: "/AccidentList",
-        name: "AccidentList",
-        component: AccidentList,
+        path: "/Accident",
+        name: "Accident",
+        component: Accident,
     },
     {
-        path: "/RightsReceive",
-        name: "RightsReceive",
-        component: RightsReceive,
+        path: "/Rights",
+        name: "Rights",
+        component: Rights,
     },
     {
-        path: "/Boto",
-        name: "Boto",
-        component: Boto,
+        path: "/RightsHistory",
+        name: "RightsHistory",
+        component: RightsHistory,
     },
     {
         path: "/Bill",

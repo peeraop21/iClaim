@@ -252,6 +252,29 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "DataAccess.EFCore/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/DataAccess.EFCore.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataAccess.EFCore.dll": {}
+        }
+      },
+      "Services/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "dependencies": {
+          "DataAccess.EFCore": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Services.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Services.dll": {}
+        }
       }
     }
   },
@@ -555,27 +578,39 @@
         "vueclimiddleware.3.0.0.nupkg.sha512",
         "vueclimiddleware.nuspec"
       ]
+    },
+    "DataAccess.EFCore/1.0.0": {
+      "type": "project",
+      "path": "../DataAccess.EFCore/DataAccess.EFCore.csproj",
+      "msbuildProject": "../DataAccess.EFCore/DataAccess.EFCore.csproj"
+    },
+    "Services/1.0.0": {
+      "type": "project",
+      "path": "../Services/Services.csproj",
+      "msbuildProject": "../Services/Services.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
+      "DataAccess.EFCore >= 1.0.0",
+      "Services >= 1.0.0",
       "VueCliMiddleware >= 3.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {}
+    "C:\\Users\\ROIN\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\Digital Claim\\Core\\Core.csproj",
+      "projectUniqueName": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\Core.csproj",
       "projectName": "Core",
-      "projectPath": "C:\\Users\\User\\source\\repos\\Digital Claim\\Core\\Core.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\Digital Claim\\Core\\obj\\",
+      "projectPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\Core.csproj",
+      "packagesPath": "C:\\Users\\ROIN\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ROIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -588,7 +623,14 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\DataAccess.EFCore\\DataAccess.EFCore.csproj": {
+              "projectPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\DataAccess.EFCore\\DataAccess.EFCore.csproj"
+            },
+            "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Services\\Services.csproj": {
+              "projectPath": "C:\\Users\\ROIN\\Source\\Repos\\Digital Claim\\Services\\Services.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -624,7 +666,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.205\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-    <dev class="container" align="center">
+    <div class="container" align="center">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์การรักษาเบื้องต้น</h2>
@@ -30,7 +30,7 @@
                                     โรงพยาบาลที่รักษา: {{ boto.hospital }}</p>
                                 </div>
                                 <div style="text-align: center">
-                                    <a class="btn-select" href="\RightsReceive">{{ msg }}</a>
+                                    <a class="btn-select" href="\Rights">{{ msg }}</a>
                                 </div>
                             </div>
                         </div>
@@ -43,12 +43,12 @@
         </div>
         <br>
      
-    </dev>
+    </div>
 </template>
 
 <script>
 export default {
-  name: 'Home',
+  name: 'RightsHistory',
   data () {
       return {
           boto_: [

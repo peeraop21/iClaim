@@ -13,7 +13,7 @@
                         <p>{{ rights_receive.detail }}</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; font-family: mitr">
                             <a style="margin-bottom: 3px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a><br>
-                            <a class="btn-select" href="\Boto" style="padding: 7px;">{{ msg }}</a>
+                            <a class="btn-select" href="\RightsHistory" style="padding: 7px;">{{ msg }}</a>
                         </div>
                     </div>
                     
