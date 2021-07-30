@@ -10,6 +10,9 @@ import Bill from "@/components/Claim/Bill.vue";
 import Bookbank from "@/components/Claim/Bookbank.vue";
 import Preview from "@/components/Claim/Preview.vue";
 import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
+import CheckStatus from "@/components/Status/CheckStatus.vue";
+import ClaimDetail from "@/components/Status/ClaimDetail.vue";
+import ConfirmMoney from "@/components/Status/ConfirmMoney.vue";
 const routes = [
     // {
     //     path: "/",
@@ -60,13 +63,27 @@ const routes = [
         path: "/FetchData",
         name: "FetchData",
         component: FetchData,
-    }
-    ,
+    },
     {
         path: "/ConfirmOTP",
         name: "ConfirmOTP",
         component: ConfirmOTP,
-    }
+    },
+    {
+        path: "/CheckStatus",
+        name: "CheckStatus",
+        component: CheckStatus,
+    },
+    {
+        path: "/ClaimDetail",
+        name: "ClaimDetail",
+        component: ClaimDetail,
+    },
+    {
+        path: "/ConfirmMoney",
+        name: "ConfirmMoney",
+        component: ConfirmMoney,
+    },
 ];
 
 const router = createRouter({

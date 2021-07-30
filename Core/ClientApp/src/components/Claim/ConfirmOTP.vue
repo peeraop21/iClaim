@@ -14,13 +14,13 @@
                 <p style="color: #5c2e91">ส่งคำร้อง</p>
             </div>
         </div>
-        <h2 id="header2">ยืนยันการส่งคำร้อง</h2>
-        <div id="app" class="container">
+        <h2 id="header2" class="">ยืนยันการส่งคำร้อง</h2>
+        <div id="app" class="container mt-5">
             <p>
                 กรุณากดขอรหัส OTP เพื่อยืนยันการส่งคำร้อง
             </p>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 mb-5">
                     <div class="card card-tel">
                         <div class="position-icon">
                             <ion-icon name="call-outline"></ion-icon>
