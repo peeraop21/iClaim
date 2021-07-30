@@ -120,6 +120,7 @@
         width:55%;
         height:100%;
         background-color:gainsboro;
+        border-radius:10px;
     }
     .position-icon {
         float: left;
