@@ -1,5 +1,5 @@
 <template>
-    <dev class="container" align="center">
+    <div class="container space-contianer" align="center">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์ที่ได้รับ</h2>
@@ -43,7 +43,7 @@
             </div>
         </div>
         <br>
-    </dev>
+    </div>
 </template>
 
 <script>

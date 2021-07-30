@@ -24,14 +24,14 @@
                     <p align="left">ภาพถ่ายที่เลือก:</p>
                     <template v-if="preview">
                     <img :src="preview" class="img-fluid" style="width: 30%"/>
-                    <p class="mb-0">file name: {{ image.name }}</p>
-                    <p class="mb-0">size: {{ image.size/1024 }}KB</p>
+                    <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
+                    <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
                     </template>
                 </div>
                 </div>
             </form>
             <div>
-                <div class="box-container">
+                <div class="box-container mt-3">
                     <p class="mb-0">ชื่อธนาคาร</p>
                     <label class="select" for="slct">
                         <select id="slct" required="required">
@@ -71,7 +71,7 @@
 <style>
 .select {
   position: relative;
-  min-width: 200px;
+  min-width: 290px;
 }
 .select svg {
   position: absolute;
@@ -89,7 +89,7 @@
 .select select {
   -webkit-appearance: none;
   padding: 3px 40px 3px 12px;
-  width: 300px;
+  width: 100%;
   border: 2px solid #ccc;
   border-radius: 5px;
   background: #fff;

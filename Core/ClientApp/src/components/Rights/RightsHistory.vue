@@ -1,5 +1,5 @@
 <template>
-    <div align="center">
+    <div class=" container space-contianer" align="center">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์การรักษาเบื้องต้น</h2>

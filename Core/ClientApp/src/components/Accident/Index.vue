@@ -110,9 +110,9 @@ a[class="btn-select"]:link, a[class="btn-select"]:visited {
   background-color: #5c2e91;
   margin-top: 10px;
   margin-right: 0px;
-  width: 150px;
+  width: 130px;
   color: white;
-  padding: 3px 20px;
+  padding: 3px 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -128,7 +128,7 @@ a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
   margin-top: 10px;
   margin-left: 10px;
   color: white;
-  padding: 3px 20px;
+  padding: 3px 15px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -165,6 +165,7 @@ section {
     justify-content: space-between;
     padding: 0;
     line-height: 25px;
+    text-decoration: none;
 }
 .accordion-link:hover{
     text-decoration: none;

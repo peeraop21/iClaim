@@ -23,7 +23,7 @@
         <h2 id="header2">เอกสารประกอบคำร้อง</h2>
         <div class="container">
             <form align="left">
-                <label>อาการบาดเจ็บ</label>
+                <label>ลักษณะบาดเจ็บ</label>
                 <input type="text" class="h-10 rounded-lg outline-none" placeholder=""/>
                 <br><br>
                 <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
