@@ -9,6 +9,7 @@ import RightsHistory from "@/components/Rights/RightsHistory.vue";
 import Bill from "@/components/Claim/Bill.vue";
 import Bookbank from "@/components/Claim/Bookbank.vue";
 import Preview from "@/components/Claim/Preview.vue";
+import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
 const routes = [
     // {
     //     path: "/",
@@ -59,6 +60,12 @@ const routes = [
         path: "/FetchData",
         name: "FetchData",
         component: FetchData,
+    }
+    ,
+    {
+        path: "/ConfirmOTP",
+        name: "ConfirmOTP",
+        component: ConfirmOTP,
     }
 ];
 
