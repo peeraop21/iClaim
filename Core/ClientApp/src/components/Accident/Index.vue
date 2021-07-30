@@ -1,5 +1,5 @@
 <template>
-    <dev class="container">
+    <div class="container space-contianer">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
@@ -45,7 +45,7 @@
             </div>
         </div>
         <br>
-    </dev>
+    </div>
 </template>
 
 <script>
@@ -147,12 +147,7 @@ section {
     justify-content: center;
     text-align: left;
 }
-.container {
-    width: 100%;
-    max-width: 100rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
+
 .accordion-item {
     background-color: white;
     border-radius: .4rem;

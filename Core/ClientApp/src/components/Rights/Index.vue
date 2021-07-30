@@ -5,11 +5,11 @@
                 <h2 id="header2">สิทธิ์ที่ได้รับ</h2>
                 <br>
                 <div align="left" style="width: 90%;">
-                    <label>ค่าเสียหายเบื้องต้น</label><br>
+                    <label class="title-advice-menu">ค่าเสียหายเบื้องต้น</label><br>
                 </div>
                 <div v-for="rights_receive in rights_receives" :key="rights_receive.id">
                     <div class="txt">
-                        <li><label style="font-size: 14px; color: #5c2e91;">{{ rights_receive.medical_expenses }}</label></li><br><br>
+                        <label class="purple-title">{{ rights_receive.medical_expenses }}</label><br><br>
                         <p>{{ rights_receive.detail }}</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 3px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a><br>

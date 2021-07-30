@@ -1,5 +1,5 @@
 <template>
-    <dev class="container" align="center">
+    <div class="container space-contianer" align="center">
        <div class="stepper-wrapper">
             <div class="stepper-item completed">
                 <div class="step-counter"><ion-icon name="receipt-outline" style="font-size: 20px; color: white"></ion-icon></div>
@@ -65,7 +65,7 @@
             </div>-->
             
         </div>
-    </dev>
+    </div>
 </template>
 
 <style>

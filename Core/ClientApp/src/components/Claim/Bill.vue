@@ -1,5 +1,5 @@
 <template>
-    <dev class="container" align="center">
+    <div class="container space-contianer" align="center">
         <div class="stepper-wrapper">
             <div class="stepper-item completed">
                 <div class="step-counter">
@@ -96,7 +96,7 @@
             
         </div>
         <br>
-    </dev>
+    </div>
 </template>
 
 <script>
@@ -144,7 +144,9 @@
 </script>
 
 <style>
-
+    .space-contianer{
+        margin:2rem auto;
+    }
     input[type=text] {
         width: 100%;
         padding: 0px 5px;
