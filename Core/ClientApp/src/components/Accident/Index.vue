@@ -36,7 +36,7 @@
                                 </div>
                                 <div style="text-align: center">
                                     <a class="btn-select" href="\Rights">{{ msg }}</a>
-                                    <a class="btn-checked" href="\">{{ msg2 }}</a>
+                                    <a class="btn-checked" href="\CheckStatus">{{ msg2 }}</a>
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,10 @@ export default {
   font-size: 25px;
   font-weight: bold;
 }
-
+p.p_right{
+    text-align: right; 
+    width: 90%;
+}
 .txt {
   border-radius: 10px;
   border: 1px solid #cccccc;
@@ -203,7 +206,7 @@ section {
 }
 .answer p{
     color: black;
-    padding: 1rem 0 0 2rem;
+    padding: 0.7rem 0 0 2rem;
 }
 .accordion-item:target .answer{
     max-height: 15rem;
@@ -211,11 +214,12 @@ section {
 .accordion-item:target .accordion-link .ion-md-add{
     display: none;
 }
-
 .box-container {
     border-radius: 10px; 
     border: 1px solid #cccccc; 
     padding: 20px 20px 15px 20px;
     text-align: left;
 }
+
+
 </style>

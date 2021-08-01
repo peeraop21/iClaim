@@ -91,7 +91,7 @@
             </div>
             <br>
             <br>
-            <p style="text-align: right;">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
+            <p class="p_right">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
             <a class="btn-next" href="\Bookbank">{{ msg }}</a>
             
         </div>

@@ -6,6 +6,7 @@ import Advice from "@/components/Advice/Index.vue";
 import Accident from "@/components/Accident/Index.vue";
 import Rights from "@/components/Rights/Index.vue";
 import RightsHistory from "@/components/Rights/RightsHistory.vue";
+import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
 import Bill from "@/components/Claim/Bill.vue";
 import Bookbank from "@/components/Claim/Bookbank.vue";
 import Preview from "@/components/Claim/Preview.vue";
@@ -38,6 +39,11 @@ const routes = [
         path: "/RightsHistory",
         name: "RightsHistory",
         component: RightsHistory,
+    },
+    {
+        path: "/RightsHistoryDetail",
+        name: "RightsHistoryDetail",
+        component: RightsHistoryDetail,
     },
     {
         path: "/Bill",

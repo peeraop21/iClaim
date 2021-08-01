@@ -9,10 +9,10 @@
                 </div>
                 <div v-for="rights_receive in rights_receives" :key="rights_receive.id">
                     <div class="txt">
-                        <label class="purple-title">{{ rights_receive.medical_expenses }}</label><br><br>
-                        <p>{{ rights_receive.detail }}</p>
+                        <li><label class="purple-title" style="font-weight: bold">{{ rights_receive.medical_expenses }}</label></li><br><br>
+                        <p style="line-height: 25px">{{ rights_receive.detail }}</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 3px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a><br>
+                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a><br>
                             <a class="btn-select" href="\RightsHistory" style="padding: 7px;">{{ msg }}</a>
                         </div>
                     </div>
@@ -73,15 +73,4 @@ export default {
 
 <style>
 
-/*input[type='checkbox'] { display: none; } 
-.wrap-collabsible { margin: 0rem 0; width: 90%;} 
-.lbl-toggle { display: block; font-weight: bold; font-family: monospace; font-size: 1.2rem; text-transform: uppercase; text-align: center; padding: 1rem; color: #DDD; background: #0069ff; cursor: pointer; border-radius: 7px; transition: all 0.25s ease-out; } 
-.lbl-toggle:hover { color: #FFF; } 
-.lbl-toggle::before { content: ' '; display: inline-block; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 5px solid currentColor; vertical-align: middle; margin-right: .7rem; transform: translateY(-2px); transition: transform .2s ease-out; } 
-.toggle:checked+.lbl-toggle::before { transform: rotate(90deg) translateX(-3px); } 
-.collapsible-content { max-height: 0px; overflow: hidden; transition: max-height .25s ease-in-out; } 
-.toggle:checked + .lbl-toggle + .collapsible-content { max-height: 350px; } 
-.toggle:checked+.lbl-toggle { border-bottom-right-radius: 0; border-bottom-left-radius: 0; } 
-.collapsible-content .content-inner { background: rgba(0, 105, 255, .2); border-bottom: 3px solid rgba(0, 105, 255, .45); border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; padding: .5rem 2rem; } 
-.collapsible-content p { margin-bottom: 0; }*/
 </style>

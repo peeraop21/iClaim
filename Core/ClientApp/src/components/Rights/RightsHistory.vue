@@ -11,7 +11,7 @@
                     <p>วันที่เกิดเหตุ : 17/06/2564</p>
                 </div>
                 <br>
-                <p style="text-align: right; width: 90%;">สิทธิ์คงเหลือ: 10000 บาท</p>
+                <p class="p_right">สิทธิ์คงเหลือ: 10000 บาท</p>
                 <a class="btn-next" href="\Bill">{{ msg2 }}</a>
                 <br><br>
                 <div align="left" style="width: 90%;">
@@ -33,7 +33,7 @@
                                     โรงพยาบาลที่รักษา: {{ boto.hospital }}</p>
                                 </div>
                                 <div style="text-align: center">
-                                    <a class="btn-select" href="\Rights">{{ msg }}</a>
+                                    <a class="btn-select" href="\RightsHistoryDetail">{{ msg }}</a>
                                 </div>
                             </div>
                         </div>
