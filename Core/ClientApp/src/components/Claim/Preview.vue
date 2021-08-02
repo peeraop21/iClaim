@@ -1,5 +1,5 @@
 <template>
-    <div class="container space-contianer" align="center">
+    <div class="container space-contianer" align="center" id="bills">
         <div class="stepper-wrapper">
             <div class="stepper-item completed">
                 <div class="step-counter">
@@ -32,7 +32,7 @@
                 <div class="row">
                     <div class="col-9">
                         <p class="mb-0">ชื่อ-สกุล</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <input type="text" value="{{ }}" id="input_border_bottom" placeholder="" readonly />
                     </div>
                     <div class="col-3">
                         <p class="mb-0">อายุ</p>
@@ -174,6 +174,7 @@
 
             <div v-if="acceptClaim">
                 <a class="btn-next" href="\Preview">{{ msg }}</a>
+                
             </div>
         </div>
     </div>
@@ -185,7 +186,10 @@
         data() {
             return {
                 acceptClaim: false,
-                msg: 'ส่งคำร้อง'
+                msg: 'ส่งคำร้อง',
+                props: {
+                    bills: Array,
+                }
             }
         },
 

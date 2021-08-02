@@ -32,7 +32,7 @@
             <div class="box-container">
                 <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
                 <form action="/action_page.php">
-                    <input type="file" id="myFile" name="filename">
+                    <input type="file" name="filename">
                     <!--<input type="submit"> -->
                 </form>
             </div>
@@ -59,7 +59,7 @@
                         <input v-model="input.hospitalized_date" type="text" class="h-10 rounded-lg outline-none" placeholder=""/>
                         <br>
 
-                        <div class="row">
+                        
                             <!-- Add Svg Icon-->
                             <p style="color: green">
                                 <svg @click="addField(input, bills)"
@@ -81,11 +81,11 @@
                                     width="30"
                                     height="30"
                                     class="ml-2 cursor-pointer"
-                                    style="margin-top: -43px; width: 80%;">
+                                    style="margin-top: -10px;">
                                 <path fill="none" d="M0 0h24v24H0z" />
                                 <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
                             </svg>
-                        </div>
+                           
                     </div>
                 </form>
             </div>
@@ -93,7 +93,6 @@
             <br>
             <p class="p_right">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
             <a class="btn-next" href="\Bookbank">{{ msg }}</a>
-            
         </div>
         <br>
     </div>
