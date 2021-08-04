@@ -13,7 +13,7 @@
                         <p style="line-height: 25px">{{ rights_receive.detail }}</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a><br>
-                            <a class="btn-select" href="\RightsHistory" style="padding: 7px;">{{ msg }}</a>
+                            <router-link class="btn-select" to="/RightsHistory" style="padding: 7px;">เลือก</router-link>
                         </div>
                     </div>
                     
@@ -65,7 +65,7 @@ export default {
                   money: 8000
               },
           ],
-          msg: "เลือก",
+         
       }
   }
 }

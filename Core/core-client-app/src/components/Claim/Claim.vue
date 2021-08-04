@@ -184,5 +184,11 @@
 </script>
 
 <style>
-    
+    .vue-form-wizard.xs .wizard-navigation .wizard-progress-with-circle {
+        position: relative;
+        top: 25px;
+        height: 4px;
+        left: 50px;
+        width: 80%;
+    }
 </style>

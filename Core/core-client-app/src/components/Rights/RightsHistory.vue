@@ -12,34 +12,38 @@
                 </div>
                 <br>
                 <p class="p_right">สิทธิ์คงเหลือ: 10000 บาท</p>
-                <a class="btn-next" href="\Bill">{{ msg2 }}</a>
+                <router-link class="btn-next" to="/Claim">เบิกค่ารักษาเบื้องต้น</router-link>
                 <br><br>
                 <div align="left" style="width: 90%;">
                     <label>ประวัติการรักษา</label><br>
                 </div>
                 <section>
                     <div style="height: 100%; width: 90%;">
-                        <div class="accordion"  v-for="boto in boto_" :key="boto.id">
+                        <div class="accordion" v-for="boto in boto_" :key="boto.id">
                             <div class="accordion-item" :id="'list' + boto.id">
                                 <a class="accordion-link" :href="'#list' + boto.id">
-                                        <div>
-                                            <p><ion-icon name="document-text-outline"></ion-icon>{{ boto.boto_no }}<br>
-                                            <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ boto.money }} บาท</p>
-                                        </div>
-                                    <ion-icon name="chevron-down-outline" class="icon ion-md-add" ></ion-icon>
+                                    <div>
+                                        <p>
+                                            <ion-icon name="document-text-outline"></ion-icon>{{ boto.boto_no }}<br>
+                                            <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ boto.money }} บาท
+                                        </p>
+                                    </div>
+                                    <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
                                 <div class="answer">
-                                    <p>วันที่: {{ boto.date }}<br>
-                                    โรงพยาบาลที่รักษา: {{ boto.hospital }}</p>
+                                    <p>
+                                        วันที่: {{ boto.date }}<br>
+                                        โรงพยาบาลที่รักษา: {{ boto.hospital }}
+                                    </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <a class="btn-select" href="\RightsHistoryDetail">{{ msg }}</a>
+                                    <router-link class="btn-select" to="/RightsHistoryDetail">ดูเพิ่มเติม</router-link>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                
+
             </div>
         </div>
         <br>
@@ -68,8 +72,6 @@ export default {
                   money: 3000
               },
           ],
-          msg: "ดูเพิ่มเติม",
-          msg2: "เบิกค่ารักษาเบื้องต้น"
       }
   }
 }
