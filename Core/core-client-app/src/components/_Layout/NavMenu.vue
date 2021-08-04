@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-navbar class="navbar-digital-cliam">
+        <b-navbar class="navbar-digital-cliam mb-4">
             <b-navbar-nav >
                 <b-nav-item class="navbar-digital-cliam-title" >Digital Claim</b-nav-item>
 
