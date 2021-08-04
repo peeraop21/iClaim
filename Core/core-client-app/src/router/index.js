@@ -6,7 +6,6 @@ import Rights from "@/components/Rights/Index.vue";
 import RightsHistory from "@/components/Rights/RightsHistory.vue";
 import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
 import Claim from "@/components/Claim/Claim.vue";
-import Bill from "@/components/Claim/Bill.vue";
 import Bookbank from "@/components/Claim/Bookbank.vue";
 import Preview from "@/components/Claim/Preview.vue";
 import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
@@ -47,11 +46,7 @@ const routes = [
         name: "Claim",
         component: Claim,
     },
-    {
-        path: "/Bill",
-        name: "Bill",
-        component: Bill,
-    },
+    
     {
         path: "/Bookbank",
         name: "Bookbank",
