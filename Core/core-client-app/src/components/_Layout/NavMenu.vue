@@ -1,25 +1,11 @@
 <template>
     <div>
         <b-navbar class="navbar-digital-cliam">
-            <b-navbar-nav >
-                <b-nav-item class="navbar-digital-cliam-title" >Digital Claim</b-nav-item>
-
-                
-            </b-navbar-nav>
+            <b-navbar-brand style="color:white;padding-left:10px;">Digital Claim</b-navbar-brand>
         </b-navbar>
     </div>
 </template>
 
-
-<style>
-    .navbar-digital-cliam {
-        background-color: #5c2e91;
-        
-    }
-    .navbar-digital-cliam-title {
-        color: white;
-    }
-</style>
 <script>
     export default {
         name: "NavMenu",
@@ -39,3 +25,9 @@
         }
     }
 </script>
+
+<style>
+    .navbar-digital-cliam {
+        background-color: #5c2e91;
+    }
+</style>

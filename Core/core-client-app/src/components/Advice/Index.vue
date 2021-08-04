@@ -1,12 +1,8 @@
 ﻿<template>
     <div class="container">
         <div class="row">
-            <!--<div class="col-12">
-                <br><br>
-                <a class="btn-intro" href="default.asp">สิทธิ์คุ้มครองตาม พ.ร.บ.</a>
-            </div>-->
             <div class="col-12">
-                <div class="card card-advice-menu" data-bs-toggle="modal" data-bs-target="#rightsModal">
+                <div class="card-advice-menu" data-bs-toggle="modal" data-bs-target="#rightsModal">
                     <div class="card-body">
                         <p class="title-advice-menu">สิทธิ์คุ้มครองตาม พ.ร.บ.</p>
                     </div>
@@ -14,10 +10,9 @@
                 </div>
             </div>
         </div>
-        <br>
         <div class="row">
             <div class="col-12">
-                <div class="card card-advice-menu" data-bs-toggle="modal" data-bs-target="#procedureModal">
+                <div class="card-advice-menu" data-bs-toggle="modal" data-bs-target="#procedureModal">
                     <div class="card-body">
                         <p class="title-advice-menu">
                             ขั้นตอนดำเนินการ
@@ -27,18 +22,13 @@
 
                 </div>
             </div>
-
-            <!-- <div class="col-12">
-                 <br><br>
-                 <a class="btn-intro" href="default.asp">ขั้นตอนดำเนินการ<br>และเอกสารที่ต้องเตรียม</a>
-             </div>-->
-        </div>
-        <br>
+        </div>       
         <div class="row">
             <div class="col-12">
                 <br>
                 <br>
-                <a class="btn-next" href="\Accident">{{ msg }}</a>
+                
+                <router-link class="btn-next" to="/Accident">{{msg}}</router-link>
 
             </div>
         </div>
@@ -77,8 +67,8 @@
     .card-advice-menu {
         border: 2px solid #5c2e91;
         padding: 7% 0px;
-        width: 70%;
-        margin-top: 2rem;
+        width: 80%;
+        margin: 2rem 1rem 2rem 1rem;
         border-radius: 10px;
         text-align: center;
         text-decoration: none;
