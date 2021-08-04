@@ -49,6 +49,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
 export default {
   name: 'Accident',
   data () {
@@ -79,7 +80,22 @@ export default {
           msg: "ใช้สิทธ์",
           msg2: "ตรวจสอบสถานะ"
       }
-  }
+        }, methods: {
+            getAccidents() {
+                axios.get('/accident')
+                    .then((response) => {
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            }
+        },
+        mounted() {
+            this.getAccidents();
+        }
+
+
 }
 </script>
 

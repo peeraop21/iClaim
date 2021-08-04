@@ -1,12 +1,11 @@
-﻿import { createWebHistory, createRouter } from "vue-router";
-//import Home from "@/components/Home/Home.vue";
-import Counter from "@/components/Counter.vue";
-import FetchData from "@/components/FetchData.vue";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 import Advice from "@/components/Advice/Index.vue";
 import Accident from "@/components/Accident/Index.vue";
 import Rights from "@/components/Rights/Index.vue";
 import RightsHistory from "@/components/Rights/RightsHistory.vue";
 import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
+import Claim from "@/components/Claim/Claim.vue";
 import Bill from "@/components/Claim/Bill.vue";
 import Bookbank from "@/components/Claim/Bookbank.vue";
 import Preview from "@/components/Claim/Preview.vue";
@@ -14,14 +13,12 @@ import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
 import CheckStatus from "@/components/Status/CheckStatus.vue";
 import ClaimDetail from "@/components/Status/ClaimDetail.vue";
 import ConfirmMoney from "@/components/Status/ConfirmMoney.vue";
+
+Vue.use(VueRouter)
+
 const routes = [
-    // {
-    //     path: "/",
-    //     name: "Home",
-    //     component: Home,
-    // },
     {
-        path: "/Advice",
+        path: "/",
         name: "Advice",
         component: Advice,
     },
@@ -46,6 +43,11 @@ const routes = [
         component: RightsHistoryDetail,
     },
     {
+        path: "/Claim",
+        name: "Claim",
+        component: Claim,
+    },
+    {
         path: "/Bill",
         name: "Bill",
         component: Bill,
@@ -60,16 +62,7 @@ const routes = [
         name: "Preview",
         component: Preview,
     },
-    {
-        path: "/Counter",
-        name: "Counter",
-        component: Counter,
-    },
-    {
-        path: "/FetchData",
-        name: "FetchData",
-        component: FetchData,
-    },
+
     {
         path: "/ConfirmOTP",
         name: "ConfirmOTP",
@@ -90,11 +83,12 @@ const routes = [
         name: "ConfirmMoney",
         component: ConfirmMoney,
     },
-];
+]
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
+})
 
-export default router;
+export default router

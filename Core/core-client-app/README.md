@@ -1,4 +1,4 @@
-# clientapp
+# core-client-app
 
 ## Project setup
 ```

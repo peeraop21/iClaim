@@ -32,7 +32,7 @@
                 <div class="row">
                     <div class="col-9">
                         <p class="mb-0">ชื่อ-สกุล</p>
-                        <input type="text" value="{{ }}" id="input_border_bottom" placeholder="" readonly />
+                        <input type="text"  id="input_border_bottom" placeholder="" readonly />
                     </div>
                     <div class="col-3">
                         <p class="mb-0">อายุ</p>

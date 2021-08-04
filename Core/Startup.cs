@@ -1,10 +1,13 @@
+using DataAccess.EFCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +28,15 @@ namespace Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp";
+                configuration.RootPath = "core-client-app/dist";
             });
+            services.AddDbContext<RvpAccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("PVR")));
+            services.AddTransient<IAccidentService, AccidentService>();
+            services.AddScoped<IAccidentService, AccidentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,9 +59,16 @@ namespace Core
             app.UseSpa(spa =>
             {
                 if (env.IsDevelopment())
-                    spa.Options.SourcePath = "ClientApp/";
+                    spa.Options.SourcePath = "core-client-app/";
                 else
                     spa.Options.SourcePath = "dist";
+                /* spa.Options.SourcePath = "ClientApp";
+
+                 if (env.IsDevelopment())
+                 {
+                     // Development requests are send through to local node server
+                     spa.UseProxyToSpaDevelopmentServer("http://localhost:8080/");
+                 }*/
 
                 if (env.IsDevelopment())
                 {
