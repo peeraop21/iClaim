@@ -98,7 +98,7 @@
     }
     .title-claim-number{
         font-weight:bold;
-        font-size:20px;
+        font-size:15px;
         text-align:start;
     }
     .card-confirm-money-detail {

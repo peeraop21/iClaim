@@ -53,7 +53,7 @@
 <style>
     .purple-title {
         color: #5c2e91;
-        font-size: 20px;
+        font-size: 15px;
     }
 
     .space-title {
@@ -76,7 +76,7 @@
     }
 
     .title-advice-menu {
-        font-size: 1.5rem;
+        font-size: 15px;
         color: black;
         margin-bottom: 0px;
     }
@@ -91,7 +91,7 @@
         text-decoration: none;
         display: inline-block;
         border-radius: 10px;
-        font-size: 20px;
+        font-size: 15px;
     }
 
     a[class="btn-intro"]:hover, a[class="btn-intro"]:active {
@@ -107,7 +107,7 @@
         text-decoration: none;
         display: inline-block;
         border-radius: 30px;
-        font-size: 20px;
+        font-size: 15px;
     }
 
     a[class="btn-next"]:hover, a[class="btn-next"]:active {

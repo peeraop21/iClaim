@@ -1,12 +1,12 @@
 <template>
-    <div class="container space-contianer">
+    <div class="container">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
                 <div class="txt">
                     <p>ชื่อ-สกุล: นายรำพี พีรำรำ</p>
-                    <p>เลขบัตรประจำตัวประชาชน: 1-2299-00876-32-1</p>
+                    <p>เลขประจำตัวประชาชน: 1-2299-00876-32-1</p>
                 </div>
                 <!--<div class="wrap-collabsible"> 
                     <input id="collapsible" class="toggle" type="checkbox"> 
@@ -20,7 +20,7 @@
                     </div>
                 </div>-->
                 <section>
-                    <div class="container" style="height: 80%; width: 100%;">
+                    <div style="height: 80%; width: 100%;">
                         <div class="accordion"  v-for="accident in accidents" :key="accident.id">
                             <div class="accordion-item" :id="'list' + accident.id">
                                 <a class="accordion-link" :href="'#list' + accident.id">
@@ -78,7 +78,7 @@ export default {
               }
           ],
           msg: "ใช้สิทธ์",
-          msg2: "ตรวจสอบสถานะ"
+          msg2: "ติดตามสถานะ"
       }
         }, methods: {
             getAccidents() {
@@ -101,7 +101,7 @@ export default {
 
 <style>
 #header2 {
-  font-size: 25px;
+  font-size: 18px;
   font-weight: bold;
 }
 p.p_right{
@@ -113,7 +113,7 @@ p.p_right{
   border: 1px solid #cccccc;
   /*height: 300px; */
   padding: 25px 25px 15px 25px; 
-  width: 90%;
+  width: 100%;
   text-align: left;
   line-height: 15px;
 }
@@ -194,14 +194,14 @@ section {
     color: #5c2e91;
     padding: 0rem .5rem .1rem 0rem;
     vertical-align: middle;
-    font-size: 1.5rem;
+    font-size: 15px;
 }
 /*.accordion-link .ion-md-remove {
     display: none;
 }*/
 .accordion-link .ion-md-add {
     margin-bottom: 5px;
-    font-size: 1.5rem;
+    font-size: 1-px;
 }
 .answer {
     max-height: 0;
