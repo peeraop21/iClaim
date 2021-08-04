@@ -1,7 +1,7 @@
 <template>
     <div>
-        <b-navbar class="navbar-digital-cliam">
-            <b-navbar-brand style="color:white;padding-left:10px;">Digital Claim</b-navbar-brand>
+        <b-navbar class="navbar-digital-cliam mb-4">
+            <b-navbar-brand style="color:white;padding-left:30px;">Digital Claim</b-navbar-brand>
         </b-navbar>
     </div>
 </template>

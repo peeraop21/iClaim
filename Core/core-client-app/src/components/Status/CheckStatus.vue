@@ -1,5 +1,5 @@
 <template>
-    <div class="container space-contianer">
+    <div class="container">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ประวัติ/สถานะคำร้อง</h2>
@@ -16,7 +16,7 @@
                     </div>
                 </div>-->
                 <section>
-                    <div class="container" style="height: 80%; width: 100%;">
+                    <div style="height: 80%; width: 100%;">
                         <div class="accordion"  v-for="accident in accidents" :key="accident.id">
                             <div class="accordion-item" :id="'list' + accident.id">
                                 <a class="accordion-link" :href="'#list' + accident.id">

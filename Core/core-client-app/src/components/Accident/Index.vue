@@ -115,7 +115,7 @@ p.p_right{
   padding: 25px 25px 15px 25px; 
   width: 100%;
   text-align: left;
-  line-height: 15px;
+  line-height: 10px;
 }
 
 .mybtn {

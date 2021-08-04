@@ -17,8 +17,8 @@ export default {
 </script>
 <style>
 #app {
-  font-family: Mitr, Helvetica, sans-serif;
-  font-family: 10px;
+  font-family: Mitr;
+  font-family: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

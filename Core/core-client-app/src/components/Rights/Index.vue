@@ -4,7 +4,7 @@
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์ที่ได้รับ</h2>
                 <br>
-                <div align="left" style="width: 90%;">
+                <div align="left" style="width: 100%;">
                     <label class="title-advice-menu">ค่าเสียหายเบื้องต้น</label><br>
                 </div>
                 <div v-for="rights_receive in rights_receives" :key="rights_receive.id">

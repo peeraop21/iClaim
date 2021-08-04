@@ -1,5 +1,5 @@
 <template>
-    <div class=" container space-contianer" align="center">
+    <div class=" container" align="center">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์การรักษาเบื้องต้น</h2>
@@ -12,13 +12,13 @@
                 </div>
                 <br>
                 <p class="p_right">สิทธิ์คงเหลือ: 10000 บาท</p>
-                <a class="btn-next" href="\Bill">{{ msg2 }}</a>
+                <a class="btn-next" href="\Claim">{{ msg2 }}</a>
                 <br><br>
-                <div align="left" style="width: 90%;">
+                <div align="left" style="width: 100%;">
                     <label>ประวัติการรักษา</label><br>
                 </div>
                 <section>
-                    <div style="height: 100%; width: 90%;">
+                    <div style="height: 100%; width: 100%;">
                         <div class="accordion"  v-for="boto in boto_" :key="boto.id">
                             <div class="accordion-item" :id="'list' + boto.id">
                                 <a class="accordion-link" :href="'#list' + boto.id">

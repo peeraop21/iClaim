@@ -125,7 +125,7 @@
 <script>
     //Your Javascript lives within the Script Tag
     export default {
-        data: function() {
+        data() {
             return {
             preview: null,
             image: null,
