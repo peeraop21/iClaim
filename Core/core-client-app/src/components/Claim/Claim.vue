@@ -154,10 +154,10 @@
                 <div class="row">
                     <div class="col-9">
                         <p class="mb-0">ชื่อ-สกุล</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.prefix != null">
+                            <p class="mb-0" style="color: grey">{{userData.prefix}}{{userData.fname}} {{userData.lname}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.prefix === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
@@ -174,28 +174,28 @@
                 <div class="row">
                     <div class="col-4">
                         <p class="mb-0">บ้านเลขที่</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeHouseNo != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeHouseNo}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeHouseNo === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
                     <div class="col-2">
                         <p class="mb-0">หมู่</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeHmo != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeHmo}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeHmo === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">ซอย</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeSoi != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeSoi}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeSoi === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
@@ -203,19 +203,19 @@
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-0">ถนน</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeRoad != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeRoad}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeRoad === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">ตำบล/แขวง</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeTumbolId != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeTumbolId}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeTumbolId === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
@@ -223,19 +223,19 @@
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-0">อำเภอ</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeCityId != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeCityId}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeCityId === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">จังหวัด</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeProvinceId != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeProvinceId}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeProvinceId === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
@@ -243,19 +243,19 @@
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-0">รหัสไปรษณีย์</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.homeZipcode != null">
+                            <p class="mb-0" style="color: grey">{{userData.homeZipcode}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.homeZipcode === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">เบอร์โทรศัพท์</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="userData.mobileNo != null">
+                            <p class="mb-0" style="color: grey">{{userData.mobileNo}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bank===''">
+                        <div class="mt-0" v-else-if="userData.mobileNo === null">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
@@ -268,25 +268,20 @@
                 <label align="left">ข้อมูลอุบัติเหตุ</label>
             </div>
             <div class="box-container mb-3">
-                <div class="row">
-                    <div class="col-5">
-                        <p class="mb-0">วันที่เกิดเหตุ</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
-                        </div>
-                        <div class="mt-0" v-else-if="bank===''">
-                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
-                        </div>
-                    </div>
-                    <div class="col-7">
-                        <p class="mb-0">ลักษณะเกิดเหตุ</p>
-                        <div class="mt-0" v-if="bank!=''">
-                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
-                        </div>
-                        <div class="mt-0" v-else-if="bank===''">
-                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
-                        </div>
-                    </div>
+                
+                <p class="mb-0">วันที่เกิดเหตุ</p>
+                <div class="mt-0" v-if="accData.eaAccDate != null">
+                    <p class="mb-0" style="color: grey">{{accData.eaAccDate}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="accData.eaAccDate === null">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
+                <p class="mb-0">ลักษณะเกิดเหตุ</p>
+                <div class="mt-0" v-if="bank!=''">
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="bank===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                 </div>
                 <p class="mb-0">สถานที่เกิดเหตุ</p>
                 <div class="mt-0" v-if="bank!=''">
@@ -467,15 +462,13 @@
                     { text: ' ไม่เคย', value: 'first' },
                     { text: ' เคย', value: 'second' },
                 ],
-                accData:[]
+                userData: this.$store.state.userStateData,
+                accData: this.$store.getters.accGetter(this.$route.params.id)
             };
         },
        
         methods: {
-            getAccData() {
-                this.accData = this.$route.query.accData;
-                console.log("ssss: ",this.accData);
-            },
+            
             //---Bill
             addField(value, fieldType) {
                 fieldType.push({ value: "" });
@@ -521,7 +514,8 @@
             },
         },
         mounted() {
-            this.getAccData();
+            console.log(this.accData)
+            console.log(this.userData)
             
         }
     };

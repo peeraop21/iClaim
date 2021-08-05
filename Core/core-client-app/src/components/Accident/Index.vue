@@ -5,12 +5,12 @@
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
                 <div class="txt"  >
-                    <p>ชื่อ-สกุล: {{userApi.prefix}}{{userApi.fname}} {{userApi.lname}}</p>
-                    <p>เลขประจำตัวประชาชน: {{userApi.idcardNo}}</p>
+                    <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
+                    <p>เลขประจำตัวประชาชน: {{userData.idcardNo}}</p>
                 </div>
                 <section>
                     <div style="height: 80%; width: 100%;">
-                        <div class="accordion" v-for="accident in accidentsApi" v-bind:key="accident.eaTmpId">
+                        <div class="accordion" v-for="accident in accData" v-bind:key="accident.eaTmpId">
                             <!--v-for="accident in accidents" :key="accident.id"-->
                             <div class="accordion-item" :id="'list' + accident.eaTmpId">
                                 <a class="accordion-link" :href="'#list' + accident.eaTmpId">
@@ -33,8 +33,10 @@
                                     </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <button class="btn-select" @click="sendData">ใช้สิทธิ์</button>
+                                    <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
+                                    <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.eaTmpId}}">ใช้สิทธิ์</router-link>
                                     <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -53,23 +55,27 @@
         data() {
             return {
                 userToken: "U616533ccb2a96fde1b9650e5181e768e",
-                userApi: [],
-                accidentsApi: [],               
+                userData: [],
+                accData: [],               
             }
         },
+        
+        
         methods: {
-            sendData() {
-                this.$router.push({
-                    name: "Claim",
-                    query: { accData: this.accidentsApi }
-                });
-            },
+            //senddata() {
+            //    this.$router.push({
+            //        name: "claim",
+            //        query: { accdata: this.accidentsapi }
+            //    });
+            //},
             getAccidents() {
                 var url = '/api/accident/{userToken}'.replace('{userToken}', this.userToken);
                 axios.get(url)
                     .then((response) => {
-                        this.accidentsApi = response.data;
-                        console.log(this.accidentsApi);
+                        /*this.accidentsApi = response.data;*/
+                        this.$store.state.accStateData = response.data;
+                        this.accData = this.$store.state.accStateData
+                        console.log(this.$store.state.accStateData);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -79,8 +85,10 @@
                 var url = '/api/user/{userToken}'.replace('{userToken}', this.userToken);
                 axios.get(url)
                     .then((response) => {
-                        this.userApi = response.data;
-                        console.log(this.userApi);
+                        /*this.userApi = response.data;*/
+                        this.$store.state.userStateData = response.data;
+                        this.userData = this.$store.state.userStateData;
+                        console.log(this.$store.state.userStateData);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -135,6 +143,22 @@ p.p_right{
         display: inline-block;
         border-radius: 30px;
         border: none;
+    }
+    a[class="btn-select"]:link, a[class="btn-select"]:visited {
+        background-color: #5c2e91;
+        margin-top: 10px;
+        margin-left: 10px;
+        color: white;
+        padding: 3px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 30px;
+        /*font-size: 14px;*/
+    }
+
+    a[class="btn-select"]:hover, a[class="btn-select"]:active {
+        background-color: #a55ac4;
     }
 
     a[class="btn-checked"]:link, a[class="btn-checked"]:visited {

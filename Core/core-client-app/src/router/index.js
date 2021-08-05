@@ -28,12 +28,12 @@ const routes = [
         component: Accident,
     },
     {
-        path: "/Rights",
+        path: "/Rights/:id",
         name: "Rights",
         component: Rights,
     },
     {
-        path: "/RightsHistory",
+        path: "/RightsHistory/:id",
         name: "RightsHistory",
         component: RightsHistory,
     },
@@ -43,7 +43,7 @@ const routes = [
         component: RightsHistoryDetail,
     },
     {
-        path: "/Claim",
+        path: "/Claim/:id",
         name: "Claim",
         component: Claim,
     },
