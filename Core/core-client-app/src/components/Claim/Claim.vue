@@ -48,10 +48,9 @@
         <div class="">
             <form align="left">
                 <label>ลักษณะบาดเจ็บ</label>
-                <b-form-input class="mt-0" v-model="injuri" placeholder=""></b-form-input>
-                <br><br>
+                <b-form-input class="mt-0 mb-3" v-model="injuri" placeholder=""></b-form-input>
+
                 <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
-            
             </form>
             <div class="box-container">
                 <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
@@ -155,55 +154,110 @@
                 <div class="row">
                     <div class="col-9">
                         <p class="mb-0">ชื่อ-สกุล</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-3">
                         <p class="mb-0">อายุ</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4">
                         <p class="mb-0">บ้านเลขที่</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-2">
                         <p class="mb-0">หมู่</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">ซอย</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-0">ถนน</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">ตำบล/แขวง</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-0">อำเภอ</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">จังหวัด</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-0">รหัสไปรษณีย์</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-6">
                         <p class="mb-0">เบอร์โทรศัพท์</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -217,26 +271,51 @@
                 <div class="row">
                     <div class="col-5">
                         <p class="mb-0">วันที่เกิดเหตุ</p>
-                        <input type="text" id="input_border_bottom" placeholder=""/>
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bank===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                     <div class="col-7">
                         <p class="mb-0">ลักษณะเกิดเหตุ</p>
-                        <div class="mt-0" v-if="injuri!=''">
-                            <p class="mb-0" style="color: grey">{{injuri}}</p><hr class="mt-0">
+                        <div class="mt-0" v-if="bank!=''">
+                            <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="injuri===''">
+                        <div class="mt-0" v-else-if="bank===''">
                             <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                         </div>
                     </div>
                 </div>
                 <p class="mb-0">สถานที่เกิดเหตุ</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="bank!=''">
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="bank===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">รถคันเอาประกันภัย หมายเลขทะเบียน</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="bank!=''">
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="bank===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">เลขตัวถัง</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="bank!=''">
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="bank===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">กรมธรรม์คุ้มครองภัยจากรถ เลขที่</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="bank!=''">
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="bank===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
 
             </div>
 
@@ -254,33 +333,61 @@
                     <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                 </div>
                 <p class="mb-0">ประเภทผู้ป่วย</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="patientType!=''">
+                    <p class="mb-0" style="color: grey">{{patientType}}</p><hr>
+                </div>
+                <div class="mt-0" v-else-if="patientType===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
                 <input type="text" id="input_border_bottom" placeholder="" readonly />
-                <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
-                <p class="mb-0">ชื่อโรงพยาบาล</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
-                <div class="row">
-                    <div class="col-6">
-                        <p class="mb-0">เลขที่ใบเสร็จ</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                
+                <div v-for="bill in bills" :key="bill.billNo">
+                    <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                    <div class="mt-0" v-if="bill.choose_file!=''">
+                        <p class="mb-0" style="color: grey">{{bill.choose_file}}</p><hr class="mt-0">
                     </div>
-                    <div class="col-6">
-                        <p class="mb-0">วันที่เข้ารักษา</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                    <div class="mt-0" v-else-if="bill.choose_file===''">
+                        <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                    </div>
+                    <p class="mb-0">ชื่อโรงพยาบาล</p>
+                    <div class="mt-0" v-if="bill.hospital!=''">
+                        <p class="mb-0" style="color: grey">{{bill.hospital}}</p><hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="bill.hospital===''">
+                        <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="mb-0">เลขที่ใบเสร็จ</p>
+                            <div class="mt-0" v-if="bill.billNo!=''">
+                                <p class="mb-0" style="color: grey">{{bill.billNo}}</p><hr class="mt-0">
+                            </div>
+                            <div class="mt-0" v-else-if="bill.billNo===''">
+                                <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0">วันที่เข้ารักษา</p>
+                            <div class="mt-0" v-if="bill.hospitalized_date!=''">
+                                <p class="mb-0" style="color: grey">{{bill.hospitalized_date}}</p><hr class="mt-0">
+                            </div>
+                            <div class="mt-0" v-else-if="bill.hospitalized_date===''">
+                                <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0">จำนวนเงิน</p>
+                    <div class="mt-0" v-if="bill.money!=''">
+                        <p class="mb-0" style="color: grey">{{bill.money}}</p><hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="bill.money===''">
+                        <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p class="mb-0">จำนวนเงิน</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
-                    </div>
-                    <div class="col-6">
-                        <p class="mb-0">รวมเงินที่ขอเบิก</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
-                    </div>
-                </div>
+                
+                <p class="mb-0">รวมเงินที่ขอเบิก</p>
+                <input type="text" id="input_border_bottom" placeholder="" readonly />
             </div>
             <!-- บัญชี -->
             <div align="left" style="width: 100%;">
@@ -288,9 +395,16 @@
                 <label align="left">ข้อมูลบัญชีรับเงิน</label>
             </div>
             <div class="box-container mb-3">
+                <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
+                <div class="mt-0" v-if="image.name!=''">
+                    <p class="mb-0" style="color: grey">{{image.name}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-if="image.name!=''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">ชื่อธนาคาร</p>
                 <div class="mt-0" v-if="bank!=''">
-                    <p class="mb-0" style="color: grey">{{bank}}</p><hr>
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
                 </div>
                 <div class="mt-0" v-else-if="bank===''">
                     <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
@@ -336,13 +450,15 @@
             return {
                 // ---Bill
                 injuri: '',
+                patientType: '',
                 bills: [{ billNo: "", hospital: "", bill_no: "", money: "", hospitalized_date: "", choose_file: "" }],
+                total_amount: 4200,
+                // --BookBank
                 bank: '',
                 accountName: '',
                 accountNumber: '',
                 phoneNumbers: [{ phone: "" }],
                 image: '',
-                total_amount: 4200,
                 preview: null,
                 // ---Preview
                 acceptClaim: false,
@@ -388,7 +504,7 @@
                 this.image = '';
             },
             // --- BookBank
-             previewImage: function(event) {
+            previewImage: function(event) {
                 var input = event.target;
                 if (input.files) {
                     var reader = new FileReader();
@@ -418,5 +534,10 @@
     .d-block {
         font-size: 14px;
         line-height: 20px;
+    }
+    div.wizard-footer-left{
+    float: left;
+    background-color: wheat;
+    color: red;
     }
 </style>

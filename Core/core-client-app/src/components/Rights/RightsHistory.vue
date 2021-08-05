@@ -18,7 +18,7 @@
                     <label>ประวัติการรักษา</label><br>
                 </div>
                 <section>
-                    <div style="height: 100%; width: 90%;">
+                    <div style="height: 100%; width: 100%;">
                         <div class="accordion"  v-for="boto in boto_" :key="boto.id">
                             <div class="accordion-item" :id="'list' + boto.id">
                                 <a class="accordion-link" :href="'#list' + boto.id">
