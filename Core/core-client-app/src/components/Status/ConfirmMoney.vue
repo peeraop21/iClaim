@@ -35,17 +35,16 @@
             <div class="row" v-if="acceptR">
                 <div id="app" class="container ">
                     <p>
-                        กรุณากดขอรหัส OTP เพื่อยืนยันการส่งคำร้อง
+                        กรุณากดขอรหัส OTP เพื่อยืนยันจำนวนเงิน
                     </p>
                     <div class="row">
                         <div class="col-12">
                             <div class="card card-tel">
-                                <div class="position-icon">
+                                <div class="position-icon mt-2">
                                     <ion-icon name="call-outline"></ion-icon>
-                                </div>
-
-                                <label class="lbl-tel">xxx-xxx-9898</label>
-                            </div>
+                                    <label class="lbl-tel">xxx-xxx-9898</label>     
+                                </div>  
+                            </div> 
                             <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                         </div>
                     </div>
@@ -90,7 +89,7 @@
         border:none;
         width: 130px;
         color: white;
-        padding: 3px 10px;
+        padding: 5px 5px;
         text-align: center;
         text-decoration: none;
         display: inline-block;

@@ -110,25 +110,23 @@
 </script>
 
 <style>
-    #header2 {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    p.p_right {
-        text-align: right;
-        width: 90%;
-    }
-
-    .txt {
-        border-radius: 10px;
-        border: 1px solid #cccccc;
-        /*height: 300px; */
-        padding: 25px 25px 15px 25px;
-        width: 100%;
-        text-align: left;
-        line-height: 15px;
-    }
+#header2 {
+  font-size: 18px;
+  font-weight: bold;
+}
+p.p_right{
+    text-align: right; 
+    width: 90%;
+}
+.txt {
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  /*height: 300px; */
+  padding: 25px 25px 15px 25px; 
+  width: 100%;
+  text-align: left;
+  line-height: 10px;
+}
 
     .mybtn {
         position: center;

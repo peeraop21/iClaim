@@ -1,5 +1,5 @@
 <template>
-    <div class=" container space-contianer" align="center">
+    <div class=" container" align="center">
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">รายละเอียดการรักษา</h2>
@@ -29,7 +29,7 @@
 <style>
 #treatments {
   border-collapse: collapse;
-  width: 90%;
+  width: 100%;
 }
 
 #treatments td, #treatments th {

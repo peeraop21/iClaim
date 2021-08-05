@@ -1,19 +1,6 @@
 <template>
-    <div class="container space-contianer" align="center">
-       <div class="stepper-wrapper">
-            <div class="stepper-item completed">
-                <div class="step-counter"><ion-icon name="receipt-outline" style="font-size: 20px; color: white"></ion-icon></div>
-                <p style="color: #5c2e91">สร้างคำร้อง</p>
-            </div>
-            <div class="stepper-item completed">
-                <div class="step-counter"><ion-icon name="card-outline" style="font-size: 20px; color: white"></ion-icon></div>
-                <p style="color: #5c2e91">บัญชีรับเงิน</p>
-            </div>
-            <div class="stepper-item completed">
-                <div class="step-counter"><ion-icon name="send-outline" style="font-size: 20px; color: white"></ion-icon></div>
-                <p style="color: #5c2e91">ส่งคำร้อง</p>
-            </div>
-        </div>
+    <div class="container" align="center">
+       
         <h2 id="header2" class="">ยืนยันการส่งคำร้อง</h2>
         <div id="app" class="container mt-5">
             <p>
@@ -22,11 +9,10 @@
             <div class="row">
                 <div class="col-md-12 mb-5">
                     <div class="card card-tel">
-                        <div class="position-icon">
+                        <div class="position-icon mt-2">
                             <ion-icon name="call-outline"></ion-icon>
-                        </div>
-                        
-                        <label class="lbl-tel">xxx-xxx-9898</label>                       
+                            <label class="lbl-tel">xxx-xxx-9898</label>     
+                        </div>  
                     </div>                  
                     <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                 </div>
@@ -50,10 +36,10 @@
             </div>
             <div class="row">
                 <div class="col-6  pt-2">
-                    <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline"></ion-icon>&nbsp;ส่งรหัสยืนยันอีกครั้ง</p>
+                    <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>&nbsp;ส่งรหัสยืนยันอีกครั้ง</p>
                 </div>
                 <div class="col-6  pt-2">
-                    <p class="  black-title fw-bold text-start"><ion-icon name="time-outline"></ion-icon>&nbsp;00:20 น.</p>
+                    <p class="  black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>&nbsp;00:20 น.</p>
                 </div>
             </div>
             <div>
@@ -68,7 +54,7 @@
     .input-tel-otp {
         border-radius: 10px;
         background-color: gainsboro;
-        font-size: 1.5rem;
+        font-size: 15px;
         margin-right: 1rem;
         padding: 0rem 1rem;
         font-weight: bold;
@@ -76,22 +62,22 @@
     }
     .btn-request-otp {
         border-radius: 10px;
+        padding: 10px 10px;
         background-color: #5c2e91;
         color: whitesmoke;
         border-style: none;
-        font-size: 1.5rem;
-        font-weight:bold;
+        font-size: 15px;
     }
     .input-number-otp {
         margin:1rem 3% 0rem 3%;
         max-width: 2rem;
         border-radius: 10px;
-        font-size:2rem;    
+        font-size: 15px;    
         border-style:groove;
     }
     .pink-title {
         color: hotpink;
-        font-size: 1.2rem;
+        font-size: 13px;
         font-weight:bold;
         margin: 0 5% 0 5%;       
     }
@@ -100,23 +86,25 @@
     }
     .black-title {
         color: dimgray;
-        font-size: 1.2rem;
+        font-size: 13px;
         padding: 0% 20%;
         float: right;
         margin: 0 3% 0 3%;
         font-weight: bold;
     }
     .lbl-tel {
-        font-size: 1.4rem;
+        font-size: 13px;
         text-align:start;
         font-weight:bold;
+        color: black;
+        padding-left: 10px;
     }
     .card-tel{
         padding:0 1rem;
         border:1px solid;
         display:block;
         float:left;
-        margin-left:5%;
+        margin-left:2%;
         width:55%;
         height:100%;
         background-color:gainsboro;
@@ -124,9 +112,10 @@
     }
     .position-icon {
         float: left;
-        padding-top: 2%;
+        padding-top: 0%;
         color:deeppink;
-        
+        font-size: 20px; 
+        text-align: start;
     }
    
     
