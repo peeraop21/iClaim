@@ -1,10 +1,54 @@
 ﻿<template>
-    <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px">
+    <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="$bvModal.show('bv-modal')">
+
+        <b-modal id="bv-modal" hide-footer>
+            <template #modal-title>
+            คำรับรอง
+            </template>
+            <div class="d-block text-left">
+                <p>
+                    ข้าพเจ้าผู้ยื่นคำร้องขอในนามของผู้ประสบภัย ขอให้ค้ารับรองว่า.- <br>
+                    1. ข้าพเจ้าหรือประสบภัยยังไม่เคยรับหรือทำสัญญาว่าจะรับค่าเสียหายจากเจ้าของรถ หรือผู้หนึ่งผู้ใด
+                    ใด และยังไม่เคยรับหรือยื่นขอรับค่าเสียหายเบื้องต้นจากกองทุนทดแทนผู้ประสบภัย
+                </p>
+                <b-form-group label=" 2. ข้าพเจ้าหรือผู้ประสบภัย" v-slot="{ ariaDescribedby }">
+                <b-form-radio-group
+                    v-model="selected"
+                    :options="options"
+                    :aria-describedby="ariaDescribedby"
+                    name="radio-inline"
+                ></b-form-radio-group>
+                </b-form-group>
+                <div class="mt-0" v-if="selected==='second'">
+                    <label>จำนวนเงิน</label>
+                    <input type="text" class="h-10 rounded-lg outline-none" placeholder=""/>
+                    <label>สถานพยาบาลชื่อ</label>
+                    <input type="text" class="h-10 rounded-lg outline-none" placeholder=""/>
+                </div>
+                <div class="mt-0" v-else-if="selected==='first'"></div>
+                <p class="mt-2">
+                    3. เมื่อข้าพเจ้าได้รับค่าเสียหายเบื้องต้นจากบริษัทประกันภัยครบถ้วนตามจำนวนที่กฎหมายกำหนดแล้ว
+                    ข้าพเจ้าขอสัญญาว่า ข้าพเจ้าจะไม่ไปเรียกร้องค่าเสียหายเบื้องต้นจากเจ้าของรถ หรือมอบอำนาจให้บุคคลอื่น
+                    หรือสถานพยาบาลมารับค่าเสียหายเบื้องต้นจำนวนนี้ซ้ำอีก
+                </p>
+                <div class="form-check">
+                <input class="form-check-input" type="checkbox" v-model="acceptClaim"  >
+                <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                     ข้าพเจ้าขอรับรองว่าข้อมูลดังกล่าวข้างต้นเป็นจริงทุกประการ หากข้าพเจ้าผิดคำรับรอง 
+                    ข้าพเจ้ายินยอมรับผิดในความเสียหายที่เกิดขึ้นทั้งหมดแก่บริษัท
+                </p>
+                </div>
+                <div v-if="acceptClaim" class="mb-4">
+                    <a class="btn-next" style="margin-top: -20px; -ms-transform: translate(50%, 50%); transform: translate(50%, 50%);" href="\ConfirmOTP">ยืนยันส่งคำร้อง</a>
+                </div>
+            </div>
+            <!-- <b-button class="mt-3" block @click="$bvModal.hide('bv-modal')">Close Me</b-button> -->
+        </b-modal>
         <tab-content title="สร้างคำร้อง" icon="ti ti-write"> 
         <div class="">
             <form align="left">
                 <label>ลักษณะบาดเจ็บ</label>
-                <input type="text" class="h-10 rounded-lg outline-none" placeholder=""/>
+                <b-form-input class="mt-0" v-model="injuri" placeholder=""></b-form-input>
                 <br><br>
                 <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
             
@@ -71,6 +115,7 @@
             <p class="p_right">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
         </div>
         </tab-content>
+        <!-- บัญชีรับเงิน -->
         <tab-content title="บัญชีรับเงิน" icon="ti ti-money">
             <div>
             <form>
@@ -90,16 +135,17 @@
             <div>
                 <div class="box-container mt-3">
                     <p class="mb-0">ชื่อธนาคาร</p>
-                    <input type="text" placeholder=""/>
+                    <b-form-input class="mt-0" v-model="bank" placeholder=""></b-form-input>
                     <p class="mb-0">ชื่อบัญชีธนาคาร</p>
-                    <input type="text" placeholder=""/>
+                    <b-form-input class="mt-0" v-model="accountName" placeholder=""></b-form-input>
                     <p class="mb-0">เลขบัญชีธนาคาร</p>
-                    <input type="text" placeholder=""/>
+                    <b-form-input class="mt-0" v-model="accountNumber" placeholder=""></b-form-input>
                 </div>
                 <br>
             </div>
             </div>
         </tab-content>
+        <!-- ผู้ประสบภัย -->
         <tab-content title="ส่งคำร้อง" icon="ti ti-id-badge">
             <div align="left" style="width: 100%;">
                 <ion-icon name="people-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>
@@ -171,11 +217,16 @@
                 <div class="row">
                     <div class="col-5">
                         <p class="mb-0">วันที่เกิดเหตุ</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <input type="text" id="input_border_bottom" placeholder=""/>
                     </div>
                     <div class="col-7">
                         <p class="mb-0">ลักษณะเกิดเหตุ</p>
-                        <input type="text" id="input_border_bottom" placeholder="" readonly />
+                        <div class="mt-0" v-if="injuri!=''">
+                            <p class="mb-0" style="color: grey">{{injuri}}</p><hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="injuri===''">
+                            <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                        </div>
                     </div>
                 </div>
                 <p class="mb-0">สถานที่เกิดเหตุ</p>
@@ -196,7 +247,12 @@
             </div>
             <div class="box-container mb-3">
                 <p class="mb-0">ลักษณะบาดเจ็บ</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="injuri!=''">
+                    <p class="mb-0" style="color: grey">{{injuri}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="injuri===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">ประเภทผู้ป่วย</p>
                 <input type="text" id="input_border_bottom" placeholder="" readonly />
                 <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
@@ -233,28 +289,42 @@
             </div>
             <div class="box-container mb-3">
                 <p class="mb-0">ชื่อธนาคาร</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="bank!=''">
+                    <p class="mb-0" style="color: grey">{{bank}}</p><hr>
+                </div>
+                <div class="mt-0" v-else-if="bank===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">ชื่อบัญชีธนาคาร</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="accountName!=''">
+                    <p class="mb-0" style="color: grey">{{accountName}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="accountName===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
                 <p class="mb-0">เลขบัญชีธนาคาร</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <div class="mt-0" v-if="accountNumber!=''">
+                    <p class="mb-0" style="color: grey">{{accountNumber}}</p><hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="accountNumber===''">
+                    <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
+                </div>
             </div>
 
-            <div class="form-check">
+            <!-- <div class="form-check">
                 <input class="form-check-input" type="checkbox" v-model="acceptClaim">
                 <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
                     ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
                 </p>
-            </div>
+            </div> -->
         </tab-content>
+       
     </form-wizard>
 </template>
 
 <script>
     import { FormWizard, TabContent } from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-    //component code
-    
     //Your Javascript lives within the Script Tag
     export default {
         name: "Claim",
@@ -265,15 +335,25 @@
         data() {
             return {
                 // ---Bill
+                injuri: '',
                 bills: [{ billNo: "", hospital: "", bill_no: "", money: "", hospitalized_date: "", choose_file: "" }],
+                bank: '',
+                accountName: '',
+                accountNumber: '',
                 phoneNumbers: [{ phone: "" }],
                 image: '',
                 total_amount: 4200,
                 preview: null,
                 // ---Preview
                 acceptClaim: false,
+                selected: 'first',
+                options: [
+                    { text: ' ไม่เคย', value: 'first' },
+                    { text: ' เคย', value: 'second' },
+                ]
             };
         },
+       
         methods: {
             //---Bill
             addField(value, fieldType) {
@@ -313,11 +393,21 @@
                     this.image=input.files[0];
                     reader.readAsDataURL(input.files[0]);
                 }
-            }
+            },
+            //---Alert
+            onComplete: function() {
+                alert("Thank you for your response! We will contact you soon.");
+            },
         },
     };
 </script>
 
 <style>
-    
+    #bv-modal {
+        font-family: "Mitr";
+    }
+    .d-block {
+        font-size: 14px;
+        line-height: 20px;
+    }
 </style>
