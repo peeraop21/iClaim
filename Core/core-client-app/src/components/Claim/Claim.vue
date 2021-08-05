@@ -350,11 +350,16 @@
                 options: [
                     { text: ' ไม่เคย', value: 'first' },
                     { text: ' เคย', value: 'second' },
-                ]
+                ],
+                accData:[]
             };
         },
        
         methods: {
+            getAccData() {
+                this.accData = this.$route.query.accData;
+                console.log("ssss: ",this.accData);
+            },
             //---Bill
             addField(value, fieldType) {
                 fieldType.push({ value: "" });
@@ -399,6 +404,10 @@
                 alert("Thank you for your response! We will contact you soon.");
             },
         },
+        mounted() {
+            this.getAccData();
+            
+        }
     };
 </script>
 

@@ -33,7 +33,7 @@
                                     </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" to="/Rights">ใช้สิทธิ์</router-link>
+                                    <button class="btn-select" @click="sendData">ใช้สิทธิ์</button>
                                     <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
                                 </div>
                             </div>
@@ -58,6 +58,12 @@
             }
         },
         methods: {
+            sendData() {
+                this.$router.push({
+                    name: "Claim",
+                    query: { accData: this.accidentsApi }
+                });
+            },
             getAccidents() {
                 var url = '/api/accident/{userToken}'.replace('{userToken}', this.userToken);
                 axios.get(url)
@@ -116,7 +122,8 @@ p.p_right{
         display: inline-block;
     }
 
-    a[class="btn-select"]:link, a[class="btn-select"]:visited {
+
+    .btn-select {
         background-color: #5c2e91;
         margin-top: 10px;
         margin-right: 0px;
@@ -127,11 +134,7 @@ p.p_right{
         text-decoration: none;
         display: inline-block;
         border-radius: 30px;
-        /*font-size: 14px;*/
-    }
-
-    a[class="btn-select"]:hover, a[class="btn-select"]:active {
-        background-color: #50287e;
+        border: none;
     }
 
     a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
