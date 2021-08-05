@@ -4,21 +4,10 @@
             <div class="col-12" align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
-                <div class="txt">
-                    <p>ชื่อ-สกุล: นายรำพี พีรำรำ</p>
-                    <p>เลขประจำตัวประชาชน: 1-2299-00876-32-1</p>
+                <div class="txt"  >
+                    <p>ชื่อ-สกุล: {{userApi.prefix}}{{userApi.fname}} {{userApi.lname}}</p>
+                    <p>เลขประจำตัวประชาชน: {{userApi.idcardNo}}</p>
                 </div>
-                <!--<div class="wrap-collabsible">
-                    <input id="collapsible" class="toggle" type="checkbox">
-                    <label for="collapsible" class="lbl-toggle">More Info</label>
-                    <div class="collapsible-content">
-                        <div class="content-inner">
-                            <p>
-                                QUnit is by calling one of the object that are embedded in JavaScript, and faster JavaScript program could also used with its elegant, well documented, and functional programming using JS, HTML pages Modernizr is a popular browsers without plug-ins. Test-Driven Development.
-                            </p>
-                        </div>
-                    </div>
-                </div>-->
                 <section>
                     <div style="height: 80%; width: 100%;">
                         <div class="accordion" v-for="accident in accidentsApi" v-bind:key="accident.eaTmpId">
@@ -29,7 +18,7 @@
                                         <p>
                                             <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.eaAccNo }}
                                             <br>
-                                            <ion-icon name="calendar-outline"></ion-icon>วันที่แจ้งเหตุ: {{ accident.eaAccDate }}
+                                            <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.eaAccDate }}
                                         </p>
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
@@ -40,7 +29,7 @@
                                         <label v-for="car in accident.eaCar" v-bind:key="car.eaCarNo"> {{ car.eaCarLicense }},</label>
                                     </p>
                                     <p>
-                                        สิทธิ์คงเหลือ: {{ accident.money }} บาท
+                                        สิทธิ์คงเหลือ:  บาท
                                     </p>
                                 </div>
                                 <div style="text-align: center">
@@ -63,38 +52,29 @@
         name: 'Accident',
         data() {
             return {
-                accidentsApi: [],
-                accidents: [
-                    {
-                        id: 1,
-                        accident_no: "64/XXX/00001",
-                        accident_date: "05/06/2564",
-                        license_plare: "บน 7898",
-                        money: 10000
-                    },
-                    {
-                        id: 2,
-                        accident_no: "64/XXX/00002",
-                        accident_date: "29/07/2564",
-                        license_plare: "กข 4567",
-                        money: 4000
-                    },
-                    {
-                        id: 3,
-                        accident_no: "64/XXX/00003",
-                        accident_date: "13/08/2564",
-                        license_plare: "พย 5643",
-                        money: 7000
-                    }
-                ],
-
+                userToken: "U616533ccb2a96fde1b9650e5181e768e",
+                userApi: [],
+                accidentsApi: [],               
             }
-        }, methods: {
+        },
+        methods: {
             getAccidents() {
-                axios.get('/accident')
+                var url = '/api/accident/{userToken}'.replace('{userToken}', this.userToken);
+                axios.get(url)
                     .then((response) => {
                         this.accidentsApi = response.data;
                         console.log(this.accidentsApi);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getUser() {
+                var url = '/api/user/{userToken}'.replace('{userToken}', this.userToken);
+                axios.get(url)
+                    .then((response) => {
+                        this.userApi = response.data;
+                        console.log(this.userApi);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -103,6 +83,7 @@
         },
         mounted() {
             this.getAccidents();
+            this.getUser();
         }
 
 
@@ -216,7 +197,7 @@ p.p_right{
     }*/
         .accordion-link .ion-md-add {
             margin-bottom: 5px;
-            font-size: 1-px;
+            font-size: 10px;
         }
 
     .answer {

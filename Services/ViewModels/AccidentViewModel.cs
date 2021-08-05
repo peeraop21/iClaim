@@ -1,4 +1,5 @@
-﻿using DataAccess.EFCore.Models;
+﻿using DataAccess.EFCore.iPolicyModels;
+using DataAccess.EFCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace Services.ViewModels
     {
         public string EaTmpId { get; set; }
         public string EaAccNo { get; set; }
-        public DateTime? EaAccDate { get; set; }
+        public DateTime EaAccDate { get; set; }
+        public string stringAccDate { get; set; }
         public List<TbAccidentMasterLineCar> EaCar { get; set; }
         /*public string EaCarLicense { get; set; }
         public string EaPrefixVictim { get; set; }

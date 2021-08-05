@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Core.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccidentController : ControllerBase
     {
         private readonly IAccidentService accidentService;
@@ -19,10 +19,16 @@ namespace Core.Controllers
             this.accidentService = accidentService;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await accidentService.GetAccident());
+            return Ok();
+        }*/
+
+        [HttpGet("{userToken}")]
+        public async Task<IActionResult> Get(string userToken)
+        {
+            return Ok(await accidentService.GetAccident(userToken));
         }
     }
 }

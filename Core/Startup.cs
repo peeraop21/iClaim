@@ -1,3 +1,4 @@
+using DataAccess.EFCore.iPolicyModels;
 using DataAccess.EFCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,8 +36,11 @@ namespace Core
                 configuration.RootPath = "core-client-app/dist";
             });
             services.AddDbContext<RvpAccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("PVR")));
+            services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
