@@ -271,7 +271,7 @@
                 
                 <p class="mb-0">วันที่เกิดเหตุ</p>
                 <div class="mt-0" v-if="accData.eaAccDate != null">
-                    <p class="mb-0" style="color: grey">{{accData.eaAccDate}}</p><hr class="mt-0">
+                    <p class="mb-0" style="color: grey">{{accData.stringAccDate}}</p><hr class="mt-0">
                 </div>
                 <div class="mt-0" v-else-if="accData.eaAccDate === null">
                     <p class="mb-0" style="color: grey">-</p><hr class="mt-0">

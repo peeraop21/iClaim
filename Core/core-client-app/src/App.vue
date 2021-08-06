@@ -18,7 +18,7 @@ export default {
 <style>
 #app {
   font-family: Mitr;
-  font-family: 13px;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

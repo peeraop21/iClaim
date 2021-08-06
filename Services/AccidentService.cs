@@ -41,7 +41,8 @@ namespace Services
                 var result = new AccidentViewModel();
                 result.EaTmpId = acc.EaTmpId;
                 result.EaAccNo = acc.EaAccNo;
-                result.EaAccDate = acc.EaAccDate ?? DateTime.Now;                
+                result.EaAccDate = acc.EaAccDate ?? DateTime.Now;
+                result.stringAccDate = result.EaAccDate.ToString().Replace("12:00:00 AM", " ");
                 result.EaCar = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => acc.EaAccNo.Contains(w.EaAccNo)).ToListAsync();
                 accViewModel.Add(result);
             }

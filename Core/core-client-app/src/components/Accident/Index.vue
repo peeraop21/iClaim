@@ -18,7 +18,7 @@
                                         <p>
                                             <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.eaAccNo }}
                                             <br>
-                                            <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.eaAccDate }}
+                                            <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.stringAccDate }}
                                         </p>
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>

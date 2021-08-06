@@ -8,7 +8,7 @@
                     <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
                     <p>เลขบัตรประจำตัวประชาชน: {{userData.idcardNo}}</p>
                     <p v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : {{ car.eaCarLicense }}</p>
-                    <p>วันที่เกิดเหตุ : {{ accData.eaAccDate }}</p>
+                    <p>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</p>
                 </div>
                 <br>
                 <p class="p_right">สิทธิ์คงเหลือ: 10000 บาท</p>
