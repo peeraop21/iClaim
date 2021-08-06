@@ -7,8 +7,13 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueFormWizard from 'vue-form-wizard'
 import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-Vue.config.ignoredElements = [/^ion-/]
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
+
+
+Vue.config.ignoredElements = [/^ion-/]
+Vue.use(VueSweetalert2)
 Vue.use(VueFormWizard)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)

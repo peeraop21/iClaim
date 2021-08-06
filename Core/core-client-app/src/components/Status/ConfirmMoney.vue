@@ -24,13 +24,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" v-model="acceptR"   >
+                        <input class="form-check-input" type="checkbox" v-model="acceptR">
                         <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
                             ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
                         </p>
                     </div>
                 </div>
-                
+
             </div>
             <div class="row" v-if="acceptR">
                 <div id="app" class="container ">
@@ -42,9 +42,9 @@
                             <div class="card card-tel">
                                 <div class="position-icon mt-2">
                                     <ion-icon name="call-outline"></ion-icon>
-                                    <label class="lbl-tel">xxx-xxx-9898</label>     
-                                </div>  
-                            </div> 
+                                    <label class="lbl-tel">xxx-xxx-9898</label>
+                                </div>
+                            </div>
                             <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                         </div>
                     </div>
@@ -80,6 +80,9 @@
                 </div>
             </div>
         </div>
+        <b-modal id="modal-1" title="BootstrapVue">
+            <p class="my-4">Hello from modal!</p>
+        </b-modal>
     </div>
 </template>
 
@@ -113,7 +116,6 @@
 </style>
 
 <script>
-    
     //Your Javascript lives within the Script Tag
     export default {
         name: "ConfirmMoney",
