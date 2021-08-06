@@ -9,7 +9,7 @@
                     <br>
                 </div>
                 <div v-for="rights_receive in rights_receives" :key="rights_receive.id">
-                    <div class="txt">
+                    <div class="txt px-3">
     <li>
         <label class="purple-title" style="font-weight: bold">{{ rights_receive.medical_expenses }}</label>
     </li>

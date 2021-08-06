@@ -4,9 +4,20 @@
             <div class="col-12" align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
-                <div class="txt"  >
+                <!-- <div class="txt"  >
                     <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
                     <p>เลขประจำตัวประชาชน: {{userData.idcardNo}}</p>
+                </div> -->
+                <div class="tab-user">
+                    <div class="row">
+                        <div class="col-3 px-0">
+                            <img src="@/assets/kid.png" width="70px">
+                        </div>
+                        <div class="col-9 text-start mt-2 px-0">
+                            <span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br>
+                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span>
+                        </div>
+                    </div>
                 </div>
                 <section>
                     <div style="height: 80%; width: 100%;">
@@ -36,7 +47,7 @@
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
                                     <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.eaTmpId}}">ใช้สิทธิ์</router-link>
                                     <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -114,155 +125,188 @@ p.p_right{
     width: 90%;
 }
 .txt {
-  border-radius: 10px;
-  border: 1px solid #cccccc;
-  /*height: 300px; */
-  padding: 25px 25px 15px 25px; 
-  width: 100%;
-  text-align: left;
-  line-height: 10px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    /*height: 300px; */
+    padding: 25px 25px 15px 25px;
+    width: 100%;
+    text-align: left;
+    line-height: 15px;
+}
+.tab-user {
+    cursor: pointer;
+    position: relative;
+    padding: 1rem 1rem;
+    border-radius: 1rem;
+    line-height: 1.5rem;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #cccccc;
+    background-image: linear-gradient(-180deg, #f5f5f5 0%, #FFFFFF 50%);
+    box-shadow: 0 0rem 0.5rem 0 #f5f5f5 inset, 0 -0.25rem 1.5rem #f5f5f5 inset, 0 0.75rem 0.5rem #f5f5f5 inset, 0 0.2rem 0.5rem 0 #f1f1f1 inset;
 }
 
-    .mybtn {
-        position: center;
-        margin-left: 0px;
-        justify-content: space-between;
-        display: inline-block;
-    }
-
-
-    .btn-select {
-        background-color: #5c2e91;
-        margin-top: 10px;
-        margin-right: 0px;
-        width: 130px;
-        color: white;
-        padding: 3px 10px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        border-radius: 30px;
-        border: none;
-    }
-    a[class="btn-select"]:link, a[class="btn-select"]:visited {
-        background-color: #5c2e91;
-        margin-top: 10px;
-        margin-left: 10px;
-        color: white;
-        padding: 3px 15px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        border-radius: 30px;
-        /*font-size: 14px;*/
-    }
-
-    a[class="btn-select"]:hover, a[class="btn-select"]:active {
-        background-color: #a55ac4;
-    }
-
-    a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
-        background-color: #d775ff;
-        margin-top: 10px;
-        margin-left: 10px;
-        color: white;
-        padding: 3px 15px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        border-radius: 30px;
-        /*font-size: 14px;*/
-    }
-
-    a[class="btn-checked"]:hover, a[class="btn-checked"]:active {
-        background-color: #a55ac4;
-    }
-
-    section {
-        width: 100%;
-        height: 70%;
-        display: flex;
-        align-Items: center;
-        justify-content: center;
-        text-align: left;
-    }
-
-    .accordion-item {
-        background-color: white;
-        border-radius: .4rem;
-        border-color: #cccccc;
-        margin-bottom: .5rem;
-        padding: 1rem 1rem .5rem 1rem;
-        border-bottom: 3.5px solid #bbbbbb;
-    }
-
-    .accordion-link {
+    .tab-user.span {
         color: black;
-        background-color: white;
-        width: 100%;
-        display: flex;
-        align-Items: center;
-        justify-content: space-between;
-        padding: 0;
-        line-height: 25px;
+        background-image: linear-gradient(0deg, #FFFFFF 0%, #FFFFFF 10%);
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+
+    .tab-user::before {
+        content: "";
+        display: block;
+        height: 0.25rem;
+        position: absolute;
+        top: 0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 7.5rem);
+        background: #fff;
+        border-radius: 100%;
+        opacity: 0.8;
+        background-image: linear-gradient(-270deg, #EEEEEE 0%, #FFFFFF 20%, #FFFFFF 80%, #EEEEEE 100%);
+    }
+.mybtn {
+    position: center;
+    margin-left: 0px;
+    justify-content: space-between;
+    display: inline-block;
+}
+
+
+.btn-select {
+    background-color: #5c2e91;
+    margin-top: 10px;
+    margin-right: 0px;
+    width: 130px;
+    color: white;
+    padding: 3px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 30px;
+    border: none;
+}
+a[class="btn-select"]:link, a[class="btn-select"]:visited {
+    background-color: #5c2e91;
+    margin-top: 10px;
+    margin-left: 10px;
+    color: white;
+    padding: 3px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 30px;
+    /*font-size: 14px;*/
+}
+
+a[class="btn-select"]:hover, a[class="btn-select"]:active {
+    background-color: #a55ac4;
+}
+
+a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
+    background-color: #d775ff;
+    margin-top: 10px;
+    margin-left: 10px;
+    color: white;
+    padding: 3px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 30px;
+    /*font-size: 14px;*/
+}
+
+a[class="btn-checked"]:hover, a[class="btn-checked"]:active {
+    background-color: #a55ac4;
+}
+
+section {
+    width: 100%;
+    height: 70%;
+    display: flex;
+    align-Items: center;
+    justify-content: center;
+    text-align: left;
+}
+
+.accordion-item {
+    background-color: white;
+    border-radius: .4rem;
+    border-color: #cccccc;
+    margin-bottom: .5rem;
+    padding: 1rem 1rem .5rem 1rem;
+    border-bottom: 3.5px solid #bbbbbb;
+}
+
+.accordion-link {
+    color: black;
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-Items: center;
+    justify-content: space-between;
+    padding: 0;
+    line-height: 25px;
+    text-decoration: none;
+}
+
+    .accordion-link:hover {
         text-decoration: none;
+        color: #5c2e91;
     }
 
-        .accordion-link:hover {
-            text-decoration: none;
-            color: #5c2e91;
-        }
-
-        .accordion-link ion-icon {
-            color: #5c2e91;
-            padding: 0rem .5rem .1rem 0rem;
-            vertical-align: middle;
-            font-size: 15px;
-        }
-        /*.accordion-link .ion-md-remove {
-        display: none;
-    }*/
-        .accordion-link .ion-md-add {
-            margin-bottom: 5px;
-            font-size: 10px;
-        }
-
-    .answer {
-        max-height: 0;
-        overflow: hidden;
-        position: relative;
-        background-color: #eeeeee;
-        transition: max-height 650ms;
+    .accordion-link ion-icon {
+        color: #5c2e91;
+        padding: 0rem .5rem .1rem 0rem;
+        vertical-align: middle;
+        font-size: 15px;
+    }
+    /*.accordion-link .ion-md-remove {
+    display: none;
+}*/
+    .accordion-link .ion-md-add {
+        margin-bottom: 5px;
+        font-size: 15px;
     }
 
-        .answer::before {
-            content: "";
-            position: absolute;
-            width: .3rem;
-            height: 100%;
-            background-color: #5c2e91;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-        }
+.answer {
+    max-height: 0;
+    overflow: hidden;
+    position: relative;
+    background-color: #eeeeee;
+    transition: max-height 650ms;
+}
 
-        .answer p {
-            color: black;
-            padding: 0.7rem 0 0 2rem;
-        }
-
-    .accordion-item:target .answer {
-        max-height: 15rem;
+    .answer::before {
+        content: "";
+        position: absolute;
+        width: .3rem;
+        height: 100%;
+        background-color: #5c2e91;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
     }
 
-    .accordion-item:target .accordion-link .ion-md-add {
-        display: none;
+    .answer p {
+        color: black;
+        padding: 0.7rem 0 0 2rem;
     }
 
-    .box-container {
-        border-radius: 10px;
-        border: 1px solid #cccccc;
-        padding: 20px 20px 15px 20px;
-        text-align: left;
-    }
+.accordion-item:target .answer {
+    max-height: 15rem;
+}
+
+.accordion-item:target .accordion-link .ion-md-add {
+    display: none;
+}
+
+.box-container {
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    padding: 20px 20px 15px 20px;
+    text-align: left;
+}
 </style>
