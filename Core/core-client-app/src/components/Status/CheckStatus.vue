@@ -35,11 +35,11 @@
                                     อนุมัติจ่าย<br>
                                     โอนเงินแล้ว
                                     -->
-                                    <div class="verticalLine" style="margin-top: -5px;">
-                                    <li style="margin-left: -4px; color: #04c042">รับคำร้อง</li><br>
-                                    <li style="margin-left: -4px; margin-top: -5px; color: #04c042">ตรวจสอบเอกสาร</li><br>
-                                    <li style="margin-left: -4px; margin-top: -10px; color: #aaa"> อนุมัติจ่าย</li><br>
-                                    <li style="margin-left: -4px; margin-top: -15px; color: #aaa">โอนเงินแล้ว</li>
+                                    <div class="verticalLine" style="margin-top: -5px; ">
+                                    <li style="margin-left: -3px; color: #04c042">รับคำร้อง</li><br>
+                                    <li style="margin-left: -3px; margin-top: -15px; color: #04c042">ตรวจสอบเอกสาร</li><br>
+                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> อนุมัติจ่าย</li><br>
+                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa">โอนเงินแล้ว</li>
                                     </div>
                                 </div>
                                 <div style="text-align: center">
@@ -58,7 +58,7 @@
 
 <style>
 .verticalLine {
-  border-left: 2px solid #bbb;
+  border-left: 1px solid #bbb;
   margin-left: 25px;
 }
 </style>
