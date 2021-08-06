@@ -43,8 +43,8 @@
                                     </div>
                                 </div>
                                 <div style="text-align: center">
-                                    <a class="btn-select" href="\ClaimDetail">{{ msg }}</a>
-                                    <a class="btn-checked" href="\ConfirmMoney">{{ msg2 }}</a>
+                                    <router-link class="btn-select" to="/ClaimDetail">{{ msg }}</router-link>
+                                    <router-link class="btn-checked" to="/ConfirmMoney">{{ msg2 }}</router-link>
                                 </div>
                             </div>
                         </div>

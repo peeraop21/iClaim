@@ -44,7 +44,7 @@
             </div>
             <div>
                 <br>
-                <a class="btn-next" href="\Preview" >{{ msg }}</a>
+                <router-link class="btn-next" to="/Accident" >{{ msg }}</router-link>
             </div>
         </div>
     </div>

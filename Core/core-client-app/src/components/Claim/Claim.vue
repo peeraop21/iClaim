@@ -38,8 +38,9 @@
                     ข้าพเจ้ายินยอมรับผิดในความเสียหายที่เกิดขึ้นทั้งหมดแก่บริษัท
                 </p>
                 </div>
-                <div v-if="acceptClaim" class="mb-4">
-                    <a class="btn-next" style="margin-top: -20px; -ms-transform: translate(50%, 50%); transform: translate(50%, 50%);" href="\ConfirmOTP">ยืนยันส่งคำร้อง</a>
+                <div v-if="acceptClaim" class="mb-4"  align="center">
+                    <!--<r class="btn-next" style="margin-top: -20px; -ms-transform: translate(50%, 50%); transform: translate(50%, 50%);" to="/CheckStatus">ยืนยันส่งคำร้อง</r>-->
+                    <router-link class="btn-next" to="/ConfirmOTP">ยืนยันส่งคำร้อง</router-link>
                 </div>
             </div>
             <!-- <b-button class="mt-3" block @click="$bvModal.hide('bv-modal')">Close Me</b-button> -->
@@ -134,7 +135,7 @@
             <div>
                 <div class="box-container mt-3">
                     <p class="mb-0">ชื่อธนาคาร</p>
-                    <b-form-input class="mt-0" v-model="bank" placeholder=""></b-form-input>
+                    <b-form-input class="mt-0" v-model="bookbank" placeholder=""></b-form-input>
                     <p class="mb-0">ชื่อบัญชีธนาคาร</p>
                     <b-form-input class="mt-0" v-model="accountName" placeholder=""></b-form-input>
                     <p class="mb-0">เลขบัญชีธนาคาร</p>
@@ -399,7 +400,7 @@
                 </div>
                 <p class="mb-0">ชื่อธนาคาร</p>
                 <div class="mt-0" v-if="bank!=''">
-                    <p class="mb-0" style="color: grey">{{bank}}</p><hr class="mt-0">
+                    <p class="mb-0" style="color: grey">{{bookbank}}</p><hr class="mt-0">
                 </div>
                 <div class="mt-0" v-else-if="bank===''">
                     <p class="mb-0" style="color: grey">-</p><hr class="mt-0">
@@ -450,6 +451,7 @@
                 total_amount: 4200,
                 // --BookBank
                 bank: '',
+                bookbank: '',
                 accountName: '',
                 accountNumber: '',
                 phoneNumbers: [{ phone: "" }],
