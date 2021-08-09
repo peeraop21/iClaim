@@ -1,5 +1,5 @@
 ﻿using DataAccess.EFCore.iPolicyModels;
-using DataAccess.EFCore.Models;
+using DataAccess.EFCore.AccidentModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

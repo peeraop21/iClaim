@@ -1,5 +1,5 @@
+using DataAccess.EFCore.AccidentModels;
 using DataAccess.EFCore.iPolicyModels;
-using DataAccess.EFCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -29,13 +29,12 @@ namespace Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "core-client-app/dist";
+                configuration.RootPath = "core-client-app";
             });
-            services.AddDbContext<RvpAccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("PVR")));
+            services.AddDbContext<RvpaccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("RvpAccident")));
             services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
@@ -63,16 +62,9 @@ namespace Core
             app.UseSpa(spa =>
             {
                 if (env.IsDevelopment())
-                    spa.Options.SourcePath = "core-client-app/";
+                    spa.Options.SourcePath = "core-client-app";
                 else
                     spa.Options.SourcePath = "dist";
-                /* spa.Options.SourcePath = "ClientApp";
-
-                 if (env.IsDevelopment())
-                 {
-                     // Development requests are send through to local node server
-                     spa.UseProxyToSpaDevelopmentServer("http://localhost:8080/");
-                 }*/
 
                 if (env.IsDevelopment())
                 {

@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-#nullable disable
-
-namespace DataAccess.EFCore.Models
+namespace DataAccess.EFCore.AccidentModels
 {
-    public partial class RvpAccidentContext : DbContext
+    public partial class RvpaccidentContext : DbContext
     {
-        public RvpAccidentContext()
+        public RvpaccidentContext()
         {
         }
 
-        public RvpAccidentContext(DbContextOptions<RvpAccidentContext> options)
+        public RvpaccidentContext(DbContextOptions<RvpaccidentContext> options)
             : base(options)
         {
         }
@@ -24,8 +22,6 @@ namespace DataAccess.EFCore.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Thai_CI_AS");
-
             modelBuilder.Entity<TbAccidentMasterLine>(entity =>
             {
                 entity.HasNoKey();
@@ -33,145 +29,145 @@ namespace DataAccess.EFCore.Models
                 entity.ToTable("tb_AccidentMasterLine");
 
                 entity.Property(e => e.EaAccDate)
-                    .HasPrecision(3)
-                    .HasColumnName("ea_AccDate");
+                    .HasColumnName("ea_AccDate")
+                    .HasColumnType("datetime2(3)");
 
                 entity.Property(e => e.EaAccDistrict)
+                    .HasColumnName("ea_AccDistrict")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccDistrict");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccLatLong)
+                    .HasColumnName("ea_AccLatLong")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccLatLong");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccLatitude).HasColumnName("ea_AccLatitude");
 
                 entity.Property(e => e.EaAccLongitude).HasColumnName("ea_AccLongitude");
 
                 entity.Property(e => e.EaAccNature)
+                    .HasColumnName("ea_AccNature")
                     .HasMaxLength(2000)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccNature");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccNo)
+                    .HasColumnName("ea_AccNo")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccNoEclaim)
+                    .HasColumnName("ea_AccNoEclaim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccNoEclaim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccPlace)
+                    .HasColumnName("ea_AccPlace")
                     .HasMaxLength(2000)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccPlace");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccPrefecture)
+                    .HasColumnName("ea_AccPrefecture")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccPrefecture");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccProvince)
+                    .HasColumnName("ea_AccProvince")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccProvince");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccTime)
+                    .HasColumnName("ea_AccTime")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccTime");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccTypeCase)
+                    .HasColumnName("ea_AccTypeCase")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccTypeCase");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccTypeGroup)
+                    .HasColumnName("ea_AccTypeGroup")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccTypeGroup");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAccZoom).HasColumnName("ea_AccZoom");
 
                 entity.Property(e => e.EaBranchId)
+                    .HasColumnName("ea_BranchID")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_BranchID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaInformDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_InformDate");
+                    .HasColumnName("ea_InformDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaInformTime)
+                    .HasColumnName("ea_InformTime")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_InformTime");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaInputChannel)
+                    .HasColumnName("ea_InputChannel")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_InputChannel");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaInsertDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_InsertDate");
+                    .HasColumnName("ea_InsertDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaInsertIp)
+                    .HasColumnName("ea_InsertIP")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_InsertIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaLastUpdate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_LastUpdate");
+                    .HasColumnName("ea_LastUpdate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaStatus).HasColumnName("ea_Status");
 
                 entity.Property(e => e.EaStatusCancelBy)
+                    .HasColumnName("ea_StatusCancelBy")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_StatusCancelBy");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaStatusCancelDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_StatusCancelDate");
+                    .HasColumnName("ea_StatusCancelDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaStatusCancelIp)
+                    .HasColumnName("ea_StatusCancelIP")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_StatusCancelIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaTmpId)
                     .IsRequired()
+                    .HasColumnName("ea_TmpID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_TmpID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUpdateBy)
+                    .HasColumnName("ea_UpdateBy")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UpdateBy");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUpdateIp)
+                    .HasColumnName("ea_UpdateIP")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UpdateIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUserId)
+                    .HasColumnName("ea_UserID")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UserID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Kycno).HasColumnName("KYCNo");
 
                 entity.Property(e => e.TokenId)
+                    .HasColumnName("TokenID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("TokenID");
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TbAccidentMasterLineCar>(entity =>
@@ -181,182 +177,182 @@ namespace DataAccess.EFCore.Models
                 entity.ToTable("tb_AccidentMasterLineCar");
 
                 entity.Property(e => e.EaAccNo)
+                    .HasColumnName("ea_AccNo")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AccNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarBand)
+                    .HasColumnName("ea_CarBand")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarBand");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarCancelDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_CarCancelDate");
+                    .HasColumnName("ea_CarCancelDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCarCancelStatus).HasColumnName("ea_CarCancelStatus");
 
                 entity.Property(e => e.EaCarColor)
+                    .HasColumnName("ea_CarColor")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarColor");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarCushiNo)
+                    .HasColumnName("ea_CarCushiNo")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarCushiNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFirstName)
+                    .HasColumnName("ea_CarFirstName")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFirstName");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundCarBrand)
+                    .HasColumnName("ea_CarFoundCarBrand")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundCarBrand");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundCarLicense)
+                    .HasColumnName("ea_CarFoundCarLicense")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundCarLicense");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundCarProv)
+                    .HasColumnName("ea_CarFoundCarProv")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundCarProv");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundCarType)
+                    .HasColumnName("ea_CarFoundCarType")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundCarType");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundChassisNo)
+                    .HasColumnName("ea_CarFoundChassisNo")
                     .HasMaxLength(40)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundChassisNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundEffDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_CarFoundEffDate");
+                    .HasColumnName("ea_CarFoundEffDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCarFoundEnginesize).HasColumnName("ea_CarFoundEnginesize");
 
                 entity.Property(e => e.EaCarFoundExpDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_CarFoundExpDate");
+                    .HasColumnName("ea_CarFoundExpDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCarFoundInsId)
+                    .HasColumnName("ea_CarFoundInsId")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundInsId");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarFoundPolicyNo)
+                    .HasColumnName("ea_CarFoundPolicyNo")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarFoundPolicyNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarGroup)
+                    .HasColumnName("ea_CarGroup")
                     .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarGroup");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarInsertBy)
+                    .HasColumnName("ea_CarInsertBy")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarInsertBy");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarInsertDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_CarInsertDate");
+                    .HasColumnName("ea_CarInsertDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCarInsertIp)
+                    .HasColumnName("ea_CarInsertIP")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarInsertIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarLastUpdate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_CarLastUpdate");
+                    .HasColumnName("ea_CarLastUpdate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCarLicense)
+                    .HasColumnName("ea_CarLicense")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarLicense");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarModel)
+                    .HasColumnName("ea_CarModel")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarModel");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarNo).HasColumnName("ea_CarNo");
 
                 entity.Property(e => e.EaCarPolNo)
+                    .HasColumnName("ea_CarPolNo")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarPolNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarProv)
+                    .HasColumnName("ea_CarProv")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarProv");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarSearchStatus)
+                    .HasColumnName("ea_CarSearchStatus")
                     .HasMaxLength(1)
                     .IsUnicode(false)
-                    .HasColumnName("ea_CarSearchStatus")
-                    .IsFixedLength(true);
+                    .IsFixedLength();
 
                 entity.Property(e => e.EaCarSurName)
+                    .HasColumnName("ea_CarSurName")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarSurName");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarTitleName)
+                    .HasColumnName("ea_CarTitleName")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarTitleName");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarType)
+                    .HasColumnName("ea_CarType")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarType");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarUpdateBy)
+                    .HasColumnName("ea_CarUpdateBy")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarUpdateBy");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCarUpdateIp)
+                    .HasColumnName("ea_CarUpdateIP")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CarUpdateIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaStatusNotCar)
-                    .HasMaxLength(2)
-                    .HasColumnName("ea_StatusNotCar");
+                    .HasColumnName("ea_StatusNotCar")
+                    .HasMaxLength(2);
 
                 entity.Property(e => e.EaStatusNotCarInt)
+                    .HasColumnName("ea_StatusNotCarInt")
                     .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_StatusNotCarInt");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaTmpId)
+                    .HasColumnName("ea_TmpID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_TmpID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUserId)
+                    .HasColumnName("ea_UserID")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UserID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Kycno).HasColumnName("KYCNO");
 
                 entity.Property(e => e.TokenId)
+                    .HasColumnName("TokenID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("TokenID");
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TbAccidentMasterLineVictim>(entity =>
@@ -366,219 +362,219 @@ namespace DataAccess.EFCore.Models
                 entity.ToTable("tb_AccidentMasterLineVictim");
 
                 entity.Property(e => e.EaAccno)
+                    .HasColumnName("ea_Accno")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_Accno");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAddressVictim)
+                    .HasColumnName("ea_AddressVictim")
                     .HasMaxLength(300)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AddressVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaAgeVictim).HasColumnName("ea_AgeVictim");
 
                 entity.Property(e => e.EaAmphurVictim)
+                    .HasColumnName("ea_AmphurVictim")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_AmphurVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaBirthday)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_Birthday");
+                    .HasColumnName("ea_Birthday")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaBrokenDetail)
+                    .HasColumnName("ea_BrokenDetail")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_BrokenDetail");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaBrokenVictim)
+                    .HasColumnName("ea_BrokenVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_BrokenVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaCancelDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_CancelDate");
+                    .HasColumnName("ea_CancelDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCarNo).HasColumnName("ea_CarNo");
 
                 entity.Property(e => e.EaChangwatVictim)
+                    .HasColumnName("ea_ChangwatVictim")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_ChangwatVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaConfirmed)
+                    .HasColumnName("ea_confirmed")
                     .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_confirmed");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaConfirmedby)
+                    .HasColumnName("ea_confirmedby")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_confirmedby");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaConfirmeddate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_confirmeddate");
+                    .HasColumnName("ea_confirmeddate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaCountryVictim)
+                    .HasColumnName("ea_CountryVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_CountryVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaDateDead)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_DateDead");
+                    .HasColumnName("ea_DateDead")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaDeadNo)
+                    .HasColumnName("ea_DeadNo")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_DeadNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaFnameVictim)
+                    .HasColumnName("ea_FnameVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_FnameVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaForeign).HasColumnName("ea_Foreign");
 
                 entity.Property(e => e.EaHosRecDateTime)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_HosRecDateTime");
+                    .HasColumnName("ea_HosRecDateTime")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaIdCardType)
+                    .HasColumnName("ea_IdCardType")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_IdCardType");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaIdCardVictim)
+                    .HasColumnName("ea_IdCardVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_IdCardVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaInsertBy)
+                    .HasColumnName("ea_InsertBy")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_InsertBy");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaInsertDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_InsertDate");
+                    .HasColumnName("ea_InsertDate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaInsertIp)
+                    .HasColumnName("ea_InsertIP")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_InsertIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaLastUpdate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("ea_LastUpdate");
+                    .HasColumnName("ea_LastUpdate")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.EaLnameVictim)
+                    .HasColumnName("ea_LnameVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_LnameVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaMooVictim)
+                    .HasColumnName("ea_MooVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_MooVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaNationalityId)
+                    .HasColumnName("ea_NationalityId")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_NationalityId");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaPhoneNumber)
+                    .HasColumnName("ea_PhoneNumber")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_PhoneNumber");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaPrefixVictim)
+                    .HasColumnName("ea_PrefixVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_PrefixVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaReferChangwat)
+                    .HasColumnName("ea_ReferChangwat")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_ReferChangwat");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaReferCountry)
+                    .HasColumnName("ea_ReferCountry")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_ReferCountry");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaReferHospital)
+                    .HasColumnName("ea_ReferHospital")
                     .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_ReferHospital");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaRoadVictim)
+                    .HasColumnName("ea_RoadVictim")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_RoadVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaSexVictim)
+                    .HasColumnName("ea_SexVictim")
                     .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_SexVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaSoiVictim)
+                    .HasColumnName("ea_SoiVictim")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_SoiVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaStatusCancel).HasColumnName("ea_StatusCancel");
 
                 entity.Property(e => e.EaStatusVictim)
+                    .HasColumnName("ea_StatusVictim")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_StatusVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaTmpId)
+                    .HasColumnName("ea_TmpID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_TmpID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaTumbolVictim)
+                    .HasColumnName("ea_TumbolVictim")
                     .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_TumbolVictim");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUpdateBy)
+                    .HasColumnName("ea_UpdateBy")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UpdateBy");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUpdateIp)
+                    .HasColumnName("ea_UpdateIP")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UpdateIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaUserId)
+                    .HasColumnName("ea_UserID")
                     .HasMaxLength(36)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_UserID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaVictimId)
+                    .HasColumnName("ea_VictimId")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_VictimId");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EaVictimNo).HasColumnName("ea_VictimNo");
 
                 entity.Property(e => e.EaVictimType)
+                    .HasColumnName("ea_VictimType")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("ea_VictimType");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Kycno).HasColumnName("KYCNO");
 
                 entity.Property(e => e.TokenId)
+                    .HasColumnName("TokenID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("TokenID");
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

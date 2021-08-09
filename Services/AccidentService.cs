@@ -1,5 +1,5 @@
 ﻿using DataAccess.EFCore.iPolicyModels;
-using DataAccess.EFCore.Models;
+using DataAccess.EFCore.AccidentModels;
 using Microsoft.EntityFrameworkCore;
 using Services.ViewModels;
 using System;
@@ -20,10 +20,10 @@ namespace Services
 
     public class AccidentService : IAccidentService
     {
-        private readonly RvpAccidentContext rvpAccidentContext;
+        private readonly RvpaccidentContext rvpAccidentContext;
         private readonly IpolicyContext ipolicyContext;
 
-        public AccidentService(RvpAccidentContext rvpAccidentContext, IpolicyContext ipolicyContext)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;

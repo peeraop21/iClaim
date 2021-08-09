@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace DataAccess.EFCore.iPolicyModels
 {
     public partial class DirectPolicyKyc

@@ -3,8 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-#nullable disable
-
 namespace DataAccess.EFCore.iPolicyModels
 {
     public partial class IpolicyContext : DbContext
@@ -22,8 +20,6 @@ namespace DataAccess.EFCore.iPolicyModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Thai_CI_AS");
-
             modelBuilder.Entity<DirectPolicyKyc>(entity =>
             {
                 entity.HasKey(e => e.Kycno);
@@ -31,58 +27,58 @@ namespace DataAccess.EFCore.iPolicyModels
                 entity.ToTable("DirectPolicy_KYC");
 
                 entity.Property(e => e.Kycno)
-                    .ValueGeneratedNever()
-                    .HasColumnName("KYCNo");
+                    .HasColumnName("KYCNo")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.CurrentAddrIsHomeAddr)
                     .HasMaxLength(1)
                     .IsUnicode(false)
-                    .IsFixedLength(true);
+                    .IsFixedLength();
 
                 entity.Property(e => e.CurrentBuildingName)
+                    .HasColumnName("Current_BuildingName")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_BuildingName");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentCityId)
+                    .HasColumnName("Current_CityID")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_CityID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentHmo)
+                    .HasColumnName("Current_HMO")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_HMO");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentHouseNo)
+                    .HasColumnName("Current_HouseNo")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_HouseNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentProvinceId)
+                    .HasColumnName("Current_ProvinceID")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_ProvinceID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentRoad)
+                    .HasColumnName("Current_Road")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_Road");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentSoi)
+                    .HasColumnName("Current_Soi")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_Soi");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentTumbolId)
+                    .HasColumnName("Current_TumbolID")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_TumbolID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CurrentZipcode)
+                    .HasColumnName("Current_Zipcode")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("Current_Zipcode");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.DateofBirth).HasColumnType("datetime");
 
@@ -97,78 +93,78 @@ namespace DataAccess.EFCore.iPolicyModels
                 entity.Property(e => e.Gender)
                     .HasMaxLength(1)
                     .IsUnicode(false)
-                    .IsFixedLength(true);
+                    .IsFixedLength();
 
                 entity.Property(e => e.HashData)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
                 entity.Property(e => e.HomeBuildingName)
+                    .HasColumnName("Home_BuildingName")
                     .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_BuildingName");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeCityId)
+                    .HasColumnName("Home_CityID")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_CityID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeHmo)
+                    .HasColumnName("Home_HMO")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_HMO");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeHouseNo)
+                    .HasColumnName("Home_HouseNo")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_HouseNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeProvinceId)
+                    .HasColumnName("Home_ProvinceID")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_ProvinceID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeRoad)
+                    .HasColumnName("Home_Road")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_Road");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeSoi)
+                    .HasColumnName("Home_Soi")
                     .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_Soi");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeTumbolId)
+                    .HasColumnName("Home_TumbolID")
                     .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_TumbolID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.HomeZipcode)
+                    .HasColumnName("Home_Zipcode")
                     .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .HasColumnName("Home_Zipcode");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.IdcardLaserCode)
+                    .HasColumnName("IDCardLaserCode")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("IDCardLaserCode");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.IdcardNo)
+                    .HasColumnName("IDCardNo")
                     .HasMaxLength(13)
-                    .IsUnicode(false)
-                    .HasColumnName("IDCardNo");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.LastUpdateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.LastUpdateIp)
+                    .HasColumnName("LastUpdateIP")
                     .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("LastUpdateIP");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.LineId)
+                    .HasColumnName("LineID")
                     .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("LineID");
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Lname)
                     .HasMaxLength(200)
@@ -185,7 +181,7 @@ namespace DataAccess.EFCore.iPolicyModels
                 entity.Property(e => e.Status)
                     .HasMaxLength(1)
                     .IsUnicode(false)
-                    .IsFixedLength(true);
+                    .IsFixedLength();
             });
 
             OnModelCreatingPartial(modelBuilder);

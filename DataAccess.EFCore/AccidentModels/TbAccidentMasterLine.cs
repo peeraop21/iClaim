@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-#nullable disable
-
-namespace DataAccess.EFCore.Models
+namespace DataAccess.EFCore.AccidentModels
 {
     public partial class TbAccidentMasterLine
     {
