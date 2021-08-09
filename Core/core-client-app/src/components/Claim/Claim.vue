@@ -58,15 +58,13 @@
                         <!--<input type="file" name="filename">-->
                         <file-pond name="idCardFile"
                                    ref="pond"
-                                   label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน..."
+                                   label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน"
                                    credits="null"
                                    v-bind:allow-multiple="false"
                                    v-bind:allowFileEncode="true"
                                    accepted-file-types="image/jpeg, image/png"
                                    v-bind:files="idCardFile"
-                                   v-on:addfile="handleOnaddfile"
-
-                                    />
+                                   v-on:addfile="onAddIdCardFile" />
                         <!--<input type="submit"> -->
                     </div>
                 </div>
@@ -74,32 +72,28 @@
                 <div class="box-container">
 
                     <div v-for="(input, index) in bills" :key="`Bill-${index}`" class="input wrapper flex items-center">
-                        <a @click="getIt()">CLICKER</a>
-                        <div v-if="!image">
-                            <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                            <!--<input type="file" @change="onFileChange">-->
-                            <file-pond name="billsFile"
-                                       ref="pond"
-                                       label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน..."
-                                       v-bind:allow-multiple="false"
-                                       accepted-file-types="image/jpeg, image/png"
-                                       v-bind:files="billsFile"
-                                       v-on:addfile="handleOnaddfile" />
-                        </div>
 
-                        <div v-else>
-                            <img :src="image" />
-                            <button @click="removeImage">Remove image</button>
-                        </div>
+                        <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                        <!--<input type="file" @change="onFileChange">-->
+                        <file-pond name="billsFile"
+                                   ref="pond"
+                                   credits="null"
+                                   label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
+                                   v-bind:allow-multiple="false"
+                                   accepted-file-types="image/jpeg, image/png"
+                                   v-bind:files="billsFile"
+                                   v-on:addfile="onAddBillsFile"
+                                   v-model="input.file" />
+
                         <br>
-                        <p class="mb-0">โรงพยาบาล</p>
-                        <input v-model="input.hospital" type="text" class="h-10 rounded-lg outline-none" placeholder="" />
-                        <p class="mb-0">เลขที่ใบเสร็จ</p>
-                        <input v-model="input.billNo" type="text" class="h-10 rounded-lg outline-none" placeholder="" />
-                        <p class="mb-0">จำนวนเงิน</p>
-                        <input v-model="input.money" type="number" class="h-10 rounded-lg outline-none" placeholder="" />
-                        <p class="mb-0">เข้ารักษาวันที่</p>
-                        <input v-model="input.hospitalized_date" type="date" class="h-10 rounded-lg outline-none" placeholder="" />
+                        <label class="mb-1">โรงพยาบาล</label>
+                        <b-form-input v-model="input.hospital" type="text" placeholder="" />
+                        <label class="mb-1">เลขที่ใบเสร็จ</label>
+                        <b-form-input v-model="input.billNo" type="text"  placeholder="" />
+                        <label class="mb-1">จำนวนเงิน</label>
+                        <b-form-input v-model="input.money" type="number"  placeholder="" @change="calMoney"/>
+                        <label class="mb-1">เข้ารักษาวันที่</label>
+                        <b-form-input v-model="input.hospitalized_date" type="date"  placeholder="" />
                         <br>
                         <!-- Add Svg Icon-->
                         <p style="color: green">
@@ -120,7 +114,7 @@
                              viewBox="0 0 30 30"
                              width="30"
                              height="30"
-                             class="ml-2 cursor-pointer"
+                             class="ml-2 cursor-pointer mb-2"
                              style="margin-top: -10px;">
                             <path fill="none" d="M0 0h24v24H0z" />
                             <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
@@ -137,20 +131,28 @@
         <!-- บัญชีรับเงิน -->
         <tab-content title="บัญชีรับเงิน" icon="ti ti-money">
             <div>
-                <form>
-                    <div class="form-group ">
-                        <p for="my-file" align="left">ภาพถ่ายหน้าสมุดบัญชีธนาคาร</p>
-                        <input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file" style="margin-top: -10px">
-                        <div class="border p-2 mt-2">
-                            <p align="left">ภาพถ่ายที่เลือก:</p>
-                            <template v-if="preview">
-                                <img :src="preview" class="img-fluid" style="width: 30%" />
-                                <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
-                                <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
-                            </template>
-                        </div>
-                    </div>
-                </form>
+
+                <div class="form-group ">
+                    <p for="my-file" align="left">ภาพถ่ายหน้าสมุดบัญชีธนาคาร</p>
+                    <file-pond name="bankFile"
+                               ref="pond"
+                               credits="null"
+                               label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
+                               v-bind:allow-multiple="false"
+                               accepted-file-types="image/jpeg, image/png"
+                               v-bind:files="bankFile"
+                               v-on:addfile="onAddBankAccountFile" />
+                    <!--<input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file" style="margin-top: -10px">
+                    <div class="border p-2 mt-2">
+                        <p align="left">ภาพถ่ายที่เลือก:</p>
+                        <template v-if="preview">
+                            <img :src="preview" class="img-fluid" style="width: 30%" />-->
+                    <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
+                    <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
+                    <!--</template>
+                    </div>-->
+                </div>
+
                 <div>
                     <div class="box-container mt-3">
                         <p class="mb-0">ชื่อธนาคาร</p>
@@ -392,18 +394,29 @@
                     <p class="mb-0" style="color: grey">-</p>
                     <hr class="mt-0">
                 </div>
-                <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
-                <file-pond name="billsFile" allowImagePreview="true" />
-                <div v-for="bill in bills" :key="bill.billNo">
+                <div class="card-bill">
+                    <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
+                    <div v-if="idCardFileDisplay" align="center">
+                        <img class="img-show" :src="idCardFileDisplay.base64" />
+                        <br />
+                        <label>{{idCardFileDisplay.filename}}</label>
+                    </div>
+                </div>
+                <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
                     <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                    <div class="mt-0" v-if="bill.choose_file!=''">
-                        <p class="mb-0" style="color: grey">{{bill.choose_file}}</p>
+                    <div v-if="bill.BillfileShow" align="center">
+                        <img class="img-show" :src="bill.BillfileShow" />
+                        <br />
+                        <label>{{bill.filename}}</label>
+                    </div>
+                    <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
+                        <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bill.choose_file===''">
+                    <div class="mt-0" v-else-if="bill.BillfileShow===''">
                         <p class="mb-0" style="color: grey">-</p>
                         <hr class="mt-0">
-                    </div>
+                    </div>-->
                     <p class="mb-0">ชื่อโรงพยาบาล</p>
                     <div class="mt-0" v-if="bill.hospital!=''">
                         <p class="mb-0" style="color: grey">{{bill.hospital}}</p>
@@ -458,14 +471,20 @@
             </div>
             <div class="box-container mb-3">
                 <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
-                <div class="mt-0" v-if="image.name!=''">
+
+                <div v-if="bankFileDisplay" align="center">
+                    <img class="img-show" :src="bankFileDisplay.base64" />
+                    <br />
+                    <label>{{bankFileDisplay.filename}}</label>
+                </div>
+                <!--<div class="mt-0" v-if="bankFileShow!=''">
                     <p class="mb-0" style="color: grey">{{image.name}}</p>
                     <hr class="mt-0">
                 </div>
-                <div class="mt-0" v-if="image.name!=''">
+                <div class="mt-0" v-if="bankFileShow === ''">
                     <p class="mb-0" style="color: grey">-</p>
                     <hr class="mt-0">
-                </div>
+                </div>-->
                 <p class="mb-0">ชื่อธนาคาร</p>
                 <div class="mt-0" v-if="bank!=''">
                     <p class="mb-0" style="color: grey">{{bookbank}}</p>
@@ -542,8 +561,8 @@
                 // ---Bill
                 injuri: '',
                 patientType: '',
-                bills: [{ billNo: "", hospital: "", bill_no: "", money: "", hospitalized_date: "", choose_file: "" }],
-                total_amount: 4200,
+                bills: [{ billNo: "", hospital: "", bill_no: "", money: "", hospitalized_date: "", file: "", BillfileShow: "", filename: "" }],
+                total_amount: null,
                 // --BookBank
                 bank: '',
                 bookbank: '',
@@ -562,21 +581,47 @@
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 idCardFile: null,
-                billsFile: null
+                billsFile: null,
+                bankFile: null,
+                idCardFileDisplay: { file: null, filename: "", base64: "" },
+                bankFileDisplay: { file: null, filename: "", base64: "" }
+
             };
         },
 
         methods: {
-           
-            handleOnaddfile: function (error, file) {
-                
-                console.log(file);
-                console.log(this.idCardFile)
-            },
-            getIt: function () {
-                console.log(this.$refs.pond.getFiles());
-            },
 
+            onAddIdCardFile: function (error, file) {
+                this.idCardFileDisplay.file = file
+                this.idCardFileDisplay.filename = file.filename
+                this.idCardFileDisplay.base64 = file.getFileEncodeDataURL()
+                console.log(this.file)
+
+            },
+            onAddBillsFile: function (error, file) {
+                var index = this.bills.length - 1
+                this.bills[index].BillfileShow = file.getFileEncodeDataURL()
+                this.bills[index].filename = file.filename
+                console.log(this.bills)
+            },
+            onAddBankAccountFile: function (error, file) {
+                this.bankFileDisplay.file = file
+                this.bankFileDisplay.filename = file.filename
+                this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
+                console.log(this.file)
+            },
+            //getIt: function () {
+            //    console.log(this.$refs.pond.getFiles());
+            //},
+            calMoney() {
+                let sum = 0;
+                for (let i = 0; i < this.bills.length; i++) {
+                    
+                    sum = sum + parseInt(this.bills[i].money)
+                }
+                this.total_amount = sum
+
+            },
 
             addField(value, fieldType) {
                 fieldType.push({ value: "" });
@@ -611,6 +656,7 @@
                     var reader = new FileReader();
                     reader.onload = (e) => {
                         this.preview = e.target.result;
+                        console.log(this.preview)
                     }
                     this.image = input.files[0];
                     reader.readAsDataURL(input.files[0]);
@@ -630,6 +676,46 @@
 </script>
 
 <style>
+    input[type=number] {
+        width: 100%;
+        padding: 0px 5px;
+        margin: 0px 0px;
+        box-sizing: border-box;
+        border: 2px solid #bbbbbb;
+        border-radius: 4px;
+        margin-top: -5px;
+        margin-bottom: 10px;
+    }
+    input[type=date] {
+        width: 100%;
+        padding: 0px 5px;
+        margin: 0px 0px;
+        box-sizing: border-box;
+        border: 2px solid #bbbbbb;
+        border-radius: 4px;
+        margin-top: -5px;
+        margin-bottom: 10px;
+    }
+    .img-show {
+        margin: 5px;
+        width: 30%;
+    }
+
+    .card-file {
+        border: 1px dashed gray;
+        opacity: 0.80;
+        border-radius: 10px;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    .card-bill {
+        border: 1px solid #cccccc;
+        border-radius: 10px;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
     #bv-modal {
         font-family: "Mitr";
     }
