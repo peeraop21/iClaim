@@ -4,11 +4,18 @@
             <div class="col-12" align="center">
                 <h2 id="header2">สิทธิ์การรักษาเบื้องต้น</h2>
                 <br>
-                <div align="left" class="txt">
-                    <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
-                    <p>เลขบัตรประจำตัวประชาชน: {{userData.idcardNo}}</p>
-                    <p v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : {{ car.eaCarLicense }}</p>
-                    <p>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</p>
+                <div class="tab-user">
+                    <div class="row">
+                        <div class="col-3 mt-2 px-0">
+                            <img src="@/assets/kid.png" width="70px">
+                        </div>
+                        <div class="col-9 text-start px-0">
+                            <span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
+                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />
+                            <span v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : {{ car.eaCarLicense }}</span><br />
+                            <span>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</span>
+                        </div>
+                    </div>
                 </div>
                 <br>
                 <p class="p_right">สิทธิ์คงเหลือ: 10000 บาท</p>
