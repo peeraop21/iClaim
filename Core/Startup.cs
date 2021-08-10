@@ -32,7 +32,7 @@ namespace Core
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "core-client-app";
+                configuration.RootPath = "core-client-app/dist";
             });
             services.AddDbContext<RvpaccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("RvpAccident")));
             services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
@@ -62,7 +62,7 @@ namespace Core
             app.UseSpa(spa =>
             {
                 if (env.IsDevelopment())
-                    spa.Options.SourcePath = "core-client-app";
+                    spa.Options.SourcePath = "core-client-app/";
                 else
                     spa.Options.SourcePath = "dist";
 

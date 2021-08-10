@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin, CalendarPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueFormWizard from 'vue-form-wizard'
@@ -24,7 +24,9 @@ Vue.use(Vuesax, {
 })
 import 'material-icons/iconfont/material-icons.css';
 
+
 Vue.config.ignoredElements = [/^ion-/]
+Vue.use(CalendarPlugin)
 Vue.use(VueSweetalert2)
 Vue.use(VueFormWizard)
 Vue.use(BootstrapVue)
