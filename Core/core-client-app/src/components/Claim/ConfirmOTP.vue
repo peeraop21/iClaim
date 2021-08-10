@@ -126,7 +126,8 @@
     export default {
         data: function() {
             return {
-            msg: 'ยืนยันการส่งคำร้อง'
+                msg: 'ยืนยันการส่งคำร้อง',
+                accData: this.$store.getters.accGetter(this.$route.params.id),
             };
         },
         

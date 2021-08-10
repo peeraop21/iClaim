@@ -39,7 +39,7 @@
                 </div>
                 <div v-if="acceptClaim" class="mb-4" align="center">
                     <!--<r class="btn-next" style="margin-top: -20px; -ms-transform: translate(50%, 50%); transform: translate(50%, 50%);" to="/CheckStatus">ยืนยันส่งคำร้อง</r>-->
-                    <router-link class="btn-next" to="/ConfirmOTP">ยืนยันส่งคำร้อง</router-link>
+                    <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.eaTmpId}}">ยืนยันส่งคำร้อง</router-link>
                 </div>
             </div>
             <!-- <b-button class="mt-3" block @click="$bvModal.hide('bv-modal')">Close Me</b-button> -->
