@@ -93,7 +93,19 @@
                         <label class="mb-1">จำนวนเงิน</label>
                         <b-form-input v-model="input.money" type="number"  placeholder="" @change="calMoney"/>
                         <label class="mb-1">เข้ารักษาวันที่</label>
-                        <b-form-input v-model="input.hospitalized_date" type="date"  placeholder="" />
+                        <b-form-datepicker 
+                                           v-model="input.hospitalized_date" 
+                                           selected-variant="primary" 
+                                           label-selected=""
+                                           label-no-date-selected=""
+                                           :close-button="true" 
+                                           :label-help="null"
+                                           label-close-button="ปิด"
+                                           :today-button="true" 
+                                           label-today-button="เลือกวันปัจจุบัน" 
+                                           :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" 
+                                           size="sm"
+                                           class="mb-2 " locale="th" placeholder="เลือกวันที่เข้ารักษา"></b-form-datepicker>
                         <br>
                         <!-- Add Svg Icon-->
                         <p style="color: green">
@@ -410,13 +422,13 @@
                         <label>{{bill.filename}}</label>
                     </div>
                     <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
-                        <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="bill.BillfileShow===''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>-->
+            <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
+            <hr class="mt-0">
+        </div>
+        <div class="mt-0" v-else-if="bill.BillfileShow===''">
+            <p class="mb-0" style="color: grey">-</p>
+            <hr class="mt-0">
+        </div>-->
                     <p class="mb-0">ชื่อโรงพยาบาล</p>
                     <div class="mt-0" v-if="bill.hospital!=''">
                         <p class="mb-0" style="color: grey">{{bill.hospital}}</p>
@@ -462,7 +474,8 @@
                 </div>
 
                 <p class="mb-0">รวมเงินที่ขอเบิก</p>
-                <input type="text" id="input_border_bottom" placeholder="" readonly />
+                <p class="mb-0" style="color: grey">{{total_amount}}</p>
+                <hr class="mt-0">
             </div>
             <!-- บัญชี -->
             <div align="left" style="width: 100%;">
@@ -696,6 +709,15 @@
         margin-top: -5px;
         margin-bottom: 10px;
     }
+    .b-form-btn-label-control.form-control {
+        border: 2px solid #bbbbbb;
+        border-radius: 4px;
+    }
+        .b-form-btn-label-control.form-control > .dropdown-menu {
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+        }
+    
     .img-show {
         margin: 5px;
         width: 30%;
