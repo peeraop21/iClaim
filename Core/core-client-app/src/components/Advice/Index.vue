@@ -23,11 +23,11 @@
             </div>
         </div>
     </div>-->
-        <div align="left">
-            <label class="title-advice-menu">แนะนำสิทธิ์และขั้นตอนการดำเนินการ</label>
+        <div align="center">
+            <h2 id="header2">แนะนำสิทธิ์และขั้นตอนการดำเนินการ</h2>
             <br>
         </div>
-        <div class="row mb-2" @click="active=!active">
+        <div class="row mb-2 mt-2" @click="active=!active">
             <div class="col-12">
                 <vs-card type="3" align="center">
                     <!-- <template #title>
