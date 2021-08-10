@@ -1,6 +1,6 @@
 ﻿<template>
     <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="$bvModal.show('bv-modal')">
-
+       
         <b-modal id="bv-modal" hide-footer>
             <template #modal-title>
                 คำรับรอง
@@ -83,27 +83,26 @@
                                    accepted-file-types="image/jpeg, image/png"
                                    v-bind:files="billsFile"
                                    v-on:addfile="onAddBillsFile"
-                                   v-model="input.file" />
+                                   v-model="input.file"  />
 
                         <br>
                         <label class="mb-1">โรงพยาบาล</label>
                         <b-form-input v-model="input.hospital" type="text" placeholder="" />
                         <label class="mb-1">เลขที่ใบเสร็จ</label>
-                        <b-form-input v-model="input.billNo" type="text"  placeholder="" />
+                        <b-form-input v-model="input.billNo" type="text" placeholder="" />
                         <label class="mb-1">จำนวนเงิน</label>
-                        <b-form-input v-model="input.money" type="number"  placeholder="" @change="calMoney"/>
+                        <b-form-input v-model="input.money" type="number" placeholder="" @change="calMoney" />
                         <label class="mb-1">เข้ารักษาวันที่</label>
-                        <b-form-datepicker 
-                                           v-model="input.hospitalized_date" 
-                                           selected-variant="primary" 
+                        <b-form-datepicker v-model="input.hospitalized_date"
+                                           selected-variant="primary"
                                            label-selected=""
                                            label-no-date-selected=""
-                                           :close-button="true" 
+                                           :close-button="true"
                                            :label-help="null"
                                            label-close-button="ปิด"
-                                           :today-button="true" 
-                                           label-today-button="เลือกวันปัจจุบัน" 
-                                           :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }" 
+                                           :today-button="true"
+                                           label-today-button="เลือกวันปัจจุบัน"
+                                           :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
                                            size="sm"
                                            class="mb-2 " locale="th" placeholder="เลือกวันที่เข้ารักษา"></b-form-datepicker>
                         <br>
@@ -155,14 +154,14 @@
                                v-bind:files="bankFile"
                                v-on:addfile="onAddBankAccountFile" />
                     <!--<input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file" style="margin-top: -10px">
-                    <div class="border p-2 mt-2">
-                        <p align="left">ภาพถ่ายที่เลือก:</p>
-                        <template v-if="preview">
-                            <img :src="preview" class="img-fluid" style="width: 30%" />-->
+                <div class="border p-2 mt-2">
+                    <p align="left">ภาพถ่ายที่เลือก:</p>
+                    <template v-if="preview">
+                        <img :src="preview" class="img-fluid" style="width: 30%" />-->
                     <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
-                    <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
+                <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
                     <!--</template>
-                    </div>-->
+                </div>-->
                 </div>
 
                 <div>
@@ -422,13 +421,13 @@
                         <label>{{bill.filename}}</label>
                     </div>
                     <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
-            <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
-            <hr class="mt-0">
-        </div>
-        <div class="mt-0" v-else-if="bill.BillfileShow===''">
-            <p class="mb-0" style="color: grey">-</p>
-            <hr class="mt-0">
-        </div>-->
+                    <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="bill.BillfileShow===''">
+                    <p class="mb-0" style="color: grey">-</p>
+                    <hr class="mt-0">
+                </div>-->
                     <p class="mb-0">ชื่อโรงพยาบาล</p>
                     <div class="mt-0" v-if="bill.hospital!=''">
                         <p class="mb-0" style="color: grey">{{bill.hospital}}</p>
@@ -491,13 +490,13 @@
                     <label>{{bankFileDisplay.filename}}</label>
                 </div>
                 <!--<div class="mt-0" v-if="bankFileShow!=''">
-                    <p class="mb-0" style="color: grey">{{image.name}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-if="bankFileShow === ''">
-                    <p class="mb-0" style="color: grey">-</p>
-                    <hr class="mt-0">
-                </div>-->
+                <p class="mb-0" style="color: grey">{{image.name}}</p>
+                <hr class="mt-0">
+            </div>
+            <div class="mt-0" v-if="bankFileShow === ''">
+                <p class="mb-0" style="color: grey">-</p>
+                <hr class="mt-0">
+            </div>-->
                 <p class="mb-0">ชื่อธนาคาร</p>
                 <div class="mt-0" v-if="bank!=''">
                     <p class="mb-0" style="color: grey">{{bookbank}}</p>
@@ -528,11 +527,11 @@
             </div>
 
             <!-- <div class="form-check">
-                <input class="form-check-input" type="checkbox" v-model="acceptClaim">
-                <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                    ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
-                </p>
-            </div> -->
+            <input class="form-check-input" type="checkbox" v-model="acceptClaim">
+            <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
+            </p>
+        </div> -->
         </tab-content>
 
     </form-wizard>
@@ -751,5 +750,8 @@
         float: left;
         background-color: wheat;
         color: red;
+    }
+    .box-container {
+        background-color: white;
     }
 </style>
