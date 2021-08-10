@@ -22,7 +22,7 @@ Vue.use(Vuesax, {
     light: "#fff"
   }
 })
-import 'material-icons/iconfont/material-icons.css';
+
 
 
 Vue.config.ignoredElements = [/^ion-/]
