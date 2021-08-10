@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-12" align="center">
+            <div align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
                 <!-- <div class="txt"  >
-                    <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
-                    <p>เลขประจำตัวประชาชน: {{userData.idcardNo}}</p>
-                </div> -->
+        <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
+        <p>เลขประจำตัวประชาชน: {{userData.idcardNo}}</p>
+    </div> -->
                 <div class="tab-user">
                     <div class="row">
                         <div class="col-3 px-0">
@@ -19,8 +19,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="mb-4 mt-4">
+                    <router-link class="btn-next" to="/">แจ้งเหตุใหม่</router-link>
+                </div>
+                <div align="left" style="width: 100%;" >
+                    <label class="title-advice-menu">ประวัติการแจ้งอุบัติเหตุ</label>
+                </div>
                 <section>
-                    <div style="height: 80%; width: 100%;">
+                    <div style="margin-top: -30px; width: 100%;">
                         <div class="accordion" v-for="accident in accData" v-bind:key="accident.eaTmpId">
                             <!--v-for="accident in accidents" :key="accident.id"-->
                             <div class="accordion-item" :id="'list' + accident.eaTmpId">
@@ -45,8 +51,8 @@
                                 </div>
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
-                                    <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.eaTmpId}}">ใช้สิทธิ์</router-link>
-                                    <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
+                                    <router-link class="btn-select"  :to="{ name: 'Rights', params: { id: accident.eaTmpId}}">ใช้สิทธิ์</router-link>
+                                    <router-link class="btn-checked"  to="/CheckStatus">ติดตามสถานะ</router-link>
 
                                 </div>
                             </div>
@@ -133,18 +139,18 @@ p.p_right{
     text-align: left;
     line-height: 15px;
 }
-.tab-user {
-    cursor: pointer;
-    position: relative;
-    padding: 1rem 1rem;
-    border-radius: 1rem;
-    line-height: 1.5rem;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid #cccccc;
-    background-image: linear-gradient(-180deg, #f5f5f5 0%, #FFFFFF 50%);
-    box-shadow: 0 0rem 0.5rem 0 #f5f5f5 inset, 0 -0.25rem 1.5rem #f5f5f5 inset, 0 0.75rem 0.5rem #f5f5f5 inset, 0 0.2rem 0.5rem 0 #f1f1f1 inset;
-}
+    .tab-user {
+        cursor: pointer;
+        position: relative;
+        padding: 1rem 1rem;
+        border-radius: 1rem;
+        line-height: 1.5rem;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #ddd;
+        background-image: linear-gradient(-180deg, #FFFFFF 0%, #FFFFFF 50%);
+        /*box-shadow: 0 0rem 0.5rem 0 #f5f5f5 inset, 0 -0.25rem 1.5rem #f5f5f5 inset, 0 0.75rem 0.5rem #f5f5f5 inset, 0 0.2rem 0.5rem 0 #f1f1f1 inset;*/
+    }
 
     .tab-user.span {
         color: black;
@@ -153,7 +159,7 @@ p.p_right{
         background-clip: text;
     }
 
-    .tab-user::before {
+    /*.tab-user::before {
         content: "";
         display: block;
         height: 0.25rem;
@@ -166,7 +172,7 @@ p.p_right{
         border-radius: 100%;
         opacity: 0.8;
         background-image: linear-gradient(-270deg, #EEEEEE 0%, #FFFFFF 20%, #FFFFFF 80%, #EEEEEE 100%);
-    }
+    }*/
 .mybtn {
     position: center;
     margin-left: 0px;
@@ -174,53 +180,72 @@ p.p_right{
     display: inline-block;
 }
 
+    a[class="btn-next"]:link, a[class="btn-next"]:visited {
+        background-color: var(--main-color);
+        color: white;
+        padding: 5px 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 15px;
+    }
 
-.btn-select {
-    background-color: #5c2e91;
-    margin-top: 10px;
-    margin-right: 0px;
-    width: 130px;
-    color: white;
-    padding: 3px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 30px;
-    border: none;
-}
-a[class="btn-select"]:link, a[class="btn-select"]:visited {
-    background-color: #5c2e91;
-    margin-top: 10px;
-    margin-left: 10px;
-    color: white;
-    padding: 3px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 30px;
-    /*font-size: 14px;*/
-}
+    .btn-select {
+        background-color: var(--main-color);
+        color: white;
+        padding: 85px 90px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 15px;
+    }
 
-a[class="btn-select"]:hover, a[class="btn-select"]:active {
-    background-color: #a55ac4;
-}
+    .btn-next {
+        background-color: var(--main-color);
+        color: white;
+        padding: 5px 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+    .btn-next, .btn-next:active {
+        background-color: #50287e;
+        color: white;
+    }
+    a[class="btn-select"]:link, a[class="btn-select"]:visited {
+        background-color: var(--main-color);
+        margin-top: 10px;
+        margin-left: 10px;
+        color: white;
+        padding: 3px 35px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        /*font-size: 14px;*/
+    }
 
-a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
-    background-color: #d775ff;
-    margin-top: 10px;
-    margin-left: 10px;
-    color: white;
-    padding: 3px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 30px;
-    /*font-size: 14px;*/
-}
 
-a[class="btn-checked"]:hover, a[class="btn-checked"]:active {
-    background-color: #a55ac4;
-}
+    a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
+        background-color: white;
+        margin-top: 10px;
+        margin-left: 10px;
+        color: #5c2e91;
+        padding: 3px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        border-style: solid;
+        border-color: var(--main-color);
+        font-weight: bold;
+        /*font-size: 14px;*/
+    }
+
 
 section {
     width: 100%;
@@ -258,17 +283,17 @@ section {
     }
 
     .accordion-link ion-icon {
-        color: #5c2e91;
+        color: var(--main-color);
         padding: 0rem .5rem .1rem 0rem;
         vertical-align: middle;
-        font-size: 15px;
+        font-size: 18px;
     }
     /*.accordion-link .ion-md-remove {
     display: none;
 }*/
     .accordion-link .ion-md-add {
         margin-bottom: 5px;
-        font-size: 15px;
+        font-size: 16px;
     }
 
 .answer {
@@ -284,7 +309,7 @@ section {
         position: absolute;
         width: .3rem;
         height: 100%;
-        background-color: #5c2e91;
+        background-color: var(--main-color);
         top: 50%;
         left: 0;
         transform: translateY(-50%);

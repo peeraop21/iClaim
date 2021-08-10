@@ -6,13 +6,13 @@
                     <h2 id="header2">ยืนยันจำนวนเงิน</h2>
                 </div>
                 <div class="col-12" align="center">
-                    <div class="card card-confirm-money-detail">
+                    <div class="tab-user mt-4 mb-4">
                         <div class="card-body">
                             <div class="col-12">
-                                <p class="title-claim-number">เลขคำร้อง : {{claimNo}}</p>
+                                <p class="title-claim-number" style="margin-top: -10px">เลขคำร้อง : {{claimNo}}</p>
                             </div>
                             <div class="col-12">
-                                <p class="text-start">บริษัท กลางฯ สามาระจ่ายเงินให้ท่านได้จำนวน {{money}} บาท เนื่องจาก {{reason}} </p>
+                                <p class="text-start" style="margin-bottom: -10px">บริษัท กลางฯ สามาระจ่ายเงินให้ท่านได้จำนวน {{money}} บาท เนื่องจาก {{reason}} </p>
                             </div>
                         </div>
 
@@ -39,12 +39,12 @@
                     </p>
                     <div class="row">
                         <div class="col-12">
-                            <div class="card card-tel">
-                                <div class="position-icon mt-2">
-                                    <ion-icon name="call-outline"></ion-icon>
-                                    <label class="lbl-tel">xxx-xxx-9898</label>
-                                </div>
-                            </div>
+                             <div class="card card-tel">
+                                 <div class="position-icon mt-2">
+                                     <ion-icon name="call-outline"></ion-icon>
+                                     <label class="lbl-tel">xxx-xxx-9898</label>
+                                 </div>
+                             </div>
                             <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                         </div>
                     </div>
@@ -88,30 +88,20 @@
 
 <style>
     .btn-confirm-money {
-        background-color: #5c2e91;
-        border:none;
-        width: 130px;
+        background-color: var(--main-color);
+        border: none;
         color: white;
-        padding: 5px 5px;
+        padding: 5px 20px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        border-radius: 30px;
+        border-radius: 10px;
+        font-size: 15px;
     }
     .title-claim-number{
         font-weight:bold;
         font-size:15px;
         text-align:start;
-    }
-    .card-confirm-money-detail {
-        border: 1px medium #5c2e91;
-        padding: 2% 0px;
-        width: 100%;
-        margin: 2rem 0rem;
-        border-radius: 10px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
     }
 </style>
 

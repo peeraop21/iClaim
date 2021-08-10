@@ -16,7 +16,7 @@
                     </div>
                 </div>-->
                 <section>
-                    <div style="height: 80%; width: 100%;">
+                    <div style="height: 90%; width: 100%;">
                         <div class="accordion"  v-for="accident in accidents" :key="accident.id">
                             <div class="accordion-item" :id="'list' + accident.id">
                                 <a class="accordion-link" :href="'#list' + accident.id">

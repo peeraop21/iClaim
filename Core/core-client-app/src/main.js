@@ -10,7 +10,19 @@ import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-
+import Vuesax from 'vuesax'
+import 'vuesax/dist/vuesax.css' 
+Vue.use(Vuesax, {
+  colors: {
+    primary:'#5b3cc4',
+    success:'rgb(23, 201, 100)',
+    danger:'rgb(242, 19, 93)',
+    warning:'rgb(255, 130, 0)',
+    dark: 'rgb(36, 33, 69)',
+    light: "#fff"
+  }
+})
+import 'material-icons/iconfont/material-icons.css';
 
 Vue.config.ignoredElements = [/^ion-/]
 Vue.use(VueSweetalert2)

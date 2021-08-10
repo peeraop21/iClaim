@@ -9,17 +9,16 @@
                     <br>
                 </div>
                 <div v-for="rights_receive in rights_receives" :key="rights_receive.id">
-                    <div class="txt px-3">
+                    <div class="tab-user px-3" align="left">
     <li>
         <label class="purple-title" style="font-weight: bold">{{ rights_receive.medical_expenses }}</label>
     </li>
-    <br>
     <br>
     <p style="line-height: 25px">{{ rights_receive.detail }}</p>
     <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
         <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a>
         <br>
-        <router-link class="btn-select" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 7px;">เลือก</router-link>
+        <router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
     </div>
     </div>
 

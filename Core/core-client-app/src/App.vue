@@ -24,6 +24,10 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+    :root {
+        --main-color: #5c2e91;
+    }
+
 
 #nav {
   padding: 30px;
