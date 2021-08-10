@@ -26,7 +26,7 @@
                     <label class="title-advice-menu">ประวัติการแจ้งอุบัติเหตุ</label>
                 </div>
                 <section>
-                    <div style="margin-top: -30px; width: 100%;">
+                    <div style="height: 98%; width: 100%;">
                         <div class="accordion" v-for="accident in accData" v-bind:key="accident.eaTmpId">
                             <!--v-for="accident in accidents" :key="accident.id"-->
                             <div class="accordion-item" :id="'list' + accident.eaTmpId">
@@ -44,8 +44,7 @@
                                     <p>
                                         ทะเบียนรถ:
                                         <label v-for="car in accident.eaCar" v-bind:key="car.eaCarNo"> {{ car.eaCarLicense }},</label>
-                                    </p>
-                                    <p>
+                                    <br />
                                         สิทธิ์คงเหลือ:  บาท
                                     </p>
                                 </div>
