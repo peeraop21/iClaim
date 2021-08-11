@@ -6,7 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         accStateData: [],
-        userStateData: []
+        userStateData: [],
+        jwtToken:[]
+
   },
   mutations: {
   },

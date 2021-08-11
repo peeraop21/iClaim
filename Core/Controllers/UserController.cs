@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Core.Controllers
             return new string[] { "value1", "value2" };
         }
 
+        [Authorize]
         // GET api/<UserController>/5
         [HttpGet("{userToken}")]
         public async Task<IActionResult> Get(string userToken)

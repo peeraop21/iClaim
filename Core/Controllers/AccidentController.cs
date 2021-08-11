@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -24,7 +25,7 @@ namespace Core.Controllers
         {
             return Ok();
         }*/
-
+        [Authorize]
         [HttpGet("{userToken}")]
         public async Task<IActionResult> Get(string userToken)
         {
