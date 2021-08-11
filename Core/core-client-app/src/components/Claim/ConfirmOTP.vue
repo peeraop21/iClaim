@@ -14,7 +14,7 @@
                 <label class="lbl-tel">xxx-xxx-9898</label>
             </div>
         </div>-->
-                    <b-form-input class="mb-2" type="text" placeholder="xxx-xxx-9898" disabled />
+                    <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
                 </div>
                 <div class="col-5 mb-5">
                     <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
@@ -140,7 +140,7 @@
         text-align: start;
     }
 
-    .mb-2.form-control {
+    .mb-3.form-control {
         background-color: white;
         border-radius: 10px;
         padding: 5px 10px;
@@ -187,11 +187,12 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
-        data: function() {
-            return {
-                msg: 'ยืนยันการส่งคำร้อง',
-                accData: this.$store.getters.accGetter(this.$route.params.id),
-            };
-        },
-    };
+            data: function () {
+                return {
+                    msg: 'ยืนยันการส่งคำร้อง',
+                    accData: this.$store.getters.accGetter(this.$route.params.id),
+                };
+            },
+        }
+    }
 </script>

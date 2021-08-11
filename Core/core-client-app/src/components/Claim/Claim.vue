@@ -6,133 +6,141 @@
                     คำรับรอง
                 </h4>
             </template>
-            <div class="d-block text-left">
-                <p>
-                    ข้าพเจ้าผู้ยื่นคำร้องขอในนามของผู้ประสบภัย ขอให้ค้ารับรองว่า.-
-                    <br>
-                    1. ข้าพเจ้าหรือประสบภัยยังไม่เคยรับหรือทำสัญญาว่าจะรับค่าเสียหายจากเจ้าของรถ หรือผู้หนึ่งผู้ใด
-                    ใด และยังไม่เคยรับหรือยื่นขอรับค่าเสียหายเบื้องต้นจากกองทุนทดแทนผู้ประสบภัย
-                </p>
-                <b-form-group label=" 2. ข้าพเจ้าหรือผู้ประสบภัย" v-slot="{ ariaDescribedby }">
-                    <b-form-radio-group v-model="selected"
-                                        :options="options"
-                                        :aria-describedby="ariaDescribedby"
-                                        name="radio-inline"></b-form-radio-group>
-                </b-form-group>
-                <div class="mt-0" v-if="selected==='second'">
-                    <label>จำนวนเงิน</label>
-                    <input type="text" class="h-10 rounded-lg outline-none" placeholder="" />
-                    <label>สถานพยาบาลชื่อ</label>
-                    <input type="text" class="h-10 rounded-lg outline-none" placeholder="" />
-                </div>
-                <div class="mt-0" v-else-if="selected==='first'"></div>
-                <p class="mt-2">
-                    3. เมื่อข้าพเจ้าได้รับค่าเสียหายเบื้องต้นจากบริษัทประกันภัยครบถ้วนตามจำนวนที่กฎหมายกำหนดแล้ว
-                    ข้าพเจ้าขอสัญญาว่า ข้าพเจ้าจะไม่ไปเรียกร้องค่าเสียหายเบื้องต้นจากเจ้าของรถ หรือมอบอำนาจให้บุคคลอื่น
-                    หรือสถานพยาบาลมารับค่าเสียหายเบื้องต้นจำนวนนี้ซ้ำอีก
-                </p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
-                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                        ข้าพเจ้าขอรับรองว่าข้อมูลดังกล่าวข้างต้นเป็นจริงทุกประการ หากข้าพเจ้าผิดคำรับรอง
-                        ข้าพเจ้ายินยอมรับผิดในความเสียหายที่เกิดขึ้นทั้งหมดแก่บริษัท
+            <div class="con-content" align="left">
+                <div class="d-block text-left">
+                    <p>
+                        ข้าพเจ้าผู้ยื่นคำร้องขอในนามของผู้ประสบภัย ขอให้ค้ารับรองว่า.-
+                        <br>
+                        1. ข้าพเจ้าหรือประสบภัยยังไม่เคยรับหรือทำสัญญาว่าจะรับค่าเสียหายจากเจ้าของรถ หรือผู้หนึ่งผู้ใด
+                        ใด และยังไม่เคยรับหรือยื่นขอรับค่าเสียหายเบื้องต้นจากกองทุนทดแทนผู้ประสบภัย
                     </p>
-                </div>
-                <div v-if="acceptClaim" class="mb-4" align="center">
-                    <!--<r class="btn-next" style="margin-top: -20px; -ms-transform: translate(50%, 50%); transform: translate(50%, 50%);" to="/CheckStatus">ยืนยันส่งคำร้อง</r>-->
-                    <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.eaTmpId}}">ยืนยันส่งคำร้อง</router-link>
-                </div>
-            </div>
-            <!-- <b-button class="mt-3" block @click="$bvModal.hide('bv-modal')">Close Me</b-button> -->
-        </b-modal>
-        <tab-content title="สร้างคำร้อง" icon="ti ti-write" :before-change="processFilePageOne">
-            <div class="">
-                <div align="left">
-                    <label>ลักษณะบาดเจ็บ</label>
-                    <b-form-input class="mt-0 mb-3" v-model="injuri" placeholder=""></b-form-input>
+                    <p>
+                        2. ข้าพเจ้าหรือผู้ประสบภัย
+                    </p>
+                    <div style="margin-top: -10px;">
+                        <vs-radio color="var(--main-color)" v-model="picked" val="1" class="mb-1" style="float: left">
+                            ไม่เคย&emsp;&emsp;
+                        </vs-radio>
+                        <vs-radio color="#7d33ff" v-model="picked" val="2" style="float: left">
+                            เคย
+                        </vs-radio>
+                    </div>
+                    <br />
+                    <div class="mt-0" v-if="picked==='2'">
+                        <br />
+                        <label>จำนวนเงิน</label>
+                        <vs-input color="var(--main-color)"
+                                  v-model="value7"
+                                  placeholder="จำนวนเงิน" />
+                        <label>สถานพยาบาลชื่อ</label>
+                        <vs-input color="var(--main-color)"
+                                  v-model="value7"
+                                  placeholder="สถานพยาบาล" />
 
-                    <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
-                </div>
-                <div class="box-container">
-                    <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
-                    <div>
-                        <!--<input type="file" name="filename">-->
-                        <file-pond name="idCardFile"
-                                   ref="pond"
-                                   label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน"
-                                   credits="null"
-                                   v-bind:allow-multiple="false"
-                                   v-bind:allowFileEncode="true"
-                                   accepted-file-types="image/jpeg, image/png"
-                                   v-bind:files="idCardFile"
-                                   v-on:addfile="onAddIdCardFile" />
-                        <!--<input type="submit"> -->
+                    </div>
+                    <p class="mt-3">
+                        3. เมื่อข้าพเจ้าได้รับค่าเสียหายเบื้องต้นจากบริษัทประกันภัยครบถ้วนตามจำนวนที่กฎหมายกำหนดแล้ว
+                        ข้าพเจ้าขอสัญญาว่า ข้าพเจ้าจะไม่ไปเรียกร้องค่าเสียหายเบื้องต้นจากเจ้าของรถ หรือมอบอำนาจให้บุคคลอื่น
+                        หรือสถานพยาบาลมารับค่าเสียหายเบื้องต้นจำนวนนี้ซ้ำอีก
+                    </p>
+                    <div class="row">
+                        <div class="col-2" style="padding-right: 0px; width:13%;">
+                            <vs-checkbox color="#7d33ff" v-model="acceptClaim"></vs-checkbox>
+                        </div>
+                        <div class="col-10 px-0">
+                            <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                                ข้าพเจ้าขอรับรองว่าข้อมูลดังกล่าวข้างต้นเป็นจริงทุกประการ หากข้าพเจ้าผิดคำรับรอง
+                                ข้าพเจ้ายินยอมรับผิดในความเสียหายที่เกิดขึ้นทั้งหมดแก่บริษัท
+                            </p>
+                        </div>
+                    </div>
+                    <div v-if="acceptClaim" class="mb-4" align="center">
+                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.eaTmpId}}">ยืนยันส่งคำร้อง</router-link>
                     </div>
                 </div>
-                <br>
-                <div class="box-container">
-
-                    <div class="box-container" align="center">
+            </div>
+        </vs-dialog>
+        <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="active=!active">
+            <tab-content title="สร้างคำร้อง" icon="ti ti-write" :before-change="processFilePageOne">
+                <div class="">
+                    <div align="left">
+                        <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
+                    </div>
+                    <div class="box-container">
+                        <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
+                        <div>
+                            <!--<input type="file" name="filename">-->
+                            <file-pond name="idCardFile"
+                                       ref="pond"
+                                       label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน"
+                                       credits="null"
+                                       v-bind:allow-multiple="false"
+                                       v-bind:allowFileEncode="true"
+                                       accepted-file-types="image/jpeg, image/png"
+                                       v-bind:files="idCardFile"
+                                       v-on:addfile="onAddIdCardFile" />
+                            <!--<input type="submit"> -->
+                        </div>
+                    </div>
+                    <br>
+                    <div class="box-container">
                         <label class="px-2">ลักษณะบาดเจ็บ</label>
                         <b-form-input class="mt-0 mb-2" v-model="injuri" placeholder=""></b-form-input>
+
                         <div v-for="(input, index) in bills" :key="`Bill-${index}`" class="input wrapper flex items-center">
+                            <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                            <!--<input type="file" @change="onFileChange">-->
+                            <file-pond credits="null"
+                                       label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
+                                       v-bind:allow-multiple="false"
+                                       v-bind:allowFileEncode="true"
+                                       accepted-file-types="image/jpeg, image/png"
+                                       v-model="input.file" />
 
-                        <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                        <!--<input type="file" @change="onFileChange">-->
-                        <file-pond name="billsFile"
-                                   ref="pond"
-                                   credits="null"
-                                   label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
-                                   v-bind:allow-multiple="false"
-                                   accepted-file-types="image/jpeg, image/png"
-                                   v-bind:files="billsFile"                                 
-                                   v-model="input.file"  />
-
-                        <br>
-                        <label class="mb-1">โรงพยาบาล</label>
-                        <b-form-input v-model="input.hospital" type="text" placeholder="" />
-                        <label class="mb-1">เลขที่ใบเสร็จ</label>
-                        <b-form-input v-model="input.bill_no" type="text" placeholder="" />
-                        <label class="mb-1">จำนวนเงิน</label>
-                        <b-form-input v-model="input.money" type="number" placeholder="" @change="calMoney" />
-                        <label class="mb-1">เข้ารักษาวันที่</label>
-                        <b-form-datepicker v-model="input.hospitalized_date"
-                                           selected-variant="primary"
-                                           label-selected=""
-                                           label-no-date-selected=""
-                                           :close-button="true"
-                                           :label-help="null"
-                                           label-close-button="ปิด"
-                                           :today-button="true"
-                                           label-today-button="เลือกวันปัจจุบัน"
-                                           :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                           size="sm"
-                                           class="mb-2 " locale="th" placeholder="เลือกวันที่เข้ารักษา"></b-form-datepicker>
-                        <br>
-                        <!-- Add Svg Icon-->
-                        <p style="color: green">
-                            <svg @click="addField(input, bills)"
+                            <label class="px-2">โรงพยาบาล</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.hospital" type="text" placeholder="" />
+                            <label class="px-2">เลขที่ใบเสร็จ</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
+                            <label class="px-2">จำนวนเงิน</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
+                            <label class="px-2">เข้ารักษาวันที่</label>
+                            <b-form-datepicker v-model="input.hospitalized_date"
+                                               selected-variant="primary"
+                                               label-selected=""
+                                               label-no-date-selected=""
+                                               :close-button="true"
+                                               :label-help="null"
+                                               label-close-button="ปิด"
+                                               :today-button="true"
+                                               label-today-button="เลือกวันปัจจุบัน"
+                                               :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                                               size="sm"
+                                               class="mt-0 mb-2 " locale="th" placeholder="เลือกวันที่เข้ารักษา"></b-form-datepicker>
+                            <br>
+                            <!-- Add Svg Icon-->
+                            <p style="color: green">
+                                <svg @click="addField(input, bills)"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 30 30"
+                                     width="30"
+                                     height="30"
+                                     class="ml-2 cursor-pointer">
+                                    <path fill="none" d="M0 0h24v24H0z" />
+                                    <path fill="green" d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
+                                </svg>เพิ่มใบเสร็จ
+                            </p>
+                            <!-- Remove Svg Icon-->
+                            <svg v-show="bills.length > 1"
+                                 @click="removeField(index, bills)"
                                  xmlns="http://www.w3.org/2000/svg"
                                  viewBox="0 0 30 30"
                                  width="30"
                                  height="30"
-                                 class="ml-2 cursor-pointer">
+                                 class="ml-2 cursor-pointer mb-2"
+                                 style="margin-top: -10px;">
                                 <path fill="none" d="M0 0h24v24H0z" />
-                                <path fill="green" d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-                            </svg>เพิ่มใบเสร็จ
-                        </p>
-                        <!-- Remove Svg Icon-->
-                        <svg v-show="bills.length > 1"
-                             @click="removeField(index, bills)"
-                             xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 30 30"
-                             width="30"
-                             height="30"
-                             class="ml-2 cursor-pointer mb-2"
-                             style="margin-top: -10px;">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
-                        </svg>
+                                <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
+                            </svg>
 
                         </div>
 
@@ -158,14 +166,14 @@
                                        v-bind:files="bankFile"
                                        v-on:addfile="onAddBankAccountFile" />
                             <!--<input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file" style="margin-top: -10px">
-                <div class="border p-2 mt-2">
-                    <p align="left">ภาพถ่ายที่เลือก:</p>
-                    <template v-if="preview">
-                        <img :src="preview" class="img-fluid" style="width: 30%" />-->
+                        <div class="border p-2 mt-2">
+                            <p align="left">ภาพถ่ายที่เลือก:</p>
+                            <template v-if="preview">
+                                <img :src="preview" class="img-fluid" style="width: 30%" />-->
                             <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
-                <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
+                        <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
                             <!--</template>
-                </div>-->
+                        </div>-->
                         </div>
 
                         <div>
@@ -182,7 +190,7 @@
                 </div>
                 <br>
             </tab-content>
-              <!-- ผู้ประสบภัย -->
+            <!-- ผู้ประสบภัย -->
             <tab-content title="ส่งคำร้อง" icon="ti ti-id-badge">
                 <div align="left" style="width: 100%;">
                     <ion-icon name="people-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 25px"></ion-icon>
@@ -410,72 +418,72 @@
                         <p class="mb-0" style="color: grey">-</p>
                         <hr class="mt-0">
                     </div>
-                    
+
                     <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
                     <div v-if="idCardFileDisplay" align="center">
                         <img class="img-show" :src="idCardFileDisplay.base64" />
                         <br />
                         <label>{{idCardFileDisplay.filename}}</label>
                     </div>
-                </div>
-                <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
-                    <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                    <div v-if="bill.BillfileShow" align="center">
-                        <img class="img-show" :src="bill.BillfileShow" />
-                        <br />
-                        <label>{{bill.filename}}</label>
-                    </div>
-                    <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
-                    <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="bill.BillfileShow===''">
-                    <p class="mb-0" style="color: grey">-</p>
-                    <hr class="mt-0">
-                </div>-->
-                    <p class="mb-0">ชื่อโรงพยาบาล</p>
-                    <div class="mt-0" v-if="bill.hospital!=''">
-                        <p class="mb-0" style="color: grey">{{bill.hospital}}</p>
+
+                    <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
+                        <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                        <div v-if="bill.BillfileShow" align="center">
+                            <img class="img-show" :src="bill.BillfileShow" />
+                            <br />
+                            <label>{{bill.filename}}</label>
+                        </div>
+                        <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
+                        <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bill.hospital===''">
+                    <div class="mt-0" v-else-if="bill.BillfileShow===''">
                         <p class="mb-0" style="color: grey">-</p>
                         <hr class="mt-0">
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="mb-0">เลขที่ใบเสร็จ</p>
-                            <div class="mt-0" v-if="bill.bill_no!=''">
-                                <p class="mb-0" style="color: grey">{{bill.bill_no}}</p>
-                                <hr class="mt-0">
+                    </div>-->
+                        <p class="mb-0">ชื่อโรงพยาบาล</p>
+                        <div class="mt-0" v-if="bill.hospital!=''">
+                            <p class="mb-0" style="color: grey">{{bill.hospital}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bill.hospital===''">
+                            <p class="mb-0" style="color: grey">-</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="mb-0">เลขที่ใบเสร็จ</p>
+                                <div class="mt-0" v-if="bill.bill_no!=''">
+                                    <p class="mb-0" style="color: grey">{{bill.bill_no}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.bill_no===''">
+                                    <p class="mb-0" style="color: grey">-</p>
+                                    <hr class="mt-0">
+                                </div>
                             </div>
-                            <div class="mt-0" v-else-if="bill.bill_no===''">
-                                <p class="mb-0" style="color: grey">-</p>
-                                <hr class="mt-0">
+                            <div class="col-6">
+                                <p class="mb-0">วันที่เข้ารักษา</p>
+                                <div class="mt-0" v-if="bill.hospitalized_date!=''">
+                                    <p class="mb-0" style="color: grey">{{bill.hospitalized_date}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.hospitalized_date===''">
+                                    <p class="mb-0" style="color: grey">-</p>
+                                    <hr class="mt-0">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <p class="mb-0">วันที่เข้ารักษา</p>
-                            <div class="mt-0" v-if="bill.hospitalized_date!=''">
-                                <p class="mb-0" style="color: grey">{{bill.hospitalized_date}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="bill.hospitalized_date===''">
-                                <p class="mb-0" style="color: grey">-</p>
-                                <hr class="mt-0">
-                            </div>
+                        <p class="mb-0">จำนวนเงิน</p>
+                        <div class="mt-0" v-if="bill.money!=''">
+                            <p class="mb-0" style="color: grey">{{bill.money}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bill.money===''">
+                            <p class="mb-0" style="color: grey">-</p>
+                            <hr class="mt-0">
                         </div>
                     </div>
-                    <p class="mb-0">จำนวนเงิน</p>
-                    <div class="mt-0" v-if="bill.money!=''">
-                        <p class="mb-0" style="color: grey">{{bill.money}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="bill.money===''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>
-                </div>
 
                     <p class="mb-0">รวมเงินที่ขอเบิก</p>
                     <p class="mb-0" style="color: grey">{{total_amount}}</p>
@@ -495,13 +503,13 @@
                         <label>{{bankFileDisplay.filename}}</label>
                     </div>
                     <!--<div class="mt-0" v-if="bankFileShow!=''">
-                    <p class="mb-0" style="color: grey">{{image.name}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-if="bankFileShow === ''">
-                    <p class="mb-0" style="color: grey">-</p>
-                    <hr class="mt-0">
-                </div>-->
+                        <p class="mb-0" style="color: grey">{{image.name}}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-if="bankFileShow === ''">
+                        <p class="mb-0" style="color: grey">-</p>
+                        <hr class="mt-0">
+                    </div>-->
                     <p class="mb-0">ชื่อธนาคาร</p>
                     <div class="mt-0" v-if="bank!=''">
                         <p class="mb-0" style="color: grey">{{bookbank}}</p>
@@ -511,32 +519,57 @@
                         <p class="mb-0" style="color: grey">-</p>
                         <hr class="mt-0">
                     </div>
+
                     <p class="mb-0">ชื่อบัญชีธนาคาร</p>
                     <div class="mt-0" v-if="accountName!=''">
                         <p class="mb-0" style="color: grey">{{accountName}}</p>
                         <hr class="mt-0">
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="mb-0">เลขที่ใบเสร็จ</p>
+                                <div class="mt-0" v-if="bill.bill_no!=''">
+                                    <p class="mb-0" style="color: grey">{{bill.bill_no}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.bill_no===''">
+                                    <p class="mb-0" style="color: grey">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0">วันที่เข้ารักษา</p>
+                                <div class="mt-0" v-if="bill.hospitalized_date!=''">
+                                    <p class="mb-0" style="color: grey">{{bill.hospitalized_date}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.hospitalized_date===''">
+                                    <p class="mb-0" style="color: grey">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="mt-0" v-else-if="accountName===''">
+                            <p class="mb-0" style="color: grey">-</p>
+                            <hr class="mt-0">
+                        </div>-->
+                        <p class="mb-0">เลขบัญชีธนาคาร</p>
+                        <div class="mt-0" v-if="accountNumber!=''">
+                            <p class="mb-0" style="color: grey">{{accountNumber}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="accountNumber===''">
+                            <p class="mb-0" style="color: grey">-</p>
+                            <hr class="mt-0">
+                        </div>
                     </div>
-                    <div class="mt-0" v-else-if="accountName===''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>
-                    <p class="mb-0">เลขบัญชีธนาคาร</p>
-                    <div class="mt-0" v-if="accountNumber!=''">
-                        <p class="mb-0" style="color: grey">{{accountNumber}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="accountNumber===''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>
-                </div>
 
-                <!-- <div class="form-check">
-                <input class="form-check-input" type="checkbox" v-model="acceptClaim">
-                <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                    ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
-                </p>
-            </div> -->
+                    <!-- <div class="form-check">
+                    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
+                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                        ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
+                    </p>
+                    </div> -->
+                </div>
             </tab-content>
 
         </form-wizard>
@@ -618,7 +651,7 @@
                 this.idCardFileDisplay.file = file
                 this.idCardFileDisplay.filename = file.filename
                 this.idCardFileDisplay.base64 = file.getFileEncodeDataURL()
-            },          
+            },
             onAddBankAccountFile: function (error, file) {
                 this.bankFileDisplay.file = file
                 this.bankFileDisplay.filename = file.filename
@@ -637,7 +670,7 @@
             calMoney() {
                 let sum = 0;
                 for (let i = 0; i < this.bills.length; i++) {
-                    
+
                     sum = sum + parseInt(this.bills[i].money)
                 }
                 this.total_amount = sum
@@ -646,12 +679,13 @@
 
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, hospital: "", bill_no: "", money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: ""});
+                fieldType.push({ billNo: index, hospital: "", bill_no: "", money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" });
                 console.log(this.bills)
             },
             removeField(index, fieldType) {
                 //type.splice(index, 1);
                 fieldType.splice(index, 1);
+                console.log(this.bills)
             },
             onFileChange(event) {
                 var files = event.target.files || event.dataTransfer.files;
@@ -709,6 +743,7 @@
         margin-top: -5px;
         margin-bottom: 10px;
     }
+
     input[type=date] {
         width: 100%;
         padding: 0px 5px;
@@ -719,15 +754,17 @@
         margin-top: -5px;
         margin-bottom: 10px;
     }
+
     .b-form-btn-label-control.form-control {
         border: 2px solid #bbbbbb;
         border-radius: 4px;
     }
+
         .b-form-btn-label-control.form-control > .dropdown-menu {
             padding: 0.5rem;
             background-color: #f8f9fa;
         }
-    
+
     .img-show {
         margin: 5px;
         width: 30%;
@@ -762,6 +799,7 @@
         background-color: wheat;
         color: red;
     }
+
     .box-container {
         background-color: white;
         border: none;
@@ -773,9 +811,10 @@
         border-radius: 10px;
         padding: 5px 10px;
     }
-    .mt-0.mb-2.form-control:hover {
-        border: none;
-        box-shadow: 0 2px var(--main-color);
-        transform: translateX(1px);
-    } 
+
+        .mt-0.mb-2.form-control:hover {
+            border: none;
+            box-shadow: 1px 2px var(--main-color);
+            transform: translateX(1px);
+        }
 </style>

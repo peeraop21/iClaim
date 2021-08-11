@@ -38,7 +38,7 @@
                     </p>
                     <div class="row">
                         <div class="col-7 mb-5">
-                            <b-form-input class="mb-2" type="text" placeholder="xxx-xxx-9898" disabled />
+                            <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
                         </div>
                         <div class="col-5 mb-5">
                             <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
