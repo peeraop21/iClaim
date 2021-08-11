@@ -4,47 +4,69 @@
         <h2 id="header2" class="">ยืนยันการส่งคำร้อง</h2>
         <div id="app" class="container mt-5">
             <p>
-                กรุณากดขอรหัส OTP เพื่อยืนยันการส่งคำร้อง
+                กรุณากดขอรหัส OTP เพื่อรับรหัสยืนยันการส่งคำร้อง
             </p>
             <div class="row">
-                <div class="col-md-12 mb-5">
-                    <div class="card card-tel">
-                        <div class="position-icon mt-2">
-                            <ion-icon name="call-outline"></ion-icon>
-                            <label class="lbl-tel">xxx-xxx-9898</label>     
-                        </div>  
-                    </div>                  
+                <div class="col-7 mb-5">
+                    <!--<div class="card card-tel">
+            <div class="position-icon mt-2">
+                <ion-icon name="call-outline"></ion-icon>
+                <label class="lbl-tel">xxx-xxx-9898</label>
+            </div>
+        </div>-->
+                    <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
+                </div>
+                <div class="col-5 mb-5">
                     <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <p class="space-title mt-5">
-                        กรุณากรอกรหัสยืนยันที่ส่งไปยัง SMS
+                        กรุณากรอกรหัส OTP ที่ส่งไปยัง SMS
                     </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <input class="input-number-otp text-center" ref="digit1" maxlength="1" min="0" max="9" />
-                    <input class="input-number-otp text-center" ref="digit2" maxlength="1" min="0" max="9" />
-                    <input class="input-number-otp text-center" ref="digit3" maxlength="1" min="0" max="9" />
-                    <input class="input-number-otp text-center" ref="digit4" maxlength="1" min="0" max="9" />
-                    <input class="input-number-otp text-center" ref="digit5" maxlength="1" min="0" max="9" />
-                    <input class="input-number-otp text-center" ref="digit6" maxlength="1" min="0" max="9" />
+                    <div style="display: flex; flex-direction: row; margin-left: 10px">
+                        <v-otp-input ref="otpInput"
+                                     input-classes="otp-input"
+                                     separator="-"
+                                     :num-inputs="6"
+                                     :should-auto-focus="true"
+                                     :is-input-num="true"
+                                     @on-change="handleOnChange"
+                                     @on-complete="handleOnComplete" />
+
+                        <!--<button @click="handleClearInput()">Clear Input</button>-->
+                    </div>
+                    <!--<div class="vue-otp-2">
+                    <div v-for="(v,i) in otpLength * 2 - 1" :key="i/2">
+                        <input v-if="i%2 === 0"
+                               :ref="'input' + (i/2)"
+                               @keyup="handleInput($event, i/2)"
+                               v-model="otp[i/2]"
+                               minlength="1"
+                               maxlength="1"
+                               @focus="handleFocus($event, i/2)" />
+
+                        <span v-if="i%2 !== 0 && true">{{character}}</span>
+                    </div>
+                </div>-->
                 </div>
             </div>
             <div class="row">
                 <div class="col-6  pt-2">
-                    <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>&nbsp;ส่งรหัสยืนยันอีกครั้ง</p>
+                    <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง</p>
                 </div>
                 <div class="col-6  pt-2">
-                    <p class="  black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>&nbsp;00:20 น.</p>
+                    <p class=" black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:20 น.</p>
                 </div>
             </div>
             <div>
                 <br>
-                <router-link class="btn-next" to="/Accident" >{{ msg }}</router-link>
+                <router-link class="btn-next" to="/Accident">ยืนยันการส่งคำร้อง</router-link>
             </div>
         </div>
     </div>
@@ -62,7 +84,7 @@
     }
     .btn-request-otp {
         border-radius: 10px;
-        padding: 10px 10px;
+        padding: 7px 10px;
         background-color: #5c2e91;
         color: whitesmoke;
         border-style: none;
@@ -86,10 +108,10 @@
     }
     .black-title {
         color: dimgray;
-        font-size: 13px;
-        padding: 0% 20%;
+        font-size: 12px;
+        padding: 0% 0%;
         float: right;
-        margin: 0 3% 0 3%;
+        margin: 0 2% 0 2%;
         font-weight: bold;
     }
     .lbl-tel {
@@ -117,19 +139,60 @@
         font-size: 20px; 
         text-align: start;
     }
-   
+
+    .mb-3.form-control {
+        background-color: white;
+        border-radius: 10px;
+        padding: 5px 10px;
+        margin-top: -1px;
+        box-shadow: 0 2px var(--main-color);
+        transform: translateY(2px);
+        border: none;
+    }
+
+    .otp-input {
+        width: 60%;
+        height: 40px;
+        padding: 0 10px;
+        margin: 0 5px;
+        font-size: 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        text-align: center;
+        -webkit-text-security: disc;
+    }
+    .otp-input.error {
+        border: 1px solid red !important;
+    }
+
+    .otp-input::-webkit-inner-spin-button,
+    .otp-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+ 
+
     
 </style>
 
 <script>
-    //Your Javascript lives within the Script Tag
     export default {
-        data: function() {
-            return {
-                msg: 'ยืนยันการส่งคำร้อง',
-                accData: this.$store.getters.accGetter(this.$route.params.id),
-            };
-        },
-        
-    };
+        methods: {
+            handleOnComplete(value) {
+                console.log('OTP completed: ', value);
+            },
+            handleOnChange(value) {
+                console.log('OTP changed: ', value);
+            },
+            handleClearInput() {
+                this.$refs.otpInput.clearInput();
+            },
+            data: function () {
+                return {
+                    msg: 'ยืนยันการส่งคำร้อง',
+                    accData: this.$store.getters.accGetter(this.$route.params.id),
+                };
+            },
+        }
+    }
 </script>

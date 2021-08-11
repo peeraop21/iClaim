@@ -24,53 +24,55 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" v-model="acceptR">
+                        <input class="form-check-input" type="checkbox" v-model="acceptR" >
                         <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
                             ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
                         </p>
                     </div>
                 </div>
-
             </div>
             <div class="row" v-if="acceptR">
                 <div id="app" class="container ">
-                    <p>
-                        กรุณากดขอรหัส OTP เพื่อยืนยันจำนวนเงิน
+                    <p class="mt-4">
+                        กรุณากดขอรหัส OTP เพื่อรับรหัสยืนยันจำนวนเงิน
                     </p>
                     <div class="row">
-                        <div class="col-12">
-                             <div class="card card-tel">
-                                 <div class="position-icon mt-2">
-                                     <ion-icon name="call-outline"></ion-icon>
-                                     <label class="lbl-tel">xxx-xxx-9898</label>
-                                 </div>
-                             </div>
+                        <div class="col-7 mb-5">
+                            <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
+                        </div>
+                        <div class="col-5 mb-5">
                             <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <p class="space-title mt-5">
-                                กรุณากรอกรหัสยืนยันที่ส่งไปยัง SMS
+                            <p class="space-title mt-4">
+                                กรุณากรอกรหัส OTP ที่ส่งไปยัง SMS
                             </p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="input-number-otp text-center" ref="digit1" maxlength="1" min="0" max="9" />
-                            <input class="input-number-otp text-center" ref="digit2" maxlength="1" min="0" max="9" />
-                            <input class="input-number-otp text-center" ref="digit3" maxlength="1" min="0" max="9" />
-                            <input class="input-number-otp text-center" ref="digit4" maxlength="1" min="0" max="9" />
-                            <input class="input-number-otp text-center" ref="digit5" maxlength="1" min="0" max="9" />
-                            <input class="input-number-otp text-center" ref="digit6" maxlength="1" min="0" max="9" />
+                            <div style="display: flex; flex-direction: row; margin-left: 10px">
+                                <v-otp-input ref="otpInput"
+                                             input-classes="otp-input"
+                                             separator="-"
+                                             :num-inputs="6"
+                                             :should-auto-focus="true"
+                                             :is-input-num="true"
+                                             @on-change="handleOnChange"
+                                             @on-complete="handleOnComplete" />
+
+                                <!--<button @click="handleClearInput()">Clear Input</button>-->
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6  pt-2">
-                            <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline"></ion-icon>&nbsp;ส่งรหัสยืนยันอีกครั้ง</p>
+                            <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง</p>
                         </div>
                         <div class="col-6  pt-2">
-                            <p class="  black-title fw-bold text-start"><ion-icon name="time-outline"></ion-icon>&nbsp;00:20 น.</p>
+                            <p class=" black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:20 น.</p>
                         </div>
                     </div>
                     <div>
@@ -103,6 +105,7 @@
         font-size:15px;
         text-align:start;
     }
+
 </style>
 
 <script>
@@ -124,7 +127,16 @@
                 this.$swal('ยืนยันจำนวนเงินสำเร็จ!',
                     'ท่านจะได้รับเงินภายใน x วันทำการ',
                     'success');
-            }
+            },
+            handleOnComplete(value) {
+                console.log('OTP completed: ', value);
+            },
+            handleOnChange(value) {
+                console.log('OTP changed: ', value);
+            },
+            handleClearInput() {
+                this.$refs.otpInput.clearInput();
+            },
         }
         
         
