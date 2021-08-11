@@ -44,7 +44,7 @@
             </div>
             <!-- <b-button class="mt-3" block @click="$bvModal.hide('bv-modal')">Close Me</b-button> -->
         </b-modal>
-        <tab-content title="สร้างคำร้อง" icon="ti ti-write">
+        <tab-content title="สร้างคำร้อง" icon="ti ti-write" :before-change="processFilePageOne">
             <div class="">
                 <div align="left">
                     <label>ลักษณะบาดเจ็บ</label>
@@ -81,15 +81,14 @@
                                    label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                    v-bind:allow-multiple="false"
                                    accepted-file-types="image/jpeg, image/png"
-                                   v-bind:files="billsFile"
-                                   v-on:addfile="onAddBillsFile"
+                                   v-bind:files="billsFile"                                 
                                    v-model="input.file"  />
 
                         <br>
                         <label class="mb-1">โรงพยาบาล</label>
                         <b-form-input v-model="input.hospital" type="text" placeholder="" />
                         <label class="mb-1">เลขที่ใบเสร็จ</label>
-                        <b-form-input v-model="input.billNo" type="text" placeholder="" />
+                        <b-form-input v-model="input.bill_no" type="text" placeholder="" />
                         <label class="mb-1">จำนวนเงิน</label>
                         <b-form-input v-model="input.money" type="number" placeholder="" @change="calMoney" />
                         <label class="mb-1">เข้ารักษาวันที่</label>
@@ -440,11 +439,11 @@
                     <div class="row">
                         <div class="col-6">
                             <p class="mb-0">เลขที่ใบเสร็จ</p>
-                            <div class="mt-0" v-if="bill.billNo!=''">
-                                <p class="mb-0" style="color: grey">{{bill.billNo}}</p>
+                            <div class="mt-0" v-if="bill.bill_no!=''">
+                                <p class="mb-0" style="color: grey">{{bill.bill_no}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="bill.billNo===''">
+                            <div class="mt-0" v-else-if="bill.bill_no===''">
                                 <p class="mb-0" style="color: grey">-</p>
                                 <hr class="mt-0">
                             </div>
@@ -556,6 +555,7 @@
     import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
     import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
 
+
     // Create component
     const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode);
 
@@ -573,7 +573,7 @@
                 // ---Bill
                 injuri: '',
                 patientType: '',
-                bills: [{ billNo: "", hospital: "", bill_no: "", money: "", hospitalized_date: "", file: "", BillfileShow: "", filename: "" }],
+                bills: [{ billNo: 1, hospital: "", bill_no: "", money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" }],
                 total_amount: null,
                 // --BookBank
                 bank: '',
@@ -607,20 +607,18 @@
                 this.idCardFileDisplay.file = file
                 this.idCardFileDisplay.filename = file.filename
                 this.idCardFileDisplay.base64 = file.getFileEncodeDataURL()
-                console.log(this.file)
-
-            },
-            onAddBillsFile: function (error, file) {
-                var index = this.bills.length - 1
-                this.bills[index].BillfileShow = file.getFileEncodeDataURL()
-                this.bills[index].filename = file.filename
-                console.log(this.bills)
-            },
+            },          
             onAddBankAccountFile: function (error, file) {
                 this.bankFileDisplay.file = file
                 this.bankFileDisplay.filename = file.filename
                 this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
-                console.log(this.file)
+            },
+            processFilePageOne() {
+                for (let i = 0; i < this.bills.length; i++) {
+                    this.bills[i].BillfileShow = this.bills[i].file[0].getFileEncodeDataURL()
+                    this.bills[i].filename = this.bills[i].file[0].filename
+                }
+                return true;
             },
             //getIt: function () {
             //    console.log(this.$refs.pond.getFiles());
@@ -636,17 +634,19 @@
             },
 
             addField(value, fieldType) {
-                fieldType.push({ value: "" });
+                var index = this.bills.length + 1
+                fieldType.push({ billNo: index, hospital: "", bill_no: "", money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: ""});
+                console.log(this.bills)
             },
             removeField(index, fieldType) {
                 //type.splice(index, 1);
                 fieldType.splice(index, 1);
             },
-            onFileChange(e) {
-                var files = e.target.files || e.dataTransfer.files;
+            onFileChange(event) {
+                var files = event.target.files || event.dataTransfer.files;
                 if (!files.length)
                     return;
-                this.createImage(files[0]);
+                console.log(files[0]);
             },
             createImage(file) {
                 var Image = new Image();
