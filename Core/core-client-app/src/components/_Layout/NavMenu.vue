@@ -2,13 +2,13 @@
     <div>
         <b-navbar class="navbar-digital-cliam justify-content-between mb-4" style="">
             <div align="left" style="width: 100%;">
-                <ion-icon name="chevron-back-outline" align="left" style=" margin-bottom: -4px; padding-right: 20px; font-size: 23px; color: white;"></ion-icon>
+                <ion-icon name="chevron-back-outline" align="left" style=" margin-bottom: -4px; padding-right: 20px; font-size: 23px; color: white;" @click="onClickBackBtn"></ion-icon>
                 <label align="left" class="b-navbar-brand mt-1">Digital Claim</label>
             </div>
             <!--<router-link to="/"><ion-icon name="chevron-back-outline" style="font-size: 23px; color: white; margin-top: 10px;"></ion-icon></router-link>
             <p class="b-navbar-brand mt-3">Digital Claim</p>-->
             <router-link to="/"><ion-icon name="home" style="font-size: 23px; color: white; margin-top: 10px;"></ion-icon></router-link>
-            
+
         </b-navbar>
     </div>
 </template>
@@ -18,12 +18,32 @@
         name: "NavMenu",
         data() {
             return {
-                isExpanded: false
+                isExpanded: false,
             }
         },
         methods: {
             collapse() {
                 this.isExpanded = false;
+            },
+            onClickBackBtn() {
+                var routeName = this.$route.name
+                if (routeName == "Accident") {
+                    this.$router.push({ name: 'Advice' })
+                } else if (routeName == "Rights") {
+                    this.$router.push({ name: 'Accident' })
+                } else if (routeName == "RightsHistory") {
+                    this.$router.push({ name: 'Rights' })     
+                } else if (routeName == "Claim") {
+                    this.$router.push({ name: 'RightsHistory' })                   
+                } else if (routeName == "ConfirmOTP") {
+                    this.$router.push({ name: 'Claim'})
+                } else if (routeName == "CheckStatus") {
+                    this.$router.push({ name: 'Accident' })
+                } else if (routeName == "ConfirmMoney") {
+                    this.$router.push({ name: 'CheckStatus' })
+                } else if (routeName == "ClaimDetail") {
+                    this.$router.push({ name: 'CheckStatus' })
+                }
             },
 
             toggle() {

@@ -187,6 +187,11 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
+        data: function() {
+            return {
+                msg: 'ยืนยันการส่งคำร้อง',
+                accData: this.$store.getters.accGetter(this.$route.params.id),
+            };
         },
     };
 </script>

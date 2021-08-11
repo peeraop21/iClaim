@@ -64,7 +64,7 @@ const routes = [
     },
 
     {
-        path: "/ConfirmOTP",
+        path: "/ConfirmOTP/:id",
         name: "ConfirmOTP",
         component: ConfirmOTP,
     },

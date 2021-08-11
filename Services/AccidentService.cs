@@ -33,7 +33,7 @@ namespace Services
         {
             var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();           
             var accNo = GetAccNo(userIdCard);
-            var query = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accNo.Contains(w.EaAccNo)).Select(s  => new {s.EaTmpId,s.EaAccNo,s.EaAccDate }).OrderByDescending(o => o.EaAccDate).ToListAsync();
+            var query = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accNo.Contains(w.EaAccNo)).Select(s  => new {s.EaTmpId,s.EaAccNo,s.EaAccDate }).OrderByDescending(o => o.EaAccDate).ThenByDescending(t => t.EaAccNo).ToListAsync();
             /*var carList = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => accNo.Contains(w.EaAccNo)).ToListAsync();*/
             var accViewModel = new List<AccidentViewModel>();
             foreach (var acc in query)
