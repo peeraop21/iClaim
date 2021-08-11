@@ -200,8 +200,8 @@ p.p_right{
         border-radius: 10px;
         font-size: 15px;
     }
-
-    .btn-next {
+   
+    .btn-next:link, .btn-next:visited {
         background-color: var(--main-color);
         color: white;
         padding: 5px 50px;
@@ -211,10 +211,7 @@ p.p_right{
         border-radius: 10px;
         font-size: 15px;
     }
-    .btn-next, .btn-next:active {
-        background-color: #50287e;
-        color: white;
-    }
+    
     a[class="btn-select"]:link, a[class="btn-select"]:visited {
         background-color: var(--main-color);
         margin-top: 10px;
