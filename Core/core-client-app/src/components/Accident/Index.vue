@@ -85,17 +85,7 @@
             //        query: { accdata: this.accidentsapi }
             //    });
             //},
-            getJwtToken() {
-                var urlJwt = '/api/jwt'
-                axios.post(urlJwt, {
-                    Name: 'Nior',
-                    Email: 'peeran@rvp.co.th'
-                }).then((response) => {
-                    this.$store.state.jwtToken = response.data;
-                }).catch(function (error) {
-                    alert(error);
-                });
-            },
+            
             getAccidents() {
                 var url = '/api/accident/{userToken}'.replace('{userToken}', this.userToken);
                 var tokenJwt = this.$store.state.jwtToken.token
@@ -136,10 +126,9 @@
 
             }
         },
-        async mounted() {
-            await this.getJwtToken();
-            await this.getAccidents();
-            await this.getUser();
+        mounted() {           
+            this.getAccidents();
+            this.getUser();
         }
 
 
