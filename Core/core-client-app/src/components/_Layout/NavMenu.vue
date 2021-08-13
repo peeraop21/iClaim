@@ -55,16 +55,17 @@
 
 <style>
     .navbar-digital-cliam {
-        /*background-color: var(--main-color);*/
-        background: -webkit-linear-gradient(var(--main-color), rgb(114 60 177));
+        background-color: var(--main-color);
+        /*background: -webkit-linear-gradient(var(--main-color), rgb(114 60 177));*/
         text-align: center;
         height: 50px;
         padding-left: 15px;
         padding-right: 20px;
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,.2);
+        /*box-shadow: 0 1px 3px 0 rgba(0,0,0,.2);*/
     }
     .b-navbar-brand {
-        background: -webkit-linear-gradient(#eee, #fff);
+        background-color: white;
+        /*background: linear-gradient(45deg, #c331ff, var(--main-color));*/
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 23px;

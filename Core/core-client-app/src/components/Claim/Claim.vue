@@ -806,7 +806,7 @@
     }
     /* Input */
     .mt-0.mb-2.form-control {
-        background-color: #f3f2ff;
+        background-color: #e1deec;
         border: none;
         border-radius: 10px;
         padding: 5px 10px;
