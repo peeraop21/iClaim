@@ -253,7 +253,7 @@
     </div>
 </template>
 <script>
-    import axios from 'axios'
+
 
     export default {
         name: 'Advice',
@@ -269,20 +269,10 @@
             }
         },
         methods: {
-            getJwtToken() {
-                var urlJwt = '/api/jwt'
-                axios.post(urlJwt, {
-                    Name: 'Nior',
-                    Email: 'peeran@rvp.co.th'
-                }).then((response) => {
-                    this.$store.state.jwtToken = response.data
-                }).catch(function (error) {
-                    alert(error)
-                })
-            }
+            
         },
         mounted() {
-            this.getJwtToken();
+            
         }
 
 
