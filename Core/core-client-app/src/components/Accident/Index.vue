@@ -11,7 +11,7 @@
                 <div class="tab-user">
                     <div class="row">
                         <div class="col-3 px-0">
-                            <img src="@/assets/kid.png" width="70px">
+                            <img src="@/assets/kid.png" width="70">
                         </div>
                         <div class="col-9 text-start mt-2 px-0">
                             <span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span>
@@ -48,6 +48,11 @@
                                         <br />
                                         สิทธิ์คงเหลือ:  บาท
                                     </p>
+
+                                    <div style="margin: -20px 0 10px 0px;" align="center">
+                                        <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accident.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                                    </div>
+                                    
                                 </div>
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
@@ -205,7 +210,7 @@
         text-decoration: none;
         display: inline-block;
         border-radius: 10px;
-        font-size: 15px;
+        font-size: 13px;
     }
 
     .btn-select {
@@ -216,7 +221,7 @@
         text-decoration: none;
         display: inline-block;
         border-radius: 10px;
-        font-size: 15px;
+        font-size: 13px;
     }
    
     .btn-next:link, .btn-next:visited {
@@ -263,9 +268,21 @@
         border-style: solid;
         border-color: var(--main-color);
         font-weight: bold;
+        font-size: 12px;
+    }
+    a[class="btn-rightsHistory"]:link, a[class="btn-rightsHistory"]:visited {
+        background-color: #dad5e9;
+        margin-top: 10px;
+        margin-left: 10px;
+        color: var(--main-color);
+        padding: 3px 30px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-weight: bold;
         /*font-size: 14px;*/
     }
-
 
     section {
         width: 100%;
@@ -354,4 +371,5 @@
         padding: 20px 20px 15px 20px;
         text-align: left;
     }
+    
 </style>

@@ -32,9 +32,11 @@
                 } else if (routeName == "Rights") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "RightsHistory") {
-                    this.$router.push({ name: 'Rights' })     
+                    this.$router.push({ name: 'Accident' })
+                } else if (routeName == "RightsHistoryDetail") {
+                    this.$router.push({ name: 'Accident' }) 
                 } else if (routeName == "Claim") {
-                    this.$router.push({ name: 'RightsHistory' })                   
+                    this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {
                     this.$router.push({ name: 'Claim'})
                 } else if (routeName == "CheckStatus") {

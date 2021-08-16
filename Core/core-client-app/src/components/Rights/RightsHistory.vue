@@ -7,23 +7,23 @@
                 <div class="tab-user">
                     <div class="row">
                         <div class="col-3 mt-2 px-0">
-                            <img src="@/assets/kid.png" width="70px">
+                            <img src="@/assets/notify.png" width="70">
                         </div>
                         <div class="col-9 text-start px-0">
-                            <span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
-                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />
+                            <!--<span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
+                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />-->
+                            <span>เลขที่รับแจ้ง: {{accData.eaAccNo}}</span><br />
                             <span v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : {{ car.eaCarLicense }}</span><br />
-                            <span>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</span>
+                            <span>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</span><br />
+                            <span>สิทธิ์คงเหลือ: 10000 บาท</span>
                         </div>
                     </div>
                 </div>
-                <br>
-                <p class="p_right">สิทธิ์คงเหลือ: 10000 บาท</p>
-                <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData.eaTmpId}}">เบิกค่ารักษาเบื้องต้น</router-link>
+                <!--<router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData.eaTmpId}}">เบิกค่ารักษาเบื้องต้น</router-link>-->
                 <br>
                 <br>
                 <div align="left" style="width: 100%;">
-                    <label>ประวัติการรักษา</label>
+                    <label>ประวัติการใช้สิทธิ์</label>
                     <br>
                 </div>
                 <section>
@@ -42,7 +42,7 @@
                                 </a>
                                 <div class="answer">
                                     <p>
-                                        วันที่: {{ boto.date }}
+                                        วันที่ใช้สิทธิ์: {{ boto.date }}
                                         <br>
                                         โรงพยาบาลที่รักษา: {{ boto.hospital }}
                                     </p>

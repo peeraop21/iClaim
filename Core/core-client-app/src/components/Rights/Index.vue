@@ -8,25 +8,159 @@
                     <label class="title-advice-menu">ค่าเสียหายเบื้องต้น</label>
                     <br>
                 </div>
-                <div v-for="rights_receive in rights_receives" :key="rights_receive.id">
-                    <div class="tab-user px-3" align="left">
-    <li>
-        <label class="purple-title" style="font-weight: bold">{{ rights_receive.medical_expenses }}</label>
-    </li>
-    <br>
-    <p style="line-height: 25px">{{ rights_receive.detail }}</p>
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-        <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a>
+                <!--<div v-for="rights_receive in rights_receives" :key="rights_receive.id">
+        <div class="tab-user px-3" align="left">
+            <div class="row">
+                <div class="col-9">
+                    <label class="purple-title" style="font-weight: bold">{{ rights_receive.medical_expenses }}</label>
+                </div>
+                <div class="col-3" align="right" style="margin-top: -3px">
+                    <vs-button circle
+                               icon
+                               primary
+                               flat
+                               :active="active == 1"
+                               @click="{{ rights_receive.info }}=!{{ rights_receive.info }}">
+                        <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
+                    </vs-button>
+
+                </div>
+            </div>
+            <br>
+            <p style="line-height: 25px">{{ rights_receive.detail }}</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a>
+                <br>
+                <router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+            </div>
+        </div>
         <br>
-        <router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
-    </div>
-    </div>
+    </div>-->
+                <div>
+                    <div class="tab-user px-3" align="left">
+                        <div class="row">
+                            <div class="col-9">
+                                <label class="purple-title" style="font-weight: bold">กรณีเบิกค่ารักษาพยาบาล</label>
+                            </div>
+                            <div class="col-3" align="right" style="margin-top: -3px">
+                                <vs-button circle
+                                           icon
+                                           primary
+                                           flat
+                                           @click="Info1=!Info1">
+                                    <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
+                                </vs-button>
 
-    <br>
+                            </div>
+                        </div>
+                        <br>
+                        <p style="line-height: 25px">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: 4000 บาท</a>
+                            <br>
+                            <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
+                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div>
+                    <div class="tab-user px-3" align="left">
+                        <div class="row">
+                            <div class="col-9">
+                                <label class="purple-title" style="font-weight: bold">กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
+                            </div>
+                            <div class="col-3" align="right" style="margin-top: -3px">
+                                <vs-button circle
+                                           icon
+                                           primary
+                                           flat
+                                           @click="Info2=!Info2">
+                                    <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
+                                </vs-button>
 
-    </div>
+                            </div>
+                        </div>
+                        <br>
+                        <p style="line-height: 25px">ผู้ประสบภัยที่สูญเสียอวัยวะ/ทุพพลภาพอย่างถาวร บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: 0 บาท</a>
+                            <br>
+                            <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
+                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div>
+                    <div class="tab-user px-3" align="left">
+                        <div class="row">
+                            <div class="col-9">
+                                <label class="purple-title" style="font-weight: bold">กรณีเบิกค่าชดเชยรายวัน</label>
+                            </div>
+                            <div class="col-3" align="right" style="margin-top: -3px">
+                                <vs-button circle
+                                           icon
+                                           primary
+                                           flat
+                                           @click="Info3=!Info3">
+                                    <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
+                                </vs-button>
 
-    <!--<section>
+                            </div>
+                        </div>
+                        <br>
+                        <p style="line-height: 25px">ผู้ประสบภัยที่เข้ารับการรักษาพยาบาลในสถานพยาบาล (ผู้ป่วยใน) บริษัทจะจ่ายค่าชดเชยรายวัน วันละ 200 บาท (จำนวนรวมกันไม่เกิน 20 วัน)</p>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: 0 บาท</a>
+                            <br>
+                            <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
+                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <!-- Info 1 -->
+                <vs-dialog width="550px" not-center v-model="Info1">
+                    <template #header>
+                        <h4 class="not-margin">
+                            ค่ารักษาพยาบาล
+                        </h4>
+                    </template>
+                    <div class="con-content" align="left">
+                        <p>ค่ารักษาพยาบาล หมายถึง ค่าใช้จ่ายที่เกิดขึ้นจากการรักษาพยาบาลในกรณีได้รับความเสียหายต่อร่างกาย หรืออนามัย เช่น ค่ายา ค่าเวชภัณฑ์ ค่าอุปกรณ์ทางการแพทย์ เป็นต้น</p>
+                    </div>
+                </vs-dialog>
+                <!-- Info 2 -->
+                <vs-dialog width="550px" not-center v-model="Info2">
+                    <template #header>
+                        <h4 class="not-margin">
+                            ค่าสูญเสียอวัยวะ/ทุพพลภาพ
+                        </h4>
+                    </template>
+                    <div class="con-content" align="left">
+                        <p>ค่าสูญเสียอวัยวะ/ทุพพลภาพ หมายถึง ค่าเสียหายต่อร่างกาย หรืออนามัยจากอุบัติเหตุ ซึ่งเป็นเหตุให้สูญเสียอวัยวะส่วนหนึ่งส่วนใดของร่างกาย หรือทำให้ทุพพลภาพอย่างถาวร อย่างเช่น <br />
+                        <ul>
+                            <li>สูญเสียมือ นิ้วมือ แขน ขา เท้า</li>
+                            <li>หูหนวก ตาบอด เป็นใบ้หรือสูญเสียความสามารถในการพูด หรือลิ้นขาด สูญเสียอวัยวะสืบพันธุ์ หรือความสามารถในการสืบพันธุ์ จิตพิการอย่างติดตัว</li>
+                            <li>สูญเสียอวัยวะอื่นใด ซึ่งส่งผลกระทบต่อการดำรงชีวิต เช่น การสูญเสีย ม้าม ปอด ไต ฟันแท้ทั้งซี่ตั้งแต่ 5 ซี่ขึ้นไป หรือกระโหลกศีรษะถูกทำให้เสียหาย เป็นเหตุให้ต้องใช้กระโหลกเทียม เป็นต้น</li>
+                        </ul>
+                        </p>
+                    </div>
+                </vs-dialog>
+                <!-- Info 3 -->
+                <vs-dialog width="550px" not-center v-model="Info3">
+                    <template #header>
+                        <h4 class="not-margin">
+                            ค่าชดเชยรายวัน
+                        </h4>
+                    </template>
+                    <div class="con-content" align="left">
+                        <p>ค่าชดเชยรายวัน หมายถึง ค่าชดเชยที่ผู้ป่วยเข้ารับการรักษาและต้องนอนพักรักษาตัวในสถานพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป เช่น ป่วยหนักต้องแอดมิดนอนโรงพยาบาล การเข้าผ่าตัด ฯลฯ และให้รวมถึงการรับตัวไว้เป็นผู้ป่วยในแต่เสียชีวิตก่อน 6 ชั่วโมง</p>
+                    </div>
+                </vs-dialog>
+                <!--<section>
         <div class="container" style="height: 105%">
             <div class="accordion"  v-for="rights_receive in rights_receives" :key="rights_receive.id">
                 <div class="accordion-item" :id="'list' + rights_receive.id">
@@ -45,7 +179,7 @@
             </div>
         </div>
     </section>-->
-    </div>
+            </div>
     </div>
     <br>
     </div>
@@ -61,16 +195,23 @@
                         id: 1,
                         medical_expenses: "กรณีเบิกค่ารักษาพยาบาล",
                         detail: "ค่ารักษาพยาบาลตามที่จ่ายจริง โดยจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน",
-                        money: 4000
+                        money: 4000,
+                        info: "Info1",
+
                     },
                     {
                         id: 2,
                         medical_expenses: "กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ",
                         detail: "ผู้ประสบภัยสูญเสียอวัยวะ/ทุพพลภาพอย่างถาวรบริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน",
-                        money: 8000
+                        money: 8000,
+                        info: "Info2"
                     },
                 ],
-                accData1: this.$store.getters.accGetter(this.$route.params.id)
+                userData: this.$store.state.userStateData,
+                accData1: this.$store.getters.accGetter(this.$route.params.id),
+                Info1: false,
+                Info2: false,
+                Info3: false,
                 
 
             }

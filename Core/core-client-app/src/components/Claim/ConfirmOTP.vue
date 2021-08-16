@@ -66,7 +66,7 @@
             </div>
             <div>
                 <br>
-                <router-link class="btn-next" to="/Accident">ยืนยันการส่งคำร้อง</router-link>
+                <button class="btn-confirm-money" type="button" @click="showSwal">ยืนยันการส่งคำร้อง</button>
             </div>
         </div>
     </div>
@@ -170,14 +170,29 @@
         -webkit-appearance: none;
         margin: 0;
     }
- 
 
+    .swal2-title{
+        font-family: 'Mitr';
+        font-size: 25px;
+        color: red;
+    }
+    .swal2-html-container {
+        font-family: 'Mitr';
+        font-size: 25px;
+        color: red;
+    }
     
 </style>
 
 <script>
     export default {
         methods: {
+            showSwal() {
+                this.reason = "ทดสอบ";
+                this.$swal('ยืนยันจำนวนเงินสำเร็จ!',
+                    'ท่านจะได้รับเงินภายใน x วันทำการ',
+                    'success');
+            },
             handleOnComplete(value) {
                 console.log('OTP completed: ', value);
             },

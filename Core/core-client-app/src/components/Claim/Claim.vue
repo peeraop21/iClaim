@@ -45,7 +45,7 @@
                     </p>
                     <div class="row">
                         <div class="col-2" style="padding-right: 0px; width:13%;">
-                            <vs-checkbox color="#7d33ff" v-model="acceptClaim"></vs-checkbox>
+                            <vs-checkbox color="#7d33ff" v-model="acceptData"></vs-checkbox>
                         </div>
                         <div class="col-10 px-0">
                             <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
@@ -54,18 +54,30 @@
                             </p>
                         </div>
                     </div>
-                    <div v-if="acceptClaim" class="mb-4" align="center">
+                    <div class="row">
+                        <div class="col-2" style="padding-right: 0px; width:13%;">
+                            <vs-checkbox color="#7d33ff" v-model="acceptClaim"></vs-checkbox>
+                        </div>
+                        <div class="col-10 px-0">
+                            <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                                ข้าพเจ้ารับทราบว่าผู้ประสบภัยผู้ใดยื่นคำร้องขอรับค่าเสียหายเบื้องต้น ตามพระราชบัญญัตินี้โดยทุจริต หรือแสดงหลักฐานอันเป็นเท็จ
+                                เพื่อขอรับค่าเสียหายเบื้องต้นตามพระราชบัญญัตินี้ ต้องระวางโทษจำคุกไม่เกินห้าปี หรือปรับไม่เกินแสนบาท หรือทั้งจำทั้งปรับ
+                            </p>
+                        </div>
+                    </div>
+                    <div v-if="acceptClaim && acceptData" class="mb-4 mt-2" align="center">
                         <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.eaTmpId}}">ยืนยันส่งคำร้อง</router-link>
                     </div>
                 </div>
             </div>
         </vs-dialog>
         <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="active=!active">
-            <tab-content title="สร้างคำร้อง" icon="ti ti-write" :before-change="processFilePageOne">
+            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="processFilePageOne">
                 <div class="">
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
                     </div>
+                    
                     <div class="box-container">
                         <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
                         <div>
@@ -191,7 +203,7 @@
                 <br>
             </tab-content>
             <!-- ผู้ประสบภัย -->
-            <tab-content title="ส่งคำร้อง" icon="ti ti-id-badge">
+            <tab-content title="ส่งคำร้อง" icon="ti ti-share">
                 <div align="left" style="width: 100%;">
                     <ion-icon name="people-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 25px"></ion-icon>
                     <label align="left" class="title-advice-menu mb-1">ข้อมูลผู้ประสบภัย</label>
@@ -625,6 +637,7 @@
                 preview: null,
                 // ---Preview
                 acceptClaim: false,
+                acceptData: false,
                 selected: 'first',
                 options: [
                     { text: ' ไม่เคย', value: 'first' },
@@ -733,6 +746,45 @@
 </script>
 
 <style>
+    .vue-form-wizard.xs .wizard-icon-circle{
+        background-color: #f0f0f0;
+    }
+    .vue-form-wizard .wizard-icon-circle {
+        border: 2.5px solid #bdbdbd;
+        /*border: none;*/
+    }
+    .vue-form-wizard .wizard-nav-pills > li > a {
+        color: #9c9c9c;
+    }
+    div.wizard-footer-left {
+        float: left;
+        background-color: transparent;
+    }
+    .vue-form-wizard .wizard-btn {
+        border-radius: 10px;
+        font-size: 13px;
+    }
+    .vue-form-wizard .wizard-icon-circle .wizard-icon-container {
+        border-radius: 50%;
+        padding: 20px 10px;
+        margin-top: -2px;
+    }
+    .vue-form-wizard .wizard-btn .wizard-footer-left {
+        color: red;
+    }
+    .vue-form-wizard .wizard-nav-pills a, .vue-form-wizard .wizard-nav-pills li{
+        flex: 0px;
+    }
+    .filepond--drop-label label {
+        font-family: 'Mitr';
+        font-size: 14px;
+    }
+    .filepond--drop-label {
+        border-style: outset;
+        border-radius: 7px;
+        border-color: #bdbdbd;
+    }
+
     input[type=number] {
         width: 100%;
         padding: 0px 5px;
@@ -794,12 +846,6 @@
         line-height: 20px;
     }
 
-    div.wizard-footer-left {
-        float: left;
-        background-color: wheat;
-        color: red;
-    }
-
     .box-container {
         background-color: white;
         border: none;
@@ -808,7 +854,7 @@
     .mt-0.mb-2.form-control {
         background-color: #e1deec;
         border: none;
-        border-radius: 10px;
+        border-radius: 7px;
         padding: 5px 10px;
     }
 
