@@ -32,7 +32,7 @@
                 } else if (routeName == "Rights") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "RightsHistory") {
-                    this.$router.push({ name: 'Accident' })
+                    this.$router.push({ name: 'Rights' })
                 } else if (routeName == "RightsHistoryDetail") {
                     this.$router.push({ name: 'Accident' }) 
                 } else if (routeName == "Claim") {

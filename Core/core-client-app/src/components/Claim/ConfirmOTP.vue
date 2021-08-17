@@ -171,15 +171,13 @@
         margin: 0;
     }
 
-    .swal2-title{
+    .swal2-title {
         font-family: 'Mitr';
-        font-size: 25px;
-        color: red;
+        font-size: 18px;
     }
     .swal2-html-container {
         font-family: 'Mitr';
-        font-size: 25px;
-        color: red;
+        font-size: 15px;
     }
     
 </style>
@@ -188,10 +186,17 @@
     export default {
         methods: {
             showSwal() {
-                this.reason = "ทดสอบ";
-                this.$swal('ยืนยันจำนวนเงินสำเร็จ!',
-                    'ท่านจะได้รับเงินภายใน x วันทำการ',
-                    'success');
+                this.$swal({
+                    icon: 'success',
+                    text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
+                    title: 'ส่งคำร้องเรียบร้อยแล้ว',
+                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: true,
+                    cancelButtonText: "<a href='/Accident' style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                    cancelButtonColor: '#dad5e9',
+                    confirmButtonText: "<a href='/CheckStatus' style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ติดตามสถานะ",
+                    confirmButtonColor: '#5c2e91', 
+                });
             },
             handleOnComplete(value) {
                 console.log('OTP completed: ', value);
@@ -206,8 +211,10 @@
                 return {
                     msg: 'ยืนยันการส่งคำร้อง',
                     accData: this.$store.getters.accGetter(this.$route.params.id),
+
                 };
             },
+
         }
     }
 </script>

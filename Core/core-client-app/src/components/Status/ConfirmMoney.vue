@@ -21,12 +21,12 @@
 
 
             </div>
-            <div class="row">
+            <div class="row mb-2">
                 <div class="col-12">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" v-model="acceptR" >
                         <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                            ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
+                            ข้าพเจ้ายืนยันที่จะรับจำนวนเงินที่แจ้งมา
                         </p>
                     </div>
                 </div>
@@ -36,11 +36,11 @@
                     <p class="mt-4">
                         กรุณากดขอรหัส OTP เพื่อรับรหัสยืนยันจำนวนเงิน
                     </p>
-                    <div class="row">
-                        <div class="col-7 mb-5">
+                    <div class="row mb-4">
+                        <div class="col-7">
                             <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
                         </div>
-                        <div class="col-5 mb-5">
+                        <div class="col-5">
                             <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
                         </div>
                     </div>
@@ -123,10 +123,14 @@
         },
         methods: {
             showSwal() {
-                this.reason = "ทดสอบ";
-                this.$swal('ยืนยันจำนวนเงินสำเร็จ!',
-                    'ท่านจะได้รับเงินภายใน x วันทำการ',
-                    'success');
+                this.$swal({
+                    icon: 'success',
+                    text: 'บริษัทจะแจ้งวันที่โอนเงินให้ท่านทราบอีกครั้ง',
+                    title: 'ยืนยันจำนวนเงินเรียบร้อย',
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    confirmButtonText: "<a href='/CheckStatus' style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-size: 20px; font-weight: bold; border-radius: 4px;'>ตกลง",
+                    confirmButtonColor: '#dad5e9',
+                });
             },
             handleOnComplete(value) {
                 console.log('OTP completed: ', value);

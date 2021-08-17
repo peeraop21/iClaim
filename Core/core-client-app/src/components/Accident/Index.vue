@@ -48,17 +48,14 @@
                                         <br />
                                         สิทธิ์คงเหลือ:  บาท
                                     </p>
-
-                                    <div style="margin: -20px 0 10px 0px;" align="center">
+                                    <!--<div style="margin: -20px 0 10px 0px;" align="center">
                                         <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accident.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                                    </div>
-                                    
+                                    </div>-->
                                 </div>
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
                                     <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.eaTmpId}}">ใช้สิทธิ์</router-link>
                                     <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
-
                                 </div>
                             </div>
                         </div>
@@ -284,16 +281,13 @@
     }
     a[class="btn-rightsHistory"]:link, a[class="btn-rightsHistory"]:visited {
         background-color: #dad5e9;
-        margin-top: 10px;
-        margin-left: 10px;
         color: var(--main-color);
-        padding: 3px 30px;
+        padding: 3px 20px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         border-radius: 10px;
         font-weight: bold;
-        /*font-size: 14px;*/
     }
 
     section {

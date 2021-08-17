@@ -96,7 +96,7 @@
                     </div>
                     <br>
                     <div class="box-container">
-                        <label class="px-2">ลักษณะบาดเจ็บ</label>
+                        <label class="px-2">อาการบาดเจ็บ</label>
                         <b-form-input class="mt-0 mb-2" v-model="injuri" placeholder=""></b-form-input>
 
                         <div v-for="(input, index) in bills" :key="`Bill-${index}`" class="input wrapper flex items-center">
