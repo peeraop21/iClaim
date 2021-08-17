@@ -53,12 +53,13 @@
                                 </vs-button>
                             </div>
                         </div>
-                        <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
-                        <p class="mt-3">สิทธิ์คงเหลือ: 4000 บาท</p>
+                        <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>                       
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 30,000 บาท</a>
+                            <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 3px 20px;">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -79,12 +80,13 @@
                                 </vs-button>
                             </div>
                         </div>
-                        <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
-                        <p class="mt-3">สิทธิ์คงเหลือ: 0 บาท</p>
+                        <p style="line-height: 25px">ผู้ประสบภัยที่สูญเสียอวัยวะ/ทุพพลภาพอย่างถาวร บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
+                            <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 3px 20px;">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -105,12 +107,13 @@
                                 </vs-button>
                             </div>
                         </div>
-                        <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
-                        <p class="mt-3">สิทธิ์คงเหลือ: 0 บาท</p>
+                        <p style="line-height: 25px">ผู้ประสบภัยที่เข้ารับการรักษาพยาบาลในสถานพยาบาล (ผู้ป่วยใน) บริษัทจะจ่ายค่าชดเชยรายวัน วันละ 200 บาท (จำนวนรวมกันไม่เกิน 20 วัน)</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 4,000 บาท</a>
+                            <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 3px 20px;">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>

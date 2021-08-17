@@ -128,8 +128,13 @@
                     text: 'บริษัทจะแจ้งวันที่โอนเงินให้ท่านทราบอีกครั้ง',
                     title: 'ยืนยันจำนวนเงินเรียบร้อย',
                     /*footer: '<a href="">Why do I have this issue?</a>'*/
-                    confirmButtonText: "<a href='/CheckStatus' style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-size: 20px; font-weight: bold; border-radius: 4px;'>ตกลง",
+                    confirmButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-size: 20px; font-weight: bold; border-radius: 4px;'>ตกลง",
                     confirmButtonColor: '#dad5e9',
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'CheckStatus' })
+                    } 
                 });
             },
             handleOnComplete(value) {
