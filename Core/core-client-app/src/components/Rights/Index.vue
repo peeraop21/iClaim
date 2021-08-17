@@ -57,10 +57,11 @@
                         <br>
                         <p style="line-height: 25px">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: 4000 บาท</a>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 30,000 บาท</a>
                             <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -85,10 +86,11 @@
                         <br>
                         <p style="line-height: 25px">ผู้ประสบภัยที่สูญเสียอวัยวะ/ทุพพลภาพอย่างถาวร บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: 0 บาท</a>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 80,000 บาท</a>
                             <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -113,10 +115,11 @@
                         <br>
                         <p style="line-height: 25px">ผู้ประสบภัยที่เข้ารับการรักษาพยาบาลในสถานพยาบาล (ผู้ป่วยใน) บริษัทจะจ่ายค่าชดเชยรายวัน วันละ 200 บาท (จำนวนรวมกันไม่เกิน 20 วัน)</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: 0 บาท</a>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 4,000 บาท</a>
                             <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" >ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" >เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -230,4 +233,26 @@
 </script>
 
 <style>
+    .btn-select-rights {
+        background-color: #5c2e91;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 13px;
+        padding: 5px 15px;
+        border: 2px solid #5c2e91;
+    }
+    .btn-rights-history {
+        background-color: white;
+        color: #5c2e91;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 13px;
+        padding: 5px 10px;
+        border: 2px solid #5c2e91;
+    }
 </style>

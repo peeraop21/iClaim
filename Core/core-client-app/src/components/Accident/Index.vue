@@ -49,9 +49,7 @@
                                         สิทธิ์คงเหลือ:  บาท
                                     </p>
 
-                                    <div style="margin: -20px 0 10px 0px;" align="center">
-                                        <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accident.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                                    </div>
+                                    
                                     
                                 </div>
                                 <div style="text-align: center">
@@ -234,6 +232,7 @@
         display: inline-block;
         border-radius: 10px;
         font-size: 13px;
+        border: 2px solid #5c2e91;
     }
    
     .btn-next:link, .btn-next:visited {

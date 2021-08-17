@@ -72,17 +72,17 @@
             </div>
         </vs-dialog>
         <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="active=!active">
-            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="processFilePageOne">
+            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" > <!--:before-change="processFilePageOne"-->
                 <div class="">
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
                     </div>
                     
-                    <div class="box-container">
+                    <!--<div class="box-container">
                         <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
-                        <div>
+                        <div>-->
                             <!--<input type="file" name="filename">-->
-                            <file-pond name="idCardFile"
+                            <!--<file-pond name="idCardFile"
                                        ref="pond"
                                        label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน"
                                        credits="null"
@@ -90,10 +90,10 @@
                                        v-bind:allowFileEncode="true"
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="idCardFile"
-                                       v-on:addfile="onAddIdCardFile" />
+                                       v-on:addfile="onAddIdCardFile" />-->
                             <!--<input type="submit"> -->
-                        </div>
-                    </div>
+                        <!--</div>
+                    </div>-->
                     <br>
                     <div class="box-container">
                         <label class="px-2">ลักษณะบาดเจ็บ</label>
@@ -115,7 +115,7 @@
                             <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
                             <label class="px-2">จำนวนเงิน</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
-                            <label class="px-2">เข้ารักษาวันที่</label>
+                            <label class="px-2">วันที่เข้ารักษา</label>
                             <b-form-datepicker v-model="input.hospitalized_date"
                                                selected-variant="primary"
                                                label-selected=""
@@ -127,7 +127,7 @@
                                                label-today-button="เลือกวันปัจจุบัน"
                                                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
                                                size="sm"
-                                               class="mt-0 mb-2 " locale="th" placeholder="เลือกวันที่เข้ารักษา"></b-form-datepicker>
+                                               class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
                             <br>
                             <!-- Add Svg Icon-->
                             <p style="color: green">
@@ -159,7 +159,7 @@
                     </div>
                     <br>
                     <br>
-                    <p class="p_right">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
+                    <p class="p_right">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
                 </div>
             </tab-content>
             <!-- บัญชีรับเงิน -->

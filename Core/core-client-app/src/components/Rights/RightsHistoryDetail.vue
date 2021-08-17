@@ -84,7 +84,9 @@ export default {
               },
           ],
           msg: "ดูเพิ่มเติม",
-          msg2: "เบิกค่ารักษาเบื้องต้น"
+          msg2: "เบิกค่ารักษาเบื้องต้น",
+          userData: this.$store.state.userStateData,
+          accData: this.$store.getters.accGetter(this.$route.params.id)
       }
   }
 }
