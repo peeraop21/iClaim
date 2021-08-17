@@ -231,6 +231,7 @@
         display: inline-block;
         border-radius: 10px;
         font-size: 13px;
+        border: 2px solid #5c2e91;
     }
    
     .btn-next:link, .btn-next:visited {

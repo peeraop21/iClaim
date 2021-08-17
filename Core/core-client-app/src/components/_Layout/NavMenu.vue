@@ -19,6 +19,7 @@
         data() {
             return {
                 isExpanded: false,
+                
             }
         },
         methods: {
@@ -34,7 +35,7 @@
                 } else if (routeName == "RightsHistory") {
                     this.$router.push({ name: 'Rights' })
                 } else if (routeName == "RightsHistoryDetail") {
-                    this.$router.push({ name: 'Accident' }) 
+                    this.$router.push({ name: 'RightsHistory', params: { id: this.$route.params.id }  })
                 } else if (routeName == "Claim") {
                     this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {

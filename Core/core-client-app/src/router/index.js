@@ -38,7 +38,7 @@ const routes = [
         component: RightsHistory,
     },
     {
-        path: "/RightsHistoryDetail",
+        path: "/RightsHistoryDetail/:id",
         name: "RightsHistoryDetail",
         component: RightsHistoryDetail,
     },

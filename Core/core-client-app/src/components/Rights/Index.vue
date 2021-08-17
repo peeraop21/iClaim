@@ -224,4 +224,26 @@
 </script>
 
 <style>
+    .btn-select-rights {
+        background-color: #5c2e91;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 13px;
+        padding: 5px 15px;
+        border: 2px solid #5c2e91;
+    }
+    .btn-rights-history {
+        background-color: white;
+        color: #5c2e91;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 13px;
+        padding: 5px 10px;
+        border: 2px solid #5c2e91;
+    }
 </style>

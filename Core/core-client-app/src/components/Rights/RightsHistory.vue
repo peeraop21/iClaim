@@ -2,7 +2,7 @@
     <div class=" container" align="center">
         <div class="row">
             <div class="col-12" align="center">
-                <h2 id="header2">สิทธิ์การรักษาเบื้องต้น</h2>
+                <h2 id="header2">ประวัติการใช้สิทธิ์</h2>
                 <br>
                 <div class="tab-user">
                     <div class="row">
@@ -48,7 +48,7 @@
                                     </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" to="/RightsHistoryDetail">ดูเพิ่มเติม</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.eaTmpId}}">ดูเพิ่มเติม</router-link>
                                 </div>
                             </div>
                         </div>
