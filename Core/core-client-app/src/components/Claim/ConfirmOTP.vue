@@ -190,12 +190,20 @@
                     icon: 'success',
                     text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
                     title: 'ส่งคำร้องเรียบร้อยแล้ว',
-                /*footer: '<a href="">Why do I have this issue?</a>'*/
-                    showCancelButton: true,
-                    cancelButtonText: "<a href='/Accident' style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                    cancelButtonColor: '#dad5e9',
-                    confirmButtonText: "<a href='/CheckStatus' style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ติดตามสถานะ",
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ติดตามสถานะ",
                     confirmButtonColor: '#5c2e91', 
+                }).then((result) => {
+                    
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'CheckStatus' })
+                    } else if (result.isDenied) {
+                        this.$router.push({ name: 'Accident' })
+                    }
                 });
             },
             handleOnComplete(value) {
