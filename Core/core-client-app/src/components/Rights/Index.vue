@@ -89,7 +89,7 @@
                     </div>
                     <br>
                 </div>
-                <div>
+                <!--<div>
                     <div class="tab-user px-3" align="left">
                         <div class="row">
                             <div class="col-9">
@@ -109,12 +109,11 @@
                         <p class="mt-3">สิทธิ์คงเหลือ: 0 บาท</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                            <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
                             <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 3px 20px;">เลือก</router-link>
                         </div>
                     </div>
                     <br>
-                </div>
+                </div>-->
                 <!-- Info 1 -->
                 <vs-dialog width="550px" not-center v-model="Info1">
                     <template #header>
