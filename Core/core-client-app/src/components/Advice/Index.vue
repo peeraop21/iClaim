@@ -118,7 +118,7 @@
                            @click="passangerDialog=!passangerDialog">
                     <img src="@/assets/passanger.png" width="100">
                 </vs-button>
-                <p style="font-weight: bold; color: var(--main-color);">ผู้โดยสารรถเอากระกัน</p>
+                <p style="font-weight: bold; color: var(--main-color);">ผู้โดยสารรถเอาประกัน</p>
             </div>
         </div>
         <!-- Rider Dialog -->
