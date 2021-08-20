@@ -46,6 +46,8 @@
                     this.$router.push({ name: 'CheckStatus' })
                 } else if (routeName == "ClaimDetail") {
                     this.$router.push({ name: 'CheckStatus' })
+                } else if (routeName == "Ocr") {
+                    this.$router.push({ name: 'Advice' })
                 }
             },
 

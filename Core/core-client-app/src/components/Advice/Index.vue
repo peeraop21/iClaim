@@ -147,7 +147,7 @@
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
-                <router-link class="btn-next" style="width: 100%; padding: 8px 0;" to="/Accident">{{msg}}</router-link>
+                <router-link class="btn-next" style="width: 100%; padding: 8px 0;" to="/Ocr">{{msg}}</router-link>
             </div>
         </div>
 
