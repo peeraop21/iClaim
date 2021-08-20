@@ -277,7 +277,7 @@
                     'url': url,
                 });
                 let timestamp = this.current_timestamp();
-                let token = this.generate_token_readIdCard("681eac5be10f3632cd659cfc7d87380e", "86e6d2be10a59432ac1528b684224101b59313c2", timestamp, data);
+                let token = this.generate_token_readIdCard(this.SECRET_ID, this.SECRET_KEY, timestamp, data);
                 let config = {
                     method: 'post',
                     url: 'https://iai.flashsoftapi.com/v1/thai-id-card-ocr',
