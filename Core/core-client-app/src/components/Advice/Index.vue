@@ -118,7 +118,7 @@
                            @click="passangerDialog=!passangerDialog">
                     <img src="@/assets/passanger.png" width="100">
                 </vs-button>
-                <p style="font-weight: bold; color: var(--main-color);">ผู้โดยสารรถเอากระกัน</p>
+                <p style="font-weight: bold; color: var(--main-color);">ผู้โดยสารรถเอาประกัน</p>
             </div>
         </div>
         <!-- Rider Dialog -->
@@ -136,14 +136,13 @@
         <vs-dialog width="550px" not-center v-model="passangerDialog">
             <template #header>
                 <h4 class="not-margin">
-                    ผู้โดยสารรถเอากระกัน
+                    ผู้โดยสารรถเอาประกัน
                 </h4>
             </template>
             <div class="con-content" align="left">
-                <p>ผู้โดยสารรถเอากระกัน หมายถึง ผู้ที่ซ้อนท้ายรถจักรยานยนต์คันที่ทำประกันภัยไว้ตาม พ.ร.บ. คุ้มครองผู้ประสบภัยจากรถ</p>
+                <p>ผู้โดยสารรถเอาประกัน หมายถึง ผู้ที่ซ้อนท้ายรถจักรยานยนต์คันที่ทำประกันภัยไว้ตาม พ.ร.บ. คุ้มครองผู้ประสบภัยจากรถ</p>
             </div>
         </vs-dialog>
-
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
@@ -254,7 +253,7 @@
 </template>
 <script>
 
-
+    
     export default {
         name: 'Advice',
         data() {
@@ -265,11 +264,10 @@
                 active3: false,
                 riderDialog: false,
                 passangerDialog: false,
-                page: 1
+                page: 1,
             }
         },
         methods: {
-            
         },
         mounted() {
             

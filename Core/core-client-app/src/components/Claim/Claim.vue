@@ -38,6 +38,10 @@
                                   placeholder="สถานพยาบาล" />
 
                     </div>
+                    <br />
+                    <p style="margin-top: -15px">
+                        มอบอำนาจให้สถานพยาบาลขอรับค่าเสียหายเบื้องต้น
+                    </p>
                     <p class="mt-3">
                         3. เมื่อข้าพเจ้าได้รับค่าเสียหายเบื้องต้นจากบริษัทประกันภัยครบถ้วนตามจำนวนที่กฎหมายกำหนดแล้ว
                         ข้าพเจ้าขอสัญญาว่า ข้าพเจ้าจะไม่ไปเรียกร้องค่าเสียหายเบื้องต้นจากเจ้าของรถ หรือมอบอำนาจให้บุคคลอื่น
@@ -110,7 +114,35 @@
                                        v-model="input.file" />
 
                             <label class="px-2">โรงพยาบาล</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.hospital" type="text" placeholder="" />
+                            <b-form-input class="mt-0 mb-2" v-model="input.hospital" type="text" placeholder="" @click="dialogHospital=!dialogHospital"/>
+
+                            <!-- Dialog Hospital -->
+                            <vs-dialog width="550px" not-center v-model="dialogHospital">
+                                <template #header>
+                                    <h4 class="not-margin">
+                                        เลือกโรงพยาบาล
+                                    </h4>
+                                </template>
+                                <div class="con-content" align="left">
+                                    <p class="mb-0">จังหวัด</p>
+                                    <div class="mb-2">
+                                        <select v-model="select.bankName">
+                                            <option v-for="bankName in bankNames" :value="bankName.bank" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                                <!--{{ bankName.name }}-->
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <p class="mb-0">โรงพยาบาล</p>
+                                    <div class="mb-2">
+                                        <select v-model="select.bankName">
+                                            <option v-for="bankName in bankNames" :value="bankName.bank" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                                <!--{{ bankName.name }}-->
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </vs-dialog>
+
                             <label class="px-2">เลขที่ใบเสร็จ</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
                             <label class="px-2">จำนวนเงิน</label>
@@ -159,7 +191,7 @@
                     </div>
                     <br>
                     <br>
-                    <p class="p_right">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
+                    <p class="p_right" style="font-size: 15px; font-weight: bold;;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
                 </div>
             </tab-content>
             <!-- บัญชีรับเงิน -->
@@ -191,7 +223,13 @@
                         <div>
 
                             <p class="mb-0 px-2">ชื่อธนาคาร</p>
-                            <b-form-input class="mt-0 mb-2" v-model="bookbank" placeholder=""></b-form-input>
+                            <div class="mb-2">
+                                <select v-model="select.bankName">
+                                    <option v-for="bankName in bankNames" :value="bankName.bank" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                        {{ bankName.name }}
+                                    </option>
+                                </select>
+                            </div>
                             <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
                             <b-form-input class="mt-0 mb-2" v-model="accountName" placeholder=""></b-form-input>
                             <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
@@ -589,6 +627,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import { FormWizard, TabContent } from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
     import vueFilePond from 'vue-filepond';
@@ -645,6 +684,11 @@
                 ],
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
+                bankNames: [],
+                select: {
+                    bankName: ''
+                },
+                // bankData: this.$store.state.bankStateData,
                 idCardFile: null,
                 billsFile: null,
                 bankFile: null,
@@ -652,6 +696,7 @@
                 bankFileDisplay: { file: null, filename: "", base64: "" },
                 // ----Dialog
                 active: false,
+                dialogHospital: false,
                 // Radio in Dialog
                 picked: 1,
 
@@ -659,7 +704,21 @@
         },
 
         methods: {
-
+            getBankNames() {
+                console.log('getBankNames');
+                var url = '/api/BankNames';
+                axios.get(url)
+                    .then((response) => {
+                        //this.$store.state.bankStateData = response.data;
+                        //this.bankData = this.$store.state.bankStateData
+                        //console.log(this.$store.state.bankStateData);
+                        this.bankNames = response.data;
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
             onAddIdCardFile: function (error, file) {
                 this.idCardFileDisplay.file = file
                 this.idCardFileDisplay.filename = file.filename
@@ -740,6 +799,7 @@
         mounted() {
             console.log(this.accData)
             console.log(this.userData)
+            this.getBankNames();
 
         }
     };
@@ -859,6 +919,19 @@
     }
 
         .mt-0.mb-2.form-control:hover {
+            border: none;
+            box-shadow: 1px 2px var(--main-color);
+            transform: translateX(1px);
+        }
+
+    select {
+        width: 100%;
+        background-color: #e1deec;
+        border: none;
+        border-radius: 7px;
+        padding: 5px 10px;
+    }
+        select:hover {
             border: none;
             box-shadow: 1px 2px var(--main-color);
             transform: translateX(1px);

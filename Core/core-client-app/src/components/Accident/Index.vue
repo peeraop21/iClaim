@@ -157,7 +157,7 @@
 
     p.p_right {
         text-align: right;
-        width: 90%;
+        width: 99%;
     }
 
     .txt {

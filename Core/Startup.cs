@@ -1,4 +1,5 @@
 using DataAccess.EFCore.AccidentModels;
+using DataAccess.EFCore.BankNamesModels;
 using DataAccess.EFCore.iPolicyModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -38,11 +39,14 @@ namespace Core
                 configuration.RootPath = "core-client-app/dist";
             });
             services.AddDbContext<RvpaccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("RvpAccident")));
+            services.AddDbContext<RvpofficeContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Rvpoffice")));
             services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IBankNamesService, BankNamesService>();
+            services.AddScoped<IBankNamesService, BankNamesService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
