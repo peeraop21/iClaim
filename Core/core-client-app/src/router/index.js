@@ -13,6 +13,7 @@ import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
 import CheckStatus from "@/components/Status/CheckStatus.vue";
 import ClaimDetail from "@/components/Status/ClaimDetail.vue";
 import ConfirmMoney from "@/components/Status/ConfirmMoney.vue";
+import Ocr from "@/components/Ocr/Index.vue";
 
 Vue.use(VueRouter)
 
@@ -82,6 +83,10 @@ const routes = [
         path: "/ConfirmMoney",
         name: "ConfirmMoney",
         component: ConfirmMoney,
+    }, {
+        path: "/Ocr",
+        name: "Ocr",
+        component: Ocr,
     },
 ]
 
