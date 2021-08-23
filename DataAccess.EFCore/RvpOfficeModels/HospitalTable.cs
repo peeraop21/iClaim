@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataAccess.EFCore.HospitalModels
+namespace DataAccess.EFCore.RvpOfficeModels
 {
     public partial class HospitalTable
     {

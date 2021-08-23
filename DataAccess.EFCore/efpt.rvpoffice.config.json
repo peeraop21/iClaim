@@ -7,7 +7,7 @@
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "BankNamesModels",
+   "OutputPath": "RvpOfficeModels",
    "ProjectRootNamespace": "DataAccess.EFCore",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
@@ -15,6 +15,14 @@
    "Tables": [
       {
          "Name": "[dbo].[BankNames]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CHANGWAT]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[hospital_table]",
          "ObjectType": 0
       }
    ],

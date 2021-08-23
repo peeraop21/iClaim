@@ -1,5 +1,5 @@
 using DataAccess.EFCore.AccidentModels;
-using DataAccess.EFCore.BankNamesModels;
+using DataAccess.EFCore.RvpOfficeModels;
 using DataAccess.EFCore.iPolicyModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -47,6 +47,10 @@ namespace Core
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IBankNamesService, BankNamesService>();
             services.AddScoped<IBankNamesService, BankNamesService>();
+            services.AddTransient<IHospitalService, HospitalService>();
+            services.AddScoped<IHospitalService, HospitalService>();
+            services.AddTransient<IChangwatService, ChangwatService>();
+            services.AddScoped<IChangwatService, ChangwatService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

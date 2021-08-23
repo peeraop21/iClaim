@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataAccess.EFCore.BankNamesModels
+namespace DataAccess.EFCore.RvpOfficeModels
 {
     public partial class BankNames
     {
@@ -10,7 +10,5 @@ namespace DataAccess.EFCore.BankNamesModels
         public string Name { get; set; }
         public string Default0 { get; set; }
         public string BankCode { get; set; }
-
-    
     }
 }

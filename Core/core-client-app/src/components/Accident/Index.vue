@@ -186,8 +186,8 @@
         .tab-user.span {
             color: black;
             background-image: linear-gradient(0deg, #FFFFFF 0%, #FFFFFF 10%);
-            -webkit-background-clip: text;
-            background-clip: text;
+            -webkit-background-clip: content-box;
+            background-clip: content-box;
         }
 
     /*.tab-user::before {

@@ -3,94 +3,80 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace DataAccess.EFCore.HospitalModels
+namespace DataAccess.EFCore.RvpOfficeModels
 {
-    public partial class HospitalContext : DbContext
+    public partial class RvpofficeContext : DbContext
     {
-        public HospitalContext()
+        public RvpofficeContext()
         {
         }
 
-        public HospitalContext(DbContextOptions<HospitalContext> options)
+        public RvpofficeContext(DbContextOptions<RvpofficeContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Branch> Branch { get; set; }
+        public virtual DbSet<BankNames> BankNames { get; set; }
+        public virtual DbSet<Changwat> Changwat { get; set; }
         public virtual DbSet<HospitalTable> HospitalTable { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Branch>(entity =>
+            modelBuilder.Entity<BankNames>(entity =>
             {
-                entity.HasKey(e => new { e.Branchid, e.Regionid, e.Branchoff })
-                    .HasName("PK_BRANCH_1");
+                entity.HasKey(e => e.Bank);
 
-                entity.ToTable("BRANCH");
+                entity.Property(e => e.Bank)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BankCode)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Default0)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(75)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Changwat>(entity =>
+            {
+                entity.HasKey(e => e.Changwatshortname);
+
+                entity.ToTable("CHANGWAT");
+
+                /*entity.HasIndex(e => e.Changwatname)
+                    .HasName("Viva_Chagwatname_Idx");*/
+
+                entity.Property(e => e.Changwatshortname)
+                    .HasColumnName("CHANGWATSHORTNAME")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Branchid)
                     .HasColumnName("BRANCHID")
                     .HasMaxLength(3)
                     .IsUnicode(false)
-                    .HasComment("รหัสสาขา");
-
-                entity.Property(e => e.Regionid)
-                    .HasColumnName("REGIONID")
-                    .HasMaxLength(2)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Branchoff)
-                    .HasColumnName("BRANCHOFF")
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.AcBranchId)
-                    .HasColumnName("AcBranchID")
-                    .HasMaxLength(3)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BankNo)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BranchPvr)
-                    .HasColumnName("BranchPVR")
-                    .HasMaxLength(5)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BranchShortName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Branchname)
-                    .HasColumnName("BRANCHNAME")
+                entity.Property(e => e.Changwatname)
+                    .HasColumnName("CHANGWATNAME")
                     .HasMaxLength(40)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CanRegis)
+                entity.Property(e => e.Changwattrnsp)
+                    .HasColumnName("CHANGWATTRNSP")
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.Ceo)
-                    .HasColumnName("CEO")
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength()
-                    .HasDefaultValueSql("('N')");
-
-                entity.Property(e => e.ChangwatShortName)
-                    .HasMaxLength(2)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.MainBranchId)
+                entity.Property(e => e.Provinceid)
+                    .HasColumnName("PROVINCEID")
                     .HasMaxLength(3)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TelNo)
-                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -101,7 +87,7 @@ namespace DataAccess.EFCore.HospitalModels
 
                 entity.ToTable("hospital_table");
 
-                entity.HasIndex(e => e.BranchId)
+                /*entity.HasIndex(e => e.BranchId)
                     .HasName("MFEC_IndexBranchID");
 
                 entity.HasIndex(e => e.Changwatshortname)
@@ -111,7 +97,7 @@ namespace DataAccess.EFCore.HospitalModels
                     .HasName("MFEC_IndexHospitalName");
 
                 entity.HasIndex(e => e.Oicprov)
-                    .HasName("idxHospital_OICProv");
+                    .HasName("idxHospital_OICProv");*/
 
                 entity.Property(e => e.Hospitalid)
                     .HasColumnName("HOSPITALID")

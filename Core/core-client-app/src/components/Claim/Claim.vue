@@ -113,35 +113,43 @@
                                        accepted-file-types="image/jpeg, image/png"
                                        v-model="input.file" />
 
-                            <label class="px-2">โรงพยาบาล</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.hospital" type="text" placeholder="" @click="dialogHospital=!dialogHospital"/>
 
+                            <!--<b-form-input class="mt-0 mb-2" v-model="input.hospital" type="text" placeholder="" @click="dialogHospital=!dialogHospital" />-->
+                            <!--<label class="px-2">จังหวัดของโรงพยาบาล</label>
+                            <div class="mb-2">
+                                <select v-model="selectChangwat.changwat">
+                                    <option v-for="changwat in changwats" :value="changwat.changwatshortname" v-bind:key="changwat.changwatshortname" style="font-size: 12px; line-height: 0px">
+                                        {{ changwat.changwatname }}
+                                    </option>
+                                </select>
+                            </div>
+                            <label class="px-2">โรงพยาบาล</label>
+                            <div class="mb-2">
+                                <select v-model="selectHospital.hospital">
+                                    <option v-for="hospital in hospitals" :value="hospital.hospitalid" v-bind:key="hospital.hospitalid" style="font-size: 12px; line-height: 0px">
+                                        {{ hospital.hospitaltradename }}
+                                    </option>
+                                </select>
+                            </div>-->
                             <!-- Dialog Hospital -->
-                            <vs-dialog width="550px" not-center v-model="dialogHospital">
-                                <template #header>
-                                    <h4 class="not-margin">
-                                        เลือกโรงพยาบาล
-                                    </h4>
-                                </template>
-                                <div class="con-content" align="left">
-                                    <p class="mb-0">จังหวัด</p>
-                                    <div class="mb-2">
-                                        <select v-model="select.bankName">
-                                            <option v-for="bankName in bankNames" :value="bankName.bank" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
-                                                <!--{{ bankName.name }}-->
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <p class="mb-0">โรงพยาบาล</p>
-                                    <div class="mb-2">
-                                        <select v-model="select.bankName">
-                                            <option v-for="bankName in bankNames" :value="bankName.bank" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
-                                                <!--{{ bankName.name }}-->
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </vs-dialog>
+                        <form>
+                            <label class="px-2">จังหวัดของโรงพยาบาล</label>
+                            <div class="mb-2">
+                                <select name="category" id="category" v-model="selectChangwat" style="font-size: 13px;">
+                                    <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
+                                        {{ category.changwatname }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label class="px-2">โรงพยาบาล</label>
+                                <select name="item" id="item" v-model="input.selectHospital" style="font-size: 13px;">
+                                    <option v-for="(item, index) in filteredItems" :value="item.hospitaltradename" :key="index" style="font-size: 12px; line-height: 0px">
+                                        {{ item.hospitaltradename }}
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
 
                             <label class="px-2">เลขที่ใบเสร็จ</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
@@ -191,7 +199,7 @@
                     </div>
                     <br>
                     <br>
-                    <p class="p_right" style="font-size: 15px; font-weight: bold;;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
+                    <p class="p_right" style="font-size: 15px; font-weight: bold;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
                 </div>
             </tab-content>
             <!-- บัญชีรับเงิน -->
@@ -224,8 +232,8 @@
 
                             <p class="mb-0 px-2">ชื่อธนาคาร</p>
                             <div class="mb-2">
-                                <select v-model="select.bankName">
-                                    <option v-for="bankName in bankNames" :value="bankName.bank" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                <select v-model="selectBank.bankName" style="font-size: 13px;">
+                                    <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
                                         {{ bankName.name }}
                                     </option>
                                 </select>
@@ -414,7 +422,7 @@
                         <p class="mb-0" style="color: grey">-</p>
                         <hr class="mt-0">
                     </div>
-                    <p class="mb-0">รถคันเอาประกันภัย หมายเลขทะเบียน</p>
+                    <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                     <div class="mt-0" v-if="bank!=''">
                         <p class="mb-0" style="color: grey">{{bank}}</p>
                         <hr class="mt-0">
@@ -450,7 +458,7 @@
                     <label align="left" class="title-advice-menu mb-1">ข้อมูลเอกสารประกอบคำร้อง</label>
                 </div>
                 <div class="box-container mb-3">
-                    <p class="mb-0">ลักษณะบาดเจ็บ</p>
+                    <p class="mb-0">อาการบาดเจ็บ</p>
                     <div class="mt-0" v-if="injuri!=''">
                         <p class="mb-0" style="color: grey">{{injuri}}</p>
                         <hr class="mt-0">
@@ -477,26 +485,26 @@
                     </div>
 
                     <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
-                        <p class="mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                        <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                         <div v-if="bill.BillfileShow" align="center">
                             <img class="img-show" :src="bill.BillfileShow" />
                             <br />
                             <label>{{bill.filename}}</label>
                         </div>
                         <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
-                        <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="bill.BillfileShow===''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>-->
+            <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
+            <hr class="mt-0">
+        </div>
+        <div class="mt-0" v-else-if="bill.BillfileShow===''">
+            <p class="mb-0" style="color: grey">-</p>
+            <hr class="mt-0">
+        </div>-->
                         <p class="mb-0">ชื่อโรงพยาบาล</p>
-                        <div class="mt-0" v-if="bill.hospital!=''">
-                            <p class="mb-0" style="color: grey">{{bill.hospital}}</p>
+                        <div class="mt-0" v-if="bill.selectHospital!=''">
+                            <p class="mb-0" style="color: grey">{{ bill.selectHospital }}</p>
                             <hr class="mt-0">
                         </div>
-                        <div class="mt-0" v-else-if="bill.hospital===''">
+                        <div class="mt-0" v-else-if="bill.selectHospital===''">
                             <p class="mb-0" style="color: grey">-</p>
                             <hr class="mt-0">
                         </div>
@@ -526,7 +534,7 @@
                         </div>
                         <p class="mb-0">จำนวนเงิน</p>
                         <div class="mt-0" v-if="bill.money!=''">
-                            <p class="mb-0" style="color: grey">{{bill.money}}</p>
+                            <p class="mb-0" style="color: grey">{{bill.money}} บาท</p>
                             <hr class="mt-0">
                         </div>
                         <div class="mt-0" v-else-if="bill.money===''">
@@ -535,9 +543,15 @@
                         </div>
                     </div>
 
-                    <p class="mb-0">รวมเงินที่ขอเบิก</p>
-                    <p class="mb-0" style="color: grey">{{total_amount}}</p>
-                    <hr class="mt-0">
+                    <p class="mb-0">จำนวนเงินรวมทั้งหมด</p>
+                    <div class="mt-0" v-if="total_amount!=''">
+                        <p class="mb-0" style="color: grey">{{total_amount}} บาท</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="total_amount===''">
+                        <p class="mb-0" style="color: grey">-</p>
+                        <hr class="mt-0">
+                    </div>
                 </div>
                 <!-- บัญชี -->
                 <div align="left" style="width: 100%;">
@@ -561,11 +575,11 @@
                         <hr class="mt-0">
                     </div>-->
                     <p class="mb-0">ชื่อธนาคาร</p>
-                    <div class="mt-0" v-if="bank!=''">
-                        <p class="mb-0" style="color: grey">{{bookbank}}</p>
+                    <div class="mt-0" v-if="selectBank.bankName!=''">
+                        <p class="mb-0" style="color: grey">{{ selectBank.bankName }}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bank===''">
+                    <div class="mt-0" v-else-if="selectBank.bankName===''">
                         <p class="mb-0" style="color: grey">-</p>
                         <hr class="mt-0">
                     </div>
@@ -574,51 +588,27 @@
                     <div class="mt-0" v-if="accountName!=''">
                         <p class="mb-0" style="color: grey">{{accountName}}</p>
                         <hr class="mt-0">
-                        <div class="row">
-                            <div class="col-6">
-                                <p class="mb-0">เลขที่ใบเสร็จ</p>
-                                <div class="mt-0" v-if="bill.bill_no!=''">
-                                    <p class="mb-0" style="color: grey">{{bill.bill_no}}</p>
-                                    <hr class="mt-0">
-                                </div>
-                                <div class="mt-0" v-else-if="bill.bill_no===''">
-                                    <p class="mb-0" style="color: grey">-</p>
-                                    <hr class="mt-0">
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <p class="mb-0">วันที่เข้ารักษา</p>
-                                <div class="mt-0" v-if="bill.hospitalized_date!=''">
-                                    <p class="mb-0" style="color: grey">{{bill.hospitalized_date}}</p>
-                                    <hr class="mt-0">
-                                </div>
-                                <div class="mt-0" v-else-if="bill.hospitalized_date===''">
-                                    <p class="mb-0" style="color: grey">-</p>
-                                    <hr class="mt-0">
-                                </div>
-                            </div>
-                        </div>
-                        <!--<div class="mt-0" v-else-if="accountName===''">
-                            <p class="mb-0" style="color: grey">-</p>
-                            <hr class="mt-0">
-                        </div>-->
-                        <p class="mb-0">เลขบัญชีธนาคาร</p>
-                        <div class="mt-0" v-if="accountNumber!=''">
-                            <p class="mb-0" style="color: grey">{{accountNumber}}</p>
-                            <hr class="mt-0">
-                        </div>
-                        <div class="mt-0" v-else-if="accountNumber===''">
-                            <p class="mb-0" style="color: grey">-</p>
-                            <hr class="mt-0">
-                        </div>
+                    </div>
+                    <div class="mt-0" v-else-if="accountName===''">
+                        <p class="mb-0" style="color: grey">-</p>
+                        <hr class="mt-0">
+                    </div>
+                    <p class="mb-0">เลขบัญชีธนาคาร</p>
+                    <div class="mt-0" v-if="accountNumber!=''">
+                        <p class="mb-0" style="color: grey">{{accountNumber}}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="accountNumber===''">
+                        <p class="mb-0" style="color: grey">-</p>
+                        <hr class="mt-0">
                     </div>
 
                     <!-- <div class="form-check">
-                    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
-                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                        ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
-                    </p>
-                    </div> -->
+    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
+    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+        ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
+    </p>
+    </div> -->
                 </div>
             </tab-content>
 
@@ -664,7 +654,7 @@
                 // ---Bill
                 injuri: '',
                 patientType: '',
-                bills: [{ billNo: 1, hospital: "", bill_no: "", money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" }],
+                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" }],
                 total_amount: null,
                 // --BookBank
                 bank: '',
@@ -684,10 +674,7 @@
                 ],
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
-                bankNames: [],
-                select: {
-                    bankName: ''
-                },
+
                 // bankData: this.$store.state.bankStateData,
                 idCardFile: null,
                 billsFile: null,
@@ -699,7 +686,17 @@
                 dialogHospital: false,
                 // Radio in Dialog
                 picked: 1,
-
+                //----Get Bank Name
+                bankNames: [],
+                selectBank: {
+                    bankName: ''
+                },
+                //----Get Hospital Name
+                hospitals: [],
+                //selectHospital: '',
+                //----Get Changwat Name
+                changwats: [],
+                selectChangwat: '',
             };
         },
 
@@ -713,6 +710,30 @@
                         //this.bankData = this.$store.state.bankStateData
                         //console.log(this.$store.state.bankStateData);
                         this.bankNames = response.data;
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getHospitalNames() {
+                console.log('getHospitalNames');
+                var url = '/api/Hospital';
+                axios.get(url)
+                    .then((response) => {
+                        this.hospitals = response.data;
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getChangwatNames() {
+                console.log('getChangwatNames');
+                var url = '/api/Changwat';
+                axios.get(url)
+                    .then((response) => {
+                        this.changwats = response.data;
                         console.log(response.data);
                     })
                     .catch(function (error) {
@@ -748,10 +769,9 @@
                 this.total_amount = sum
 
             },
-
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, hospital: "", bill_no: "", money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" });
+                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" });
                 console.log(this.bills)
             },
             removeField(index, fieldType) {
@@ -800,7 +820,17 @@
             console.log(this.accData)
             console.log(this.userData)
             this.getBankNames();
-
+            this.getHospitalNames();
+            this.getChangwatNames();
+            this.selectChangwat = 0;
+            this.selectHospital = 0;
+        },
+        computed: {
+            filteredItems: function () {
+                return this.hospitals.filter(function (el) {
+                    return el.changwatshortname === this.selectChangwat;
+                }, this);
+            }
         }
     };
 </script>
@@ -916,12 +946,15 @@
         border: none;
         border-radius: 7px;
         padding: 5px 10px;
+        outline: none;
+        font-size: 13px;
     }
 
         .mt-0.mb-2.form-control:hover {
             border: none;
             box-shadow: 1px 2px var(--main-color);
             transform: translateX(1px);
+            outline: none;
         }
 
     select {
@@ -929,11 +962,23 @@
         background-color: #e1deec;
         border: none;
         border-radius: 7px;
-        padding: 5px 10px;
+        padding: 8px 10px;
+        padding-right: 30px;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        background-repeat: no-repeat;
+        background-position-x: 98%;
+        background-position-y: 50%;
     }
         select:hover {
             border: none;
             box-shadow: 1px 2px var(--main-color);
             transform: translateX(1px);
+            outline: none;
         }
+    
+
+   
 </style>

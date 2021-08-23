@@ -153,9 +153,9 @@
     .otp-input {
         width: 60%;
         height: 40px;
-        padding: 0 10px;
+        padding: 0;
         margin: 0 5px;
-        font-size: 20px;
+        font-size: 14px;
         border-radius: 10px;
         border: 1px solid rgba(0, 0, 0, 0.3);
         text-align: center;

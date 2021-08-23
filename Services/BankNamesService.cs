@@ -1,4 +1,4 @@
-﻿using DataAccess.EFCore.BankNamesModels;
+﻿using DataAccess.EFCore.RvpOfficeModels;
 using Services.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;

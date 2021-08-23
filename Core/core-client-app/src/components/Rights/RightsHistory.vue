@@ -6,7 +6,7 @@
                 <br>
                 <div class="tab-user">
                     <div class="row">
-                        <div class="col-3 mt-2 px-0">
+                        <div class="col-3 mt-1 px-0">
                             <img src="@/assets/notify.png" width="70">
                         </div>
                         <div class="col-9 text-start px-0">
@@ -15,6 +15,8 @@
                             <span>เลขที่รับแจ้ง: {{accData.eaAccNo}}</span><br />
                             <span v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : {{ car.eaCarLicense }}</span><br />
                             <span>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</span><br />
+                            <span>สิทธิ์ที่ได้รับ: 35000 บาท</span><br />
+                            <span>สิทธิ์ที่ใช้ไป: 25000 บาท</span><br />
                             <span>สิทธิ์คงเหลือ: 10000 บาท</span>
                         </div>
                     </div>
