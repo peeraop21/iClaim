@@ -7,17 +7,17 @@
                 <div class="tab-user">
                     <div class="row">
                         <div class="col-3 mt-1 px-0">
-                            <img src="@/assets/notify.png" width="70">
+                            <img src="@/assets/notify.png" width="75">
                         </div>
-                        <div class="col-9 text-start px-0">
+                        <div class="col-9 text-start px-1">
                             <!--<span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
                             <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />-->
-                            <span>เลขที่รับแจ้ง: {{accData.eaAccNo}}</span><br />
-                            <span v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : {{ car.eaCarLicense }}</span><br />
-                            <span>วันที่เกิดเหตุ : {{ accData.stringAccDate }}</span><br />
-                            <span>สิทธิ์ที่ได้รับ: 35000 บาท</span><br />
-                            <span>สิทธิ์ที่ใช้ไป: 25000 บาท</span><br />
-                            <span>สิทธิ์คงเหลือ: 10000 บาท</span>
+                            <span>เลขที่รับแจ้ง: <span style="color: var(--main-color)">{{accData.eaAccNo}}</span></span><br />
+                            <span v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : <span style="color: var(--main-color)">{{ car.eaCarLicense }}</span></span><br />
+                            <span>วันที่เกิดเหตุ : <span style="color: var(--main-color)">{{ accData.stringAccDate }}</span></span><br />
+                            <span>สิทธิ์ที่ได้รับ: <span style="color: var(--main-color)">35000 บาท</span></span><br />
+                            <span>สิทธิ์ที่ใช้ไป: <span style="color: var(--main-color)">25000 บาท</span></span><br />
+                            <span>สิทธิ์คงเหลือ: <span style="color: var(--main-color)">10000 บาท</span></span>
                         </div>
                     </div>
                 </div>

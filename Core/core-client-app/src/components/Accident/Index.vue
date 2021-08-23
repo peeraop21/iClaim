@@ -14,9 +14,9 @@
                             <img src="@/assets/kid.png" width="70">
                         </div>
                         <div class="col-9 text-start mt-2 px-0">
-                            <span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span>
+                            <span>ชื่อ-สกุล: <span style="color: var(--main-color)">{{userData.prefix}}{{userData.fname}} {{userData.lname}}</span></span>
                             <br>
-                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span>
+                            <span>เลขประจำตัวประชาชน: <span style="color: var(--main-color)">{{userData.idcardNo}}</span></span>
                         </div>
                     </div>
                 </div>
