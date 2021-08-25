@@ -185,8 +185,8 @@
                                         <div class="mb-2" v-show="divHospitalModal">
                                             <label class="px-2">โรงพยาบาล</label>
                                             <select name="item" id="item" v-model="mockHospital">
-                                                <option v-for="(item, index) in filteredItems" :value="item.hospitaltradename" :key="index">
-                                                    {{ item.hospitaltradename }}
+                                                <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
+                                                    {{ item.HOSPITALNAME  }}
                                                 </option>
                                             </select>
                                         </div>
