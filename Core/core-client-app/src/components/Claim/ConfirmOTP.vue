@@ -17,7 +17,7 @@
                     <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
                 </div>
                 <div class="col-5 mb-5">
-                    <button class="btn-request-otp" type="button" @click="requestOTP">ขอรหัส OTP</button>
+                    <button class="btn-request-otp" type="button" @click="requestOTP" :disabled="disableBtnReqOTP">ขอรหัส OTP</button>
                 </div>
             </div>
             <div class="row">
@@ -208,23 +208,27 @@
                 dataOTP: { token: "", ref_code: "" },
                 inputOTP: "",
                 verifyResultOTP: { status: "" },
-                countDown: 20
+                countDown: 20,
+                disableBtnReqOTP: false
             }
         },
         methods: {
             countDownTimer() {
                 if (this.countDown > 0) {
+                    this.disableBtnReqOTP = true
                     setTimeout(() => {
                         this.countDown -= 1
                         this.countDownTimer()
                     }, 1000)
                 } else if (this.countDown <= 0) {
+                    this.disableBtnReqOTP = false
                     this.countDown = 20
+                    
                 }
             },
 
             requestOTP() {
-                this.countDownTimer()
+                
                 //var tel = "";
                 const body = { 'TelNo': '0621824533' };
                 console.log(qs.stringify(body))
@@ -234,6 +238,7 @@
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then((response) => {
+                    this.countDownTimer()
                     this.dataOTP = response.data.result
                     console.log(this.dataOTP);
 
