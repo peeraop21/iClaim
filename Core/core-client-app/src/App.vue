@@ -13,7 +13,7 @@ export default {
   components: {
       NavMenu
   },
-
+     
 }
 </script>
 <style>

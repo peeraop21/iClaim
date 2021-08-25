@@ -144,8 +144,8 @@
                             <div class="mb-2">
                                 <label class="px-2">โรงพยาบาล</label>
                                 <select name="item" id="item" v-model="input.selectHospital" style="font-size: 13px;">
-                                    <option v-for="(item, index) in filteredItems" :value="item.hospitaltradename" :key="index" style="font-size: 12px; line-height: 0px">
-                                        {{ item.hospitaltradename }}
+                                    <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME" :key="index" style="font-size: 12px; line-height: 0px">
+                                        {{ item.HOSPITALNAME }}
                                     </option>
                                 </select>
                             </div>
@@ -716,13 +716,25 @@
                         alert(error);
                     });
             },
-            getHospitalNames() {
+            /*getHospitalNames() {
                 console.log('getHospitalNames');
                 var url = '/api/Hospital';
                 axios.get(url)
                     .then((response) => {
                         this.hospitals = response.data;
                         console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },*/
+            getHospitalNames() {
+                console.log('getHospitalNames');
+                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                axios.post(url)
+                    .then((response) => {
+                        this.hospitals = response.data.data;
+                        console.log(this.hospitals);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -828,7 +840,7 @@
         computed: {
             filteredItems: function () {
                 return this.hospitals.filter(function (el) {
-                    return el.changwatshortname === this.selectChangwat;
+                    return el.CHANGWATSHORTNAME === this.selectChangwat;
                 }, this);
             }
         }
