@@ -45,12 +45,9 @@ namespace Core
             services.AddScoped<IAccidentService, AccidentService>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddTransient<IBankNamesService, BankNamesService>();
-            services.AddScoped<IBankNamesService, BankNamesService>();
-            services.AddTransient<IHospitalService, HospitalService>();
-            services.AddScoped<IHospitalService, HospitalService>();
-            services.AddTransient<IChangwatService, ChangwatService>();
-            services.AddScoped<IChangwatService, ChangwatService>();
+            services.AddTransient<IMasterService, MasterService>();
+            services.AddScoped<IMasterService, MasterService>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

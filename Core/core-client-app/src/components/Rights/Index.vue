@@ -59,7 +59,7 @@
                             <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
                             <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId, type: 1}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -86,7 +86,7 @@
                             <br>
                             <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
                             <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}">เลือก</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
