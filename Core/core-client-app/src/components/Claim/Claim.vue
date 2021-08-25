@@ -1,5 +1,6 @@
 ﻿<template>
     <div>
+
         <vs-dialog width="550px" not-center v-model="active">
             <template #header>
                 <h4 class="not-margin">
@@ -76,27 +77,51 @@
             </div>
         </vs-dialog>
         <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="active=!active">
-            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" > <!--:before-change="processFilePageOne"-->
-                <div class="">
+            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt">
+                <!--:before-change="processFilePageOne"-->
+                <div class="" v-if="formType == 2">
                     <div align="left">
-                        <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
+                        <label>เอกสารประกอบคำร้องกรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
                     </div>
-                    
-                    <!--<div class="box-container">
-                        <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
-                        <div>-->
-                            <!--<input type="file" name="filename">-->
-                            <!--<file-pond name="idCardFile"
+
+                    <div class="box-container">
+                        <p class="mb-0">ใบรับรองแพทย์</p>
+                        <div>
+                            <file-pond name="idCardFile"
                                        ref="pond"
-                                       label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน"
+                                       label-idle="กดที่นี่เพื่ออัพโหลดใบรับรองแพทย์"
                                        credits="null"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="idCardFile"
-                                       v-on:addfile="onAddIdCardFile" />-->
-                            <!--<input type="submit"> -->
-                        <!--</div>
+                                       v-on:addfile="onAddIdCardFile" />
+                        </div>
+                    </div>
+
+                    <br>
+                    <p class="p_right" style="font-size: 15px; font-weight: bold;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
+                </div>
+                <div class="" v-if="formType == 1">
+                    <div align="left">
+                        <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
+                    </div>
+
+                    <!--<div class="box-container">
+                    <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
+                    <div>-->
+                    <!--<input type="file" name="filename">-->
+                    <!--<file-pond name="idCardFile"
+                    ref="pond"
+                    label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประชาชน"
+                    credits="null"
+                    v-bind:allow-multiple="false"
+                    v-bind:allowFileEncode="true"
+                    accepted-file-types="image/jpeg, image/png"
+                    v-bind:files="idCardFile"
+                    v-on:addfile="onAddIdCardFile" />-->
+                    <!--<input type="submit"> -->
+                    <!--</div>
                     </div>-->
                     <br>
                     <div class="box-container">
@@ -132,25 +157,52 @@
                                 </select>
                             </div>-->
                             <!-- Dialog Hospital -->
-                        <form>
-                            <label class="px-2">จังหวัดของโรงพยาบาล</label>
+                            <!--<label class="px-2">จังหวัดของโรงพยาบาล</label>
                             <div class="mb-2">
-                                <select name="category" id="category" v-model="selectChangwat" style="font-size: 13px;">
+                                <select name="category" id="category" v-model="selectChangwat">
                                     <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
                                         {{ category.changwatname }}
                                     </option>
                                 </select>
-                            </div>
-                            <div class="mb-2">
-                                <label class="px-2">โรงพยาบาล</label>
-                                <select name="item" id="item" v-model="input.selectHospital" style="font-size: 13px;">
-                                    <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME" :key="index" style="font-size: 12px; line-height: 0px">
-                                        {{ item.HOSPITALNAME }}
-                                    </option>
-                                </select>
-                            </div>
-                        </form>
+                            </div>-->
 
+                            <vs-dialog width="550px" not-center v-model="modalHospital">
+                                <template #header>
+                                    <h4 class="not-margin">
+                                        เลือกโรงพยาบาล
+                                    </h4>
+                                </template>
+                                <div class="con-content" align="left">
+                                    <div class="d-block text-left">
+                                        <div class="mb-2">
+                                            <label class="px-2">จังหวัด</label>
+                                            <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
+                                                <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
+                                                    {{ category.changwatname }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2" v-show="divHospitalModal">
+                                            <label class="px-2">โรงพยาบาล</label>
+                                            <select name="item" id="item" v-model="mockHospital">
+                                                <option v-for="(item, index) in filteredItems" :value="item.hospitaltradename" :key="index">
+                                                    {{ item.hospitaltradename }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template #footer>
+                                    <div class="footer-dialog">
+                                        <vs-button block @click="submitModalHospital(index)" >
+                                            ยืนยัน
+                                        </vs-button>
+
+                                    </div>
+                                </template>
+                            </vs-dialog>
+                            <label class="px-2">โรงพยาบาล</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.selectHospital" type="text" @click="modalHospital=!modalHospital" />
                             <label class="px-2">เลขที่ใบเสร็จ</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
                             <label class="px-2">จำนวนเงิน</label>
@@ -218,14 +270,14 @@
                                        v-bind:files="bankFile"
                                        v-on:addfile="onAddBankAccountFile" />
                             <!--<input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file" style="margin-top: -10px">
-                        <div class="border p-2 mt-2">
-                            <p align="left">ภาพถ่ายที่เลือก:</p>
-                            <template v-if="preview">
-                                <img :src="preview" class="img-fluid" style="width: 30%" />-->
+                            <div class="border p-2 mt-2">
+                                <p align="left">ภาพถ่ายที่เลือก:</p>
+                                <template v-if="preview">
+                                    <img :src="preview" class="img-fluid" style="width: 30%" />-->
                             <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
-                        <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
+                            <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
                             <!--</template>
-                        </div>-->
+                            </div>-->
                         </div>
 
                         <div>
@@ -492,13 +544,13 @@
                             <label>{{bill.filename}}</label>
                         </div>
                         <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
-            <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
-            <hr class="mt-0">
-        </div>
-        <div class="mt-0" v-else-if="bill.BillfileShow===''">
-            <p class="mb-0" style="color: grey">-</p>
-            <hr class="mt-0">
-        </div>-->
+                            <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bill.BillfileShow===''">
+                            <p class="mb-0" style="color: grey">-</p>
+                            <hr class="mt-0">
+                        </div>-->
                         <p class="mb-0">ชื่อโรงพยาบาล</p>
                         <div class="mt-0" v-if="bill.selectHospital!=''">
                             <p class="mb-0" style="color: grey">{{ bill.selectHospital }}</p>
@@ -604,11 +656,11 @@
                     </div>
 
                     <!-- <div class="form-check">
-    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
-    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-        ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
-    </p>
-    </div> -->
+                    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
+                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                        ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
+                    </p>
+                    </div> -->
                 </div>
             </tab-content>
 
@@ -621,6 +673,7 @@
     import { FormWizard, TabContent } from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
     import vueFilePond from 'vue-filepond';
+    
 
     // Import FilePond styles
     import 'filepond/dist/filepond.min.css'
@@ -674,7 +727,7 @@
                 ],
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
-
+                formType: this.$route.params.type,
                 // bankData: this.$store.state.bankStateData,
                 idCardFile: null,
                 billsFile: null,
@@ -697,13 +750,16 @@
                 //----Get Changwat Name
                 changwats: [],
                 selectChangwat: '',
+                modalHospital: false,
+                mockHospital: '',
+                divHospitalModal:false
             };
         },
 
         methods: {
             getBankNames() {
                 console.log('getBankNames');
-                var url = '/api/BankNames';
+                var url = '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
                         //this.$store.state.bankStateData = response.data;
@@ -718,7 +774,7 @@
             },
             /*getHospitalNames() {
                 console.log('getHospitalNames');
-                var url = '/api/Hospital';
+                var url = '/api/Master/Hospital';
                 axios.get(url)
                     .then((response) => {
                         this.hospitals = response.data;
@@ -741,8 +797,8 @@
                     });
             },
             getChangwatNames() {
-                console.log('getChangwatNames');
-                var url = '/api/Changwat';
+                console.log('getChangwatNames');  
+                var url = '/api/Master/Changwat';
                 axios.get(url)
                     .then((response) => {
                         this.changwats = response.data;
@@ -772,6 +828,18 @@
             //getIt: function () {
             //    console.log(this.$refs.pond.getFiles());
             //},
+            onChangwatChange() {
+
+                this.divHospitalModal = true;
+                
+            },
+            submitModalHospital(index) {
+                this.bills[index].selectHospital = this.mockHospital
+                this.modalHospital = false
+                this.selectChangwat = 0;
+                this.mockHospital = 0;
+                this.divHospitalModal = false;
+            },
             calMoney() {
                 let sum = 0;
                 for (let i = 0; i < this.bills.length; i++) {
@@ -836,6 +904,7 @@
             this.getChangwatNames();
             this.selectChangwat = 0;
             this.selectHospital = 0;
+            
         },
         computed: {
             filteredItems: function () {
@@ -848,39 +917,48 @@
 </script>
 
 <style>
-    .vue-form-wizard.xs .wizard-icon-circle{
+    .vue-form-wizard.xs .wizard-icon-circle {
         background-color: #f0f0f0;
     }
+
     .vue-form-wizard .wizard-icon-circle {
         border: 2.5px solid #bdbdbd;
         /*border: none;*/
     }
+
     .vue-form-wizard .wizard-nav-pills > li > a {
         color: #9c9c9c;
     }
+
     div.wizard-footer-left {
         float: left;
         background-color: transparent;
     }
+
     .vue-form-wizard .wizard-btn {
         border-radius: 10px;
         font-size: 13px;
     }
+
     .vue-form-wizard .wizard-icon-circle .wizard-icon-container {
         border-radius: 50%;
         padding: 20px 10px;
         margin-top: -2px;
     }
+
     .vue-form-wizard .wizard-btn .wizard-footer-left {
         color: red;
     }
-    .vue-form-wizard .wizard-nav-pills a, .vue-form-wizard .wizard-nav-pills li{
+
+    .vue-form-wizard .wizard-nav-pills a, .vue-form-wizard .wizard-nav-pills li {
         flex: 0px;
     }
+
     .filepond--drop-label label {
         font-family: 'Mitr';
         font-size: 14px;
     }
+
     .filepond--drop-label {
         border-style: outset;
         border-radius: 7px;
@@ -984,13 +1062,11 @@
         background-position-x: 98%;
         background-position-y: 50%;
     }
+
         select:hover {
             border: none;
             box-shadow: 1px 2px var(--main-color);
             transform: translateX(1px);
             outline: none;
         }
-    
-
-   
 </style>

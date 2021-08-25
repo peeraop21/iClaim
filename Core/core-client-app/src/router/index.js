@@ -44,7 +44,7 @@ const routes = [
         component: RightsHistoryDetail,
     },
     {
-        path: "/Claim/:id",
+        path: "/Claim/:id/:type",
         name: "Claim",
         component: Claim,
     },
