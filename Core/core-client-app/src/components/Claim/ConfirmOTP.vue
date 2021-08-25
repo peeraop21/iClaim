@@ -14,7 +14,7 @@
                             <label class="lbl-tel">xxx-xxx-9898</label>
                         </div>
                     </div>-->
-                    <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
+                    <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" v-model="mockTel" :maxlength="10" />
                 </div>
                 <div class="col-5 mb-5">
                     <button class="btn-request-otp" type="button" @click="requestOTP" :disabled="disableBtnReqOTP">ขอรหัส OTP</button>
@@ -209,7 +209,8 @@
                 inputOTP: "",
                 verifyResultOTP: { status: "" },
                 countDown: 20,
-                disableBtnReqOTP: false
+                disableBtnReqOTP: false,
+                mockTel: ""
             }
         },
         methods: {
@@ -230,7 +231,7 @@
             requestOTP() {
                 
                 //var tel = "";
-                const body = { 'TelNo': '0621824533' };
+                const body = { 'TelNo': this.mockTel };
                 console.log(qs.stringify(body))
                 axios.post('https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP', qs.stringify(body), {
                     headers: {
