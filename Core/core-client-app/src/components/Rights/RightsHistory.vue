@@ -12,8 +12,8 @@
                         <div class="col-9 text-start px-1">
                             <!--<span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
                             <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />-->
-                            <span>เลขที่รับแจ้ง: <span style="color: var(--main-color)">{{accData.eaAccNo}}</span></span><br />
-                            <span v-for="car in accData.eaCar" v-bind:key="car.eaCarNo">ทะเบียนรถที่เกิดเหตุ : <span style="color: var(--main-color)">{{ car.eaCarLicense }}</span></span><br />
+                            <span>เลขที่รับแจ้ง: <span style="color: var(--main-color)">{{accData.accNo}}</span></span><br />
+                            <span>ทะเบียนรถที่เกิดเหตุ : <span v-for="(car, index) in accData.car" :key="`car-${index}`" style="color: var(--main-color)">{{car}} </span></span><br />
                             <span>วันที่เกิดเหตุ : <span style="color: var(--main-color)">{{ accData.stringAccDate }}</span></span><br />
                             <span>สิทธิ์ที่ได้รับ: <span style="color: var(--main-color)">35000 บาท</span></span><br />
                             <span>สิทธิ์ที่ใช้ไป: <span style="color: var(--main-color)">25000 บาท</span></span><br />
@@ -21,7 +21,6 @@
                         </div>
                     </div>
                 </div>
-                <!--<router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData.eaTmpId}}">เบิกค่ารักษาเบื้องต้น</router-link>-->
                 <br>
                 <br>
                 <div align="left" style="width: 100%;">
@@ -50,7 +49,7 @@
                                     </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.eaTmpId}}">ดูเพิ่มเติม</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo}}">ดูเพิ่มเติม</router-link>
                                 </div>
                             </div>
                         </div>

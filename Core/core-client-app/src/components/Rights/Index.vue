@@ -8,35 +8,7 @@
                     <label class="title-advice-menu">ค่าเสียหายเบื้องต้น</label>
                     <br>
                 </div>
-                <!--<div v-for="rights_receive in rights_receives" :key="rights_receive.id">
-        <div class="tab-user px-3" align="left">
-            <div class="row">
-                <div class="col-9">
-                    <label class="purple-title" style="font-weight: bold">{{ rights_receive.medical_expenses }}</label>
-                </div>
-                <div class="col-3" align="right" style="margin-top: -3px">
-                    <vs-button circle
-                               icon
-                               primary
-                               flat
-                               :active="active == 1"
-                               @click="{{ rights_receive.info }}=!{{ rights_receive.info }}">
-                        <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
-                    </vs-button>
-
-                </div>
-            </div>
-            <br>
-            <p style="line-height: 25px">{{ rights_receive.detail }}</p>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                <a style="margin-bottom: 7px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a>
-                <br>
-                <router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
-                <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>
-            </div>
-        </div>
-        <br>
-    </div>-->
+         
                 <div>
                     <div class="tab-user px-3" align="left">
                         <div class="row">
@@ -57,9 +29,9 @@
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 7px;">คงเหลือ: 30,000 บาท</a>
                             <br>
-                            <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId, type: 1}}">เลือก</router-link>
+                            
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 1}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -84,37 +56,14 @@
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
                             <br>
-                            <!--<router-link class="btn-next" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}" style="padding: 5px 20px;">เลือก</router-link>-->
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.eaTmpId, type: 2}}">เลือก</router-link>
+                            
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
                 </div>
-                <!--<div>
-                    <div class="tab-user px-3" align="left">
-                        <div class="row">
-                            <div class="col-9">
-                                <label class="purple-title" style="font-weight: bold">กรณีเบิกค่าชดเชยรายวัน</label>
-                            </div>
-                            <div class="col-3" align="right" style="margin-top: -3px">
-                                <vs-button circle
-                                           icon
-                                           primary
-                                           flat
-                                           @click="Info3=!Info3">
-                                    <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
-                                </vs-button>
-                            </div>
-                        </div>
-                        <p style="line-height: 25px">ผู้ประสบภัยที่เข้ารับการรักษาพยาบาลในสถานพยาบาล (ผู้ป่วยใน) บริษัทจะจ่ายค่าชดเชยรายวัน วันละ 200 บาท (จำนวนรวมกันไม่เกิน 20 วัน)</p>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accData1.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-next" :to="{ name: 'Claim', params: { id: accData1.eaTmpId}}" style="padding: 3px 20px;">เลือก</router-link>
-                        </div>
-                    </div>
-                    <br>
-                </div>-->
+                
                 <!-- Info 1 -->
                 <vs-dialog width="550px" not-center v-model="Info1">
                     <template #header>

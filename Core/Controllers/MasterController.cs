@@ -32,10 +32,6 @@ namespace Core.Controllers
             return Ok(await masterService.GetChangwat());
         }
 
-        [HttpGet("Hospital")]
-        public async Task<IActionResult> GetHospital()
-        {
-            return Ok(await masterService.GetHospital());
-        }
+        
     }
 }

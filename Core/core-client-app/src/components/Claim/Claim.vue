@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div v-if="acceptClaim && acceptData" class="mb-4 mt-2" align="center">
-                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.eaTmpId}}">ยืนยันส่งคำร้อง</router-link>
+                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.stringAccNo}}">ยืนยันส่งคำร้อง</router-link>
                     </div>
                 </div>
             </div>

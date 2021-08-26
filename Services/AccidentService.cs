@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataAccess.EFCore.RvpOfficeModels;
 
 namespace Services
 {
@@ -22,39 +23,59 @@ namespace Services
     {
         private readonly RvpaccidentContext rvpAccidentContext;
         private readonly IpolicyContext ipolicyContext;
+        private readonly RvpofficeContext rvpOfficeContext;
 
-        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;
+            this.rvpOfficeContext = rvpOfficeContext;
         }
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
             var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();           
-            var accNo = GetAccNo(userIdCard);
-            var query = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accNo.Contains(w.EaAccNo)).Select(s  => new {s.EaTmpId,s.EaAccNo,s.EaAccDate }).OrderByDescending(o => o.EaAccDate).ThenByDescending(t => t.EaAccNo).ToListAsync();
-            /*var carList = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => accNo.Contains(w.EaAccNo)).ToListAsync();*/
-            var accViewModel = new List<AccidentViewModel>();
-            foreach (var acc in query)
+            var accLineNo = GetLineAccNo(userIdCard);
+            var accHosNo = GetHosAccNo(userIdCard);
+            var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s  => new {s.EaAccNo,s.EaAccDate }).ToListAsync();
+            var accHosList = await rvpOfficeContext.HosAccident.Where(w => accHosNo.Contains(w.AccNo)).Select(s => new { s.AccNo, s.DateAcc }).ToListAsync();
+            var accViewModelList = new List<AccidentViewModel>();
+            foreach (var acc in accLineList)
             {
-                var result = new AccidentViewModel();
-                result.EaTmpId = acc.EaTmpId;
-                result.EaAccNo = acc.EaAccNo;
-                result.EaAccDate = acc.EaAccDate ?? DateTime.Now;
-                result.stringAccDate = result.EaAccDate.ToString().Replace("12:00:00 AM", " ");
-                result.EaCar = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => acc.EaAccNo.Contains(w.EaAccNo)).ToListAsync();
-                accViewModel.Add(result);
+                var accVwModel = new AccidentViewModel();
+                accVwModel.AccNo = acc.EaAccNo;
+                accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
+                accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
+                accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
+                accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => acc.EaAccNo.Contains(w.EaAccNo)).Select(s => s.EaCarLicense).ToListAsync();
+                accVwModel.Channel = "LINE";
+                accViewModelList.Add(accVwModel);
             }
-            
-            return accViewModel;
+            foreach (var acc in accHosList)
+            {
+                var accVwModel = new AccidentViewModel();
+                accVwModel.AccNo = acc.AccNo;
+                accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
+                accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
+                accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
+                accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => acc.AccNo.Contains(w.AccNo)).Select(s => s.CarLicense).ToListAsync();
+                accVwModel.Channel = "HOS";
+                accViewModelList.Add(accVwModel);
+            }
+            return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
         }
-
-        public List<string> GetAccNo(string userIdCard)
+        
+        
+        private List<string> GetLineAccNo(string userIdCard)
         {          
             return rvpAccidentContext.TbAccidentMasterLineVictim.Where(w => w.EaIdCardVictim == userIdCard && w.EaAccno != null).Select(s => s.EaAccno).ToList();
         }
 
-        
+        private List<string> GetHosAccNo(string userIdCard)
+        {
+            return rvpOfficeContext.HosVicTimAccident.Where(w => w.DrvSocNo == userIdCard && w.AccNo != null).Select(s => s.AccNo).ToList();
+        }
+
+
     }
 }

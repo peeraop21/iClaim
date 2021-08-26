@@ -13,8 +13,7 @@ namespace Services
 {
     public interface IMasterService
     {
-        Task<List<BankNamesViewModel>> GetBank();
-        Task<List<HospitalViewModel>> GetHospital();
+        Task<List<BankNames>> GetBank();
         Task<List<ChangwatViewModel>> GetChangwat();
     }
 
@@ -26,21 +25,9 @@ namespace Services
         {
             this.rvpofficeContext = rvpofficeContext;
         }
-        public async Task<List<BankNamesViewModel>> GetBank()
-        {
-            var query = await rvpofficeContext.BankNames.Where(w => w.BankCode != null).Select(s => new { s.Bank, s.Name, s.Default0, s.BankCode }).ToListAsync();
-            var bankViewModel = new List<BankNamesViewModel>();
-            foreach (var bank in query)
-            {
-                var result = new BankNamesViewModel();
-                result.Bank = bank.Bank;
-                result.Name = bank.Name;
-                result.Default0 = bank.Default0;
-                result.BankCode = bank.BankCode;
-                bankViewModel.Add(result);
-            }
-
-            return bankViewModel;
+        public async Task<List<BankNames>> GetBank()
+        {           
+            return await rvpofficeContext.BankNames.Where(w => w.BankCode != null).ToListAsync(); ;
         }
 
         public async Task<List<ChangwatViewModel>> GetChangwat()
@@ -59,23 +46,6 @@ namespace Services
             return chwViewModel;
         }
 
-        public async Task<List<HospitalViewModel>> GetHospital()
-        {
-
-            var query = await rvpofficeContext.HospitalTable.Where(w => w.Hospitaltradename != "-,สต." && w.Hospitaltradename != "-,คลินิค" && w.Hospitaltradename != "-,รพ." && w.Hospitaltradename != null).Select(s => new { s.Hospitalid, s.Hospitaltradename, s.Changwatshortname, s.BranchId }).OrderBy(o => o.Hospitalid).ToListAsync();
-
-            var hosViewModel = new List<HospitalViewModel>();
-            foreach (var hos in query)
-            {
-                var result = new HospitalViewModel();
-                result.Hospitalid = hos.Hospitalid;
-                result.Hospitaltradename = hos.Hospitaltradename;
-                result.Changwatshortname = hos.Changwatshortname;
-                result.BranchId = hos.BranchId;
-                hosViewModel.Add(result);
-            }
-
-            return hosViewModel;
-        }
+        
     }
 }

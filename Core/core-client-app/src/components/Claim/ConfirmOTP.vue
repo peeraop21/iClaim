@@ -252,8 +252,8 @@
                         showDenyButton: true,
                         showConfirmButton: false,
                         denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                        denyButtonColor: '#dad5e9',
-                    })
+                        denyButtonColor: '#dad5e9'
+                    });
                     console.log(error);
                 });              
             },

@@ -28,13 +28,13 @@
                 </div>
                 <section>
                     <div style="height: 98%; width: 100%;">
-                        <div class="accordion" v-for="accident in accData" v-bind:key="accident.eaTmpId">
+                        <div class="accordion" v-for="accident in accData" v-bind:key="accident.stringAccNo">
                             <!--v-for="accident in accidents" :key="accident.id"-->
-                            <div class="accordion-item" :id="'list' + accident.eaTmpId">
-                                <a class="accordion-link" :href="'#list' + accident.eaTmpId">
+                            <div class="accordion-item" :id="'list' + accident.stringAccNo">
+                                <a class="accordion-link" :href="'#list' + accident.stringAccNo">
                                     <div>
                                         <p>
-                                            <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.eaAccNo }}
+                                            <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
                                             <br>
                                             <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.stringAccDate }}
                                         </p>
@@ -44,17 +44,15 @@
                                 <div class="answer">
                                     <p>
                                         ทะเบียนรถ:
-                                        <label v-for="car in accident.eaCar" v-bind:key="car.eaCarNo"> {{ car.eaCarLicense }},</label>
+                                        <label > {{ accident.car }},</label>
                                         <br />
                                         สิทธิ์คงเหลือ:  บาท
                                     </p>
-                                    <!--<div style="margin: -20px 0 10px 0px;" align="center">
-                                        <router-link class="btn-rightsHistory" :to="{ name: 'RightsHistory', params: { id: accident.eaTmpId}}">ประวัติการใช้สิทธิ์</router-link>
-                                    </div>-->
+                                   
                                 </div>
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
-                                    <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.eaTmpId}}">ใช้สิทธิ์</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
                                     <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
                                 </div>
                             </div>

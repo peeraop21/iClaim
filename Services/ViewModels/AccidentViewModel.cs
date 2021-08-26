@@ -11,11 +11,13 @@ namespace Services.ViewModels
     
     public class AccidentViewModel
     {
-        public string EaTmpId { get; set; }
-        public string EaAccNo { get; set; }
-        public DateTime EaAccDate { get; set; }
-        public string stringAccDate { get; set; }
-        public List<TbAccidentMasterLineCar> EaCar { get; set; }
+        public string AccNo { get; set; }
+        
+        public string StringAccNo { get; set; }
+        public DateTime AccDate { get; set; }
+        public string StringAccDate { get; set; }
+        public List<string> Car { get; set; }
+        public string Channel { get; set; }
         /*public string EaCarLicense { get; set; }
         public string EaPrefixVictim { get; set; }
         public string EaFnameVictim { get; set; }

@@ -18,7 +18,10 @@ namespace DataAccess.EFCore.RvpOfficeModels
 
         public virtual DbSet<BankNames> BankNames { get; set; }
         public virtual DbSet<Changwat> Changwat { get; set; }
-        public virtual DbSet<HospitalTable> HospitalTable { get; set; }
+        public virtual DbSet<HosAccident> HosAccident { get; set; }
+        public virtual DbSet<HosApproval> HosApproval { get; set; }
+        public virtual DbSet<HosCarAccident> HosCarAccident { get; set; }
+        public virtual DbSet<HosVicTimAccident> HosVicTimAccident { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,8 +52,8 @@ namespace DataAccess.EFCore.RvpOfficeModels
 
                 entity.ToTable("CHANGWAT");
 
-                /*entity.HasIndex(e => e.Changwatname)
-                    .HasName("Viva_Chagwatname_Idx");*/
+                entity.HasIndex(e => e.Changwatname)
+                    .HasName("Viva_Chagwatname_Idx");
 
                 entity.Property(e => e.Changwatshortname)
                     .HasColumnName("CHANGWATSHORTNAME")
@@ -80,207 +83,2027 @@ namespace DataAccess.EFCore.RvpOfficeModels
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<HospitalTable>(entity =>
+            modelBuilder.Entity<HosAccident>(entity =>
             {
-                entity.HasKey(e => e.Hospitalid)
-                    .HasName("PK_HOSPITAL");
+                entity.HasKey(e => e.AccNo)
+                    .HasName("PK_HosAccident_1");
 
-                entity.ToTable("hospital_table");
+                entity.HasIndex(e => e.AccDist)
+                    .HasName("MFEC_IndexAccDist");
 
-                /*entity.HasIndex(e => e.BranchId)
-                    .HasName("MFEC_IndexBranchID");
+                entity.HasIndex(e => e.AccNoEacc)
+                    .HasName("AccNoEaccx");
 
-                entity.HasIndex(e => e.Changwatshortname)
-                    .HasName("idxshortname");
+                entity.HasIndex(e => e.AccPolStn)
+                    .HasName("MFEC_IndexAccPolStn");
 
-                entity.HasIndex(e => e.Hospitalname)
-                    .HasName("MFEC_IndexHospitalName");
+                entity.HasIndex(e => e.AccProv)
+                    .HasName("MFEC_IndexAccProv");
 
-                entity.HasIndex(e => e.Oicprov)
-                    .HasName("idxHospital_OICProv");*/
+                entity.HasIndex(e => e.AccSubDist)
+                    .HasName("MFEC_IndexAccSubDist");
 
-                entity.Property(e => e.Hospitalid)
-                    .HasColumnName("HOSPITALID")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.DateAcc)
+                    .HasName("XDateAcc");
 
-                entity.Property(e => e.Accountname)
-                    .HasColumnName("ACCOUNTNAME")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.HosAccNo)
+                    .HasName("HosAccNoX");
 
-                entity.Property(e => e.Accountno)
-                    .HasColumnName("ACCOUNTNO")
-                    .HasMaxLength(25)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.HospitalId)
+                    .HasName("XHospitalID");
 
-                entity.Property(e => e.Active)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.HasIndex(e => e.Regisdate)
+                    .HasName("XRegisDate");
 
-                entity.Property(e => e.AddressCity)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.Status)
+                    .HasName("idxstatus");
 
-                entity.Property(e => e.AddressDistrict)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.SurveyDate)
+                    .HasName("Index_SurveyDate");
 
-                entity.Property(e => e.AddressMoo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => e.SurveyEntryBy)
+                    .HasName("XSurveyEntriesBy");
 
-                entity.Property(e => e.AddressNo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.AccNo, e.BranchId, e.HospitalId })
+                    .HasName("Viva_CLReportPaymentHospita_Idx1");
 
-                entity.Property(e => e.AddressProvince)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.AccNo, e.AccProv, e.Status, e.DateAcc })
+                    .HasName("idx_HosAccident_Status_DateAcc");
 
-                entity.Property(e => e.AddressRoad)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.AccNo, e.AccProv, e.Status, e.Regisdate })
+                    .HasName("Viva_spEventEclaimAndPaid24Hrs_Idx1");
 
-                entity.Property(e => e.AddressSoi)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.AccNo, e.HospitalId, e.Status, e.DateAcc })
+                    .HasName("idx_HosAccident_FestAccidentInputReport");
 
-                entity.Property(e => e.AgentId)
-                    .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.HasIndex(e => new { e.HospitalId, e.InputBy, e.Status, e.AccNo })
+                    .HasName("Viva_HosListToApproval2");
 
-                entity.Property(e => e.Bankcode)
-                    .HasColumnName("BANKCODE")
-                    .HasMaxLength(5)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.Status, e.HospitalId, e.InputBy, e.AccNo })
+                    .HasName("Viva_HosstListToApproval3");
 
-                entity.Property(e => e.BranchId)
-                    .HasMaxLength(3)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.AccNo, e.DateAcc, e.AccPlace, e.AccProv, e.DateRec })
+                    .HasName("MFEC_TuningDateRec");
 
-                entity.Property(e => e.Changwatshortname)
-                    .IsRequired()
-                    .HasColumnName("CHANGWATSHORTNAME")
-                    .HasMaxLength(2)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.DateAcc, e.Status, e.HospitalId, e.Regisdate, e.AccNo })
+                    .HasName("MFEC_TuningRegisdateAccno");
 
-                entity.Property(e => e.ConfirmedAccountNoBy)
-                    .HasMaxLength(8)
-                    .IsUnicode(false);
+                entity.HasIndex(e => new { e.AccNo, e.HospitalId, e.BranchId, e.InputBy, e.NotCoverCase, e.InsureCover, e.Status })
+                    .HasName("MFEC_TuningInsureCoverStatus");
 
-                entity.Property(e => e.ConfirmedAccountNodate).HasColumnType("datetime");
+                entity.HasIndex(e => new { e.DateRec, e.DateAcc, e.AccPlace, e.AccProv, e.AccType, e.AccNature, e.Status, e.Regisdate, e.Survey, e.SurveyEntryDate, e.HospitalId })
+                    .HasName("MFEC_TuningHospitalID");
 
-                entity.Property(e => e.ContactName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Contract)
-                    .HasColumnName("CONTRACT")
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Eclaim)
-                    .HasColumnName("EClaim")
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Ehi)
-                    .HasColumnName("EHI")
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Email)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FaxNo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.HosType)
-                    .HasMaxLength(3)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Hospitalduedate).HasColumnName("HOSPITALDUEDATE");
-
-                entity.Property(e => e.Hospitalestablishid)
-                    .HasColumnName("HOSPITALESTABLISHID")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Hospitalname)
-                    .HasColumnName("HOSPITALNAME")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Hospitaltradename)
-                    .HasColumnName("HOSPITALTRADENAME")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Hosprefix)
-                    .HasColumnName("hosprefix")
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.InputAccountNoBy)
-                    .HasMaxLength(8)
+                entity.Property(e => e.AccDist)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.InputAccountNoDate).HasColumnType("datetime");
+                entity.Property(e => e.AccNature)
+                    .HasMaxLength(8000)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Inputby)
-                    .HasColumnName("inputby")
-                    .HasMaxLength(6)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.AccNoEacc)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Inputdate)
-                    .HasColumnName("inputdate")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.AccNoEaccMore)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Mediaclearing)
-                    .HasColumnName("MEDIACLEARING")
+                entity.Property(e => e.AccNoEr)
+                    .HasColumnName("AccNoER")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccNoIndicateType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccNoOld)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccPlace)
+                    .HasMaxLength(8000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccPolStn)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccProv)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccSubDist)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccType)
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccTypeCase)
+                    .HasColumnName("AccType_Case")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccTypeParty).HasColumnName("AccType_Party");
+
+                entity.Property(e => e.AccTypeVictim).HasColumnName("AccType_Victim");
+
+                entity.Property(e => e.AddCarLate)
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.Mobileno)
-                    .HasColumnName("mobileno")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Oicprov)
-                    .HasColumnName("OICProv")
-                    .HasMaxLength(5)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PeriodType).HasDefaultValueSql("((15))");
-
-                entity.Property(e => e.Sapid)
-                    .HasColumnName("SAPID")
+                entity.Property(e => e.BranchId)
+                    .HasColumnName("BranchID")
                     .HasMaxLength(5)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.TaxNo)
+                entity.Property(e => e.CanCelDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CaseEnd)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ChangeAccident)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ChangeCarLicense)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ChangeSumCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ChangeVictim)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.Claim30Day)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ClaimDuplicate)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ClaimNo)
+                    .HasMaxLength(13)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CutData)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DateAcc).HasColumnType("datetime");
+
+                entity.Property(e => e.DateRec)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.DiffDayProcess).HasColumnType("datetime");
+
+                entity.Property(e => e.FalseInform)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.FundClaimNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GetEditRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordBy)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.HosAccNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HospitalId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HqStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InfAdd)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InfAddDist)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TelephoneNo)
+                entity.Property(e => e.InfAddProv)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ZipCode)
+                entity.Property(e => e.InfAddSubDist)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InfFname)
+                    .HasColumnName("InfFName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InfLname)
+                    .HasColumnName("InfLName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InfTelNo)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InformNo)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InputBy)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InputByFirst)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InsureCover)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('I')");
+
+                entity.Property(e => e.LastUpdate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.NewStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.NotCoverCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.OtherCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.OutSurveyed)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.PoliceDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PoliceDocDate).HasColumnType("datetime");
+
+                entity.Property(e => e.PoliceDocNo)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PoliceFname)
+                    .HasColumnName("PoliceFName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PoliceLname)
+                    .HasColumnName("PoliceLName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PolicePrefix)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReceiveBy)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Regisdate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.RepeatAccNo)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SameVicOwn)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SendStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.SentHi01)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SentHi01Date).HasColumnType("datetime");
+
+                entity.Property(e => e.SentHi04)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SentHi04Date).HasColumnType("datetime");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('V')");
+
+                entity.Property(e => e.SumCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Survey)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.SurveyComment).HasColumnType("text");
+
+                entity.Property(e => e.SurveyDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SurveyEntryBy)
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SurveyEntryDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SurveyPlaceEacc).HasMaxLength(1000);
+
+                entity.Property(e => e.SurveyPlacePol).HasMaxLength(1000);
+
+                entity.Property(e => e.SurveyPlaceTsc).HasMaxLength(1000);
+
+                entity.Property(e => e.Surveyed)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.TextSurveyOut).HasMaxLength(500);
+
+                entity.Property(e => e.TextTypeCase).HasMaxLength(500);
+
+                entity.Property(e => e.TimeAcc)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TimeRec)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TypeCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeCaseSel)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeSurveyOAcc)
+                    .HasColumnName("TypeSurveyO_Acc")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeSurveyOHos)
+                    .HasColumnName("TypeSurveyO_Hos")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeSurveyOOther)
+                    .HasColumnName("TypeSurveyO_Other")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeSurveyOPolice)
+                    .HasColumnName("TypeSurveyO_Police")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserIp)
+                    .HasColumnName("UserIP")
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<HosApproval>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo })
+                    .HasName("PK_HosApproval2");
+
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Accept)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.AcceptBy)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasComment("รับเรื่องโดย/ธเกิง 02-06-51");
+
+                entity.Property(e => e.AcceptDate)
+                    .HasColumnType("datetime")
+                    .HasComment("วันที่รับเรื่อง/ธเกิง 02-06-51");
+
+                entity.Property(e => e.BankBranchId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BankId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BlindCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.BranchId)
+                    .HasColumnName("BranchID")
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CaccNo)
+                    .HasColumnName("CAccNo")
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CanCelStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CanPaid)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CarBookDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ChequeDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ChequeNo)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ClaimNo)
+                    .HasMaxLength(13)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ClaimRegisComment)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ClaimTo)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CompensateMoney).HasColumnType("money");
+
+                entity.Property(e => e.Confirmed)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ConfirmedBy)
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ConfirmedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CrippledComment)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CrippledMoney).HasComment("0");
+
+                entity.Property(e => e.CrippledPermanent)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.CrunNo).HasColumnName("CRunNo");
+
+                entity.Property(e => e.CureMoney).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.CvictimNo).HasColumnName("CVictimNo");
+
+                entity.Property(e => e.DateCreate).HasColumnType("datetime");
+
+                entity.Property(e => e.DeadMoney).HasComment("0");
+
+                entity.Property(e => e.DeafCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.DenyComment)
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Dispensedate)
+                    .HasColumnName("dispensedate")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Dispensetime)
+                    .HasColumnName("dispensetime")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocumentComplete)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DocumentNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocumentNoEr)
+                    .HasColumnName("DocumentNoER")
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.DueDate)
+                    .HasColumnType("datetime")
+                    .HasComment("วันที่นัดจ่าย/ธเกิง 02-06-51");
+
+                entity.Property(e => e.Emspayment)
+                    .HasColumnName("EMSPayment")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ForeignDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.FundClaimNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.HosIdRefer)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HospitalTreat)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasComment("รพ.ที่รับรักษา");
+
+                entity.Property(e => e.HouseDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.HygieneMoney).HasComment("0");
+
+                entity.Property(e => e.IdCardNo)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdCardType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('S')");
+
+                entity.Property(e => e.InFormNo)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InputBy)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
+
+                entity.Property(e => e.InvoiceDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InvoiceNo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceType)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Iocdate)
+                    .HasColumnName("IOCDate")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Kcl008no)
+                    .HasColumnName("KCL008No")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Kcl014By)
+                    .HasColumnName("kcl014By")
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasComment("ผู้ยืนยันkcl014");
+
+                entity.Property(e => e.Kcl014Comment)
+                    .HasColumnName("kcl014Comment")
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasComment("หมายเหตุยืนยันKCL014");
+
+                entity.Property(e => e.Kcl014Date)
+                    .HasColumnName("kcl014Date")
+                    .HasColumnType("datetime")
+                    .HasComment("วันที่ยืนยันkcl014");
+
+                entity.Property(e => e.Kcl014Status)
+                    .HasColumnName("kcl014Status")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')")
+                    .HasComment("สถานะยืนยันKCL014");
+
+                entity.Property(e => e.LastUpdate).HasColumnType("datetime");
+
+                entity.Property(e => e.LostMindCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.LostOrganCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.LostSexualCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.MCardType)
+                    .HasColumnName("mCardType")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MCardTypeOther)
+                    .HasColumnName("mCardTypeOther")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.OtherCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.OtherDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.OtherDocComment)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PaidType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Passport)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.PayMore)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.PayMoreClaimNo)
+                    .HasMaxLength(13)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PoliceDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.PolicyDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.Pt4id)
+                    .HasColumnName("PT4ID")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pvno)
+                    .HasColumnName("PVNo")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecBirthDate).HasColumnType("datetime");
+
+                entity.Property(e => e.RecCurrentAddress)
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecCurrentDistrict)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecCurrentProvince)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecCurrentSubDistrict)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecFname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecHouseAddress)
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecHouseDistrict)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecHouseProvince)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecHouseSubDistrict)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecInsId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecLname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecPrefix)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecRelate)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecSocNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecTelephone)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReceivingDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ReferId)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RegDate).HasColumnType("datetime");
+
+                entity.Property(e => e.RegNoClaim).HasColumnName("RegNo_Claim");
+
+                entity.Property(e => e.RegType)
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevAddress)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevDistrict)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevFname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevLname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevPrefix)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevProvince)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevRelate)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevsubDistrict)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SameHouseVictimAddress)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SameVictimAddress)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SendHi04Date).HasColumnType("datetime");
+
+                entity.Property(e => e.SendStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.SentHi04)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SocNoDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.TakenTime)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Takendate).HasColumnType("datetime");
+
+                entity.Property(e => e.TypeSurplus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UnHearCrippled)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VictimNoClaim).HasColumnName("VictimNo_Claim");
+
+                entity.Property(e => e.VictimType)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<HosCarAccident>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.TpNo })
+                    .HasName("PK_HosCarAccident_1");
+
+                entity.HasIndex(e => e.CarProv)
+                    .HasName("X_CarProv");
+
+                entity.HasIndex(e => e.CarType)
+                    .HasName("XCarType");
+
+                entity.HasIndex(e => e.FoundInsId)
+                    .HasName("Hoscaraccident_FoundInsId");
+
+                entity.HasIndex(e => e.FoundStickerNo)
+                    .HasName("XFondStickerNo");
+
+                entity.HasIndex(e => e.InsId)
+                    .HasName("Hoscaraccident_insid");
+
+                entity.HasIndex(e => e.PolNo)
+                    .HasName("Viva_PolNo_idx");
+
+                entity.HasIndex(e => e.StatusCanCelCar)
+                    .HasName("MFEC_IndexStatusCancelCar");
+
+                entity.HasIndex(e => new { e.StickerNo, e.CarType, e.AccNo })
+                    .HasName("MFEC_TuningAccnoStickerNoCartype");
+
+                entity.HasIndex(e => new { e.AccNo, e.CarType, e.FoundCarProv, e.FoundCarLicense })
+                    .HasName("Viva_EIOCSearchAccident_Idx1");
+
+                entity.HasIndex(e => new { e.CarLicense, e.StatusCanCelCar, e.SearchStatus, e.Regisdate })
+                    .HasName("Viva_CLConfirmAutoNoCarlicense_idx2");
+
+                entity.HasIndex(e => new { e.AccNo, e.InsId, e.CarLicense, e.CarType, e.TypeMotor, e.StatusCanCelCar })
+                    .HasName("Viva_spEventEclaimAndPaid24Hrs_Idx2");
+
+                entity.HasIndex(e => new { e.CarProv, e.CarType, e.CarLicense, e.StatusCanCelCar, e.SearchStatus, e.Regisdate })
+                    .HasName("Viva_CLConfirmAutoNoCarlicense_idx");
+
+                entity.Property(e => e.AccNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccnoSurplus).HasMaxLength(30);
+
+                entity.Property(e => e.Accnodup)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BranchId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CancelDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CarBand)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarColor)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarLicense)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarLicenseDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CarNoClaim).HasColumnName("CarNo_Claim");
+
+                entity.Property(e => e.CarOwnerDistrict)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerFname)
+                    .HasColumnName("CarOwnerFName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasComment("ชื่อเจ้าของรถ");
+
+                entity.Property(e => e.CarOwnerLname)
+                    .HasColumnName("CarOwnerLName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasComment(@"นามสกุลเจ้าของรถ
+");
+
+                entity.Property(e => e.CarOwnerMoo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerNo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerPrefix)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasComment("คำนำหน้าชื่อเจ้าของรถ");
+
+                entity.Property(e => e.CarOwnerProvince)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerRoad)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerSoi)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerSubDistrict)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerTelNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarOwnerZipCode)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarProv)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarType)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ChassisNoByInput)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ChassisNoBySearch)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ClaimNo)
+                    .HasMaxLength(13)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ClaimNoOfIoc)
+                    .HasColumnName("ClaimNoOfIOC")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comment)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ConfirmBy)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasComment("ยืนยันความคู้มครองส่วนเกิน");
+
+                entity.Property(e => e.ConfirmDate)
+                    .HasColumnType("datetime")
+                    .HasComment("วันที่ยืนยันรถ(ส่วนเกิน)");
+
+                entity.Property(e => e.ConfirmIp)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CushiNo)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CutFoundCarlicense).HasMaxLength(30);
+
+                entity.Property(e => e.CutFoundChassisNo).HasMaxLength(30);
+
+                entity.Property(e => e.CutFoundPolicyNo).HasMaxLength(30);
+
+                entity.Property(e => e.DrvAdd)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvAddDist)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvAddProv)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvAddSubDist)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvFname)
+                    .HasColumnName("DrvFName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvLname)
+                    .HasColumnName("DrvLName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvPrefix)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrvTelNo)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EffDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ExpDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundCarBrand)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundCarLicense)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundCarProv)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundCarType)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundChassisNo)
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundEffDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FoundExpDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FoundInsId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundPolicyNo)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundStickerNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FoundTypeMotor)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FundClaimNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordStatus)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.HomeId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InputBy)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('H')");
+
+                entity.Property(e => e.InputByFirst)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InsFname)
+                    .HasColumnName("InsFName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsLname)
+                    .HasColumnName("InsLName")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsPrefix)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.KeyCutCarlicense).HasMaxLength(20);
+
+                entity.Property(e => e.KeyCutCushino).HasMaxLength(30);
+
+                entity.Property(e => e.KeyCutPolno).HasMaxLength(30);
+
+                entity.Property(e => e.LastUpdate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Moo)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NeedToBillOic)
+                    .HasColumnName("NeedToBillOIC")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.OwnerAmphur).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerChangwat).HasMaxLength(3);
+
+                entity.Property(e => e.OwnerFname).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerHomId)
+                    .HasColumnName("OwnerHomID")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.OwnerLname).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerMobile).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerMoo).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerPrefix).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerRoad).HasMaxLength(100);
+
+                entity.Property(e => e.OwnerSoi).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerTelHome).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerTelOffice)
+                    .HasMaxLength(50)
+                    .IsFixedLength();
+
+                entity.Property(e => e.OwnerTumbol).HasMaxLength(50);
+
+                entity.Property(e => e.OwnerZipcode).HasMaxLength(20);
+
+                entity.Property(e => e.PolNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PolStickerDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Regisdate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Road)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RvpRegisClaimDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SearchStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('R')");
+
+                entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SendStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.SentHi01)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SentHi01Date).HasColumnType("datetime");
+
+                entity.Property(e => e.SentHi04)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SentHi04Date).HasColumnType("datetime");
+
+                entity.Property(e => e.Soi)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StatusCanCelCar)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.StatusNotCar)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.StickerNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SumcaseW)
+                    .HasColumnName("sumcaseW")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SureName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TitleName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TypeInsurerB)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeInsurerC)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.TypeMotor)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<HosVicTimAccident>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo })
+                    .HasName("PK_HosVicTimAccident_1");
+
+                entity.HasIndex(e => e.AccNo)
+                    .HasName("HosVictimAccident_AccNo");
+
+                entity.HasIndex(e => e.BranchId)
+                    .HasName("XBranchID");
+
+                entity.HasIndex(e => e.Broken)
+                    .HasName("XBroken");
+
+                entity.HasIndex(e => e.CarNo)
+                    .HasName("xCarNo");
+
+                entity.HasIndex(e => e.DrvSocNo)
+                    .HasName("Xdrvsocno");
+
+                entity.HasIndex(e => e.Fname)
+                    .HasName("HV_Fname");
+
+                entity.HasIndex(e => e.HospitalIdRefer)
+                    .HasName("HosVictimAccident_HospitalIdRefer");
+
+                entity.HasIndex(e => e.InputBy)
+                    .HasName("idxinputby");
+
+                entity.HasIndex(e => e.Lname)
+                    .HasName("HV_Lname");
+
+                entity.HasIndex(e => e.Regisdate)
+                    .HasName("VIVA_REGISDATE_Idx");
+
+                entity.HasIndex(e => e.StatusCanCelVtm)
+                    .HasName("idxstatuscancelvtm");
+
+                entity.HasIndex(e => e.VictimType)
+                    .HasName("XvictimType");
+
+                entity.HasIndex(e => new { e.AccNo, e.CarNo, e.Confirmed })
+                    .HasName("idxconfirmed");
+
+                entity.HasIndex(e => new { e.Fname, e.HosRecDate, e.HosRoom, e.Lname })
+                    .HasName("MFEC_IndexLname");
+
+                entity.HasIndex(e => new { e.AccNo, e.CarNo, e.Broken, e.Confirmed, e.StatusCanCelVtm })
+                    .HasName("Viva_spEventEclaimAndPaid24Hrs_Idx1");
+
+                entity.HasIndex(e => new { e.StatusCanCelVtm, e.Fname, e.AccNo, e.VictimNo, e.Lname })
+                    .HasName("MFEC_TuningLFABS");
+
+                entity.HasIndex(e => new { e.AccNo, e.VictimNo, e.Fname, e.Lname, e.HosRecDate, e.HosRoom, e.VicTimId })
+                    .HasName("Viva_VicTimID_Idx");
+
+                entity.HasIndex(e => new { e.AccNo, e.VictimNo, e.Lname, e.Prefix, e.Confirmed, e.StatusCanCelVtm, e.Fname })
+                    .HasName("MFEC_TuningFname");
+
+                entity.HasIndex(e => new { e.AccNo, e.VictimNo, e.Fname, e.Lname, e.CarNo, e.Broken, e.Regisdate, e.StatusCanCelVtm, e.Confirmed })
+                    .HasName("Viva_StatusCanCelVtm_Idx");
+
+                entity.HasIndex(e => new { e.Confirmed, e.StatusCanCelVtm, e.Prefix, e.Fname, e.Lname, e.DrvSocNo, e.CaseNot, e.AccNoDup, e.VicTimIs, e.AccNo, e.CarNo, e.VictimNo })
+                    .HasName("MFEC_TuningAccnoCarnoVictimNo");
+
+                entity.HasIndex(e => new { e.VictimNo, e.Prefix, e.Fname, e.Lname, e.Sex, e.Age, e.DrvSocNo, e.TypeCard, e.LockWatchList, e.Confirmed, e.StatusCanCelVtm, e.AccNo })
+                    .HasName("Viva_HosListToApproval");
+
+                entity.HasIndex(e => new { e.AccNo, e.VictimNo, e.Prefix, e.Fname, e.Lname, e.Sex, e.Age, e.DrvSocNo, e.TypeCard, e.LockWatchList, e.Confirmed, e.StatusCanCelVtm, e.InsureType })
+                    .HasName("Viva_HosstListToApproval5");
+
+                entity.Property(e => e.AccNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VictimNo).HasColumnName("VictimNO");
+
+                entity.Property(e => e.AccNoDup)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Age).HasColumnName("age");
+
+                entity.Property(e => e.AlterDistrict)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AlterHomeId)
+                    .HasColumnName("AlterHomeID")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AlterMoo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AlterProvince)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AlterRoad)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AlterSoi)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AlterTumbol)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.An)
+                    .HasColumnName("AN")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BirthDate).HasColumnType("datetime");
+
+                entity.Property(e => e.BranchId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Broken)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CanCelDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CarLiCenseConfirm)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CarLicenseCarProvConfirm)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CardTypeOther)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CareerId).HasComment("อาชีพ");
+
+                entity.Property(e => e.CareerOther)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CaseNot)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ChangwatRefer)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ChkHi01).HasColumnName("ChkHI01");
+
+                entity.Property(e => e.ClaimNo)
+                    .HasMaxLength(13)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Confirmed)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('R')");
+
+                entity.Property(e => e.ConfirmedBy)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ConfirmedBy2)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ConfirmedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ConfirmedDate2).HasColumnType("datetime");
+
+                entity.Property(e => e.Consider)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CoverCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DeadDate)
+                    .HasColumnType("datetime")
+                    .HasComment("วันที่เสียชีวิต");
+
+                entity.Property(e => e.DeadDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DeadNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DetailBroken)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DisableId).HasColumnName("disableID");
+
+                entity.Property(e => e.District)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocId)
+                    .HasColumnName("DocID")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DocName)
+                    .HasMaxLength(70)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DoctorDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DrvLicenseDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.DrvSocNo)
+                    .HasColumnName("DrvSocNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Fname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FundClaimNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GetMoneyCarOwner)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.HomeId)
+                    .HasColumnName("HomeID")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HosRecDate).HasColumnType("datetime");
+
+                entity.Property(e => e.HosRecTime)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HosRoom)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HospitalAuthorize)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.HospitalAuthorizeId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HospitalIdRefer)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.HospitalIdTreat)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasComment("รพ.ที่รับรักษา");
+
+                entity.Property(e => e.HouseDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InputBy)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InputByFirst)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InsureType)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('I')");
+
+                entity.Property(e => e.InsurerDate)
+                    .HasColumnType("datetime")
+                    .HasComment("วันที่บ.ประกันจ่าย บต.");
+
+                entity.Property(e => e.InsurerPaid)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')")
+                    .HasComment("บ.ประกันจ่าย/ไม่จ่ายบต");
+
+                entity.Property(e => e.InsurerPaidAmount).HasComment("จำนวนเงินที่จ่ายแล้ว");
+
+                entity.Property(e => e.Kcl014ClaimNo)
+                    .HasColumnName("kcl014ClaimNo")
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .HasComment("เลขเคลมของบริษัทประกันภัยยืนยันKCL014");
+
+                entity.Property(e => e.LastUpdate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Lname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LockWatchList)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Moo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NotCoverCase)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Occupation)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasComment("อาชีพ");
+
+                entity.Property(e => e.PaCheckInsure)
+                    .HasColumnName("paCheckInsure")
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PaCheckPolicy)
+                    .HasColumnName("paCheckPolicy")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PaPolicyNo)
+                    .HasColumnName("paPolicyNo")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PolicyNoConfirm)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Prefix)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Province)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pt4doc)
+                    .HasColumnName("PT4Doc")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Regisdate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.RepreDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.RiskAlgohol)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')")
+                    .HasComment("พฤติกรรมความเสี่ยง หมวกนิภัย");
+
+                entity.Property(e => e.RiskHelmet)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')")
+                    .HasComment("พฤติกรรมความเสี่ยง  เข็มขัดนิรภัย  ");
+
+                entity.Property(e => e.RiskMobile)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')")
+                    .HasComment("พฤติกรรมความเสี่ยง แอลกอฮอล์  ");
+
+                entity.Property(e => e.RiskSafetyBelt)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')")
+                    .HasComment("พฤติกรรมความเสี่ยง โทรศัพท์เคลื่อนที่   ");
+
+                entity.Property(e => e.RiskValueAlgohol)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasComment("พฤติกรรมความเสี่ยง values 1 = มี,ใช้  ,2 = ไม่มี, ไม่ใช้     ,3 = ไม่ทราบ");
+
+                entity.Property(e => e.RiskValueHelmet)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.RiskValueMobile)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.RiskValueSafetyBelt)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Road)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.School)
+                    .HasColumnName("school")
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SendBy)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SendName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SendStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.SentHi01)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SentHi01Date).HasColumnType("datetime");
+
+                entity.Property(e => e.SentHi04)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SentHi04Date).HasColumnType("datetime");
+
+                entity.Property(e => e.Sex)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SocNoDoc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Soi)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StatusCanCelVtm)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.TelNo)
+                    .HasColumnName("TelNO")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tumbol)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TypeCard)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasComment("ประเภทบัตร");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VCf014)
+                    .HasColumnName("v_cf014")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('Y')");
+
+                entity.Property(e => e.VicTimId)
+                    .HasColumnName("VicTimID")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VicTimIs)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VictimNoClaim).HasColumnName("VictimNo_Claim");
+
+                entity.Property(e => e.VictimType)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Zipcode)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
             });
 

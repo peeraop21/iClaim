@@ -39,7 +39,7 @@
                 } else if (routeName == "Claim") {
                     this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {
-                    this.$router.push({ name: 'Claim'})
+                    this.$router.push({ name: 'Claim', params: { id: this.$route.params.id }})
                 } else if (routeName == "CheckStatus") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "ConfirmMoney") {

@@ -19,7 +19,7 @@ export default new Vuex.Store({
     getters: {
 
         accGetter: (state) => (id) => {
-            return state.accStateData.filter(w => w.eaTmpId === id)[0]
+            return state.accStateData.filter(w => w.stringAccNo === id)[0]
         },
         userGetter: (state) => (id) => {
             return state.userStateData.filter(w => w.lineId !== id)

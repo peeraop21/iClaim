@@ -22,7 +22,19 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[hospital_table]",
+         "Name": "[dbo].[HosAccident]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HosApproval]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HosCarAccident]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HosVicTimAccident]",
          "ObjectType": 0
       }
    ],
