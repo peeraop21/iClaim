@@ -11,12 +11,12 @@ namespace Services.ViewModels
     
     public class AccidentViewModel
     {
-        public string AccNo { get; set; }
-        
+        public string AccNo { get; set; }        
         public string ClaimNo { get; set; }
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
         public string StringAccDate { get; set; }
+        public string PlaceAcc { get; set; }
         public List<string> Car { get; set; }
         public string Channel { get; set; }
         /*public string EaCarLicense { get; set; }

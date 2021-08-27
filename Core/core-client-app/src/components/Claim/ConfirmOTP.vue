@@ -227,6 +227,9 @@
                     
                 }
             },
+            postData() {
+
+            },
 
             requestOTP() {
                 
@@ -346,6 +349,9 @@
             },
             
 
+        },
+        mounted() {
+            console.log('load = ', this.$store.state.inputApprovalData)
         }
         
     }

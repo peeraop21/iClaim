@@ -37,8 +37,8 @@ namespace Services
             var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();           
             var accLineNo = GetLineAccNo(userIdCard);
             var accHosNo = GetHosAccNo(userIdCard);
-            var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s  => new {s.EaAccNo,s.EaAccDate }).ToListAsync();
-            var accHosList = await rvpOfficeContext.HosAccident.Where(w => accHosNo.Contains(w.AccNo)).Select(s => new { s.AccNo, s.DateAcc }).ToListAsync();
+            var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s  => new {s.EaAccNo,s.EaAccDate, s.EaAccPlace }).ToListAsync();
+            var accHosList = await rvpOfficeContext.HosAccident.Where(w => accHosNo.Contains(w.AccNo)).Select(s => new { s.AccNo, s.DateAcc, s.AccPlace }).ToListAsync();
             var accViewModelList = new List<AccidentViewModel>();
             foreach (var acc in accLineList)
             {
@@ -48,6 +48,7 @@ namespace Services
                 accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;                
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
+                accVwModel.PlaceAcc = acc.EaAccPlace;
                 accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
                 accVwModel.Channel = "LINE";
                 accViewModelList.Add(accVwModel);
@@ -60,6 +61,7 @@ namespace Services
                 accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
+                accVwModel.PlaceAcc = acc.AccPlace;
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();               
                 accVwModel.Channel = "HOS";
                 accViewModelList.Add(accVwModel);
