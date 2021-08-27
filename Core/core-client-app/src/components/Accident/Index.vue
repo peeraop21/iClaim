@@ -34,9 +34,20 @@
                                 <a class="accordion-link" :href="'#list' + accident.stringAccNo">
                                     <div>
                                         <p>
-                                            <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
+                                            <label>
+                                                <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
+                                            </label>
                                             <br>
-                                            <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.stringAccDate }}
+                                            <label v-if="accident.claimNo">
+                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: {{ accident.claimNo }}
+                                            </label>
+                                            <label v-if="!accident.claimNo">
+                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: ยังเปิดเคลม
+                                            </label>
+                                            <br>
+                                            <label>
+                                                <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.stringAccDate }}
+                                            </label>
                                         </p>
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
@@ -44,11 +55,11 @@
                                 <div class="answer">
                                     <p>
                                         ทะเบียนรถ:
-                                        <label > {{ accident.car }},</label>
+                                        <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
                                         สิทธิ์คงเหลือ:  บาท
                                     </p>
-                                   
+
                                 </div>
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
@@ -140,7 +151,7 @@
         },
         async mounted() {
             await this.getJwtToken();
-            
+
         }
 
 
@@ -231,7 +242,7 @@
         font-size: 13px;
         border: 2px solid #5c2e91;
     }
-   
+
     .btn-next:link, .btn-next:visited {
         background-color: var(--main-color);
         color: white;
@@ -243,12 +254,12 @@
         font-size: 15px;
     }
 
-        .btn-next, .btn-next:active {
-            background-color: #50287e;
-            color: white;
-        }
+    .btn-next, .btn-next:active {
+        background-color: #50287e;
+        color: white;
+    }
 
-    
+
     a[class="btn-select"]:link, a[class="btn-select"]:visited {
         background-color: var(--main-color);
         margin-top: 10px;
@@ -278,6 +289,7 @@
         font-weight: bold;
         font-size: 12px;
     }
+
     a[class="btn-rightsHistory"]:link, a[class="btn-rightsHistory"]:visited {
         background-color: #dad5e9;
         color: var(--main-color);
@@ -376,5 +388,4 @@
         padding: 20px 20px 15px 20px;
         text-align: left;
     }
-    
 </style>

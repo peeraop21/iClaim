@@ -44,10 +44,11 @@ namespace Services
             {
                 var accVwModel = new AccidentViewModel();
                 accVwModel.AccNo = acc.EaAccNo;
+                accVwModel.ClaimNo = await rvpOfficeContext.HosApproval.Where(w => w.AccNo == acc.EaAccNo).Select(s => s.ClaimNo).FirstOrDefaultAsync();
                 accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
-                accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
+                accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;                
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
-                accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => acc.EaAccNo.Contains(w.EaAccNo)).Select(s => s.EaCarLicense).ToListAsync();
+                accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
                 accVwModel.Channel = "LINE";
                 accViewModelList.Add(accVwModel);
             }
@@ -55,10 +56,11 @@ namespace Services
             {
                 var accVwModel = new AccidentViewModel();
                 accVwModel.AccNo = acc.AccNo;
+                accVwModel.ClaimNo = await rvpOfficeContext.HosApproval.Where(w => w.AccNo == acc.AccNo).Select(s => s.ClaimNo).FirstOrDefaultAsync();
                 accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
-                accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => acc.AccNo.Contains(w.AccNo)).Select(s => s.CarLicense).ToListAsync();
+                accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();               
                 accVwModel.Channel = "HOS";
                 accViewModelList.Add(accVwModel);
             }

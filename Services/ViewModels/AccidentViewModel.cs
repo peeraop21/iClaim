@@ -13,6 +13,7 @@ namespace Services.ViewModels
     {
         public string AccNo { get; set; }
         
+        public string ClaimNo { get; set; }
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
         public string StringAccDate { get; set; }
