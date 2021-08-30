@@ -31,5 +31,18 @@ namespace Core.Controllers
         {
             return Ok(await accidentService.GetAccident(userToken));
         }
+
+
+        [HttpGet("Car/{accNo}/{channel}")]
+        public async Task<IActionResult> GetAccidentCar(string accNo, string channel)
+        {
+            return Ok(await accidentService.GetAccidentCar(accNo.Replace("-","/"), channel));
+        }
+
+        [HttpGet("AccidentVictim/{accNo}/{channel}/{userIdCard}")]
+        public async Task<IActionResult> GetAccidentVictim(string accNo, string channal, string userIdCard)
+        {
+            return Ok(await accidentService.GetAccidentVictim(accNo, channal, userIdCard));
+        }
     }
 }

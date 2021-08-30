@@ -357,22 +357,22 @@
                         <div class="col-9">
                             <p class="mb-0">ชื่อ-สกุล</p>
                             <div class="mt-0" v-if="userData.prefix != null">
-                                <p class="mb-0" style="color: grey">{{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
+                                <p class="label-text">{{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.prefix === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-3">
                             <p class="mb-0">อายุ</p>
                             <div class="mt-0" v-if="bank!=''">
-                                <p class="mb-0" style="color: grey">{{bank}}</p>
+                                <p class="label-text">{{bank}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="bank===''">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
@@ -381,33 +381,33 @@
                         <div class="col-4">
                             <p class="mb-0">บ้านเลขที่</p>
                             <div class="mt-0" v-if="userData.homeHouseNo != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeHouseNo}}</p>
+                                <p class="label-text">{{userData.homeHouseNo}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeHouseNo === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-2">
                             <p class="mb-0">หมู่</p>
                             <div class="mt-0" v-if="userData.homeHmo != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeHmo}}</p>
+                                <p class="label-text">{{userData.homeHmo}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeHmo === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">ซอย</p>
                             <div class="mt-0" v-if="userData.homeSoi != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeSoi}}</p>
+                                <p class="label-text">{{userData.homeSoi}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeSoi === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
@@ -416,22 +416,22 @@
                         <div class="col-6">
                             <p class="mb-0">ถนน</p>
                             <div class="mt-0" v-if="userData.homeRoad != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeRoad}}</p>
+                                <p class="label-text">{{userData.homeRoad}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeRoad === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">ตำบล/แขวง</p>
                             <div class="mt-0" v-if="userData.homeTumbolId != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeTumbolId}}</p>
+                                <p class="label-text">{{userData.homeTumbolId}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeTumbolId === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
@@ -440,22 +440,22 @@
                         <div class="col-6">
                             <p class="mb-0">อำเภอ</p>
                             <div class="mt-0" v-if="userData.homeCityId != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeCityId}}</p>
+                                <p class="label-text">{{userData.homeCityId}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeCityId === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">จังหวัด</p>
                             <div class="mt-0" v-if="userData.homeProvinceId != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeProvinceId}}</p>
+                                <p class="label-text">{{userData.homeProvinceId}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeProvinceId === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
@@ -464,22 +464,22 @@
                         <div class="col-6">
                             <p class="mb-0">รหัสไปรษณีย์</p>
                             <div class="mt-0" v-if="userData.homeZipcode != null">
-                                <p class="mb-0" style="color: grey">{{userData.homeZipcode}}</p>
+                                <p class="label-text">{{userData.homeZipcode}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.homeZipcode === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">เบอร์โทรศัพท์</p>
                             <div class="mt-0" v-if="userData.mobileNo != null">
-                                <p class="mb-0" style="color: grey">{{userData.mobileNo}}</p>
+                                <p class="label-text">{{userData.mobileNo}}</p>
                                 <hr class="mt-0">
                             </div>
                             <div class="mt-0" v-else-if="userData.mobileNo === null">
-                                <p class="mb-0" style="color: grey">-</p>
+                                <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
@@ -495,56 +495,56 @@
 
                     <p class="mb-0">วันที่เกิดเหตุ</p>
                     <div class="mt-0" v-if="accData.stringAccDate != null">
-                        <p class="mb-0" style="color: grey">{{accData.stringAccDate}}</p>
+                        <p class="label-text">{{accData.stringAccDate}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="accData.stringAccDate === null">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">ลักษณะเกิดเหตุ</p>
                     <div class="mt-0" v-if="bank!=''">
-                        <p class="mb-0" style="color: grey">{{bank}}</p>
+                        <p class="label-text">{{bank}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="bank===''">
-                        <p class="mb-0" style="color: grey">-</p>                         
+                        <p class="label-text">-</p>                         
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">สถานที่เกิดเหตุ</p>
                     <div class="mt-0" v-if="accData.placeAcc!=''">
-                        <p class="mb-0" style="color: grey">{{accData.placeAcc}}</p>
+                        <p class="label-text">{{accData.placeAcc}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="accData.placeAcc===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
-                    <div class="mt-0" v-if="bank!=''">
-                        <p class="mb-0" style="color: grey">{{bank}}</p>
+                    <div class="mt-0" v-if="accidentCarData.foundCarLicense != ''">
+                        <p class="label-text">{{accidentCarData[0].foundCarLicense}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bank===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                    <div class="mt-0" v-else-if="accidentCarData.foundCarLicense ===''">
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">เลขตัวถัง</p>
-                    <div class="mt-0" v-if="bank!=''">
-                        <p class="mb-0" style="color: grey">{{bank}}</p>
+                    <div class="mt-0" v-if="accidentCarData.foundChassisNo!=''">
+                        <p class="label-text">{{accidentCarData[0].foundChassisNo}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bank===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                    <div class="mt-0" v-else-if="accidentCarData.foundChassisNo===''">
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">กรมธรรม์คุ้มครองภัยจากรถ เลขที่</p>
-                    <div class="mt-0" v-if="bank!=''">
-                        <p class="mb-0" style="color: grey">{{bank}}</p>
+                    <div class="mt-0" v-if="accidentCarData.foundPolicyNo!=''">
+                        <p class="label-text">{{accidentCarData[0].foundPolicyNo}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bank===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                    <div class="mt-0" v-else-if="accidentCarData.foundPolicyNo===''">
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
 
@@ -558,30 +558,13 @@
                 <div class="box-container mb-3">
                     <p class="mb-0">อาการบาดเจ็บ</p>
                     <div class="mt-0" v-if="injuri!=''">
-                        <p class="mb-0" style="color: grey">{{injuri}}</p>
+                        <p class="label-text">{{injuri}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="injuri===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
-                    <!--<p class="mb-0">ประเภทผู้ป่วย</p>
-                    <div class="mt-0" v-if="patientType!=''">
-                        <p class="mb-0" style="color: grey">{{patientType}}</p>
-                        <hr>
-                    </div>
-                    <div class="mt-0" v-else-if="patientType===''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>-->
-
-                    <!--<p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
-                    <div v-if="idCardFileDisplay" align="center">
-                        <img class="img-show" :src="idCardFileDisplay.base64" />
-                        <br />
-                        <label>{{idCardFileDisplay.filename}}</label>
-                    </div>-->
-
                     <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
                         <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                         <div v-if="bill.BillfileShow" align="center">
@@ -589,65 +572,58 @@
                             <br />
                             <label>{{bill.filename}}</label>
                         </div>
-                        <!--<div class="mt-0" v-if="bill.BillfileShow!=''">
-                            <p class="mb-0" style="color: grey">{{bill.BillfileShow}}</p>
-                            <hr class="mt-0">
-                        </div>
-                        <div class="mt-0" v-else-if="bill.BillfileShow===''">
-                            <p class="mb-0" style="color: grey">-</p>
-                            <hr class="mt-0">
-                        </div>-->
+
                         <p class="mb-0">ชื่อโรงพยาบาล</p>
                         <div class="mt-0" v-if="bill.selectHospital!=''">
-                            <p class="mb-0" style="color: grey">{{ bill.selectHospital }}</p>
+                            <p class="label-text">{{ bill.selectHospital }}</p>
                             <hr class="mt-0">
                         </div>
                         <div class="mt-0" v-else-if="bill.selectHospital===''">
-                            <p class="mb-0" style="color: grey">-</p>
+                            <p class="label-text">-</p>
                             <hr class="mt-0">
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <p class="mb-0">เลขที่ใบเสร็จ</p>
                                 <div class="mt-0" v-if="bill.bill_no!=''">
-                                    <p class="mb-0" style="color: grey">{{bill.bill_no}}</p>
+                                    <p class="label-text">{{bill.bill_no}}</p>
                                     <hr class="mt-0">
                                 </div>
                                 <div class="mt-0" v-else-if="bill.bill_no===''">
-                                    <p class="mb-0" style="color: grey">-</p>
+                                    <p class="label-text">-</p>
                                     <hr class="mt-0">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <p class="mb-0">วันที่เข้ารักษา</p>
                                 <div class="mt-0" v-if="bill.hospitalized_date!=''">
-                                    <p class="mb-0" style="color: grey">{{bill.hospitalized_date}}</p>
+                                    <p class="label-text">{{bill.hospitalized_date}}</p>
                                     <hr class="mt-0">
                                 </div>
                                 <div class="mt-0" v-else-if="bill.hospitalized_date===''">
-                                    <p class="mb-0" style="color: grey">-</p>
+                                    <p class="label-text">-</p>
                                     <hr class="mt-0">
                                 </div>
                             </div>
                         </div>
                         <p class="mb-0">จำนวนเงิน</p>
                         <div class="mt-0" v-if="bill.money!=''">
-                            <p class="mb-0" style="color: grey">{{bill.money}} บาท</p>
+                            <p class="label-text">{{bill.money}} บาท</p>
                             <hr class="mt-0">
                         </div>
                         <div class="mt-0" v-else-if="bill.money===''">
-                            <p class="mb-0" style="color: grey">-</p>
+                            <p class="label-text">-</p>
                             <hr class="mt-0">
                         </div>
                     </div>
 
                     <p class="mb-0">จำนวนเงินรวมทั้งหมด</p>
                     <div class="mt-0" v-if="total_amount!=''">
-                        <p class="mb-0" style="color: grey">{{total_amount}} บาท</p>
+                        <p class="label-text">{{total_amount}} บาท</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="total_amount===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                 </div>
@@ -664,40 +640,33 @@
                         <br />
                         <label>{{bankFileDisplay.filename}}</label>
                     </div>
-                    <!--<div class="mt-0" v-if="bankFileShow!=''">
-                        <p class="mb-0" style="color: grey">{{image.name}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-if="bankFileShow === ''">
-                        <p class="mb-0" style="color: grey">-</p>
-                        <hr class="mt-0">
-                    </div>-->
+
                     <p class="mb-0">ชื่อธนาคาร</p>
                     <div class="mt-0" v-if="inputBank.accountBankName!=''">
-                        <p class="mb-0" style="color: grey">{{ inputBank.accountBankName }}</p>
+                        <p class="label-text">{{ inputBank.accountBankName }}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="inputBank.accountBankName===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
 
                     <p class="mb-0">ชื่อบัญชีธนาคาร</p>
                     <div class="mt-0" v-if="inputBank.accountName!=''">
-                        <p class="mb-0" style="color: grey">{{inputBank.accountName}}</p>
+                        <p class="label-text">{{inputBank.accountName}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="inputBank.accountName===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">เลขบัญชีธนาคาร</p>
                     <div class="mt-0" v-if="inputBank.accountNumber!=''">
-                        <p class="mb-0" style="color: grey">{{inputBank.accountNumber}}</p>
+                        <p class="label-text">{{inputBank.accountNumber}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="inputBank.accountNumber===''">
-                        <p class="mb-0" style="color: grey">-</p>
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
 
@@ -798,7 +767,12 @@
                 selectChangwat: '',
                 modalHospital: false,
                 mockHospital: '',
-                divHospitalModal:false
+                divHospitalModal: false,
+
+                //----Get AccidentCar
+                accidentCarData: { foundCarLicense: '', foundChassisNo: '', foundPolicyNo: '' },
+                //----Get AccidentCar
+                accidentVictimData: null
             };
         },
 
@@ -858,6 +832,18 @@
                     .then((response) => {
                         this.changwats = response.data;
                         console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getAccidentCar() {
+                console.log('getAccidentCar');
+                var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
+                axios.get(url)
+                    .then((response) => {
+                        this.accidentCarData = response.data;
+                        console.log(this.accidentCarData);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -951,16 +937,16 @@
                 alert("Thank you for your response! We will contact you soon.");
             },
         },
-        mounted() {
-            console.log(this.accData)
-            console.log(this.userData)
+        async mounted() {
+            await this.getAccidentCar();
             this.getBankNames();
             this.getHospitalNames();
-            this.getChangwatNames();
+            this.getChangwatNames();         
             this.selectChangwat = 0;
             this.selectHospital = 0;
             
         },
+  
         computed: {
             filteredItems: function () {
                 return this.hospitals.filter(function (el) {
@@ -1125,5 +1111,9 @@
             outline: none;
         }
 
-
+    .label-text{
+        margin-bottom:0px;
+        
+        color:gray;
+    }
 </style>
