@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VueCliMiddleware;
+using DataAccess.EFCore.DigitalClaimModels;
 
 namespace Core
 {
@@ -41,12 +42,15 @@ namespace Core
             services.AddDbContext<RvpaccidentContext>(o => o.UseSqlServer(Configuration.GetConnectionString("RvpAccident")));
             services.AddDbContext<RvpofficeContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Rvpoffice")));
             services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
+            services.AddDbContext<DigitalclaimContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DigitalClaim")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IMasterService, MasterService>();
             services.AddScoped<IMasterService, MasterService>();
+            services.AddTransient<IApprovalService, ApprovalService>();
+            services.AddScoped<IApprovalService, ApprovalService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
