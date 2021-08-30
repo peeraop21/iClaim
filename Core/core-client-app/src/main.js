@@ -26,6 +26,9 @@ Vue.use(Vuesax, {
 import OtpInput from "@bachdgvn/vue-otp-input";
 Vue.component("v-otp-input", OtpInput);
 
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
 Vue.config.ignoredElements = [/^ion-/]
 Vue.use(CalendarPlugin)
 Vue.use(VueSweetalert2)

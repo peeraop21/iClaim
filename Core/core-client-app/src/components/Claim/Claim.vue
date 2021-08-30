@@ -111,96 +111,11 @@
                         <label class="px-2">อาการบาดเจ็บ</label>
                         <b-form-input class="mt-0 mb-2" v-model="injuri" placeholder=""></b-form-input>
 
-                        <!--<div v-for="(input, index) in bills" :key="`Bill-${index}`" class="input wrapper flex items-center">
-                            <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>-->
-                            <!--<input type="file" @change="onFileChange">-->
-                            <!--<file-pond credits="null"
-                                       label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
-                                       v-bind:allow-multiple="false"
-                                       v-bind:allowFileEncode="true"
-                                       accepted-file-types="image/jpeg, image/png"
-                                       v-model="input.file" />
-                            <vs-dialog width="550px" not-center v-model="modalHospital">
-                                <template #header>
-                                    <h4 class="not-margin">
-                                        เลือกโรงพยาบาล
-                                    </h4>
-                                </template>
-                                <div class="con-content" align="left">
-                                    <div class="d-block text-left">
-                                        <div class="mb-2">
-                                            <label class="px-2">จังหวัด</label>
-                                            <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
-                                                <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
-                                                    {{ category.changwatname }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-2" v-show="divHospitalModal">
-                                            <label class="px-2">โรงพยาบาล</label>
-                                            <select name="item" id="item" v-model="mockHospital">
-                                                <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
-                                                    {{ item.HOSPITALNAME  }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <template #footer>
-                                    <div class="footer-dialog">
-                                        <vs-button block @click="submitModalHospital(index)" >
-                                            ยืนยัน
-                                        </vs-button>
-
-                                    </div>
-                                </template>
-                            </vs-dialog>
-                            <label class="px-2">โรงพยาบาล</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.selectHospital" type="text" @click="modalHospital=!modalHospital" />
-                            <label class="px-2">เลขที่ใบเสร็จ</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
-                            <label class="px-2">จำนวนเงิน</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
-                            <label class="px-2">วันที่เข้ารักษา</label>
-                            <b-form-datepicker v-model="input.hospitalized_date"
-                                               selected-variant="primary"
-                                               label-selected=""
-                                               label-no-date-selected=""
-                                               :close-button="true"
-                                               :label-help="null"
-                                               label-close-button="ปิด"
-                                               :today-button="true"
-                                               label-today-button="เลือกวันปัจจุบัน"
-                                               :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                               size="sm"
-                                               class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
-                            <br>-->
-                            <!-- Add Svg Icon-->
-                            <!--<p style="color: green">
-                                <svg @click="addField(input, bills)"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 30 30"
-                                     width="30"
-                                     height="30"
-                                     class="ml-2 cursor-pointer">
-                                    <path fill="none" d="M0 0h24v24H0z" />
-                                    <path fill="green" d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-                                </svg>เพิ่มใบเสร็จ
-                            </p>-->
-                            <!-- Remove Svg Icon-->
-                            <!--<svg v-show="bills.length > 1"
-                                 @click="removeField(index, bills)"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 viewBox="0 0 30 30"
-                                 width="30"
-                                 height="30"
-                                 class="ml-2 cursor-pointer mb-2"
-                                 style="margin-top: -10px;">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
-                            </svg>
-
-                        </div>-->
+                        <!--VALIDATE FORM INPUT-->
+                        <!--<b-form-input class="mt-0 mb-2" v-model="$v.injuri.$model" placeholder="" v-bind:class="{ 'is-invalid': $v.injuri.$error }"></b-form-input>
+                        <div class="error" v-if="!$v.injuri.required">Field is required</div>
+                        <div class="error" v-if="!$v.injuri.minLength">Name must have at least {{$v.injuri.$params.minLength.min}} letters.</div>-->
+                      
 
                     </div>
                     <div class="box-container mt-2" v-for="(input, index) in bills" :key="`Bill-${index}`" >
@@ -708,6 +623,8 @@
     // Create component
     const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode);
 
+    // Validate
+    //import { required, minLength } from 'vuelidate/lib/validators';
 
     //Your Javascript lives within the Script Tag
     export default {
@@ -728,7 +645,6 @@
                 // --BookBank
                 inputBank: { accountName: '', accountNumber: '', accountBankName:'' },
                 bank: '',
-                
                 phoneNumbers: [{ phone: "" }],
                 image: '',
                 preview: null,
@@ -775,8 +691,21 @@
                 accidentVictimData: null
             };
         },
-
+        //---Validate
+        /*validations: {
+            injuri: {
+                required,
+                minLength: minLength(5)
+            }
+        },*/
         methods: {
+            //---Validate
+            /*status(validation) {
+                return {
+                    error: validation.$error,
+                    dirty: validation.$dirty
+                }
+            },*/
             storeInputData() {
                 
                 this.active = true
