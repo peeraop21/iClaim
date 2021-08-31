@@ -69,6 +69,7 @@
                 </div>
             </div>
             <div>
+                <button class="btn-confirm-money" type="button" @click="postData">test post data</button>
                 <br>
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
             </div>
@@ -228,7 +229,13 @@
                 }
             },
             postData() {
-
+                axios.post("/api/Approval", this.$store.state.inputApprovalData)
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
 
             requestOTP() {

@@ -38,11 +38,11 @@
                                                 <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
                                             </label>
                                             <br>
-                                            <label v-if="accident.claimNo">
-                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: {{ accident.claimNo }}
+                                            <label v-if="accident.lastClaim.claimNo">
+                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: {{ accident.lastClaim.claimNo }}
                                             </label>
-                                            <label v-if="!accident.claimNo">
-                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: ยังเปิดเคลม
+                                            <label v-if="!accident.lastClaim.claimNo">
+                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: ยังไม่เปิดเคลม
                                             </label>
                                             <br>
                                             <label>
