@@ -20,6 +20,9 @@ using System.Threading.Tasks;
 using VueCliMiddleware;
 using DataAccess.EFCore.DigitalClaimModels;
 using DataAccess.EFCore.ClaimDataModels;
+using Microsoft.OpenApi.Models;
+using AutoMapper;
+using Core.Mappers;
 
 namespace Core
 {
@@ -36,6 +39,15 @@ namespace Core
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            
+            services.AddAutoMapper(typeof(DataMapperProfile));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "core-client-app/dist";
@@ -86,6 +98,11 @@ namespace Core
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "My API V1");
             });
 
             app.UseSpa(spa =>
