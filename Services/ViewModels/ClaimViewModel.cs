@@ -14,6 +14,12 @@ namespace Services.ViewModels
         public double? SumMoney { get; set; }
         public string Pt4id { get; set; }
         public string ClaimNo { get; set; }
-       
+
+        public double? MedicineMoney { get; set; }
+        public double? PlasticMoney { get; set; }
+        public double? ServiceMoney { get; set; }
+        public double? RoomMoney { get; set; }
+        public double? VeihcleMoney { get; set; }
+
     }
 }

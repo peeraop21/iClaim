@@ -38,7 +38,7 @@ namespace Services
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
-            var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();
+            var userIdCard = /*await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();*/"1430300132845";
             var accLineNo = GetLineAccNo(userIdCard);
             var accHosNo = GetHosAccNo(userIdCard);
             var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s => new { s.EaAccNo, s.EaAccDate, s.EaAccPlace }).ToListAsync();
@@ -59,6 +59,7 @@ namespace Services
                 accVwModel.PlaceAcc = acc.EaAccPlace;
                 accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
                 accVwModel.Channel = "LINE";
+                accVwModel.Rights = await approvalService.GetApproval(acc.EaAccNo);
                 accViewModelList.Add(accVwModel);
             }
             foreach (var acc in accHosList)
@@ -74,6 +75,7 @@ namespace Services
                 accVwModel.PlaceAcc = acc.AccPlace;
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
                 accVwModel.Channel = "HOSPITAL";
+                accVwModel.Rights = await approvalService.GetApproval(acc.AccNo);
                 accViewModelList.Add(accVwModel);
             }
             return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();

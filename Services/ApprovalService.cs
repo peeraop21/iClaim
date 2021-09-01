@@ -69,7 +69,7 @@ namespace Services
 
         public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
@@ -79,6 +79,12 @@ namespace Services
                 claimVwModel.AppNo = query.AppNo;
                 claimVwModel.ClaimNo = query.ClaimNo;
                 claimVwModel.Pt4id = query.Pt4id;
+                claimVwModel.MedicineMoney = query.MedicineMoney;
+                claimVwModel.PlasticMoney = query.PlasticMoney;
+                claimVwModel.ServiceMoney = query.ServiceMoney;
+                claimVwModel.RoomMoney = query.RoomMoney;
+                claimVwModel.VeihcleMoney = query.VeihcleMoney;
+                
             }
 
             return claimVwModel;
@@ -87,35 +93,28 @@ namespace Services
         {
 
             var approvalVwMdList = new List<ApprovalregisViewModel>();
-            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo).Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApEntrydate, s.ApMoney, s.ApRevprefix, s.ApRevfname, s.ApRevlname, s.ApApproveby, s.ApRecprefix, s.ApRecfname, s.ApReclname, s.ApRecid, s.ApMoneydate, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).FirstOrDefaultAsync();
+            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo).Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).FirstOrDefaultAsync();
             var approvalVwModel = new ApprovalregisViewModel();
-            if (query == null)
+            if (query != null)
             {
-                return null;
-            }
-            approvalVwModel.CrClaimno = query.CrClaimno;
+                approvalVwModel.CrClaimno = query.CrClaimno;
             approvalVwModel.StringCrClaimno = query.CrClaimno.ToString().Replace("/", "-");
             approvalVwModel.VVictimno = query.VVictimno;
             approvalVwModel.ApRegno = query.ApRegno;
             approvalVwModel.ApRegdate = query.ApRegdate.Value.Date;
             approvalVwModel.StringApRegdate = approvalVwModel.ApRegdate.ToString().Replace("12:00:00 AM", " ");
-            approvalVwModel.ApEntrydate = query.ApEntrydate;
+            approvalVwModel.ApPaytype = query.ApPaytype;
             approvalVwModel.ApMoney = query.ApMoney;
-            approvalVwModel.ApRevprefix = query.ApRevprefix;
-            approvalVwModel.ApRevfname = query.ApRevfname;
-            approvalVwModel.ApRevlname = query.ApRevlname;
-            approvalVwModel.ApApproveby = query.ApApproveby;
-            approvalVwModel.ApRecprefix = query.ApRecprefix;
-            approvalVwModel.ApRecfname = query.ApRecfname;
-            approvalVwModel.ApReclname = query.ApReclname;
-            approvalVwModel.ApRecid = query.ApRecid;
-            approvalVwModel.ApMoneydate = query.ApMoneydate;
             approvalVwModel.AccNo = query.AccNo;
             approvalVwModel.ApTotal = query.ApTotal;
             approvalVwModel.DailyReceiveno = query.DailyReceiveno;
             approvalVwModel.Pt4 = query.Pt4;
+            approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
+            approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
             approvalVwModel.ApStatus = query.ApStatus;
             approvalVwMdList.Add(approvalVwModel);
+            }
+            
             return approvalVwMdList;
 
 
