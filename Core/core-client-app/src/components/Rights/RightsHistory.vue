@@ -43,13 +43,13 @@
                                 </a>
                                 <div class="answer">
                                     <p>
-                                        สถานะการจ่ายเงิน: {{ approvals.apStatus }}<br>
+                                        สถานะ: {{approvals.apStatus}}<br>
                                         วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}<br>
                                         โรงพยาบาลที่รักษา:
                                     </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, pt: approvals.stringCrClaimno, approval }}" >ดูเพิ่มเติม</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, pt: approvals.stringPt4, type: approvals.subPt4 }}" >ดูเพิ่มเติม</router-link>
                                     
                                 </div>
                             </div>
@@ -90,8 +90,9 @@
                     },
                 ],
                 userData: this.$store.state.userStateData,
+                approval: [],
                 accData: this.$store.getters.accGetter(this.$route.params.id),
-                approval: []
+                
             }
         },
         methods: {
@@ -100,8 +101,10 @@
                 var url = '/api/Approval/{accNo}'.replace('{accNo}', this.accData.stringAccNo);
                 axios.get(url)
                     .then((response) => {
-                        this.approval = response.data;
+                        this.$store.state.claimStateData = response.data;
+                        this.approval = this.$store.state.claimStateData;
                         console.log(this.approval);
+
                     })
                     .catch(function (error) {
                         alert(error);
@@ -109,9 +112,8 @@
             },
         },
         mounted() {
-            console.log(this.$store.state.userStateData);
+            console.log(this.accData);
             this.getApprovals();
-            //console.log(this.accData)
             
         }
 

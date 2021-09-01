@@ -57,7 +57,11 @@
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือ:  บาท
+                                        สิทธิ์คงเหลือ:
+                                        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
+                                            {{ rights.apTotal }}
+                                        </label>
+                                        บาท
                                     </p>
 
                                 </div>
@@ -151,7 +155,6 @@
         },
         async mounted() {
             await this.getJwtToken();
-
         }
 
 
@@ -167,6 +170,7 @@
     p.p_right {
         text-align: right;
         width: 99%;
+        font-weight: bold;
     }
 
     .txt {

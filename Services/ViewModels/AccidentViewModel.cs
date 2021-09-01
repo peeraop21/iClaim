@@ -20,6 +20,7 @@ namespace Services.ViewModels
         public List<VictimtViewModel> Victim { get; set; }
         public List<string> Car { get; set; }
         public string Channel { get; set; }
+        public List<ApprovalregisViewModel> Rights { get; set; }
         /*public string EaCarLicense { get; set; }
         public string EaPrefixVictim { get; set; }
         public string EaFnameVictim { get; set; }
