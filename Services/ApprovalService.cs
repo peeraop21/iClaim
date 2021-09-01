@@ -17,7 +17,7 @@ namespace Services
     {
         Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
-        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval);
+        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank);
     }
 
 
@@ -33,12 +33,36 @@ namespace Services
             this.rvpofficeContext = rvpofficeContext;
             this.claimDataContext = claimDataContext;
         }
-        public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval)
+        public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank)
         {
             /*var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == hosApproval.AccNo && w.VictimNo == hosApproval.VictimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id }).LastOrDefaultAsync();*/
+            var dataHosApproval = new DataAccess.EFCore.DigitalClaimModels.HosApproval();
+            dataHosApproval.AccNo = hosApproval.AccNo;
+            dataHosApproval.VictimNo = hosApproval.VictimNo;
+            dataHosApproval.AppNo = hosApproval.AppNo + 1;
+            dataHosApproval.SumMoney = hosApproval.SumMoney;
+            dataHosApproval.CureMoney = hosApproval.SumMoney;
+            dataHosApproval.RegDate = DateTime.Now;
+            if (!string.IsNullOrEmpty(hosApproval.ClaimNo))
+            {
+                dataHosApproval.ClaimNo = hosApproval.ClaimNo;
+            }
+            else
+            {
+                dataHosApproval.ClaimNo = null;
+            }         
+            await digitalclaimContext.HosApproval.AddAsync(dataHosApproval);
 
-            hosApproval.AppNo = hosApproval.AppNo + 1;
-            await digitalclaimContext.HosApproval.AddAsync(hosApproval);
+
+            var dataHosDocumentReceive = new HosDocumentReceive();
+            dataHosDocumentReceive.AccNo = hosApproval.AccNo;
+            dataHosDocumentReceive.VictimNo = (short)hosApproval.VictimNo;
+            dataHosDocumentReceive.Appno = (short)(hosApproval.AppNo + 1);
+            dataHosDocumentReceive.AccountNo = inputBank.accountNumber;
+            dataHosDocumentReceive.AccountName = inputBank.accountName;
+            dataHosDocumentReceive.BankId = inputBank.accountBankName;
+            await digitalclaimContext.HosDocumentReceive.AddAsync(dataHosDocumentReceive);
+            await digitalclaimContext.SaveChangesAsync();
 
             return hosApproval;
         }

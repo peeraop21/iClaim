@@ -127,7 +127,7 @@
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
                                        accepted-file-types="image/jpeg, image/png"
-                                       v-model="input.file" />
+                                       />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
                                 <template #header>
                                     <h4 class="not-margin">
@@ -640,8 +640,8 @@
                 // ---Bill
                 injuri: '',
                 patientType: '',
-                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" }],
-                total_amount: null,
+                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: ""/* file: null, BillfileShow: "", filename: "" */}],
+                total_amount: 0,
                 // --BookBank
                 inputBank: { accountName: '', accountNumber: '', accountBankName:'' },
                 bank: '',
@@ -715,13 +715,10 @@
                 this.$store.state.inputApprovalData.AppNo = this.accData.lastClaim.appNo
                 this.$store.state.inputApprovalData.SumMoney = this.total_amount
                 this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
-                this.$store.state.inputApprovalData.injury = this.injuri
-                this.$store.state.inputApprovalData.billsData = this.bills
-                this.$store.state.inputApprovalData.bankData = this.inputBank
-                console.log(this.$store.state.inputApprovalData);
-                
-                
-                
+                this.$store.state.inputApprovalData.Injury = this.injuri
+                this.$store.state.inputApprovalData.BillsData = this.bills
+                this.$store.state.inputApprovalData.BankData = this.inputBank
+                console.log(this.$store.state.inputApprovalData);                                               
             },
             getBankNames() {
                 console.log('getBankNames');
@@ -829,12 +826,14 @@
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", file: null, BillfileShow: "", filename: "" });
+                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", /*file: null, BillfileShow: "", filename: ""*/ });
+                this.calMoney()
                 console.log(this.bills)
             },
             removeField(index, fieldType) {
                 //type.splice(index, 1);
                 fieldType.splice(index, 1);
+                this.calMoney()
                 console.log(this.bills)
             },
             onFileChange(event) {

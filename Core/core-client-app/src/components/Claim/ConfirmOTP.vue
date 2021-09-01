@@ -229,7 +229,22 @@
                 }
             },
             postData() {
-                axios.post("/api/Approval", this.$store.state.inputApprovalData)
+                //const data = {
+                //    'accNo': this.$store.state.inputApprovalData.AccNo,
+                //    'victimNo': this.$store.state.inputApprovalData.VictimNo,
+                //    'appNo': this.$store.state.inputApprovalData.AppNo,
+                //    'sumMoney': this.$store.state.inputApprovalData.SumMoney,
+                //    'claimNo': this.$store.state.inputApprovalData.ClaimNo,
+                //    'injury': this.$store.state.inputApprovalData.Injury,
+                //    'billsData': this.$store.state.inputApprovalData.BillsData,
+                //    'bankData': this.$store.state.inputApprovalData.BankData
+                //}
+                /*console.log(JSON.stringify(data));*/
+                axios.post("/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                     .then(function (response) {
                         console.log(response);
                     })
@@ -241,9 +256,12 @@
             requestOTP() {
                 
                 //var tel = "";
-                const body = { 'TelNo': this.mockTel };
+                const body = {
+                    'ProjectName': 'OTP_DigitalClaim',
+                    'TelNo': this.mockTel
+                };
                 console.log(qs.stringify(body))
-                axios.post('https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP', qs.stringify(body), {
+                axios.post('https://smsotp.rvpeservice.com/OTP/RequestOTP', qs.stringify(body), {
                     headers: {
                         // Overwrite Axios's automatically set Content-Type
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -253,7 +271,7 @@
                     this.dataOTP = response.data.result
                     console.log(this.dataOTP);
 
-                }).catch(function (error) {
+                }).catch((error) => {
                     this.$swal({
                         icon: 'error',
                         text: 'กรุณากดปุ่มขอรหัสยืนยัน OTP อีกครัง',
@@ -285,13 +303,14 @@
             },
             verifyOTP() {
                 const body = {
+                    'ProjectName': "OTP_DigitalClaim",
                     'token': this.dataOTP.token,
                     'otp_code': this.inputOTP,
                     'ref_code': this.dataOTP.ref_code
                 };
                
                 console.log(qs.stringify(body))
-                axios.post('https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/VerifyOTP', qs.stringify(body), {
+                axios.post('https://smsotp.rvpeservice.com/OTP/VerifyOTP', qs.stringify(body), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }

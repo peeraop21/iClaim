@@ -17,6 +17,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
         }
 
         public virtual DbSet<HosApproval> HosApproval { get; set; }
+        public virtual DbSet<HosDocumentReceive> HosDocumentReceive { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -136,6 +137,76 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .IsUnicode(false);
 
                 entity.Property(e => e.VictimNoClaim).HasColumnName("VictimNo_Claim");
+            });
+
+            modelBuilder.Entity<HosDocumentReceive>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.Appno, e.RunNo });
+
+                entity.Property(e => e.AccNo).HasMaxLength(20);
+
+                entity.Property(e => e.AccountName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccountNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccountType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.BankBranch)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BankId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookBankFileName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookBankFilePath)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BranchId)
+                    .HasColumnName("BranchID")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CheckDate).HasColumnType("datetime");
+
+                entity.Property(e => e.DueNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PaidImmediately)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PaymentType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ReceiveDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Regisdate).HasColumnType("datetime");
+
+                entity.Property(e => e.TokenPrint)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TransferDate).HasColumnType("datetime");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(10);
             });
 
             OnModelCreatingPartial(modelBuilder);

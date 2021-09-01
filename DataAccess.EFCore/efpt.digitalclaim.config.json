@@ -16,6 +16,10 @@
       {
          "Name": "[dbo].[HosApproval]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HosDocumentReceive]",
+         "ObjectType": 0
       }
    ],
    "UiHint": "T1DB18.DigitalClaim",
