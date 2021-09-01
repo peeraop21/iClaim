@@ -15,8 +15,9 @@ namespace Services
 {
     public interface IApprovalService
     {
-
+        Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
+        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval);
     }
 
 
@@ -24,20 +25,18 @@ namespace Services
     {
         private readonly DigitalclaimContext digitalclaimContext;
         private readonly RvpofficeContext rvpofficeContext;
-        
-        public ApprovalService(DigitalclaimContext digitalclaimContext, RvpofficeContext rvpofficeContext)
+        private readonly ClaimDataContext claimDataContext;
+
+        public ApprovalService(DigitalclaimContext digitalclaimContext, RvpofficeContext rvpofficeContext, ClaimDataContext claimDataContext)
         {
             this.digitalclaimContext = digitalclaimContext;
             this.rvpofficeContext = rvpofficeContext;
+            this.claimDataContext = claimDataContext;
         }
-        Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
-    }
-
-
         public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval)
         {
             /*var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == hosApproval.AccNo && w.VictimNo == hosApproval.VictimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id }).LastOrDefaultAsync();*/
-            
+
             hosApproval.AppNo = hosApproval.AppNo + 1;
             await digitalclaimContext.HosApproval.AddAsync(hosApproval);
 
@@ -50,26 +49,16 @@ namespace Services
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
-                
+
                 claimVwModel.AccNo = query.AccNo;
                 claimVwModel.VictimNo = query.VictimNo;
                 claimVwModel.AppNo = query.AppNo;
                 claimVwModel.ClaimNo = query.ClaimNo;
                 claimVwModel.Pt4id = query.Pt4id;
             }
-            
+
             return claimVwModel;
         }
-
-
-    public class ApprovalService : IApprovalService
-    {
-        private readonly ClaimDataContext claimDataContext;
-        public ApprovalService(ClaimDataContext claimDataContext)
-        {
-            this.claimDataContext = claimDataContext;
-        }
-
         public async Task<List<ApprovalregisViewModel>> GetApproval(string accNo)
         {
 
@@ -104,10 +93,13 @@ namespace Services
             approvalVwModel.ApStatus = query.ApStatus;
             approvalVwMdList.Add(approvalVwModel);
             return approvalVwMdList;
-          
-            
-        }
 
-  
+
+        }
     }
+
+
+   
+
+
 }
