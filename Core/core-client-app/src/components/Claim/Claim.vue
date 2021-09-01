@@ -709,10 +709,18 @@
             storeInputData() {
                 
                 this.active = true
+
+                this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                this.$store.state.inputApprovalData.VictimNo = this.accData.lastClaim.victimNo
+                this.$store.state.inputApprovalData.AppNo = this.accData.lastClaim.appNo
+                this.$store.state.inputApprovalData.SumMoney = this.total_amount
+                this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
+                this.$store.state.inputApprovalData.injury = this.injuri
                 this.$store.state.inputApprovalData.billsData = this.bills
                 this.$store.state.inputApprovalData.bankData = this.inputBank
-                this.$store.state.inputApprovalData.accNo = this.accData.accNo
-                this.$store.state.inputApprovalData.injury = this.injuri
+                console.log(this.$store.state.inputApprovalData);
+                
+                
                 
             },
             getBankNames() {

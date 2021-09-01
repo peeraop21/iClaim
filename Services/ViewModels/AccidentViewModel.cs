@@ -12,7 +12,7 @@ namespace Services.ViewModels
     public class AccidentViewModel
     {
         public string AccNo { get; set; }        
-        public string ClaimNo { get; set; }
+        public ClaimViewModel LastClaim { get; set; }
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
         public string StringAccDate { get; set; }

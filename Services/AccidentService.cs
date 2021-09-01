@@ -26,12 +26,14 @@ namespace Services
         private readonly RvpaccidentContext rvpAccidentContext;
         private readonly IpolicyContext ipolicyContext;
         private readonly RvpofficeContext rvpOfficeContext;
+        private readonly IApprovalService approvalService;
 
-        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;
             this.rvpOfficeContext = rvpOfficeContext;
+            this.approvalService = approvalService;
         }
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
@@ -50,7 +52,7 @@ namespace Services
                 
 
                 accVwModel.AccNo = acc.EaAccNo;
-                accVwModel.ClaimNo = await rvpOfficeContext.HosApproval.Where(w => w.AccNo == acc.EaAccNo).Select(s => s.ClaimNo).FirstOrDefaultAsync();
+                accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo);
                 accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
@@ -65,7 +67,7 @@ namespace Services
 
                 var accVwModel = new AccidentViewModel();
                 accVwModel.AccNo = acc.AccNo;
-                accVwModel.ClaimNo = await rvpOfficeContext.HosApproval.Where(w => w.AccNo == acc.AccNo).Select(s => s.ClaimNo).FirstOrDefaultAsync();
+                accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo);
                 accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
