@@ -1,5 +1,5 @@
 <template>
-    <div class=" container" align="center">
+    <div class=" container" align="center" >
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ประวัติการใช้สิทธิ์</h2>
@@ -11,7 +11,7 @@
                         </div>
                         <div class="col-9 text-start px-1">
                             <!--<span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
-                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />-->
+                        <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />-->
                             <span>เลขที่รับแจ้ง: <span style="color: var(--main-color)">{{accData.accNo}}</span></span><br />
                             <span>ทะเบียนรถที่เกิดเหตุ : <span v-for="(car, index) in accData.car" :key="`car-${index}`" style="color: var(--main-color)">{{car}} </span></span><br />
                             <span>วันที่เกิดเหตุ : <span style="color: var(--main-color)">{{ accData.stringAccDate }}</span></span><br />
@@ -29,43 +29,48 @@
                 </div>
                 <section>
                     <div style="height: 100%; width: 100%;">
-                        <div class="accordion" v-for="boto in boto_" :key="boto.id">
-                            <div class="accordion-item" :id="'list' + boto.id">
-                                <a class="accordion-link" :href="'#list' + boto.id">
+                        <div class="accordion" v-for="approvals in approval" :key="approvals.crClaimno">
+                            <div class="accordion-item" :id="'list' + approvals.crClaimno">
+                                <a class="accordion-link" :href="'#list' + approvals.crClaimno">
                                     <div>
                                         <p>
-                                            <ion-icon name="document-text-outline"></ion-icon>{{ boto.boto_no }}
+                                            <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
                                             <br>
-                                            <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ boto.money }} บาท
+                                            <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ approvals.apTotal }} บาท
                                         </p>
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
                                 <div class="answer">
                                     <p>
-                                        วันที่ใช้สิทธิ์: {{ boto.date }}
-                                        <br>
-                                        โรงพยาบาลที่รักษา: {{ boto.hospital }}
+                                        สถานะการจ่ายเงิน: {{ approvals.apStatus }}<br>
+                                        วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}<br>
+                                        โรงพยาบาลที่รักษา:
                                     </p>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo}}">ดูเพิ่มเติม</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, pt: approvals.stringCrClaimno, approval }}" >ดูเพิ่มเติม</router-link>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-
             </div>
         </div>
         <br>
-
+        
     </div>
 </template>
 
 <script>
+    import axios from 'axios'
+    //import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
     export default {
         name: 'RightsHistory',
+        /*components: {
+            RightsHistoryDetail
+        },*/
         data() {
             return {
                 boto_: [
@@ -85,13 +90,29 @@
                     },
                 ],
                 userData: this.$store.state.userStateData,
-                accData: this.$store.getters.accGetter(this.$route.params.id)
+                accData: this.$store.getters.accGetter(this.$route.params.id),
+                approval: []
             }
         },
+        methods: {
+            getApprovals() {
+                console.log('getApproval');
+                var url = '/api/Approval/{accNo}'.replace('{accNo}', this.accData.stringAccNo);
+                axios.get(url)
+                    .then((response) => {
+                        this.approval = response.data;
+                        console.log(this.approval);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+        },
         mounted() {
-            console.log(this.$store.state.userStateData)
-           
-
+            console.log(this.$store.state.userStateData);
+            this.getApprovals();
+            //console.log(this.accData)
+            
         }
 
     }

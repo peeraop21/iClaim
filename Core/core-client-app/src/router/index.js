@@ -39,9 +39,10 @@ const routes = [
         component: RightsHistory,
     },
     {
-        path: "/RightsHistoryDetail/:id",
+        path: "/RightsHistoryDetail/:id/:pt",
         name: "RightsHistoryDetail",
         component: RightsHistoryDetail,
+        props: true
     },
     {
         path: "/Claim/:id/:type",

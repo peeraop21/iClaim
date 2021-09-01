@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VueCliMiddleware;
 using DataAccess.EFCore.DigitalClaimModels;
+using DataAccess.EFCore.ClaimDataModels;
 
 namespace Core
 {
@@ -43,6 +44,7 @@ namespace Core
             services.AddDbContext<RvpofficeContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Rvpoffice")));
             services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
             services.AddDbContext<DigitalclaimContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DigitalClaim")));
+            services.AddDbContext<ClaimDataContext>(o => o.UseSqlServer(Configuration.GetConnectionString("ClaimData")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
             services.AddTransient<IUserService, UserService>();
