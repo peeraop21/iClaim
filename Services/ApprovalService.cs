@@ -69,7 +69,7 @@ namespace Services
 
         public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
@@ -84,6 +84,11 @@ namespace Services
                 claimVwModel.ServiceMoney = query.ServiceMoney;
                 claimVwModel.RoomMoney = query.RoomMoney;
                 claimVwModel.VeihcleMoney = query.VeihcleMoney;
+                claimVwModel.CureMoney = query.CureMoney;
+                claimVwModel.DeadMoney = query.DeadMoney;
+                claimVwModel.HygieneMoney = query.HygieneMoney;
+                claimVwModel.CrippledMoney = query.CrippledMoney;
+                claimVwModel.SumMoney = query.SumMoney;
                 
             }
 

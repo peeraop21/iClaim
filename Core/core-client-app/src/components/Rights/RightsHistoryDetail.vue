@@ -7,31 +7,68 @@
                     <p>โรงพยาบาลกรุงเทพ</p>
                     <p style="margin-top: -10px; margin-bottom: 0px">วันที่เข้ารักษา : {{ claimData.stringApRegdate }}</p>
                 </div>
-                <div v-if="formType='pt3'">
+                <div v-if="formType=='pt3'">
                     <table id="treatments" class="mb-4">
                         <tr>
                             <th>รายการ</th>
                             <th>จำนวนเงิน</th>
                         </tr>
-                        <tr v-for="pt3_lists in pt3_list" :key="pt3_lists.id">
-                            <td>{{ pt3_lists.list }}</td>
-                            <td>0 บาท</td>
+                        <tr>
+                            <td>ค่ารักษาพยาบาล</td>
+                            <td v-if="accData.lastClaim.cureMoney">{{ accData.lastClaim.cureMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.cureMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าสูญเสียอวัยวะ / ทุพพลภาพ</td>
+                            <td v-if="accData.lastClaim.crippledMoney">{{ accData.lastClaim.crippledMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.crippledMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าอนามัย</td>
+                            <td v-if="accData.lastClaim.hygieneMoney">{{ accData.lastClaim.hygieneMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.hygieneMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ</td>
+                            <td v-if="accData.lastClaim.deadMoney">{{ accData.lastClaim.deadMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.deadMoney">0 บาท</td>
                         </tr>
                     </table>
                 </div>
-                <div v-else-if="formType='pt4'">
+                <div v-if="formType=='pt4'">
                     <table id="treatments" class="mb-4">
                         <tr>
                             <th>รายการ</th>
                             <th>จำนวนเงิน</th>
                         </tr>
-                        <tr v-for="treatment in treatments" :key="treatment.id">
-                            <td>{{ treatment.treatment_list }}</td>
-                            <td>{{ treatment.money }} บาท</td>
+                        <tr>
+                            <td>ค่ายาและสารบำบัด</td>
+                            <td v-if="accData.lastClaim.medicineMoney">{{ accData.lastClaim.medicineMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.medicineMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าอวัยวะเทียม</td>
+                            <td v-if="accData.lastClaim.plasticMoney">{{ accData.lastClaim.plasticMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.plasticMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าบริการทางการแพทย์</td>
+                            <td v-if="accData.lastClaim.serviceMoney">{{ accData.lastClaim.serviceMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.serviceMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าห้องและค่าอาหาร</td>
+                            <td v-if="accData.lastClaim.roomMoney">{{ accData.lastClaim.roomMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.roomMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าพาหนะและค่านำส่งสถานพยาบาล</td>
+                            <td v-if="accData.lastClaim.veihcleMoney">{{ accData.lastClaim.veihcleMoney }} บาท</td>
+                            <td v-else-if="!accData.lastClaim.veihcleMoney">0 บาท</td>
                         </tr>
                     </table>
                 </div>
-                <p class="p_right">รวมจำนวนเงิน: 10000 บาท</p>
+                <p class="p_right">รวมจำนวนเงิน: {{ accData.lastClaim.sumMoney }} บาท</p>
 
             </div>
         </div>
@@ -77,19 +114,23 @@
                 pt3_list: [
                     {
                         id: 1,
-                        list: "ค่ารักษาพยาบาล"
+                        list: "ค่ารักษาพยาบาล",
+                        money: 0
                     },
                     {
                         id: 2,
-                        list: "ค่าสูญเสียอวัยวะ"
+                        list: "ค่าสูญเสียอวัยวะ",
+                        money: 0
                     },
                     {
                         id: 3,
-                        list: "ค่าทุพพลภาพ"
+                        list: "ค่าทุพพลภาพ",
+                        money: 0
                     },
                     {
                         id: 4,
-                        list: "ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ"
+                        list: "ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ",
+                        money: 0
                     },
 
                 ],
@@ -125,12 +166,13 @@
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 claimData: this.$store.getters.ptGetter(this.$route.params.pt),
-                formType: this.$route.params.type,
+                formType: this.$route.params.typept,
             }
         },
         
         mounted() {
-            console.log("XXX", this.claimData);
+            console.log("ClaimData", this.claimData);
+            console.log("AccData", this.accData);
         }
 }
 </script>

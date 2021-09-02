@@ -20,6 +20,12 @@ namespace Services.ViewModels
         public double? ServiceMoney { get; set; }
         public double? RoomMoney { get; set; }
         public double? VeihcleMoney { get; set; }
+        
+
+        public double? CureMoney { get; set; }
+        public double? DeadMoney { get; set; }
+        public double? HygieneMoney { get; set; }
+        public double? CrippledMoney { get; set; }
 
     }
 }
