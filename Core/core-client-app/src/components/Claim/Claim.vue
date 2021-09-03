@@ -271,22 +271,22 @@
                     <div class="row">
                         <div class="col-9">
                             <p class="mb-0">ชื่อ-สกุล</p>
-                            <div class="mt-0" v-if="userData.prefix != null">
-                                <p class="label-text">{{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.prefix != null">
+                                <p class="label-text">{{accidentVictimData.prefix}}{{accidentVictimData.fname}} {{accidentVictimData.lname}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.prefix === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.prefix === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-3">
                             <p class="mb-0">อายุ</p>
-                            <div class="mt-0" v-if="bank!=''">
-                                <p class="label-text">{{bank}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.age != null">
+                                <p class="label-text">{{accidentVictimData.age}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="bank===''">
+                            <div class="mt-0" v-else-if="accidentVictimData.age === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
@@ -295,33 +295,33 @@
                     <div class="row">
                         <div class="col-4">
                             <p class="mb-0">บ้านเลขที่</p>
-                            <div class="mt-0" v-if="userData.homeHouseNo != null">
-                                <p class="label-text">{{userData.homeHouseNo}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.homeId != null">
+                                <p class="label-text">{{accidentVictimData.homeId}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeHouseNo === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.homeId === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-2">
                             <p class="mb-0">หมู่</p>
-                            <div class="mt-0" v-if="userData.homeHmo != null">
-                                <p class="label-text">{{userData.homeHmo}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.moo != null">
+                                <p class="label-text">{{accidentVictimData.moo}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeHmo === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.moo === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">ซอย</p>
-                            <div class="mt-0" v-if="userData.homeSoi != null">
-                                <p class="label-text">{{userData.homeSoi}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.soi != null">
+                                <p class="label-text">{{accidentVictimData.soi}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeSoi === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.soi === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
@@ -330,22 +330,22 @@
                     <div class="row">
                         <div class="col-6">
                             <p class="mb-0">ถนน</p>
-                            <div class="mt-0" v-if="userData.homeRoad != null">
-                                <p class="label-text">{{userData.homeRoad}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.road != null">
+                                <p class="label-text">{{accidentVictimData.road}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeRoad === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.road === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">ตำบล/แขวง</p>
-                            <div class="mt-0" v-if="userData.homeTumbolId != null">
-                                <p class="label-text">{{userData.homeTumbolId}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.tumbolName != null">
+                                <p class="label-text">{{accidentVictimData.tumbolName}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeTumbolId === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.tumbolName === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
@@ -354,22 +354,22 @@
                     <div class="row">
                         <div class="col-6">
                             <p class="mb-0">อำเภอ</p>
-                            <div class="mt-0" v-if="userData.homeCityId != null">
-                                <p class="label-text">{{userData.homeCityId}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.districtName != null">
+                                <p class="label-text">{{accidentVictimData.districtName}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeCityId === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.districtName === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
                         </div>
                         <div class="col-6">
                             <p class="mb-0">จังหวัด</p>
-                            <div class="mt-0" v-if="userData.homeProvinceId != null">
-                                <p class="label-text">{{userData.homeProvinceId}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.provinceName != null">
+                                <p class="label-text">{{accidentVictimData.provinceName}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeProvinceId === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.provinceName === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
@@ -378,11 +378,11 @@
                     <div class="row">
                         <div class="col-6">
                             <p class="mb-0">รหัสไปรษณีย์</p>
-                            <div class="mt-0" v-if="userData.homeZipcode != null">
-                                <p class="label-text">{{userData.homeZipcode}}</p>
+                            <div class="mt-0" v-if="accidentVictimData.zipcode != null">
+                                <p class="label-text">{{accidentVictimData.zipcode}}</p>
                                 <hr class="mt-0">
                             </div>
-                            <div class="mt-0" v-else-if="userData.homeZipcode === null">
+                            <div class="mt-0" v-else-if="accidentVictimData.zipcode === null">
                                 <p class="label-text">-</p>
                                 <hr class="mt-0">
                             </div>
@@ -437,7 +437,7 @@
                     </div>
                     <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                     <div class="mt-0" v-if="accidentCarData.foundCarLicense != ''">
-                        <p class="label-text">{{accidentCarData[0].foundCarLicense}}</p>
+                        <p class="label-text">{{accidentCarData.foundCarLicense}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="accidentCarData.foundCarLicense ===''">
@@ -446,7 +446,7 @@
                     </div>
                     <p class="mb-0">เลขตัวถัง</p>
                     <div class="mt-0" v-if="accidentCarData.foundChassisNo!=''">
-                        <p class="label-text">{{accidentCarData[0].foundChassisNo}}</p>
+                        <p class="label-text">{{accidentCarData.foundChassisNo}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="accidentCarData.foundChassisNo===''">
@@ -455,7 +455,7 @@
                     </div>
                     <p class="mb-0">กรมธรรม์คุ้มครองภัยจากรถ เลขที่</p>
                     <div class="mt-0" v-if="accidentCarData.foundPolicyNo!=''">
-                        <p class="label-text">{{accidentCarData[0].foundPolicyNo}}</p>
+                        <p class="label-text">{{accidentCarData.foundPolicyNo}}</p>
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="accidentCarData.foundPolicyNo===''">
@@ -688,7 +688,11 @@
                 //----Get AccidentCar
                 accidentCarData: { foundCarLicense: '', foundChassisNo: '', foundPolicyNo: '' },
                 //----Get AccidentCar
-                accidentVictimData: null
+                accidentVictimData: {
+                    accNo: null, victimNo: null, prefix: null, fname: null, lname: null, sex: null, age: null,
+                    drvSocNo: null, homeId: null, moo: null, soi: null, road: null, tumbol: null, tumbolName: null,
+                    district: null, districtName: null, province: null, provinceName: null, zipcode: null, telNo: null
+                }
             };
         },
         //---Validate
@@ -718,6 +722,7 @@
                 this.$store.state.inputApprovalData.Injury = this.injuri
                 this.$store.state.inputApprovalData.BillsData = this.bills
                 this.$store.state.inputApprovalData.BankData = this.inputBank
+                this.$store.state.inputApprovalData.VictimData = this.accidentVictimData
                 console.log(this.$store.state.inputApprovalData);                                               
             },
             getBankNames() {
@@ -776,8 +781,21 @@
                 var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
                 axios.get(url)
                     .then((response) => {
-                        this.accidentCarData = response.data;
+                        this.accidentCarData = response.data[0];
                         console.log(this.accidentCarData);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getAccidentVictim() {
+                console.log('getAccidentCar');
+                var mockIdcard = '1430300132845';
+                var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
+                axios.get(url)
+                    .then((response) => {
+                        this.accidentVictimData = response.data[0];
+                        console.log(this.accidentVictimData);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -875,6 +893,7 @@
         },
         async mounted() {
             await this.getAccidentCar();
+            await this.getAccidentVictim();
             this.getBankNames();
             this.getHospitalNames();
             this.getChangwatNames();         

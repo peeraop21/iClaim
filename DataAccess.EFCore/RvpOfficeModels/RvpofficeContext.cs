@@ -16,15 +16,61 @@ namespace DataAccess.EFCore.RvpOfficeModels
         {
         }
 
+        public virtual DbSet<Amphur> Amphur { get; set; }
         public virtual DbSet<BankNames> BankNames { get; set; }
         public virtual DbSet<Changwat> Changwat { get; set; }
         public virtual DbSet<HosAccident> HosAccident { get; set; }
         public virtual DbSet<HosApproval> HosApproval { get; set; }
         public virtual DbSet<HosCarAccident> HosCarAccident { get; set; }
         public virtual DbSet<HosVicTimAccident> HosVicTimAccident { get; set; }
+        public virtual DbSet<Tumbol> Tumbol { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Amphur>(entity =>
+            {
+                entity.HasKey(e => new { e.Amphurid, e.Changwatshortname });
+
+                entity.ToTable("AMPHUR");
+
+                entity.HasIndex(e => e.Amphurid)
+                    .HasName("idxAmphur_AmphurId");
+
+                entity.HasIndex(e => e.Changwatshortname)
+                    .HasName("NonClusteredIndex-AMPHUR-ChangwatShortName");
+
+                entity.Property(e => e.Amphurid)
+                    .HasColumnName("AMPHURID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Changwatshortname)
+                    .HasColumnName("CHANGWATSHORTNAME")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Amphurname)
+                    .HasColumnName("AMPHURNAME")
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Cityid)
+                    .HasColumnName("CITYID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Provinceid)
+                    .HasColumnName("PROVINCEID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+            });
+
             modelBuilder.Entity<BankNames>(entity =>
             {
                 entity.HasKey(e => e.Bank);
@@ -2105,6 +2151,67 @@ namespace DataAccess.EFCore.RvpOfficeModels
                 entity.Property(e => e.Zipcode)
                     .HasMaxLength(10)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Tumbol>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("TUMBOL");
+
+                entity.Property(e => e.Amphurid)
+                    .IsRequired()
+                    .HasColumnName("AMPHURID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Changwatshortname)
+                    .IsRequired()
+                    .HasColumnName("CHANGWATSHORTNAME")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Cityid)
+                    .HasColumnName("CITYID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Districtid)
+                    .HasColumnName("DISTRICTID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Provinceid)
+                    .HasColumnName("PROVINCEID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Tumbolengname)
+                    .HasColumnName("TUMBOLENGNAME")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tumbolid)
+                    .IsRequired()
+                    .HasColumnName("TUMBOLID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Tumbolname)
+                    .HasColumnName("TUMBOLNAME")
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Zipcode)
+                    .HasColumnName("ZIPCODE")
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
             });
 
             OnModelCreatingPartial(modelBuilder);

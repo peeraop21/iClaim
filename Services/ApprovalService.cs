@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccess.EFCore.RvpOfficeModels;
 using DataAccess.EFCore.ClaimDataModels;
 
 namespace Services
@@ -17,7 +16,7 @@ namespace Services
     {
         Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
-        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank);
+        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim);
     }
 
 
@@ -33,7 +32,7 @@ namespace Services
             this.rvpofficeContext = rvpofficeContext;
             this.claimDataContext = claimDataContext;
         }
-        public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank)
+        public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim)
         {
             /*var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == hosApproval.AccNo && w.VictimNo == hosApproval.VictimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id }).LastOrDefaultAsync();*/
             var dataHosApproval = new DataAccess.EFCore.DigitalClaimModels.HosApproval();
@@ -43,6 +42,15 @@ namespace Services
             dataHosApproval.SumMoney = hosApproval.SumMoney;
             dataHosApproval.CureMoney = hosApproval.SumMoney;
             dataHosApproval.RegDate = DateTime.Now;
+            dataHosApproval.RevPrefix = victim.Prefix;
+            dataHosApproval.RevFname = victim.Fname;
+            dataHosApproval.RevLname = victim.Lname;
+            dataHosApproval.RevRelate = "000";
+            dataHosApproval.RecPrefix = victim.Prefix;
+            dataHosApproval.RecFname = victim.Fname;
+            dataHosApproval.RecLname = victim.Lname;
+            dataHosApproval.RecRelate = "000";
+            dataHosApproval.RecSocNo = victim.DrvSocNo;
             if (!string.IsNullOrEmpty(hosApproval.ClaimNo))
             {
                 dataHosApproval.ClaimNo = hosApproval.ClaimNo;
@@ -58,6 +66,7 @@ namespace Services
             dataHosDocumentReceive.AccNo = hosApproval.AccNo;
             dataHosDocumentReceive.VictimNo = (short)hosApproval.VictimNo;
             dataHosDocumentReceive.Appno = (short)(hosApproval.AppNo + 1);
+            dataHosDocumentReceive.PaymentType = "D";
             dataHosDocumentReceive.AccountNo = inputBank.accountNumber;
             dataHosDocumentReceive.AccountName = inputBank.accountName;
             dataHosDocumentReceive.BankId = inputBank.accountBankName;
@@ -118,6 +127,13 @@ namespace Services
             return approvalVwMdList;
 
 
+        }
+
+        
+        public async Task<List<DataAccess.EFCore.DigitalClaimModels.HosApproval>> GetHosApprovalsAsync(string accNo, int victimNo)
+        {
+           /* var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo);*/
+            return null;
         }
     }
 
