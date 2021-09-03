@@ -34,12 +34,12 @@ const routes = [
         component: Rights,
     },
     {
-        path: "/RightsHistory/:id",
+        path: "/RightsHistory/:id/:typerights",
         name: "RightsHistory",
         component: RightsHistory,
     },
     {
-        path: "/RightsHistoryDetail/:id/:pt/:type",
+        path: "/RightsHistoryDetail/:id/:typerights/:pt/:typept",
         name: "RightsHistoryDetail",
         component: RightsHistoryDetail,
         

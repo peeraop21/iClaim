@@ -245,6 +245,7 @@
         border-radius: 10px;
         font-size: 13px;
         border: 2px solid #5c2e91;
+        border-style: none;
     }
 
     .btn-next:link, .btn-next:visited {
@@ -269,11 +270,12 @@
         margin-top: 10px;
         margin-left: 10px;
         color: white;
-        padding: 3px 35px;
+        padding: 4px 35px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         border-radius: 10px;
+        border-style: none;
         /*font-size: 14px;*/
     }
 

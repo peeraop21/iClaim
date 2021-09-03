@@ -30,7 +30,7 @@
                             <a style="margin-bottom: 7px;">คงเหลือ: 30,000 บาท</a>
                             <br>
                             
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 1}}">ประวัติการใช้สิทธิ์</router-link>
                             <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 1}}">เลือก</router-link>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                             <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
                             <br>
                             
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
                             <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
@@ -184,6 +184,12 @@
         padding: 5px 15px;
         border: 2px solid #5c2e91;
     }
+    .btn-select-rights:hover {
+        background-color: #5c2e91;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
     .btn-rights-history {
         background-color: white;
         color: #5c2e91;
@@ -194,5 +200,11 @@
         font-size: 13px;
         padding: 5px 10px;
         border: 2px solid #5c2e91;
+    }
+    .btn-rights-history:hover {
+        background-color: white;
+        color: #5c2e91;
+        text-decoration: none;
+        display: inline-block;
     }
 </style>

@@ -38,7 +38,7 @@ namespace Services
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
-            var userIdCard = /*await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();*/"1430300132845";
+            var userIdCard = /*await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();*/"1650200149515";
             var accLineNo = GetLineAccNo(userIdCard);
             var accHosNo = GetHosAccNo(userIdCard);
             var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s => new { s.EaAccNo, s.EaAccDate, s.EaAccPlace }).ToListAsync();
@@ -48,8 +48,6 @@ namespace Services
             {
 
                 var accVwModel = new AccidentViewModel();
-
-                
 
                 accVwModel.AccNo = acc.EaAccNo;
                 accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo);
