@@ -69,7 +69,7 @@ namespace Services
 
         public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
@@ -89,6 +89,16 @@ namespace Services
                 claimVwModel.HygieneMoney = query.HygieneMoney;
                 claimVwModel.CrippledMoney = query.CrippledMoney;
                 claimVwModel.SumMoney = query.SumMoney;
+                claimVwModel.BlindCrippled = query.BlindCrippled;
+                claimVwModel.UnHearCrippled = query.UnHearCrippled;
+                claimVwModel.DeafCrippled = query.DeafCrippled;
+                claimVwModel.LostSexualCrippled = query.LostSexualCrippled;
+                claimVwModel.LostOrganCrippled = query.LostOrganCrippled;
+                claimVwModel.LostMindCrippled = query.LostMindCrippled;
+                claimVwModel.CrippledPermanent = query.CrippledPermanent;
+                claimVwModel.OtherCrippled = query.OtherCrippled;
+                claimVwModel.CrippledComment = query.CrippledComment;
+                
                 
             }
 

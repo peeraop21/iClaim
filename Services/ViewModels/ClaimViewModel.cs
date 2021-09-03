@@ -27,5 +27,15 @@ namespace Services.ViewModels
         public double? HygieneMoney { get; set; }
         public double? CrippledMoney { get; set; }
 
+        public string BlindCrippled { get; set; }
+        public string UnHearCrippled { get; set; }
+        public string DeafCrippled { get; set; }
+        public string LostSexualCrippled { get; set; }
+        public string LostOrganCrippled { get; set; }
+        public string LostMindCrippled { get; set; }
+        public string CrippledPermanent { get; set; }
+        public string OtherCrippled { get; set; }
+        public string CrippledComment { get; set; }
+
     }
 }

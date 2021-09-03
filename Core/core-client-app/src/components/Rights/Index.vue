@@ -184,6 +184,12 @@
         padding: 5px 15px;
         border: 2px solid #5c2e91;
     }
+    .btn-select-rights:hover {
+        background-color: #5c2e91;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
     .btn-rights-history {
         background-color: white;
         color: #5c2e91;
@@ -194,5 +200,11 @@
         font-size: 13px;
         padding: 5px 10px;
         border: 2px solid #5c2e91;
+    }
+    .btn-rights-history:hover {
+        background-color: white;
+        color: #5c2e91;
+        text-decoration: none;
+        display: inline-block;
     }
 </style>

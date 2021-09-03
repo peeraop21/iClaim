@@ -296,7 +296,6 @@
                         console.log(this.dataIdCard);
                         if (this.dataIdCard != "") {
                             this.$swal.close();
-
                         }
                     })
                     .catch(function (error) {
