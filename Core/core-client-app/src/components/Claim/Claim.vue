@@ -790,7 +790,7 @@
             },
             getAccidentVictim() {
                 console.log('getAccidentCar');
-                var mockIdcard = '1430300132845';
+                var mockIdcard = '1650200149515';
                 var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
                 axios.get(url)
                     .then((response) => {

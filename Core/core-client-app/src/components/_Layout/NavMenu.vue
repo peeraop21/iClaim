@@ -43,9 +43,9 @@
                 } else if (routeName == "CheckStatus") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "ConfirmMoney") {
-                    this.$router.push({ name: 'CheckStatus' })
+                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
                 } else if (routeName == "ClaimDetail") {
-                    this.$router.push({ name: 'CheckStatus' })
+                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
                 } else if (routeName == "Ocr") {
                     this.$router.push({ name: 'Advice' })
                 }

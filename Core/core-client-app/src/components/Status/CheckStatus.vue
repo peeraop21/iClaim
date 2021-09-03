@@ -16,14 +16,15 @@
                     </div>
                 </div>-->
                 <section>
-                    <div style="height: 90%; width: 100%;">
-                        <div class="accordion"  v-for="accident in accidents" :key="accident.id">
-                            <div class="accordion-item" :id="'list' + accident.id">
-                                <a class="accordion-link" :href="'#list' + accident.id">
+                    <div v-if="isHasHosApprovalData == true" style="height: 90%; width: 100%;">
+                        <div class="accordion"  v-for="hosApp in hosApprovalData" :key="hosApp.appNo">
+                            <div class="accordion-item" :id="'list' + hosApp.appNo">
+                                <a class="accordion-link" :href="'#list' + hosApp.appNo">
                                         <div>
-                                            <p> <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accident_no }}<br>
-                                                <ion-icon name="calendar-outline"></ion-icon>วันที่แจ้งเหตุ: {{ accident.accident_date }}<br>
-                                                <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{ accident.status }}
+                                            <p>
+                                                <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ hosApp.accNo }}<br>
+                                                <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ hosApp.stringRegDate }}<br>
+                                                <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: รับคำร้อง
                                             </p>
                                         </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add" ></ion-icon>
@@ -43,12 +44,14 @@
                                     </div>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" to="/ClaimDetail">{{ msg }}</router-link>
-                                    <router-link class="btn-checked" to="/ConfirmMoney">{{ msg2 }}</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ดูเพิ่มเติม</router-link>
+                                    <router-link class="btn-checked" :to="{ name: 'ConfirmMoney', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <p v-if="isHasHosApprovalData == false"  >ไม่มีคำร้อง</p>
+                    
                 </section>
             </div>
         </div>
@@ -63,36 +66,66 @@
 }
 </style>
 <script>
+    import axios from 'axios'
 export default {
   name: 'Accident',
   data () {
-      return {
-          accidents: [
-              {
-                  id: 1,
-                  accident_no: "64/XXX/00001",
-                  accident_date: "05/06/2564",
-                  status: "รับคำร้อง",
-                  money: 10000
-              },
-              {
-                  id: 2,
-                  accident_no: "64/XXX/00002",
-                  accident_date: "29/07/2564",
-                  status: "ตรวจสอบคำร้อง",
-                  money: 4000
-              },
-              {
-                  id: 3,
-                  accident_no: "64/XXX/00003",
-                  accident_date: "13/08/2564",
-                  license_plare: "พิจารณาจ่าย",
-                  money: 7000
-              }
-          ],
-          msg: "ดูเพิ่มเติม",
-          msg2: "ยอมรับจำนวนเงิน"
-      }
-  }
+          return {
+              accidents: [
+                  {
+                      id: 1,
+                      accident_no: "64/XXX/00001",
+                      accident_date: "05/06/2564",
+                      status: "รับคำร้อง",
+                      money: 10000
+                  },
+                  {
+                      id: 2,
+                      accident_no: "64/XXX/00002",
+                      accident_date: "29/07/2564",
+                      status: "ตรวจสอบคำร้อง",
+                      money: 4000
+                  },
+                  {
+                      id: 3,
+                      accident_no: "64/XXX/00003",
+                      accident_date: "13/08/2564",
+                      license_plare: "พิจารณาจ่าย",
+                      money: 7000
+                  }
+              ],
+              
+              accData: this.$store.getters.accGetter(this.$route.params.id),
+              hosApprovalData: null,
+              isHasHosApprovalData: false
+
+              
+          }
+
+        },
+        methods: {
+            getHosApproval() {
+                var url = '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo);
+               
+                axios.get(url)
+                    .then((response) => {
+                        /*this.userApi = response.data;*/
+                        this.hosApprovalData = response.data;                        
+                        console.log("hosApp: ", this.hosApprovalData.length);
+                        if (this.hosApprovalData.length == 0) {
+                            this.isHasHosApprovalData = false
+                        } else if (this.hosApprovalData.length > 0) {
+                            this.isHasHosApprovalData = true
+                        }
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+
+            }
+        },
+        async mounted() {
+            await this.getHosApproval();
+        }
 }
 </script>

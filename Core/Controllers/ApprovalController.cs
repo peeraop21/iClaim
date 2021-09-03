@@ -82,6 +82,18 @@ namespace Core.Controllers
             return Ok(await approvalService.GetApproval(accNo.Replace("-", "/")));
         }
 
+        [HttpGet("HosApproval/{accNo}/{victimNo}")]
+        public async Task<IActionResult> GetHosApproval(string accNo, int victimNo)
+        {
+            return Ok(await approvalService.GetHosApprovalsAsync(accNo.Replace("-", "/"), victimNo));
+        }
+
+        [HttpGet("DocumentReceive/{accNo}/{victimNo}/{appNo}")]
+        public async Task<IActionResult> GetDocumentReceive(string accNo, int victimNo, int appNo)
+        {
+            return Ok(await approvalService.GetHosDocumentReceiveAsync(accNo.Replace("-", "/"), victimNo, appNo));
+        }
+
         // POST api/<ApprovalController>
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody]vwApproval model)

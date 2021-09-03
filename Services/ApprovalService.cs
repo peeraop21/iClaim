@@ -17,6 +17,8 @@ namespace Services
         Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
         Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim);
+        Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo);
+        Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo);
     }
 
 
@@ -145,10 +147,40 @@ namespace Services
         }
 
         
-        public async Task<List<DataAccess.EFCore.DigitalClaimModels.HosApproval>> GetHosApprovalsAsync(string accNo, int victimNo)
+        public async Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo)
         {
-           /* var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo);*/
-            return null;
+            var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.AppNo, s.RegDate, }).FirstOrDefaultAsync();
+            var vwHosAppList = new List<HosApprovalViewModel>();
+            if (query == null)
+            {
+                return vwHosAppList;
+            }
+            
+            var vwHosApp = new HosApprovalViewModel();
+            vwHosApp.AccNo = query.AccNo;
+            vwHosApp.StringAccNo = query.AccNo.Replace("/", "-");
+            vwHosApp.AppNo = query.AppNo;
+            vwHosApp.RegDate = query.RegDate;
+            vwHosApp.StringRegDate = query.RegDate.ToString().Replace("T", " ");
+            vwHosAppList.Add(vwHosApp);
+
+            return vwHosAppList;
+        }
+
+        public async Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo)
+        {
+            var query = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.Appno == appNo).Select(s => new { s.AccountNo, s.AccountName, s.BankId}).FirstOrDefaultAsync();
+            var inputBankViewModelsList = new List<InputBankViewModel>();
+            if (query == null)
+            {
+                return inputBankViewModelsList;
+            }
+            var inputBankViewModel = new InputBankViewModel();
+            inputBankViewModel.accountNumber = query.AccountNo;
+            inputBankViewModel.accountName = query.AccountName;
+            inputBankViewModel.accountBankName = query.BankId;
+            inputBankViewModelsList.Add(inputBankViewModel);
+            return inputBankViewModelsList;
         }
     }
 
