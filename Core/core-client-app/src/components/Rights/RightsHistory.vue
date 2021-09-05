@@ -33,9 +33,9 @@
                     </div>
                     <section>
                         <div style="height: 100%; width: 100%;">
-                            <div class="accordion" v-for="approvals in approval" :key="approvals.crClaimno">
-                                <div class="accordion-item" :id="'list' + approvals.crClaimno">
-                                    <a class="accordion-link" :href="'#list' + approvals.crClaimno">
+                            <div class="accordion" v-for="approvals in approval" :key="approvals.stringPt4">
+                                <div class="accordion-item" :id="'list' + approvals.stringPt4">
+                                    <a class="accordion-link" :href="'#list' + approvals.stringPt4">
                                         <div>
                                             <p>
                                                 <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
@@ -69,15 +69,15 @@
                         <label>ประวัติการใช้สิทธิ์กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
                         <br>
                     </div>
-                    <div v-if="accData.rights[0].subPt4 === 'pt4' || !accData.lastClaim.crippledMoney || accData.lastClaim.crippledMoney === 0">
+                    <div v-if="approval.subPt4 === 'pt4' || !accData.lastClaim.crippledMoney || accData.lastClaim.crippledMoney === 0">
                         <p class="notData">- ไม่มีข้อมูล -</p>
                     </div>
-                    <div v-else-if="accData.lastClaim.crippledMoney > 0">
+                    <div v-else-if="accData.lastClaim.crippledMoney > 0 ">
                         <section>
                             <div style="height: 100%; width: 100%;">
-                                <div class="accordion" v-for="approvals in approval" :key="approvals.crClaimno">
-                                    <div class="accordion-item" :id="'list' + approvals.crClaimno">
-                                        <a class="accordion-link" :href="'#list' + approvals.crClaimno">
+                                <div class="accordion" v-for="approvals in approval" :key="approvals.stringPt4">
+                                    <div class="accordion-item" :id="'list' + approvals.stringPt4">
+                                        <a class="accordion-link" :href="'#list' + approvals.stringPt4">
                                             <div>
                                                 <p>
                                                     <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
@@ -127,22 +127,6 @@
         },*/
         data() {
             return {
-                boto_: [
-                    {
-                        id: 1,
-                        boto_no: "บต3/XXX/64/00001",
-                        date: "05/06/2564",
-                        hospital: "โรงพยาบาลสำโรงการแพทย์",
-                        money: 17000
-                    },
-                    {
-                        id: 2,
-                        boto_no: "บต3/XXX/64/00002",
-                        date: "18/06/2564",
-                        hospital: "โรงพยาบาลกรุงเทพ",
-                        money: 3000
-                    },
-                ],
                 userData: this.$store.state.userStateData,
                 approval: [],
                 accData: this.$store.getters.accGetter(this.$route.params.id),

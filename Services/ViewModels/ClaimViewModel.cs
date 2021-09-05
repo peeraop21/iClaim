@@ -14,6 +14,8 @@ namespace Services.ViewModels
         public double? SumMoney { get; set; }
         public string Pt4id { get; set; }
         public string ClaimNo { get; set; }
+        public short? VictimNoClaim { get; set; }
+        public short? RegNoClaim { get; set; }
 
         public double? MedicineMoney { get; set; }
         public double? PlasticMoney { get; set; }
@@ -36,6 +38,9 @@ namespace Services.ViewModels
         public string CrippledPermanent { get; set; }
         public string OtherCrippled { get; set; }
         public string CrippledComment { get; set; }
+
+        public string PayMore { get; set; }
+
 
     }
 }

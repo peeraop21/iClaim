@@ -16,6 +16,7 @@ namespace Services
     public interface IApprovalService
     {
         Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
+        Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
         Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank);
     }
@@ -69,7 +70,7 @@ namespace Services
 
         public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
@@ -98,6 +99,7 @@ namespace Services
                 claimVwModel.CrippledPermanent = query.CrippledPermanent;
                 claimVwModel.OtherCrippled = query.OtherCrippled;
                 claimVwModel.CrippledComment = query.CrippledComment;
+                claimVwModel.PayMore = query.PayMore;
                 
                 
             }
@@ -108,32 +110,95 @@ namespace Services
         {
 
             var approvalVwMdList = new List<ApprovalregisViewModel>();
-            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo).Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).FirstOrDefaultAsync();
-            var approvalVwModel = new ApprovalregisViewModel();
-            if (query != null)
+            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.Pt4 != "Compensate").Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
+
+            foreach (var acc in query)
+            {
+                var approvalVwModel = new ApprovalregisViewModel();
+
+                approvalVwModel.CrClaimno = acc.CrClaimno;
+                approvalVwModel.StringCrClaimno = acc.CrClaimno.ToString().Replace("/", "-");
+                approvalVwModel.VVictimno = acc.VVictimno;
+                approvalVwModel.ApRegno = acc.ApRegno;
+                approvalVwModel.ApRegdate = acc.ApRegdate ?? DateTime.Now;
+                approvalVwModel.StringApRegdate = acc.ApRegdate.ToString().Replace("12:00:00 AM", " ");
+                approvalVwModel.ApPaytype = acc.ApPaytype;
+                approvalVwModel.ApMoney = acc.ApMoney;
+                approvalVwModel.AccNo = acc.AccNo;
+                approvalVwModel.ApTotal = acc.ApTotal;
+                approvalVwModel.DailyReceiveno = acc.DailyReceiveno;
+                approvalVwModel.Pt4 = acc.Pt4;
+                approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
+                approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
+                approvalVwModel.ApStatus = acc.ApStatus;
+                approvalVwModel.Claim = await GetApprovalByClaimNo(acc.CrClaimno, acc.VVictimno, acc.ApRegno);
+                approvalVwMdList.Add(approvalVwModel);
+
+            }
+            /*if (query != null)
             {
                 approvalVwModel.CrClaimno = query.CrClaimno;
-            approvalVwModel.StringCrClaimno = query.CrClaimno.ToString().Replace("/", "-");
-            approvalVwModel.VVictimno = query.VVictimno;
-            approvalVwModel.ApRegno = query.ApRegno;
-            approvalVwModel.ApRegdate = query.ApRegdate.Value.Date;
-            approvalVwModel.StringApRegdate = approvalVwModel.ApRegdate.ToString().Replace("12:00:00 AM", " ");
-            approvalVwModel.ApPaytype = query.ApPaytype;
-            approvalVwModel.ApMoney = query.ApMoney;
-            approvalVwModel.AccNo = query.AccNo;
-            approvalVwModel.ApTotal = query.ApTotal;
-            approvalVwModel.DailyReceiveno = query.DailyReceiveno;
-            approvalVwModel.Pt4 = query.Pt4;
-            approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
-            approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
-            approvalVwModel.ApStatus = query.ApStatus;
-            approvalVwMdList.Add(approvalVwModel);
-            }
-            
-            return approvalVwMdList;
+                approvalVwModel.StringCrClaimno = query.CrClaimno.ToString().Replace("/", "-");
+                approvalVwModel.VVictimno = query.VVictimno;
+                approvalVwModel.ApRegno = query.ApRegno;
+                approvalVwModel.ApRegdate = query.ApRegdate.Value.Date;
+                approvalVwModel.StringApRegdate = approvalVwModel.ApRegdate.ToString().Replace("12:00:00 AM", " ");
+                approvalVwModel.ApPaytype = query.ApPaytype;
+                approvalVwModel.ApMoney = query.ApMoney;
+                approvalVwModel.AccNo = query.AccNo;
+                approvalVwModel.ApTotal = query.ApTotal;
+                approvalVwModel.DailyReceiveno = query.DailyReceiveno;
+                approvalVwModel.Pt4 = query.Pt4;
+                approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
+                approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
+                approvalVwModel.ApStatus = query.ApStatus;
+                approvalVwMdList.Add(approvalVwModel);
+            }*/
 
-
+            return approvalVwMdList.OrderByDescending(o => o.ApRegdate).ToList();
         }
+
+
+        public async Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo)
+        {
+            var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var claimVwModel = new ClaimViewModel();
+            if (query != null)
+            {
+
+                claimVwModel.AccNo = query.AccNo;
+                claimVwModel.VictimNo = query.VictimNo;
+                claimVwModel.AppNo = query.AppNo;
+                claimVwModel.ClaimNo = query.ClaimNo;
+                claimVwModel.VictimNoClaim = query.VictimNoClaim;
+                claimVwModel.RegNoClaim = query.RegNoClaim;
+                claimVwModel.Pt4id = query.Pt4id;
+                claimVwModel.MedicineMoney = query.MedicineMoney;
+                claimVwModel.PlasticMoney = query.PlasticMoney;
+                claimVwModel.ServiceMoney = query.ServiceMoney;
+                claimVwModel.RoomMoney = query.RoomMoney;
+                claimVwModel.VeihcleMoney = query.VeihcleMoney;
+                claimVwModel.CureMoney = query.CureMoney;
+                claimVwModel.DeadMoney = query.DeadMoney;
+                claimVwModel.HygieneMoney = query.HygieneMoney;
+                claimVwModel.CrippledMoney = query.CrippledMoney;
+                claimVwModel.SumMoney = query.SumMoney;
+                claimVwModel.BlindCrippled = query.BlindCrippled;
+                claimVwModel.UnHearCrippled = query.UnHearCrippled;
+                claimVwModel.DeafCrippled = query.DeafCrippled;
+                claimVwModel.LostSexualCrippled = query.LostSexualCrippled;
+                claimVwModel.LostOrganCrippled = query.LostOrganCrippled;
+                claimVwModel.LostMindCrippled = query.LostMindCrippled;
+                claimVwModel.CrippledPermanent = query.CrippledPermanent;
+                claimVwModel.OtherCrippled = query.OtherCrippled;
+                claimVwModel.CrippledComment = query.CrippledComment;
+                claimVwModel.PayMore = query.PayMore;
+
+            }
+
+            return claimVwModel;
+        }
+
     }
 
 

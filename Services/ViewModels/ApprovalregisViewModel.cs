@@ -227,6 +227,7 @@ namespace Services.ViewModels
         /// ประเภทบัตรอื่นๆ
         /// </summary>
         //public string MCardTypeOther { get; set; }
-       // public short? ApRecnationalityId { get; set; }
+        // public short? ApRecnationalityId { get; set; }
+        public ClaimViewModel Claim { get; set; }
     }
 }

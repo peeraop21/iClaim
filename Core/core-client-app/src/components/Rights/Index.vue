@@ -52,7 +52,7 @@
                                 </vs-button>
                             </div>
                         </div>
-                        <p style="line-height: 25px">ผู้ประสบภัยที่สูญเสียอวัยวะ/ทุพพลภาพอย่างถาวร บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
+                        <p style="line-height: 25px" class="mt-3">ผู้ประสบภัยที่สูญเสียอวัยวะ/ทุพพลภาพอย่างถาวร บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
                             <br>

@@ -7,7 +7,7 @@
                     <p>โรงพยาบาล : </p>
                     <p style="margin-top: -10px; margin-bottom: 0px">วันที่เข้ารักษา : {{ claimData.stringApRegdate }}</p>
                 </div>
-                <div v-if="formTypePT==='pt3' && formTypeRights === 2">
+                <div v-if="(formTypePT==='pt3' || formTypePT==='KCL') && formTypeRights === 2">
                     <table id="treatments" class="mb-4">
                         <tr>
                             <th>รายการ</th>
