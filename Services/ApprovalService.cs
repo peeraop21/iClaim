@@ -61,7 +61,7 @@ namespace Services
             else
             {
                 dataHosApproval.ClaimNo = null;
-            }         
+            }
             await digitalclaimContext.HosApproval.AddAsync(dataHosApproval);
 
 
@@ -111,8 +111,8 @@ namespace Services
                 claimVwModel.OtherCrippled = query.OtherCrippled;
                 claimVwModel.CrippledComment = query.CrippledComment;
                 claimVwModel.PayMore = query.PayMore;
-                
-                
+
+
             }
 
             return claimVwModel;
@@ -169,7 +169,6 @@ namespace Services
             return approvalVwMdList.OrderByDescending(o => o.ApRegdate).ToList();
         }
 
-
         public async Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo)
         {
             var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
@@ -204,11 +203,9 @@ namespace Services
                 claimVwModel.OtherCrippled = query.OtherCrippled;
                 claimVwModel.CrippledComment = query.CrippledComment;
                 claimVwModel.PayMore = query.PayMore;
-
-
+            }
+            return claimVwModel;
         }
-
-        
         public async Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo)
         {
             var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.AppNo, s.RegDate, }).FirstOrDefaultAsync();
@@ -217,7 +214,7 @@ namespace Services
             {
                 return vwHosAppList;
             }
-            
+
             var vwHosApp = new HosApprovalViewModel();
             vwHosApp.AccNo = query.AccNo;
             vwHosApp.StringAccNo = query.AccNo.Replace("/", "-");
@@ -231,7 +228,7 @@ namespace Services
 
         public async Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo)
         {
-            var query = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.Appno == appNo).Select(s => new { s.AccountNo, s.AccountName, s.BankId}).FirstOrDefaultAsync();
+            var query = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.Appno == appNo).Select(s => new { s.AccountNo, s.AccountName, s.BankId }).FirstOrDefaultAsync();
             var inputBankViewModelsList = new List<InputBankViewModel>();
             if (query == null)
             {
@@ -244,11 +241,6 @@ namespace Services
             inputBankViewModelsList.Add(inputBankViewModel);
             return inputBankViewModelsList;
         }
-
     }
-
-
-   
-
 
 }
