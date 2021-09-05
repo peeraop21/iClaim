@@ -14,6 +14,10 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
+         "Name": "[dbo].[AMPHUR]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[BankNames]",
          "ObjectType": 0
       },
@@ -35,6 +39,10 @@
       },
       {
          "Name": "[dbo].[HosVicTimAccident]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TUMBOL]",
          "ObjectType": 0
       }
    ],

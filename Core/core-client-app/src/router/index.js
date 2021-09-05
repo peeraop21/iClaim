@@ -71,7 +71,7 @@ const routes = [
         component: ConfirmOTP,
     },
     {
-        path: "/CheckStatus",
+        path: "/CheckStatus/:id",
         name: "CheckStatus",
         component: CheckStatus,
     },

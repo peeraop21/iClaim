@@ -9,7 +9,7 @@ export default new Vuex.Store({
         userStateData: [],
         claimStateData: [],
         jwtToken: [],
-        inputApprovalData: { AccNo: null, VictimNo:null, AppNo:null, SumMoney:null, ClaimNo:null, Injury: null, BillsData: null, BankData: null}
+        inputApprovalData: { AccNo: null, VictimNo:null, AppNo:null, SumMoney:null, ClaimNo:null, Injury: null, BillsData: null, BankData: null, VictimData:null}
 
   },
   mutations: {

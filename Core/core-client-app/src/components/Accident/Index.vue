@@ -68,7 +68,7 @@
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
                                     <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
-                                    <router-link class="btn-checked" to="/CheckStatus">ติดตามสถานะ</router-link>
+                                    <router-link class="btn-checked" :to="{ name: 'CheckStatus', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
                                 </div>
                             </div>
                         </div>
