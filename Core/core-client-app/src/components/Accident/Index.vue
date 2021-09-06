@@ -86,7 +86,7 @@
         name: 'Accident',
         data() {
             return {
-                userToken: "U616533ccb2a96fde1b9650e5181e768e",
+                userToken: "U08881937e4faf1dc4a04522d138bmock",
                 userData: [],
                 accData: [],
             }

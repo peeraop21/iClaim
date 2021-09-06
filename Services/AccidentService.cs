@@ -15,7 +15,7 @@ namespace Services
     public interface IAccidentService
     {
         Task<List<AccidentViewModel>> GetAccident(string userToken);
-        Task<List<VictimtViewModel>> GetAccidentVictim(string accNo, string channal, string userIdCard);
+        Task<List<VictimtViewModel>> GetAccidentVictim(string accNo, string channal, int victimNo);
         Task<List<CarViewModel>> GetAccidentCar(string accNo, string channal);
 
     }
@@ -38,7 +38,7 @@ namespace Services
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
-            var userIdCard = /*await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync();*/"3149900145384";
+            var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync(); /*"3149900145384";*/
             var accLineNo = GetLineAccNo(userIdCard);
             var accHosNo = GetHosAccNo(userIdCard);
             var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s => new { s.EaAccNo, s.EaAccDate, s.EaAccPlace }).ToListAsync();
@@ -79,13 +79,13 @@ namespace Services
             return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
         }
 
-        public async Task<List<VictimtViewModel>> GetAccidentVictim(string accNo, string channal, string userIdCard)
+        public async Task<List<VictimtViewModel>> GetAccidentVictim(string accNo, string channal, int victimNo)
         {
             var vicViewModelList = new List<VictimtViewModel>();
             if (channal == "LINE")
             {                
                 var vicVwModel = new VictimtViewModel();
-                var vic = await rvpAccidentContext.TbAccidentMasterLineVictim.Where(w => w.EaIdCardVictim == userIdCard && w.EaAccno == accNo).Select(s => new { s.EaPrefixVictim, s.EaFnameVictim, s.EaLnameVictim, s.EaSexVictim, s.EaAgeVictim, s.EaPhoneNumber }).FirstOrDefaultAsync();
+                var vic = await rvpAccidentContext.TbAccidentMasterLineVictim.Where(w => w.EaVictimNo == victimNo && w.EaAccno == accNo).Select(s => new { s.EaPrefixVictim, s.EaFnameVictim, s.EaLnameVictim, s.EaSexVictim, s.EaAgeVictim, s.EaPhoneNumber }).FirstOrDefaultAsync();
                 vicVwModel.Fname = vic.EaFnameVictim;
                 vicVwModel.Lname = vic.EaLnameVictim;
                 vicVwModel.Prefix = vic.EaPrefixVictim;
@@ -101,7 +101,7 @@ namespace Services
                     .Join(rvpOfficeContext.Tumbol, vicT => vicT.Tumbol, t => t.Tumbolid, (vicT, t) => new {victimJoinTumbol = vicT, tumbolName = t.Tumbolname, tumbolId = t.Tumbolid})
                     .Join(rvpOfficeContext.Amphur, vicA => vicA.victimJoinTumbol.District, amp => amp.Amphurid, (vicA, amp) => new {victimJoinAmphur = vicA, amphurName = amp.Amphurname, amphurId = amp.Amphurid})
                     .Join(rvpOfficeContext.Changwat, vicC => vicC.victimJoinAmphur.victimJoinTumbol.Province, chw => chw.Changwatshortname, (vicC, chw) => new {victimJoinChangwat = vicC, changwatName = chw.Changwatname, changwatShort = chw.Changwatshortname})
-                    .Where(w => w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.DrvSocNo == userIdCard 
+                    .Where(w => w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.VictimNo == victimNo
                     && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.AccNo == accNo 
                     && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Tumbol == w.victimJoinChangwat.victimJoinAmphur.tumbolId
                     && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.District == w.victimJoinChangwat.amphurId
@@ -128,6 +128,10 @@ namespace Services
                         s.changwatName,
                         s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Zipcode
                     }).FirstOrDefaultAsync();
+                if (vic == null)
+                {
+                    return vicViewModelList;
+                }
                 vicVwModel.AccNo = vic.AccNo;
                 vicVwModel.VictimNo = vic.VictimNo;
                 vicVwModel.DrvSocNo = vic.DrvSocNo;

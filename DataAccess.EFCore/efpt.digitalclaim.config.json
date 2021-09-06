@@ -14,6 +14,14 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
+         "Name": "[dbo].[ApprovalStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ApprovalStatusState]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[HosApproval]",
          "ObjectType": 0
       },
