@@ -168,9 +168,9 @@ namespace Services
         {
             var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo && w.AccNo == accNo && w.PayMore != "Y" &&  w.PayMore != "B").Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
+            var sum = 0;
             if (query != null)
             {
-
                 claimVwModel.AccNo = query.AccNo;
                 claimVwModel.VictimNo = query.VictimNo;
                 claimVwModel.AppNo = query.AppNo;
@@ -198,6 +198,11 @@ namespace Services
                 claimVwModel.OtherCrippled = query.OtherCrippled;
                 claimVwModel.CrippledComment = query.CrippledComment;
                 claimVwModel.PayMore = query.PayMore;
+               /* if (claimVwModel.CrippledMoney > 0 && claimVwModel.CureMoney == 0)
+                {
+                    claimVwModel.SumCrippledMoney = await a
+                }*/
+
             }
             return claimVwModel;
         }
