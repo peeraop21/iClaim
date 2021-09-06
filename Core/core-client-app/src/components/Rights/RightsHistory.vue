@@ -31,88 +31,94 @@
                         <label>ประวัติการใช้สิทธิ์กรณีเบิกค่ารักษาพยาบาล</label>
                         <br>
                     </div>
-                    <section>
-                        <div style="height: 100%; width: 100%;">
-                            <div class="accordion" v-for="approvals in approval" :key="approvals.stringPt4">
-                                <div class="accordion-item" :id="'list' + approvals.stringPt4">
-                                    <a class="accordion-link" :href="'#list' + approvals.stringPt4">
-                                        <div>
-                                            <p>
-                                                <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
-                                                <br>
-                                                <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ approvals.apTotal }} บาท
-                                            </p>
-                                        </div>
-                                        <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
-                                    </a>
-                                    <div class="answer">
-                                        <p v-if="approvals.apStatus==='A'">สถานะการจ่ายเงิน: อนุมัติ</p>
-                                        <p v-else-if="approvals.apStatus==='P'">สถานะการจ่ายเงิน: จ่ายแล้ว</p>
-                                        <p v-else>สถานะการจ่ายเงิน: -</p>
-                                        <p style="margin-top: -25px;">
-                                            วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
-                                        </p>
-                                        <p style="margin-top: -25px;">โรงพยาบาลที่รักษา:</p>
-                                    </div>
-                                    <div style="text-align: center">
-                                        <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, typerights: 1, pt: approvals.stringPt4, typept: approvals.subPt4 }}">ดูเพิ่มเติม</router-link>
+                    <div v-for="approvals in approval" :key="approvals.pt4">
+                        <div v-if="!approvals.claim.accNo">
+                        </div>
+                        <div v-else-if="approvals.claim.crippledMoney > 0 && approvals.claim.cureMoney == 0">
+                        </div>
+                        <div v-else>
+                            <section>
+                                <div style="height: 100%; width: 100%;">
+                                    <div class="accordion">
+                                        <div class="accordion-item" :id="'list' + approvals.pt4">
+                                            <a class="accordion-link" :href="'#list' + approvals.pt4">
+                                                <div>
+                                                    <p>
+                                                        <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
+                                                        <br>
+                                                        <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ approvals.apTotal }} บาท
+                                                    </p>
+                                                </div>
+                                                <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
+                                            </a>
+                                            <div class="answer">
+                                                <p v-if="approvals.apStatus==='A'">สถานะการจ่ายเงิน: อนุมัติ</p>
+                                                <p v-else-if="approvals.apStatus==='P'">สถานะการจ่ายเงิน: จ่ายแล้ว</p>
+                                                <p v-else>สถานะการจ่ายเงิน: -</p>
+                                                <p style="margin-top: -25px;">
+                                                    วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
+                                                </p>
+                                                <p style="margin-top: -25px;">โรงพยาบาลที่รักษา:</p>
+                                            </div>
+                                            <div style="text-align: center">
+                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, typerights: 1, pt: approvals.stringPt4, typept: approvals.subPt4 }}">ดูเพิ่มเติม</router-link>
 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </section>
                         </div>
-                    </section>
-                   
+                    </div>
                 </div>
                 <div v-else-if="formType==2">
                     <div align="left" style="width: 100%;">
                         <label>ประวัติการใช้สิทธิ์กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
                         <br>
                     </div>
-                    <div v-if="approval.subPt4 === 'pt4' || !accData.lastClaim.crippledMoney || accData.lastClaim.crippledMoney === 0">
-                        <p class="notData">- ไม่มีข้อมูล -</p>
-                    </div>
-                    <div v-else-if="accData.lastClaim.crippledMoney > 0 ">
-                        <section>
-                            <div style="height: 100%; width: 100%;">
-                                <div class="accordion" v-for="approvals in approval" :key="approvals.stringPt4">
-                                    <div class="accordion-item" :id="'list' + approvals.stringPt4">
-                                        <a class="accordion-link" :href="'#list' + approvals.stringPt4">
-                                            <div>
-                                                <p>
-                                                    <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
-                                                    <br>
-                                                    <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ approvals.apTotal }} บาท
+                    <div v-for="approvals in approval" :key="approvals.pt4">
+                        <div v-if="approvals.subPt4 === 'pt4' || !approvals.claim.crippledMoney || approvals.claim.crippledMoney === 0 || !approvals.claim.accNo">
+                        </div>
+                        <div v-else-if="approvals.claim.crippledMoney > 0 ">
+                            <section>
+                                <div style="height: 100%; width: 100%;">
+                                    <div class="accordion">
+                                        <div class="accordion-item" :id="'list' + approvals.pt4">
+                                            <a class="accordion-link" :href="'#list' + approvals.pt4">
+                                                <div>
+                                                    <p>
+                                                        <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
+                                                        <br>
+                                                        <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ approvals.apTotal }} บาท
+                                                    </p>
+                                                </div>
+                                                <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
+                                            </a>
+                                            <div class="answer">
+                                                <p v-if="approvals.apStatus==='A'">สถานะการจ่ายเงิน: อนุมัติ</p>
+                                                <p v-else-if="approvals.apStatus==='P'">สถานะการจ่ายเงิน: จ่ายแล้ว</p>
+                                                <p v-else>สถานะการจ่ายเงิน: -</p>
+                                                <p style="margin-top: -25px;">
+                                                    วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
                                                 </p>
+                                                <p style="margin-top: -25px;">โรงพยาบาลที่รักษา:</p>
                                             </div>
-                                            <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
-                                        </a>
-                                        <div class="answer">
-                                            <p v-if="approvals.apStatus==='A'">สถานะการจ่ายเงิน: อนุมัติ</p>
-                                            <p v-else-if="approvals.apStatus==='P'">สถานะการจ่ายเงิน: จ่ายแล้ว</p>
-                                            <p v-else>สถานะการจ่ายเงิน: -</p>
-                                            <p style="margin-top: -25px;">
-                                                วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
-                                            </p>
-                                            <p style="margin-top: -25px;">โรงพยาบาลที่รักษา:</p>
-                                        </div>
-                                        <div style="text-align: center">
-                                            <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, typerights: 2, pt: approvals.stringPt4, typept: approvals.subPt4 }}">ดูเพิ่มเติม</router-link>
+                                            <div style="text-align: center">
+                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, typerights: 2, pt: approvals.stringPt4, typept: approvals.subPt4 }}">ดูเพิ่มเติม</router-link>
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
-                    </div>
-                    <div v-else>
-                        <p class="notData">- ไม่มีข้อมูล -</p>
+                            </section>
+                        </div>
+                        <div v-else>
+                        </div>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
         <br>
-        
     </div>
 </template>
 
@@ -142,7 +148,6 @@
                         this.$store.state.claimStateData = response.data;
                         this.approval = this.$store.state.claimStateData;
                         console.log("claimData", this.approval);
-
                     })
                     .catch(function (error) {
                         alert(error);
@@ -150,9 +155,8 @@
             },
         },
         mounted() {
-            console.log(this.accData);
             this.getApprovals();
-            
+            console.log("AccData", this.accData);
         }
 
     }

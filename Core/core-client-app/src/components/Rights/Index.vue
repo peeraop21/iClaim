@@ -152,6 +152,7 @@
                 ],
                 userData: this.$store.state.userStateData,
                 accData1: this.$store.getters.accGetter(this.$route.params.id),
+                claimData: this.$store.getters.ptGetter(this.$route.params.pt),
                 Info1: false,
                 Info2: false,
                 Info3: false,

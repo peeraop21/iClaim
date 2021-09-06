@@ -57,10 +57,12 @@
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือ:
-                                        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
-                                            {{ rights.apTotal }}
-                                        </label>
+                                        สิทธิ์คงเหลือ: 
+                                        <!--<label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
+                                            {{ total }}
+                                        </label>-->
+                                        {{ total }}
+
                                         บาท
                                     </p>
 
@@ -126,7 +128,8 @@
                         /*this.accidentsApi = response.data;*/
                         this.$store.state.accStateData = response.data;
                         this.accData = this.$store.state.accStateData
-                        console.log(this.$store.state.accStateData);
+                        console.log('accdata', this.$store.state.accStateData);
+                        
                     })
                     .catch(function (error) {
                         alert(error);
@@ -145,13 +148,23 @@
                         /*this.userApi = response.data;*/
                         this.$store.state.userStateData = response.data;
                         this.userData = this.$store.state.userStateData;
-                        console.log(this.$store.state.userStateData);
+                        console.log('userdata', this.$store.state.userStateData);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
-
-            }
+            },
+        },
+        computed: {
+            total: function () {
+                let sum = 0;
+                for (let l = 0; l < this.accData.length; l++) {
+                    for (let i = 0; i < this.accData[l].rights.length; i++) {
+                        sum = sum + parseInt(this.accData[l].rights[i].apTotal)
+                    }
+                }
+                return sum;
+            },
         },
         async mounted() {
             await this.getJwtToken();

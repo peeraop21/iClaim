@@ -15,7 +15,7 @@ namespace Services
     public interface IApprovalService
     {
         Task<List<ApprovalregisViewModel>> GetApproval(string accNo);
-        Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo);
+        Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, string accNo);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
         Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim);
         Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo);
@@ -121,57 +121,43 @@ namespace Services
         {
 
             var approvalVwMdList = new List<ApprovalregisViewModel>();
-            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.Pt4 != "Compensate").Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
+            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.Pt4 != null && w.Pt4 != "Compensate").Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
 
-            foreach (var acc in query)
+           
+            if(query != null)
             {
-                var approvalVwModel = new ApprovalregisViewModel();
+                foreach (var acc in query)
+                {
+                    var approvalVwModel = new ApprovalregisViewModel();
 
-                approvalVwModel.CrClaimno = acc.CrClaimno;
-                approvalVwModel.StringCrClaimno = acc.CrClaimno.ToString().Replace("/", "-");
-                approvalVwModel.VVictimno = acc.VVictimno;
-                approvalVwModel.ApRegno = acc.ApRegno;
-                approvalVwModel.ApRegdate = acc.ApRegdate ?? DateTime.Now;
-                approvalVwModel.StringApRegdate = acc.ApRegdate.ToString().Replace("12:00:00 AM", " ");
-                approvalVwModel.ApPaytype = acc.ApPaytype;
-                approvalVwModel.ApMoney = acc.ApMoney;
-                approvalVwModel.AccNo = acc.AccNo;
-                approvalVwModel.ApTotal = acc.ApTotal;
-                approvalVwModel.DailyReceiveno = acc.DailyReceiveno;
-                approvalVwModel.Pt4 = acc.Pt4;
-                approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
-                approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
-                approvalVwModel.ApStatus = acc.ApStatus;
-                approvalVwModel.Claim = await GetApprovalByClaimNo(acc.CrClaimno, acc.VVictimno, acc.ApRegno);
-                approvalVwMdList.Add(approvalVwModel);
+                    approvalVwModel.CrClaimno = acc.CrClaimno;
+                    approvalVwModel.StringCrClaimno = acc.CrClaimno.ToString().Replace("/", "-");
+                    approvalVwModel.VVictimno = acc.VVictimno;
+                    approvalVwModel.ApRegno = acc.ApRegno;
+                    approvalVwModel.ApRegdate = acc.ApRegdate ?? DateTime.Now;
+                    approvalVwModel.StringApRegdate = acc.ApRegdate.ToString().Replace("12:00:00 AM", " ");
+                    approvalVwModel.ApPaytype = acc.ApPaytype;
+                    approvalVwModel.ApMoney = acc.ApMoney;
+                    approvalVwModel.AccNo = acc.AccNo;
+                    approvalVwModel.ApTotal = acc.ApTotal;
+                    approvalVwModel.DailyReceiveno = acc.DailyReceiveno;
+                    
+                    approvalVwModel.Pt4 = acc.Pt4;
+                    approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
+                    approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
+                    
+                    approvalVwModel.ApStatus = acc.ApStatus;
+                    approvalVwModel.Claim = await GetApprovalByClaimNo(acc.CrClaimno, acc.VVictimno, acc.ApRegno, acc.AccNo);
+                    approvalVwMdList.Add(approvalVwModel);
 
+                }
             }
-            /*if (query != null)
-            {
-                approvalVwModel.CrClaimno = query.CrClaimno;
-                approvalVwModel.StringCrClaimno = query.CrClaimno.ToString().Replace("/", "-");
-                approvalVwModel.VVictimno = query.VVictimno;
-                approvalVwModel.ApRegno = query.ApRegno;
-                approvalVwModel.ApRegdate = query.ApRegdate.Value.Date;
-                approvalVwModel.StringApRegdate = approvalVwModel.ApRegdate.ToString().Replace("12:00:00 AM", " ");
-                approvalVwModel.ApPaytype = query.ApPaytype;
-                approvalVwModel.ApMoney = query.ApMoney;
-                approvalVwModel.AccNo = query.AccNo;
-                approvalVwModel.ApTotal = query.ApTotal;
-                approvalVwModel.DailyReceiveno = query.DailyReceiveno;
-                approvalVwModel.Pt4 = query.Pt4;
-                approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
-                approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
-                approvalVwModel.ApStatus = query.ApStatus;
-                approvalVwMdList.Add(approvalVwModel);
-            }*/
-
             return approvalVwMdList.OrderByDescending(o => o.ApRegdate).ToList();
         }
 
-        public async Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo)
+        public async Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, string accNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo && w.AccNo == accNo && w.PayMore != "Y" &&  w.PayMore != "B").Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
