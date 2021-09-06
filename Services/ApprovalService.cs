@@ -60,7 +60,7 @@ namespace Services
             }
             else
             {
-                dataHosApproval.ClaimNo = null;
+                dataHosApproval.ClaimNo = null; //เคลมใหม่รอเลข running
             }
             await digitalclaimContext.HosApproval.AddAsync(dataHosApproval);
 
@@ -74,6 +74,15 @@ namespace Services
             dataHosDocumentReceive.AccountName = inputBank.accountName;
             dataHosDocumentReceive.BankId = inputBank.accountBankName;
             await digitalclaimContext.HosDocumentReceive.AddAsync(dataHosDocumentReceive);
+            
+
+            var dataApprovalStatusState = new ApprovalStatusState();
+            dataApprovalStatusState.AccNo = hosApproval.AccNo;
+            dataApprovalStatusState.VictimNo = hosApproval.VictimNo;
+            dataApprovalStatusState.AppNo = hosApproval.AppNo;
+            dataApprovalStatusState.InsertDate = DateTime.Now;
+            dataApprovalStatusState.Status = 1;
+            await digitalclaimContext.ApprovalStatusState.AddAsync(dataApprovalStatusState);
             await digitalclaimContext.SaveChangesAsync();
 
             return hosApproval;

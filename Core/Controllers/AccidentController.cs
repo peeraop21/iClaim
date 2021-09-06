@@ -39,10 +39,10 @@ namespace Core.Controllers
             return Ok(await accidentService.GetAccidentCar(accNo.Replace("-","/"), channel));
         }
 
-        [HttpGet("Victim/{accNo}/{ch}/{userIdCard}")]
-        public async Task<IActionResult> GetAccidentVictim(string accNo, string ch, string userIdCard)
+        [HttpGet("Victim/{accNo}/{ch}/{victimNo}")]
+        public async Task<IActionResult> GetAccidentVictim(string accNo, string ch, int victimNo)
         {
-            return Ok(await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), ch, userIdCard));
+            return Ok(await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), ch, victimNo));
         }
     }
 }

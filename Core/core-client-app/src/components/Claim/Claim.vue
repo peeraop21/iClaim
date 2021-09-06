@@ -789,9 +789,9 @@
                     });
             },
             getAccidentVictim() {
-                console.log('getAccidentCar');
-                var mockIdcard = '1650200149515';
-                var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
+                console.log('getAccidentVictim');
+                var mockIdcard = this.accData.lastClaim.victimNo /*'3149900145384'*/;
+                var url = '/api/Accident/Victim/{accNo}/{ch}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{victimNo}', mockIdcard);
                 axios.get(url)
                     .then((response) => {
                         this.accidentVictimData = response.data[0];
