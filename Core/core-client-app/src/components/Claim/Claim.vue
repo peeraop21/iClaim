@@ -30,14 +30,44 @@
                     <div class="mt-0" v-if="picked==='2'">
                         <br />
                         <label>จำนวนเงิน</label>
-                        <vs-input color="var(--main-color)"
-                                  v-model="value7"
-                                  placeholder="จำนวนเงิน" />
-                        <label>สถานพยาบาลชื่อ</label>
-                        <vs-input color="var(--main-color)"
-                                  v-model="value7"
-                                  placeholder="สถานพยาบาล" />
-
+                        <b-form-input class="mt-0 mb-2" v-model="saysoMoney" type="number" placeholder="" />
+                        <label>ชื่อสถานพยาบาล</label>
+                        <b-form-input class="mt-0 mb-2" v-model="saysoHospital" type="text" @click="modalSaysoHospital=!modalSaysoHospital" />
+                        <!--Dialog Select Hospital-->
+                        <vs-dialog width="550px" not-center v-model="modalSaysoHospital">
+                            <template #header>
+                                <h4 class="not-margin">
+                                    เลือกโรงพยาบาล
+                                </h4>
+                            </template>
+                            <div class="con-content" align="left">
+                                <div class="d-block text-left">
+                                    <div class="mb-2">
+                                        <label class="px-2">จังหวัด</label>
+                                        <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
+                                            <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
+                                                {{ category.changwatname }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2" v-show="divHospitalModal">
+                                        <label class="px-2">โรงพยาบาล</label>
+                                        <select name="item" id="item" v-model="mockSaysoHospital">
+                                            <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
+                                                {{ item.HOSPITALNAME  }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <template #footer>
+                                <div class="footer-dialog">
+                                    <vs-button block @click="submitModalSaysoHospital()">
+                                        ยืนยัน
+                                    </vs-button>
+                                </div>
+                            </template>
+                        </vs-dialog>
                     </div>
                     <br />
                     <p style="margin-top: -15px">
@@ -741,7 +771,12 @@
                     accNo: null, victimNo: null, prefix: null, fname: null, lname: null, sex: null, age: null,
                     drvSocNo: null, homeId: null, moo: null, soi: null, road: null, tumbol: null, tumbolName: null,
                     district: null, districtName: null, province: null, provinceName: null, zipcode: null, telNo: null
-                }
+                },
+                //--- Say-so
+                saysoMoney: '',
+                saysoHospital: '',
+                modalSaysoHospital: false,
+                mockSaysoHospital: '',
             };
         },
         //---Validate
@@ -880,6 +915,13 @@
                 this.modalHospital = false
                 this.selectChangwat = 0;
                 this.mockHospital = 0;
+                this.divHospitalModal = false;
+            },
+            submitModalSaysoHospital() {
+                this.saysoHospital = this.mockSaysoHospital
+                this.modalSaysoHospital = false
+                this.selectChangwat = 0;
+                this.mockSaysoHospital = 0;
                 this.divHospitalModal = false;
             },
             calMoney() {

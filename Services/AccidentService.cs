@@ -48,6 +48,8 @@ namespace Services
             {
 
                 var accVwModel = new AccidentViewModel();
+                var approvalVwModel = new ApprovalregisViewModel();
+                //double[] aa = { (double)approvalVwModel.ApMoney };
 
                 accVwModel.AccNo = acc.EaAccNo;
                 accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo);
@@ -63,7 +65,6 @@ namespace Services
             foreach (var acc in accHosList)
             {
                 
-
                 var accVwModel = new AccidentViewModel();
                 accVwModel.AccNo = acc.AccNo;
                 accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo);

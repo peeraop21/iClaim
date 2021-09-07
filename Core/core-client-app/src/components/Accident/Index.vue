@@ -57,17 +57,18 @@
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือค่ารักษาพยาบาล: 
-                                        <!--<label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
-                                            {{ rights.claim.sumCureMoney }}
+                                        สิทธิ์คงเหลือค่ารักษาพยาบาล:
+                                        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`" >
+                                            {{ rights.apTotal  }} 
                                         </label>
                                         บาท
+                                        <!--{{total}}-->
                                         <br />
-                                        สิทธิ์คงเหลือค่าสูญเสียอวัยวะ / ทุพพลภาพ: 
-                                        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
-                                            {{ rights.claim.sumCrippledMoney }}
-                                        </label>
-                                        บาท-->
+                                        <!--สิทธิ์คงเหลือค่าสูญเสียอวัยวะ / ทุพพลภาพ:
+                                            <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
+                                                {{ rights.claim.sumCrippledMoney }}
+                                            </label>
+                                            บาท-->
                                     </p>
 
                                 </div>
@@ -160,15 +161,15 @@
             },
         },
         computed: {
-            total: function () {
+            /*total: function () {
                 let sum = 0;
                 for (let l = 0; l < this.accData.length; l++) {
                     for (let i = 0; i < this.accData[l].rights.length; i++) {
                         sum = sum + parseInt(this.accData[l].rights[i].apTotal)
                     }
+                    return sum;
                 }
-                return sum;
-            },
+            }*/
         },
         async mounted() {
             await this.getJwtToken();
