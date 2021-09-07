@@ -107,7 +107,7 @@
                            @click="riderDialog=!riderDialog">
                     <img src="@/assets/rider.png" width="100">
                 </vs-button>
-                <p style="font-weight: bold; color: var(--main-color);">ผู้ขับขี่รถเอาประกัน</p>
+                <p style="font-weight: bold; color: var(--main-color);">ผู้ขับขี่ที่เป็นผู้ประสบภัยรถประกัน</p>
             </div>
             <div class="col-6 px-0" align="center">
                 <vs-button circle
@@ -118,7 +118,7 @@
                            @click="passangerDialog=!passangerDialog">
                     <img src="@/assets/passanger.png" width="100">
                 </vs-button>
-                <p style="font-weight: bold; color: var(--main-color);">ผู้โดยสารรถเอาประกัน</p>
+                <p style="font-weight: bold; color: var(--main-color);">ผู้โดยสารที่เป็นผู้ประสบภัยรถประกัน</p>
             </div>
         </div>
         <!-- Rider Dialog -->
@@ -206,7 +206,7 @@
             <div class="con-content" align="left">
                 <p>1. ยืนยันตัวตนเพื่อขอใช้สิทธิ์ (ถ้าเคยยืนยันตัวตนแล้วจะข้ามขั้นตอนนีี้ไป)</p>
                 <p>2. กดเลือกแจ้งเหตุใหม่ (ถ้ามีรายการแจ้งเหตุแล้ว ท่านสามารถเลือกที่ใช้สิทธิ์เพิ่มเติมได้)</p>
-                <p>3. เลือกประเภทการขอใช้สิทธิ์ค่าเสียหายเบื้องต้น</p>
+                <p>3. เลือกประเภทการขอใช้สิทธิ์เบิกค่าเสียหายเบื้องต้น</p>
                 <ul style="margin-top: -15px;">
                     <li>กรณีเบิกค่ารักษาพยาบาล</li>
                     <li>กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</li>

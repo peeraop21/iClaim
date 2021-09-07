@@ -22,13 +22,17 @@
 
             </div>
             <div class="row mb-2">
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" v-model="acceptR" >
-                        <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                            ข้าพเจ้ายืนยันที่จะรับจำนวนเงินที่แจ้งมา
-                        </p>
-                    </div>
+                <div class="col-2" style="padding-right: 0px; width:13%;">
+                    <vs-checkbox v-model="acceptR" color="var(--main-color)">
+                        <template #icon>
+                            <i class='ti ti-check'></i>
+                        </template>
+                    </vs-checkbox>
+                </div>
+                <div class="col-10 px-0">
+                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                        ข้าพเจ้ายอมรับจำนวนเงินที่แจ้งมา
+                    </p>
                 </div>
             </div>
             <div class="row" v-if="acceptR">

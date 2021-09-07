@@ -39,8 +39,9 @@
                                     <div class="verticalLine" style="margin-top: -5px; ">
                                     <li style="margin-left: -3px; color: #04c042">รับคำร้อง</li><br>
                                     <li style="margin-left: -3px; margin-top: -15px; color: #04c042">ตรวจสอบเอกสาร</li><br>
+                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> ยื่นเอกสารเพิ่มเติม</li><br>
                                     <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> อนุมัติจ่าย</li><br>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa">โอนเงินแล้ว</li>
+                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa;">โอนเงินแล้ว</li>
                                     </div>
                                 </div>
                                 <div style="text-align: center">

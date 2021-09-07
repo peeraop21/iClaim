@@ -57,13 +57,17 @@
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือ: 
+                                        สิทธิ์คงเหลือค่ารักษาพยาบาล: 
                                         <!--<label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
-                                            {{ total }}
-                                        </label>-->
-                                        {{ total }}
-
+                                            {{ rights.claim.sumCureMoney }}
+                                        </label>
                                         บาท
+                                        <br />
+                                        สิทธิ์คงเหลือค่าสูญเสียอวัยวะ / ทุพพลภาพ: 
+                                        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
+                                            {{ rights.claim.sumCrippledMoney }}
+                                        </label>
+                                        บาท-->
                                     </p>
 
                                 </div>
