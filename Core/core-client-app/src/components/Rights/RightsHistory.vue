@@ -15,9 +15,9 @@
                             <span>เลขที่รับแจ้ง: <span style="color: var(--main-color)">{{accData.accNo}}</span></span><br />
                             <span>ทะเบียนรถที่เกิดเหตุ : <span v-for="(car, index) in accData.car" :key="`car-${index}`" style="color: var(--main-color)">{{car}} </span></span><br />
                             <span>วันที่เกิดเหตุ : <span style="color: var(--main-color)">{{ accData.stringAccDate }}</span></span><br />
-                            <span>สิทธิ์ที่ได้รับ: <span style="color: var(--main-color)">35000 บาท</span></span><br />
-                            <span>สิทธิ์ที่ใช้ไป: <span style="color: var(--main-color)">25000 บาท</span></span><br />
-                            <span>สิทธิ์คงเหลือ: <span style="color: var(--main-color)">10000 บาท</span></span>
+                            <span>สิทธิ์ที่ได้รับ: <span style="color: var(--main-color)">30000 บาท</span></span><br />
+                            <span>สิทธิ์ที่ใช้ไป: <span style="color: var(--main-color)">30000 บาท</span></span><br />
+                            <span>สิทธิ์คงเหลือ: <span style="color: var(--main-color)">0 บาท</span></span>
                         </div>
                     </div>
                 </div>

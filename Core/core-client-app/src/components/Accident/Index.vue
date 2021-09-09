@@ -57,10 +57,10 @@
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือค่ารักษาพยาบาล:
-                                        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`" >
+                                        สิทธิ์คงเหลือ: 0
+                                       <!-- <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`" >
                                             {{ rights.apTotal  }} 
-                                        </label>
+                                        </label>-->
                                         บาท
                                         <!--{{total}}-->
                                         <br />

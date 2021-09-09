@@ -69,7 +69,7 @@
                     </template>
                     <template #text>
                         <p style="font-weight: bold;">
-                            ขั้นตอนดำเนินการ
+                            ขั้นตอนการขอใช้สิทธิ์
                         </p>
                     </template>
                 </vs-card>

@@ -17,7 +17,7 @@
                     <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" v-model="mockTel" :maxlength="10" />
                 </div>
                 <div class="col-5 mb-5">
-                    <button class="btn-request-otp" type="button" @click="requestOTP" :disabled="disableBtnReqOTP">ขอรหัส OTP</button>
+                    <button class="btn-request-otp" type="button" @click="requestOTP" v-bind:disabled="disableBtnReqOTP">ขอรหัส OTP</button>
                 </div>
             </div>
             <div class="row">
@@ -69,9 +69,10 @@
                 </div>
             </div>
             <div>
-                <button class="btn-confirm-money" type="button" @click="postData">test post data</button>
+              <!--  <button class="btn-confirm-money" type="button" @click="postData">test post data</button>-->
                 <br>
-                <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
+                <!--<button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>-->
+                <button class="btn-confirm-money" type="button" @click="showSwal">ยืนยันการส่งคำร้อง</button>
             </div>
         </div>
     </div>
@@ -200,7 +201,6 @@
     import axios from 'axios'
     import qs from 'qs'
    
-   
     export default {
         data() {
             return {
@@ -257,14 +257,14 @@
                 
                 //var tel = "";
                 const body = {
-                    'ProjectName': 'OTP_DigitalClaim',
-                    'TelNo': this.mockTel
+                    ProjectName: "OTP_DigitalClaim",
+                    TelNo: this.mockTel
                 };
                 console.log(qs.stringify(body))
-                axios.post('https://smsotp.rvpeservice.com/OTP/RequestOTP', qs.stringify(body), {
+                axios.post("https://smsotp.rvpeservice.com/OTP/RequestOTP", qs.stringify(body), {
                     headers: {
                         // Overwrite Axios's automatically set Content-Type
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     }
                 }).then((response) => {
                     this.countDownTimer()
@@ -357,7 +357,7 @@
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-                        this.$router.push({ name: 'CheckStatus' })
+                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
                     } else if (result.isDenied) {
                         this.$router.push({ name: 'Accident' })
                     }

@@ -48,6 +48,10 @@
                     this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
                 } else if (routeName == "Ocr") {
                     this.$router.push({ name: 'Advice' })
+                } else if (routeName == "Rating") {
+                    this.$router.push({ name: 'Accident' })
+                } else if (routeName == "AddDocument") {
+                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
                 }
             },
 
