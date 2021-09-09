@@ -41,6 +41,9 @@ namespace Services.ViewModels
 
         public string PayMore { get; set; }
 
+        public double? SumCureMoney { get; set; }
+        public double? SumCrippledMoney { get; set; }
+
 
     }
 }

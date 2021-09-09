@@ -3,109 +3,123 @@
         <div class="row">
             <h2 id="header2">ยืนยันตัวตน</h2>
         </div>
-        <div class="box-container space-contianer">
-            <div class="row" align="center">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label title-advice-menu">อัพโหลดรูปภาพเพื่อยืนยันตัวตน</label>
+        <div class="row mt-4">
+            <div class="col-2" style="padding-right: 0px; width:13%;">
+                <vs-checkbox v-model="acceptData" color="var(--main-color)">
+                    <template #icon>
+                        <i class='ti ti-check'></i>
+                    </template>
+                </vs-checkbox>
+            </div>
+            <div class="col-10 px-0">
+                <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                    ข้าพเจ้ายินยอมให้ใช้ข้อมูลส่วนบุคคลในการขอใช้สิทธิ์เบิกค่าเสียหายเบื้องต้น
+                </p>
+            </div>
+        </div>
+        <div v-if="acceptData">
+            <div class="box-container space-contianer">
+                <div class="row" align="center">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label title-advice-menu">อัพโหลดรูปภาพเพื่อยืนยันตัวตน</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <file-pond credits="null"
+                                   label-idle="รูปบัตรประจำตัวประชาชน"
+                                   v-bind:allow-multiple="false"
+                                   v-bind:allowFileEncode="true"
+                                   accepted-file-types="image/jpeg, image/png"
+                                   v-bind:files="idCardFile"
+                                   v-on:addfile="onAddidCardFile" />
+                    </div>
+                    <div class="col-6">
+                        <file-pond credits="null"
+                                   label-idle="รูปถ่ายหน้าเซลฟี"
+                                   v-bind:allow-multiple="false"
+                                   v-bind:allowFileEncode="true"
+                                   accepted-file-types="image/jpeg, image/png"
+                                   v-bind:files="faceFile"
+                                   v-on:addfile="onAddfaceFile" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-container  space-contianer">
+                <div class="row" align="center">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label title-advice-menu">ข้อมูลจากรูปบัตรประจำตัวประชาชน</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">เลขที่บัตรประจำตัว : {{dataIdCard.id}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">ชื่อ-สกุล (ภาษาไทย) : {{dataIdCard.name_th}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">ชื่อ-สกุล (ภาษาอังกฤษ) : {{dataIdCard.first_name_en}} {{dataIdCard.last_name_en}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">วันเกิด (ค.ศ.) : {{dataIdCard.date_of_birth}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">ศาสนา : {{dataIdCard.religion}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">ที่อยู่ : {{dataIdCard.address}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">วันที่ออกบัตร (ค.ศ.) : {{dataIdCard.date_of_issue}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm">
+                            <label class="form-label">วันที่หมดอายุ (ค.ศ.) : {{dataIdCard.date_of_expiry}}</label>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-6">
-                    <file-pond credits="null"
-                               label-idle="รูปบัตรประจำตัวประชาชน"
-                               v-bind:allow-multiple="false"
-                               v-bind:allowFileEncode="true"
-                               accepted-file-types="image/jpeg, image/png"
-                               v-bind:files="idCardFile"
-                               v-on:addfile="onAddidCardFile" />
-                </div>
-                <div class="col-6">
-                    <file-pond credits="null"
-                               label-idle="รูปถ่ายหน้าเซลฟี"
-                               v-bind:allow-multiple="false"
-                               v-bind:allowFileEncode="true"
-                               accepted-file-types="image/jpeg, image/png"
-                               v-bind:files="faceFile"
-                               v-on:addfile="onAddfaceFile" />
+                <div class="col-12">
+                    <router-link class="btn-next" style="width: 100%; padding: 8px 0px;" to="/Accident">ดำเนินการต่อ</router-link>
                 </div>
             </div>
 
         </div>
-        <div class="box-container  space-contianer">
-            <div class="row" align="center">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label title-advice-menu">ข้อมูลจากรูปบัตรประจำตัวประชาชน</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">เลขที่บัตรประจำตัว : {{dataIdCard.id}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">ชื่อ-สกุล (ภาษาไทย) : {{dataIdCard.name_th}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">ชื่อ-สกุล (ภาษาอังกฤษ) : {{dataIdCard.first_name_en}} {{dataIdCard.last_name_en}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">วันเกิด (ค.ศ.) : {{dataIdCard.date_of_birth}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">ศาสนา : {{dataIdCard.religion}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">ที่อยู่ : {{dataIdCard.address}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">วันที่ออกบัตร (ค.ศ.) : {{dataIdCard.date_of_issue}}</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-control-sm">
-                        <label class="form-label">วันที่หมดอายุ (ค.ศ.) : {{dataIdCard.date_of_expiry}}</label>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <router-link class="btn-next" style="width: 100%; padding: 8px 0px;" to="/Accident">ดำเนินการต่อ</router-link>
-            </div>
-        </div>
-
-
 
 
     </div>
@@ -159,7 +173,8 @@
                 SECRET_ID: "cc425efa2ec80be4c1149f0642c9ff94",
                 SECRET_KEY: "d387810e33e19128c8cc6643c7758143408d6359",
                 URI: "/v1/compare-face-id-card",
-                URL: "https://iai.flashsoftapi.com/v1/compare-face-id-card"
+                URL: "https://iai.flashsoftapi.com/v1/compare-face-id-card",
+                acceptData: false,
             };
         },
 
@@ -365,4 +380,7 @@
 </script>
 
 <style>
+    .vs-checkbox-mask::before{
+        background-color: white;
+    }
 </style>

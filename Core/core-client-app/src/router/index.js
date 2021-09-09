@@ -14,6 +14,8 @@ import CheckStatus from "@/components/Status/CheckStatus.vue";
 import ClaimDetail from "@/components/Status/ClaimDetail.vue";
 import ConfirmMoney from "@/components/Status/ConfirmMoney.vue";
 import Ocr from "@/components/Ocr/Index.vue";
+import Rating from "@/components/Rating/Index.vue";
+import AddDocument from "@/components/Claim/AddDocument.vue";
 
 Vue.use(VueRouter)
 
@@ -84,10 +86,21 @@ const routes = [
         path: "/ConfirmMoney",
         name: "ConfirmMoney",
         component: ConfirmMoney,
-    }, {
+    },
+    {
         path: "/Ocr",
         name: "Ocr",
         component: Ocr,
+    },
+    {
+        path: "/Rating",
+        name: "Rating",
+        component: Rating,
+    },
+    {
+        path: "/AddDocument/:id",
+        name: "AddDocument",
+        component: AddDocument,
     },
 ]
 

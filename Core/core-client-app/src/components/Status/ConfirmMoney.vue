@@ -22,13 +22,17 @@
 
             </div>
             <div class="row mb-2">
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" v-model="acceptR" >
-                        <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                            ข้าพเจ้ายืนยันที่จะรับจำนวนเงินที่แจ้งมา
-                        </p>
-                    </div>
+                <div class="col-2" style="padding-right: 0px; width:13%;">
+                    <vs-checkbox v-model="acceptR" color="var(--main-color)">
+                        <template #icon>
+                            <i class='ti ti-check'></i>
+                        </template>
+                    </vs-checkbox>
+                </div>
+                <div class="col-10 px-0">
+                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
+                        ข้าพเจ้ายอมรับจำนวนเงินที่แจ้งมา
+                    </p>
                 </div>
             </div>
             <div class="row" v-if="acceptR">
@@ -116,25 +120,34 @@
             return {
                 acceptR: false,
                 lblButton: 'ยืนยันจำนวนเงิน',
-                claimNo: 'xxx/xxxx',
+                claimNo: '61/660/00337',
                 money: '1,000',
                 reason: '......'
             }
         },
         methods: {
+            
             showSwal() {
                 this.$swal({
                     icon: 'success',
                     text: 'บริษัทจะแจ้งวันที่โอนเงินให้ท่านทราบอีกครั้ง',
                     title: 'ยืนยันจำนวนเงินเรียบร้อย',
-                    /*footer: '<a href="">Why do I have this issue?</a>'*/
-                    confirmButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-size: 20px; font-weight: bold; border-radius: 4px;'>ตกลง",
-                    confirmButtonColor: '#dad5e9',
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ประเมินความพึงพอใจ",
+                    confirmButtonColor: '#5c2e91',
+                    willClose: () => {
+                        this.$router.push({ name: 'CheckStatus' })
+                    }
                 }).then((result) => {
 
                     if (result.isConfirmed) {
+                        this.$router.push({ name: 'Rating' })
+                    } else if (result.isDenied) {
                         this.$router.push({ name: 'CheckStatus' })
-                    } 
+                    }
                 });
             },
             handleOnComplete(value) {

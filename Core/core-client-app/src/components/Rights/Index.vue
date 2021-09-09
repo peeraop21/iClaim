@@ -8,7 +8,7 @@
                     <label class="title-advice-menu">ค่าเสียหายเบื้องต้น</label>
                     <br>
                 </div>
-         
+
                 <div>
                     <div class="tab-user px-3" align="left">
                         <div class="row">
@@ -25,11 +25,11 @@
                                 </vs-button>
                             </div>
                         </div>
-                        <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>                       
+                        <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">คงเหลือ: 30,000 บาท</a>
+                            <a style="margin-bottom: 7px;">คงเหลือ: 0 บาท</a>
                             <br>
-                            
+
                             <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 1}}">ประวัติการใช้สิทธิ์</router-link>
                             <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 1}}">เลือก</router-link>
                         </div>
@@ -56,14 +56,41 @@
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
                             <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
                             <br>
-                            
+
                             <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
                             <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
                 </div>
-                
+                <div>
+                    <div class="tab-user px-3" align="left">
+                        <div class="row">
+                            <div class="col-9">
+                                <label class="purple-title" style="font-weight: bold">กรณีเบิกค่าปลงศพ</label>
+                            </div>
+                            <div class="col-3" align="right" style="margin-top: -3px">
+                                <vs-button circle
+                                           icon
+                                           primary
+                                           flat
+                                           @click="Info2=!Info2">
+                                    <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
+                                </vs-button>
+                            </div>
+                        </div>
+                        <p style="line-height: 25px" class="mt-3">ผู้ประสบภัยที่เสียชีวิต บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                            <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
+                            <br>
+
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 2}}">เลือก</router-link>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+
                 <!-- Info 1 -->
                 <vs-dialog width="550px" not-center v-model="Info1">
                     <template #header>
@@ -83,12 +110,13 @@
                         </h4>
                     </template>
                     <div class="con-content" align="left">
-                        <p>ค่าสูญเสียอวัยวะ/ทุพพลภาพ หมายถึง ค่าเสียหายต่อร่างกาย หรืออนามัยจากอุบัติเหตุ ซึ่งเป็นเหตุให้สูญเสียอวัยวะส่วนหนึ่งส่วนใดของร่างกาย หรือทำให้ทุพพลภาพอย่างถาวร อย่างเช่น <br />
-                        <ul>
-                            <li>สูญเสียมือ นิ้วมือ แขน ขา เท้า</li>
-                            <li>หูหนวก ตาบอด เป็นใบ้หรือสูญเสียความสามารถในการพูด หรือลิ้นขาด สูญเสียอวัยวะสืบพันธุ์ หรือความสามารถในการสืบพันธุ์ จิตพิการอย่างติดตัว</li>
-                            <li>สูญเสียอวัยวะอื่นใด ซึ่งส่งผลกระทบต่อการดำรงชีวิต เช่น การสูญเสีย ม้าม ปอด ไต ฟันแท้ทั้งซี่ตั้งแต่ 5 ซี่ขึ้นไป หรือกระโหลกศีรษะถูกทำให้เสียหาย เป็นเหตุให้ต้องใช้กระโหลกเทียม เป็นต้น</li>
-                        </ul>
+                        <p>
+                            ค่าสูญเสียอวัยวะ/ทุพพลภาพ หมายถึง ค่าเสียหายต่อร่างกาย หรืออนามัยจากอุบัติเหตุ ซึ่งเป็นเหตุให้สูญเสียอวัยวะส่วนหนึ่งส่วนใดของร่างกาย หรือทำให้ทุพพลภาพอย่างถาวร อย่างเช่น <br />
+                            <ul>
+                                <li>สูญเสียมือ นิ้วมือ แขน ขา เท้า</li>
+                                <li>หูหนวก ตาบอด เป็นใบ้หรือสูญเสียความสามารถในการพูด หรือลิ้นขาด สูญเสียอวัยวะสืบพันธุ์ หรือความสามารถในการสืบพันธุ์ จิตพิการอย่างติดตัว</li>
+                                <li>สูญเสียอวัยวะอื่นใด ซึ่งส่งผลกระทบต่อการดำรงชีวิต เช่น การสูญเสีย ม้าม ปอด ไต ฟันแท้ทั้งซี่ตั้งแต่ 5 ซี่ขึ้นไป หรือกระโหลกศีรษะถูกทำให้เสียหาย เป็นเหตุให้ต้องใช้กระโหลกเทียม เป็นต้น</li>
+                            </ul>
                         </p>
                     </div>
                 </vs-dialog>

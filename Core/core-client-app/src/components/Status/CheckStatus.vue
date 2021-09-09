@@ -36,12 +36,13 @@
                                     อนุมัติจ่าย<br>
                                     โอนเงินแล้ว
                                     -->
-                                    <div class="verticalLine" style="margin-top: -5px; ">
-                                    <li style="margin-left: -3px; color: #04c042">รับคำร้อง</li><br>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #04c042">ตรวจสอบเอกสาร</li><br>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> อนุมัติจ่าย</li><br>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa">โอนเงินแล้ว</li>
-                                    </div>
+                                  <div class="verticalLine" style="margin-top: -5px; ">
+                                      <li style="margin-left: -3px; color: #04c042">รับคำร้อง</li><br>
+                                      <li style="margin-left: -3px; margin-top: -15px; color: #04c042">ตรวจสอบเอกสาร</li><br>
+                                      <router-link :to="{ name: 'AddDocument', params: { id: accData.stringAccNo }}"><li style="margin-left: -3px; margin-top: -15px; color: #aaa"> ยื่นเอกสารเพิ่มเติม</li><br></router-link>
+                                      <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> อนุมัติจ่าย</li><br>
+                                      <li style="margin-left: -3px; margin-top: -15px; color: #aaa;">โอนเงินแล้ว</li>
+                                  </div>
                                 </div>
                                 <div style="text-align: center">
                                     <router-link class="btn-select" :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ดูเพิ่มเติม</router-link>
@@ -50,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                    <p v-if="isHasHosApprovalData == false"  >ไม่มีคำร้อง</p>
+                    <p v-if="isHasHosApprovalData == false">ไม่มีคำร้อง</p>
                     
                 </section>
             </div>

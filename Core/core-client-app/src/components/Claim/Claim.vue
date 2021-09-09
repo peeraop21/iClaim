@@ -30,14 +30,44 @@
                     <div class="mt-0" v-if="picked==='2'">
                         <br />
                         <label>จำนวนเงิน</label>
-                        <vs-input color="var(--main-color)"
-                                  v-model="value7"
-                                  placeholder="จำนวนเงิน" />
-                        <label>สถานพยาบาลชื่อ</label>
-                        <vs-input color="var(--main-color)"
-                                  v-model="value7"
-                                  placeholder="สถานพยาบาล" />
-
+                        <b-form-input class="mt-0 mb-2" v-model="saysoMoney" type="number" placeholder="" />
+                        <label>ชื่อสถานพยาบาล</label>
+                        <b-form-input class="mt-0 mb-2" v-model="saysoHospital" type="text" @click="modalSaysoHospital=!modalSaysoHospital" />
+                        <!--Dialog Select Hospital-->
+                        <vs-dialog width="550px" not-center v-model="modalSaysoHospital">
+                            <template #header>
+                                <h4 class="not-margin">
+                                    เลือกโรงพยาบาล
+                                </h4>
+                            </template>
+                            <div class="con-content" align="left">
+                                <div class="d-block text-left">
+                                    <div class="mb-2">
+                                        <label class="px-2">จังหวัด</label>
+                                        <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
+                                            <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
+                                                {{ category.changwatname }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2" v-show="divHospitalModal">
+                                        <label class="px-2">โรงพยาบาล</label>
+                                        <select name="item" id="item" v-model="mockSaysoHospital">
+                                            <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
+                                                {{ item.HOSPITALNAME  }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <template #footer>
+                                <div class="footer-dialog">
+                                    <vs-button block @click="submitModalSaysoHospital()">
+                                        ยืนยัน
+                                    </vs-button>
+                                </div>
+                            </template>
+                        </vs-dialog>
                     </div>
                     <br />
                     <p style="margin-top: -15px">
@@ -106,16 +136,25 @@
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
                     </div>
-                    <br>
                     <div class="box-container">
                         <label class="px-2">อาการบาดเจ็บ</label>
                         <b-form-input class="mt-0 mb-2" v-model="injuri" placeholder=""></b-form-input>
-
+                        <label class="px-2">ประเภทผู้ป่วย</label><br />
+                        <div style="float: left; margin-top: 3px;">
+                            <vs-radio v-model="typePatient" val="ผู้ป่วยใน" style="float: left">
+                                ผู้ป่วยใน (นอนพักรักษาตัวในโรงพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป)
+                            </vs-radio>
+                            <vs-radio v-model="typePatient" val="ผู้ป่วยนอก" class="mt-1" style="float: left">
+                                ผู้ป่วยนอก (ไม่ได้นอนพักรักษาตัวในโรงพยาบาล)
+                            </vs-radio>
+                            
+                        </div>
+                        <br /><br /><br /><br />
                         <!--VALIDATE FORM INPUT-->
                         <!--<b-form-input class="mt-0 mb-2" v-model="$v.injuri.$model" placeholder="" v-bind:class="{ 'is-invalid': $v.injuri.$error }"></b-form-input>
-                        <div class="error" v-if="!$v.injuri.required">Field is required</div>
-                        <div class="error" v-if="!$v.injuri.minLength">Name must have at least {{$v.injuri.$params.minLength.min}} letters.</div>-->
-                      
+    <div class="error" v-if="!$v.injuri.required">Field is required</div>
+    <div class="error" v-if="!$v.injuri.minLength">Name must have at least {{$v.injuri.$params.minLength.min}} letters.</div>-->
+
 
                     </div>
                     <div class="box-container mt-2" v-for="(input, index) in bills" :key="`Bill-${index}`" >
@@ -182,6 +221,22 @@
                                                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
                                                size="sm"
                                                class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
+                            <div v-if="typePatient==='ผู้ป่วยใน'">
+                                <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
+                                <b-form-datepicker v-model="input.out_hospital_date"
+                                                   selected-variant="primary"
+                                                   label-selected=""
+                                                   label-no-date-selected=""
+                                                   :close-button="true"
+                                                   :label-help="null"
+                                                   label-close-button="ปิด"
+                                                   :today-button="true"
+                                                   label-today-button="เลือกวันปัจจุบัน"
+                                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                                                   size="sm"
+                                                   class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
+                            </div>
+                            
                             <br>
                             <!-- Add Svg Icon-->
                             <p style="color: green">
@@ -480,6 +535,15 @@
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
+                    <p class="mb-0">ประเภทผู้ป่วย</p>
+                    <div class="mt-0" v-if="typePatient!=''">
+                        <p class="label-text">{{typePatient}}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="typePatient===''">
+                        <p class="label-text">-</p>
+                        <hr class="mt-0">
+                    </div>
                     <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
                         <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                         <div v-if="bill.BillfileShow" align="center">
@@ -510,6 +574,19 @@
                                 </div>
                             </div>
                             <div class="col-6">
+                                <p class="mb-0">จำนวนเงิน</p>
+                                <div class="mt-0" v-if="bill.money!=''">
+                                    <p class="label-text">{{bill.money}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.money===''">
+                                    <p class="label-text">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
                                 <p class="mb-0">วันที่เข้ารักษา</p>
                                 <div class="mt-0" v-if="bill.hospitalized_date!=''">
                                     <p class="label-text">{{bill.hospitalized_date}}</p>
@@ -520,18 +597,19 @@
                                     <hr class="mt-0">
                                 </div>
                             </div>
-                        </div>
-                        <p class="mb-0">จำนวนเงิน</p>
-                        <div class="mt-0" v-if="bill.money!=''">
-                            <p class="label-text">{{bill.money}} บาท</p>
-                            <hr class="mt-0">
-                        </div>
-                        <div class="mt-0" v-else-if="bill.money===''">
-                            <p class="label-text">-</p>
-                            <hr class="mt-0">
+                            <div class="col-6">
+                                <p class="mb-0">วันที่ออกจากโรงพยาบาล</p>
+                                <div class="mt-0" v-if="bill.out_hospital_date!=''">
+                                    <p class="label-text">{{bill.out_hospital_date}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.out_hospital_date===''">
+                                    <p class="label-text">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                     <p class="mb-0">จำนวนเงินรวมทั้งหมด</p>
                     <div class="mt-0" v-if="total_amount!=''">
                         <p class="label-text">{{total_amount}} บาท</p>
@@ -640,7 +718,7 @@
                 // ---Bill
                 injuri: '',
                 patientType: '',
-                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: ""/* file: null, BillfileShow: "", filename: "" */}],
+                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", out_hospital_date: ""/* file: null, BillfileShow: "", filename: "" */}],
                 total_amount: 0,
                 // --BookBank
                 inputBank: { accountName: '', accountNumber: '', accountBankName:'' },
@@ -670,6 +748,7 @@
                 dialogHospital: false,
                 // Radio in Dialog
                 picked: 1,
+                typePatient: 0,
                 //----Get Bank Name
                 bankNames: [],
                 selectBank: {
@@ -692,7 +771,12 @@
                     accNo: null, victimNo: null, prefix: null, fname: null, lname: null, sex: null, age: null,
                     drvSocNo: null, homeId: null, moo: null, soi: null, road: null, tumbol: null, tumbolName: null,
                     district: null, districtName: null, province: null, provinceName: null, zipcode: null, telNo: null
-                }
+                },
+                //--- Say-so
+                saysoMoney: '',
+                saysoHospital: '',
+                modalSaysoHospital: false,
+                mockSaysoHospital: '',
             };
         },
         //---Validate
@@ -833,6 +917,13 @@
                 this.mockHospital = 0;
                 this.divHospitalModal = false;
             },
+            submitModalSaysoHospital() {
+                this.saysoHospital = this.mockSaysoHospital
+                this.modalSaysoHospital = false
+                this.selectChangwat = 0;
+                this.mockSaysoHospital = 0;
+                this.divHospitalModal = false;
+            },
             calMoney() {
                 let sum = 0;
                 for (let i = 0; i < this.bills.length; i++) {
@@ -844,7 +935,7 @@
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", /*file: null, BillfileShow: "", filename: ""*/ });
+                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", out_hospital_date: ""/*file: null, BillfileShow: "", filename: ""*/ });
                 this.calMoney()
                 console.log(this.bills)
             },
