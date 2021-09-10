@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataAccess.EFCore.RvpOfficeModels;
 using DataAccess.EFCore.ClaimDataModels;
+using DataAccess.EFCore.DigitalClaimModels;
 
 namespace Services
 {
@@ -29,14 +30,16 @@ namespace Services
         private readonly RvpofficeContext rvpOfficeContext;
         private readonly IApprovalService approvalService;
         private readonly ClaimDataContext claimDataContext;
+        private readonly DigitalclaimContext digitalclaimContext;
 
-        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext, DigitalclaimContext digitalclaimContext)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;
             this.rvpOfficeContext = rvpOfficeContext;
             this.approvalService = approvalService;
             this.claimDataContext = claimDataContext;
+            this.digitalclaimContext = digitalclaimContext;
         }
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
@@ -85,6 +88,7 @@ namespace Services
                 accVwModel.Channel = "HOSPITAL";
                 //var sumlist = await claimDataContext.Approvalregis.Join(rvpOfficeContext.HosApproval, app => app.CrClaimno, hos => hos.ClaimNo, (app, hos) => new { appRegis = app, Sum = hos.SumMoney }).Where(w => w.appRegis.AccNo == acc.AccNo).Select(s => new { s.Sum, s.appRegis.AccNo }).FirstOrDefaultAsync();
                 accVwModel.Rights = null;
+                accVwModel.CountHosApp = await digitalclaimContext.HosApproval.Where(w => w.AccNo == acc.AccNo).CountAsync();
                 accViewModelList.Add(accVwModel);
             }
             return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
