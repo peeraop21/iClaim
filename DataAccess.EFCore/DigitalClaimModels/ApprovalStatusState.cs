@@ -9,6 +9,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
         public int AppNo { get; set; }
+        public int StateNo { get; set; }
         public DateTime? InsertDate { get; set; }
         public int? Status { get; set; }
     }

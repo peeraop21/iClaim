@@ -53,6 +53,7 @@
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
                                 <div class="answer">
+                                    <br />
                                     <p>
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
@@ -394,7 +395,7 @@
         }
 
         .answer p {
-            color: black;
+            
             padding: 0.7rem 0 0 2rem;
         }
 

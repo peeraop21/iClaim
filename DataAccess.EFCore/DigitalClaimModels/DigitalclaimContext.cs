@@ -34,7 +34,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
 
             modelBuilder.Entity<ApprovalStatusState>(entity =>
             {
-                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo });
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo, e.StateNo });
 
                 entity.Property(e => e.AccNo)
                     .HasColumnName("AccNO")

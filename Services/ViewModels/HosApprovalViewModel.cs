@@ -55,5 +55,7 @@ namespace Services.ViewModels
         public string RecSocNo { get; set; }
         public string AcceptBy { get; set; }
         public DateTime? AcceptDate { get; set; }
+        public string AppStatusName { get; set; }
+        public List<ApprovalStatusViewModel> AppStatus { get; set; }
     }
 }

@@ -20,6 +20,7 @@ namespace Services
         Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim);
         Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo);
         Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo);
+
     }
 
 
@@ -80,6 +81,7 @@ namespace Services
             dataApprovalStatusState.AccNo = hosApproval.AccNo;
             dataApprovalStatusState.VictimNo = hosApproval.VictimNo;
             dataApprovalStatusState.AppNo = hosApproval.AppNo + 1;
+            dataApprovalStatusState.StateNo = 1;
             dataApprovalStatusState.InsertDate = DateTime.Now;
             dataApprovalStatusState.Status = 1;
             await digitalclaimContext.ApprovalStatusState.AddAsync(dataApprovalStatusState);
@@ -216,20 +218,25 @@ namespace Services
         }
         public async Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo)
         {
-            var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.AppNo, s.RegDate, }).FirstOrDefaultAsync();
+            var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.AppNo, s.RegDate, }).ToListAsync();
             var vwHosAppList = new List<HosApprovalViewModel>();
             if (query == null)
             {
                 return vwHosAppList;
             }
-
-            var vwHosApp = new HosApprovalViewModel();
-            vwHosApp.AccNo = query.AccNo;
-            vwHosApp.StringAccNo = query.AccNo.Replace("/", "-");
-            vwHosApp.AppNo = query.AppNo;
-            vwHosApp.RegDate = query.RegDate;
-            vwHosApp.StringRegDate = query.RegDate.ToString().Replace("T", " ");
-            vwHosAppList.Add(vwHosApp);
+            foreach (var hosApp in query) {
+                var vwHosApp = new HosApprovalViewModel();
+                vwHosApp.AccNo = hosApp.AccNo;
+                vwHosApp.StringAccNo = hosApp.AccNo.Replace("/", "-");
+                vwHosApp.AppNo = hosApp.AppNo;
+                vwHosApp.RegDate = hosApp.RegDate;
+                vwHosApp.StringRegDate = hosApp.RegDate.ToString().Replace("T", " ");
+                var queryStatus = await digitalclaimContext.ApprovalStatusState.Join(digitalclaimContext.ApprovalStatus, appss => appss.Status, apps => apps.StatusId, (appss, apps) => new { appStatusStateJoinAppStatus = appss, statusName = apps.StatusName })
+                    .Where(w => w.appStatusStateJoinAppStatus.AccNo == hosApp.AccNo && w.appStatusStateJoinAppStatus.AppNo == hosApp.AppNo).OrderByDescending(o => o.appStatusStateJoinAppStatus.InsertDate).Take(1).Select(s => new { s.statusName, s.appStatusStateJoinAppStatus.Status }).FirstOrDefaultAsync();
+                vwHosApp.AppStatusName = queryStatus.statusName;
+                vwHosApp.AppStatus = await GetApprovalStatus(hosApp.AccNo, hosApp.AppNo);
+                vwHosAppList.Add(vwHosApp);
+            }
 
             return vwHosAppList;
         }
@@ -249,6 +256,32 @@ namespace Services
             inputBankViewModelsList.Add(inputBankViewModel);
             return inputBankViewModelsList;
         }
+
+
+        public async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int appNo)
+        {          
+            var query = await digitalclaimContext.ApprovalStatus.ToListAsync();
+            var appStatusState = await digitalclaimContext.ApprovalStatusState.Where(w => w.AccNo == accNo && w.AppNo == appNo).OrderByDescending(o => o.InsertDate).Take(1).FirstOrDefaultAsync();
+            var appStatusVwModelList = new List<ApprovalStatusViewModel>();
+            foreach(var status in query)
+            {
+                var appStatusVwModel = new ApprovalStatusViewModel();
+                appStatusVwModel.StatusId = status.StatusId;
+                appStatusVwModel.StatusName = status.StatusName;
+                if(status.StatusId <= appStatusState.Status )
+                {
+                    appStatusVwModel.Active = true;
+                }
+                else
+                {
+                    appStatusVwModel.Active = false;
+                }
+                appStatusVwModelList.Add(appStatusVwModel);
+
+            }
+            return appStatusVwModelList;
+        }
+
     }
 
 }
