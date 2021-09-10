@@ -22,6 +22,8 @@ namespace Services.ViewModels
         public string Channel { get; set; }
         public List<ApprovalregisViewModel> Rights { get; set; }
         public double? CureMoneyTotal { get; set; }
+        public int CountHosApp { get; set; }
+
         /*public string EaCarLicense { get; set; }
         public string EaPrefixVictim { get; set; }
         public string EaFnameVictim { get; set; }

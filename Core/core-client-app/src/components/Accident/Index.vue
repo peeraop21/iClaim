@@ -74,7 +74,7 @@
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
                                     <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
-                                    <router-link class="btn-checked" :to="{ name: 'CheckStatus', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
+                                    <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'CheckStatus', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
                                 </div>
                             </div>
                         </div>
@@ -296,7 +296,7 @@
     a[class="btn-select"]:link, a[class="btn-select"]:visited {
         background-color: var(--main-color);
         margin-top: 10px;
-        margin-left: 10px;
+        margin-left: 0px;
         color: white;
         padding: 4px 35px;
         text-align: center;
