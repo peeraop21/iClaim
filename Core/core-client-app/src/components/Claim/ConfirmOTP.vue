@@ -58,7 +58,7 @@
             </div>
             <div class="row">
                 <div class="col-6  pt-2">
-                    <p class=" pink-title fw-bold text-start " @click="requestOTP" v-if="countDown == 20">
+                    <p class=" pink-title fw-bold text-start " @click="requestOTP" v-if="countDown == 60">
                         <ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง
                     </p>
                 </div>
@@ -69,10 +69,10 @@
                 </div>
             </div>
             <div>
-              <!--  <button class="btn-confirm-money" type="button" @click="postData">test post data</button>-->
+                <!--<button class="btn-confirm-money" type="button" @click="postData" ref="postBtn" hidden>test post data</button>-->
                 <br>
                 <!--<button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>-->
-                <button class="btn-confirm-money" type="button" @click="showSwal">ยืนยันการส่งคำร้อง</button>
+                <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
             </div>
         </div>
     </div>
@@ -200,16 +200,17 @@
 <script>
     import axios from 'axios'
     import qs from 'qs'
-   
+
     export default {
         data() {
             return {
                 msg: 'ยืนยันการส่งคำร้อง',
                 accData: this.$store.getters.accGetter(this.$route.params.id),
+                userData: this.$store.state.userStateData,
                 dataOTP: { token: "", ref_code: "" },
                 inputOTP: "",
                 verifyResultOTP: { status: "" },
-                countDown: 20,
+                countDown: 60,
                 disableBtnReqOTP: false,
                 mockTel: ""
             }
@@ -224,8 +225,8 @@
                     }, 1000)
                 } else if (this.countDown <= 0) {
                     this.disableBtnReqOTP = false
-                    this.countDown = 20
-                    
+                    this.countDown = 60
+
                 }
             },
             postData() {
@@ -245,8 +246,10 @@
                         'Content-Type': 'application/json'
                     }
                 })
-                    .then(function (response) {
+                    .then((response) => {
                         console.log(response);
+                        this.$swal.close();
+                        this.showSwal()
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -254,14 +257,22 @@
             },
 
             requestOTP() {
-                
-                //var tel = "";
+                //ตัวจริง
+                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
                 const body = {
-                    ProjectName: "OTP_DigitalClaim",
-                    TelNo: this.mockTel
+                    TelNo: this.userData.mobileNo
                 };
+                //var tel = "";
+
+
+                //ตัวเทส
+                //const url = "https://smsotp.rvpeservice.com/OTP/RequestOTP";
+                //const body = {
+                //    ProjectName: "OTP_DigitalClaim",
+                //    TelNo: this.mockTel
+                //};
                 console.log(qs.stringify(body))
-                axios.post("https://smsotp.rvpeservice.com/OTP/RequestOTP", qs.stringify(body), {
+                axios.post(url, qs.stringify(body), {
                     headers: {
                         // Overwrite Axios's automatically set Content-Type
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -283,9 +294,9 @@
                         denyButtonColor: '#dad5e9'
                     });
                     console.log(error);
-                });              
+                });
             },
-            
+
             submit: async function () {
                 this.$swal({
                     title: 'กำลังตรวจสอบ',
@@ -300,17 +311,29 @@
                     }
                 })
                 await this.verifyOTP()
+
             },
             verifyOTP() {
+                //ตัวจริง
+                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/VerifyOTP";
                 const body = {
-                    'ProjectName': "OTP_DigitalClaim",
                     'token': this.dataOTP.token,
                     'otp_code': this.inputOTP,
                     'ref_code': this.dataOTP.ref_code
                 };
-               
+
+
+                //ตัวเทส
+                //const url = "https://smsotp.rvpeservice.com/OTP/VerifyOTP";
+                //const body = {
+                //    'ProjectName': "OTP_DigitalClaim",
+                //    'token': this.dataOTP.token,
+                //    'otp_code': this.inputOTP,
+                //    'ref_code': this.dataOTP.ref_code
+                //};
+
                 console.log(qs.stringify(body))
-                axios.post('https://smsotp.rvpeservice.com/OTP/VerifyOTP', qs.stringify(body), {
+                axios.post(url, qs.stringify(body), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
@@ -331,15 +354,18 @@
 
                         })
                     } else if (this.verifyResultOTP.status == "true") {
-                        this.$swal.close();
-                        this.showSwal()
+                        this.postData()
+                        
+
+
                     }
                 }).catch(function (error) {
                     console.log(error);
                 });
+
             },
-            
-            showSwal() {                
+
+            showSwal() {
                 this.$swal({
                     icon: 'success',
                     text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
@@ -373,12 +399,12 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
-            
+
 
         },
         mounted() {
             console.log('load = ', this.$store.state.inputApprovalData)
         }
-        
+
     }
 </script>

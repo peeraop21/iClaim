@@ -79,7 +79,7 @@ namespace Services
             var dataApprovalStatusState = new ApprovalStatusState();
             dataApprovalStatusState.AccNo = hosApproval.AccNo;
             dataApprovalStatusState.VictimNo = hosApproval.VictimNo;
-            dataApprovalStatusState.AppNo = hosApproval.AppNo;
+            dataApprovalStatusState.AppNo = hosApproval.AppNo + 1;
             dataApprovalStatusState.InsertDate = DateTime.Now;
             dataApprovalStatusState.Status = 1;
             await digitalclaimContext.ApprovalStatusState.AddAsync(dataApprovalStatusState);
