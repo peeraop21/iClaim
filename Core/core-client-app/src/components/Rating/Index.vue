@@ -43,7 +43,8 @@
                 currentRating: "No Rating",
                 currentSelectedRating: "No Current Rating",
                 boundRating: 3,
-                comment: ''
+                comment: '',
+                accData: this.$store.getters.accGetter(this.$route.params.id),
             };
         },
         methods: {
@@ -69,7 +70,7 @@
                     confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                     confirmButtonColor: '#5c2e91',
                     willClose: () => {
-                        this.$router.push({ name: 'Accident' })
+                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
                     }
                 })
             },

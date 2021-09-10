@@ -90,7 +90,8 @@ namespace Services
 
         public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id}).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            //var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
             {
@@ -100,7 +101,7 @@ namespace Services
                 claimVwModel.AppNo = query.AppNo;
                 claimVwModel.ClaimNo = query.ClaimNo;
                 claimVwModel.Pt4id = query.Pt4id;
-                claimVwModel.MedicineMoney = query.MedicineMoney;
+                /*claimVwModel.MedicineMoney = query.MedicineMoney;
                 claimVwModel.PlasticMoney = query.PlasticMoney;
                 claimVwModel.ServiceMoney = query.ServiceMoney;
                 claimVwModel.RoomMoney = query.RoomMoney;
@@ -119,7 +120,7 @@ namespace Services
                 claimVwModel.CrippledPermanent = query.CrippledPermanent;
                 claimVwModel.OtherCrippled = query.OtherCrippled;
                 claimVwModel.CrippledComment = query.CrippledComment;
-                claimVwModel.PayMore = query.PayMore;
+                claimVwModel.PayMore = query.PayMore;*/
 
 
             }
@@ -132,7 +133,6 @@ namespace Services
             var approvalVwMdList = new List<ApprovalregisViewModel>();
             var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.Pt4 != null && w.Pt4 != "Compensate").Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
             
-
             if (query != null)
             {
                 foreach (var acc in query)
@@ -157,6 +157,7 @@ namespace Services
                     
                     approvalVwModel.ApStatus = acc.ApStatus;
                     approvalVwModel.Claim = await GetApprovalByClaimNo(acc.CrClaimno, acc.VVictimno, acc.ApRegno);
+                    
                     approvalVwMdList.Add(approvalVwModel);
 
                 }
@@ -168,7 +169,6 @@ namespace Services
         {
             var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo && w.PayMore != "Y" &&  w.PayMore != "B").Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
-            
             if (query != null)
             {
                 claimVwModel.AccNo = query.AccNo;
@@ -208,7 +208,7 @@ namespace Services
                 }
                 else if (claimVwModel.CureMoney > 0)
                 {
-                    claimVwModel.SumCureMoney = query.CrippledMoney + query.DeadMoney + query.HygieneMoney + query.CrippledMoney;
+                    claimVwModel.SumCureMoney = query.CureMoney + query.DeadMoney + query.HygieneMoney + query.CrippledMoney;
                 }
 
             }

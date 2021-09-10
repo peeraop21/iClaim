@@ -39,9 +39,10 @@
                                   <div class="verticalLine" style="margin-top: -5px; ">
                                       <li style="margin-left: -3px; color: #04c042">รับคำร้อง</li><br>
                                       <li style="margin-left: -3px; margin-top: -15px; color: #04c042">ตรวจสอบเอกสาร</li><br>
-                                      <router-link :to="{ name: 'AddDocument', params: { id: accData.stringAccNo }}"><li style="margin-left: -3px; margin-top: -15px; color: #aaa"> ยื่นเอกสารเพิ่มเติม</li><br></router-link>
+                                      <router-link :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo }}"><li style="margin-left: -3px; margin-top: -15px; color: #aaa"> ยื่นเอกสารเพิ่มเติม</li><br></router-link>
                                       <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> อนุมัติจ่าย</li><br>
-                                      <li style="margin-left: -3px; margin-top: -15px; color: #aaa;">โอนเงินแล้ว</li>
+                                      <li style="margin-left: -3px; margin-top: -15px; color: #aaa;">โอนเงินแล้ว</li><br />
+                                      <router-link :to="{ name: 'Rating', params: { id: hosApp.stringAccNo }}"><li style="margin-left: -3px; margin-top: -15px; color: #aaa; margin-bottom: 10px"> ประเมินความพึงพอใจ</li></router-link>
                                   </div>
                                 </div>
                                 <div style="text-align: center">
@@ -52,7 +53,6 @@
                         </div>
                     </div>
                     <p v-if="isHasHosApprovalData == false">ไม่มีคำร้อง</p>
-                    
                 </section>
             </div>
         </div>
@@ -98,7 +98,7 @@ export default {
               
               accData: this.$store.getters.accGetter(this.$route.params.id),
               hosApprovalData: null,
-              isHasHosApprovalData: false
+              isHasHosApprovalData: false,
 
               
           }
@@ -111,8 +111,10 @@ export default {
                 axios.get(url)
                     .then((response) => {
                         /*this.userApi = response.data;*/
-                        this.hosApprovalData = response.data;                        
+                        this.$store.state.hosAppStateData = response.data;
+                        this.hosApprovalData = this.$store.state.hosAppStateData;                        
                         console.log("hosApp: ", this.hosApprovalData.length);
+                        console.log("hosApp: ", this.hosApprovalData);
                         if (this.hosApprovalData.length == 0) {
                             this.isHasHosApprovalData = false
                         } else if (this.hosApprovalData.length > 0) {

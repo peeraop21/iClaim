@@ -3,28 +3,74 @@
         <h2 id="header2" class="mb-4">กรอกข้อมูล/แนบเอกสารเพิ่มเติม</h2>
         <div align="left">
             <p style="font-weight: bold">
-                <ion-icon name="newspaper-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> เลขที่รับแจ้ง: 61/660/00337<br>
-                <ion-icon name="calendar-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> วันที่ยื่นคำร้อง: 9/3/2021<br>
+                <ion-icon name="newspaper-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> เลขที่รับแจ้ง: {{ hosData.accNo }}<br>
+                <ion-icon name="calendar-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> วันที่ยื่นคำร้อง: {{ hosData.stringRegDate }}<br>
             </p>
         </div>
-        <div align="left">
-            <label>เอกสารประกอบคำร้องกรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
-        </div>
-       <!-- <div class="box-container">
-            <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
-            <div>
-                <file-pond name="idCardFile"
-                            ref="pond"
-                            label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประจำตัวประชาชน"
-                            credits="null"
-                            v-bind:allow-multiple="false"
-                            v-bind:allowFileEncode="true"
-                            accepted-file-types="image/jpeg, image/png"
-                            v-bind:files="idCardFile"
-                            v-on:addfile="onAddIdCardFile" />
+        <div class="tab-user mb-3">
+            <div class="row">
+                <div class="col-3 px-0">
+                    <img src="@/assets/kid.png" width="70">
+                </div>
+                <div class="col-9 text-start px-2">
+                    <span>ชื่อ-สกุล: <span style="color: var(--main-color)">{{userData.prefix}}{{userData.fname}} {{userData.lname}}</span></span><br>
+                    <span>เบอร์โทรศัพท์: <span style="color: var(--main-color)">0989525299</span></span><br>
+                    <span>สถานะ: <span style="color: var(--main-color)">ผู้ประสบภัยจากรถ</span></span>
+                </div>
             </div>
         </div>
-        <br>-->
+        <div align="left">
+            <p>มีความจำนงค์ในการติดต่อ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เพื่อกระทำการ <span style="font-weight: bold"> ยื่นคำร้องขอรับเงินเบิกค่าเสียหายเบื้องต้น</span></p>
+            <p style="font-weight: bold;">จำนวนเงิน 1,000 บาท</p>
+            <p>
+                จากกรมธรรม์ประกันภัยของบริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด กรณีการเกิดอุบัติเหตุของ<br />
+                รถหมายเลขทะเบียน <span v-for="(car, index) in accData.car" :key="`car-${index}`" style="font-weight: bold">{{car}} </span><br />
+                ในวันที่ <span style="font-weight: bold"> {{accData.stringAccDate}}</span>
+            </p>
+            <p style="margin-bottom: 0px">โดยมีเอกสารหลักฐานที่นำมาแสดง ประกอบด้วย</p>
+            <vs-checkbox color="var(--main-color)" v-model="doc1">
+                <template #icon>
+                    <i class='ti ti-check'></i>
+                </template>
+                ใบเสร็จรับเงินค่ารักษาพยาบาล
+            </vs-checkbox>
+            <vs-checkbox color="var(--main-color)" v-model="doc2">
+                <template #icon>
+                    <i class='ti ti-check'></i>
+                </template>
+                ใบรับรองแพทย์
+            </vs-checkbox>
+            <vs-checkbox color="var(--main-color)" v-model="doc3">
+                <template #icon>
+                    <i class='ti ti-check'></i>
+                </template>
+                สำเนาบันทึกประจำวันของพนักงานสอบสวน
+            </vs-checkbox>
+            <vs-checkbox color="var(--main-color)" v-model="doc4">
+                <template #icon>
+                    <i class='ti ti-check'></i>
+                </template>
+                หน้าบัญชีธนาคาร
+            </vs-checkbox>
+        </div>
+        <div align="left" class="mt-4">
+            <label>เอกสารประกอบคำร้องกรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
+        </div>
+        <!-- <div class="box-container">
+        <p class="mb-0">สำเนาบัตรประจำตัวประชาชน</p>
+        <div>
+            <file-pond name="idCardFile"
+                        ref="pond"
+                        label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบัตรประจำตัวประชาชน"
+                        credits="null"
+                        v-bind:allow-multiple="false"
+                        v-bind:allowFileEncode="true"
+                        accepted-file-types="image/jpeg, image/png"
+                        v-bind:files="idCardFile"
+                        v-on:addfile="onAddIdCardFile" />
+        </div>
+    </div>
+    <br>-->
         <div class="box-container">
             <label class="px-2">อาการบาดเจ็บ</label>
             <b-form-input class="mt-0 mb-2" v-model="injuri" placeholder=""></b-form-input>
@@ -46,10 +92,10 @@
                 <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                 <!--<input type="file" @change="onFileChange">-->
                 <file-pond credits="null"
-                            label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
-                            v-bind:allow-multiple="false"
-                            v-bind:allowFileEncode="true"
-                            accepted-file-types="image/jpeg, image/png" />
+                           label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
+                           v-bind:allow-multiple="false"
+                           v-bind:allowFileEncode="true"
+                           accepted-file-types="image/jpeg, image/png" />
                 <vs-dialog width="550px" not-center v-model="modalHospital">
                     <template #header>
                         <h4 class="not-margin">
@@ -93,55 +139,55 @@
                 <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
                 <label class="px-2">วันที่เข้ารักษา</label>
                 <b-form-datepicker v-model="input.hospitalized_date"
-                                    selected-variant="primary"
-                                    label-selected=""
-                                    label-no-date-selected=""
-                                    :close-button="true"
-                                    :label-help="null"
-                                    label-close-button="ปิด"
-                                    :today-button="true"
-                                    label-today-button="เลือกวันปัจจุบัน"
-                                    :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                    size="sm"
-                                    class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
+                                   selected-variant="primary"
+                                   label-selected=""
+                                   label-no-date-selected=""
+                                   :close-button="true"
+                                   :label-help="null"
+                                   label-close-button="ปิด"
+                                   :today-button="true"
+                                   label-today-button="เลือกวันปัจจุบัน"
+                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                                   size="sm"
+                                   class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
                 <div v-if="typePatient==='ผู้ป่วยใน'">
                     <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
                     <b-form-datepicker v-model="input.out_hospital_date"
-                                        selected-variant="primary"
-                                        label-selected=""
-                                        label-no-date-selected=""
-                                        :close-button="true"
-                                        :label-help="null"
-                                        label-close-button="ปิด"
-                                        :today-button="true"
-                                        label-today-button="เลือกวันปัจจุบัน"
-                                        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                        size="sm"
-                                        class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
+                                       selected-variant="primary"
+                                       label-selected=""
+                                       label-no-date-selected=""
+                                       :close-button="true"
+                                       :label-help="null"
+                                       label-close-button="ปิด"
+                                       :today-button="true"
+                                       label-today-button="เลือกวันปัจจุบัน"
+                                       :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                                       size="sm"
+                                       class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
                 </div>
 
                 <br>
                 <!-- Add Svg Icon-->
                 <p style="color: green">
                     <svg @click="addField(input, bills)"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 30 30"
-                            width="30"
-                            height="30"
-                            class="ml-2 cursor-pointer">
+                         xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 30 30"
+                         width="30"
+                         height="30"
+                         class="ml-2 cursor-pointer">
                         <path fill="none" d="M0 0h24v24H0z" />
                         <path fill="green" d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
                     </svg>เพิ่มใบเสร็จ
                 </p>
                 <!-- Remove Svg Icon-->
                 <svg v-show="bills.length > 1"
-                        @click="removeField(index, bills)"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 30 30"
-                        width="30"
-                        height="30"
-                        class="ml-2 cursor-pointer mb-2"
-                        style="margin-top: -10px;">
+                     @click="removeField(index, bills)"
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 30 30"
+                     width="30"
+                     height="30"
+                     class="ml-2 cursor-pointer mb-2"
+                     style="margin-top: -10px;">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
                 </svg>
@@ -156,22 +202,21 @@
             <label>บัญชีรับเงิน</label>
         </div>
         <div class="box-container">
-            <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
+            <p class="mb-0">หน้าบัญชีธนาคาร</p>
             <div class="form-group ">
                 <file-pond name="bankFile"
-                            ref="pond"
-                            credits="null"
-                            label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
-                            v-bind:allow-multiple="false"
-                            accepted-file-types="image/jpeg, image/png"
-                            v-bind:files="bankFile"
-                            v-on:addfile="onAddBankAccountFile" />
+                           ref="pond"
+                           credits="null"
+                           label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
+                           v-bind:allow-multiple="false"
+                           accepted-file-types="image/jpeg, image/png"
+                           v-bind:files="bankFile"
+                           v-on:addfile="onAddBankAccountFile" />
             </div>
         </div>
         <br /><br />
         <button class="btn-confirm-money" type="button" @click="showSwal">ส่งเอกสารเพิ่มเติม</button>
-        
-        <br>
+        <br><br><br>
     </div>
 </template>
 
@@ -188,6 +233,7 @@
                 // ---Bill
                 injuri: '',
                 typePatient: 0,
+                typeContect: 1,
                 bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", out_hospital_date: ""/* file: null, BillfileShow: "", filename: "" */ }],
                 total_amount: 0,
                 // --BookBank
@@ -221,6 +267,13 @@
                 modalHospital: false,
                 mockHospital: '',
                 divHospitalModal: false,
+                // HosApp
+                hosData: this.$store.getters.hosAppGetter(this.$route.params.id),
+                // Document Checkbox
+                doc1: true,
+                doc2: false,
+                doc3: false,
+                doc4: true,
 
               
             };
@@ -376,6 +429,7 @@
             this.selectChangwat = 0;
             this.selectHospital = 0;
             console.log('accData', this.accData);
+            console.log('hosData', this.hosData);
         },
 
         computed: {

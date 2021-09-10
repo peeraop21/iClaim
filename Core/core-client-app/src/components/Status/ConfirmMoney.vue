@@ -7,18 +7,31 @@
                 </div>
                 <div class="col-12" align="center">
                     <div class="tab-user mt-4 mb-4">
-                        <div class="card-body">
                             <div class="col-12">
-                                <p class="title-claim-number" style="margin-top: -10px">เลขคำร้อง : {{claimNo}}</p>
+                                <p class="title-claim-number" style="margin-top: 0px; margin-bottom: 0px">
+                                    เลขที่รับแจ้ง : {{claimNo}}<br />
+                                    เลขที่เคลม : K61/660/00490<br />
+                                    เลขที่กรมธรรม์ : 8173060257008836<br />
+                                    วันที่ : 9/10/2021<br />
+                                    ครั้งที่เรียกร้อง : 2<br />
+                                    เลขที่ผู้ประสบภัย : 1<br />
+                                </p>
                             </div>
-                            <div class="col-12">
-                                <p class="text-start" style="margin-bottom: -10px">บริษัท กลางฯ สามาระจ่ายเงินให้ท่านได้จำนวน {{money}} บาท เนื่องจาก {{reason}} </p>
-                            </div>
-                        </div>
-
+                        
                     </div>
                 </div>
-
+                <div class="col-12">
+                    <p class="text-start">
+                        เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน {{money}} บาท
+                        โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
+                    </p>
+                    <p class="text-start">
+                        โดยการโอนเงินเข้าบัญชีธนาคาร <span style="font-weight: bold"> กรุงเทพ</span><br />
+                        ชื่อบัญชี <span style="font-weight: bold"> {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
+                        เลขที่บัญชี <span style="font-weight: bold">1234567890</span>
+                        เลขที่บัญชี <span style="font-weight: bold">1234567890</span>
+                     </p>
+                </div>
 
             </div>
             <div class="row mb-2">
@@ -31,7 +44,7 @@
                 </div>
                 <div class="col-10 px-0">
                     <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                        ข้าพเจ้ายอมรับจำนวนเงินที่แจ้งมา
+                        ข้าพเจ้าขอรับรองว่าข้อความทั้งหมดนี้มีความถูกต้องและเป็นความจริง ซึ่งเป็นไปตามความประสงค์ของข้าพเจ้า และเมื่อได้รับการโอนเงินเข้าบัญชีดังกล่าวภายใน 7 วัน นับจากวันที่ลงนามนี้แล้ว ให้ถือว่าข้าพเจ้าได้รับค่าเสียหายเบื้องต้น จากบริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด ครบถ้วนสมบูรณ์ทุกประการ
                     </p>
                 </div>
             </div>
@@ -106,7 +119,7 @@
     }
     .title-claim-number{
         font-weight:bold;
-        font-size:15px;
+        font-size:13px;
         text-align:start;
     }
 
@@ -122,33 +135,26 @@
                 lblButton: 'ยืนยันจำนวนเงิน',
                 claimNo: '61/660/00337',
                 money: '1,000',
-                reason: '......'
+                reason: '......',
+                userData: this.$store.state.userStateData,
+                accData: this.$store.getters.accGetter(this.$route.params.id),
+
             }
         },
         methods: {
-            
             showSwal() {
                 this.$swal({
                     icon: 'success',
                     text: 'บริษัทจะแจ้งวันที่โอนเงินให้ท่านทราบอีกครั้ง',
                     title: 'ยืนยันจำนวนเงินเรียบร้อย',
                     showCancelButton: false,
-                    showDenyButton: true,
-                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                    denyButtonColor: '#dad5e9',
-                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ประเมินความพึงพอใจ",
+                    showDenyButton: false,
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                     confirmButtonColor: '#5c2e91',
                     willClose: () => {
-                        this.$router.push({ name: 'CheckStatus' })
+                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
                     }
-                }).then((result) => {
-
-                    if (result.isConfirmed) {
-                        this.$router.push({ name: 'Rating' })
-                    } else if (result.isDenied) {
-                        this.$router.push({ name: 'CheckStatus' })
-                    }
-                });
+                })
             },
             handleOnComplete(value) {
                 console.log('OTP completed: ', value);
@@ -159,6 +165,9 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
+        },
+        async mounted() {
+            await console.log('accData', this.accData)
         }
         
         
