@@ -229,6 +229,5 @@ namespace Services.ViewModels
         //public string MCardTypeOther { get; set; }
         // public short? ApRecnationalityId { get; set; }
         public ClaimViewModel Claim { get; set; }
-        
     }
 }

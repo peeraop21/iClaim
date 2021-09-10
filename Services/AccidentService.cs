@@ -83,7 +83,7 @@ namespace Services
                 accVwModel.PlaceAcc = acc.AccPlace;
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
                 accVwModel.Channel = "HOSPITAL";
-                //var sumlist = await claimDataContext.Approvalregis.Join(rvpOfficeContext.HosApproval, app => app.CrClaimno, hos => hos.ClaimNo, (app, hos) => new { appRegis = app, Sum = hos.SumMoney }).Where(w => w.appRegis.AccNo == acc.AccNo).Select(s => new { s.Sum, s.appRegis.AccNo }).FirstOrDefaultAsync();
+                //var sumlist = await rvpOfficeContext.HosAccident.Join(rvpOfficeContext.HosApproval, app => app.ClaimNo, hos => hos.ClaimNo, (app, hos) => new { appRegis = app, Sum = hos.SumMoney }).Where(w => w.appRegis.AccNo == acc.AccNo).Select(s => new { s.Sum, s.appRegis.AccNo }).FirstOrDefaultAsync();
                 accVwModel.Rights = null;
                 accViewModelList.Add(accVwModel);
             }

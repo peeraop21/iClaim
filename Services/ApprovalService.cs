@@ -208,7 +208,7 @@ namespace Services
                 }
                 else if (claimVwModel.CureMoney > 0)
                 {
-                    claimVwModel.SumCureMoney = query.CureMoney + query.DeadMoney + query.HygieneMoney + query.CrippledMoney;
+                    claimVwModel.SumCureMoney = query.CureMoney;
                 }
 
             }
