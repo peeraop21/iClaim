@@ -29,7 +29,6 @@
                         โดยการโอนเงินเข้าบัญชีธนาคาร <span style="font-weight: bold"> กรุงเทพ</span><br />
                         ชื่อบัญชี <span style="font-weight: bold"> {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
                         เลขที่บัญชี <span style="font-weight: bold">1234567890</span>
-                        เลขที่บัญชี <span style="font-weight: bold">1234567890</span>
                      </p>
                 </div>
 
