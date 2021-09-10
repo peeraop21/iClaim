@@ -93,7 +93,7 @@ const routes = [
         component: Ocr,
     },
     {
-        path: "/Rating",
+        path: "/Rating/:id",
         name: "Rating",
         component: Rating,
     },
@@ -101,6 +101,7 @@ const routes = [
         path: "/AddDocument/:id",
         name: "AddDocument",
         component: AddDocument,
+        props: true
     },
 ]
 

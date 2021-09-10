@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess.EFCore.RvpOfficeModels;
+using DataAccess.EFCore.ClaimDataModels;
 
 namespace Services
 {
@@ -27,13 +28,15 @@ namespace Services
         private readonly IpolicyContext ipolicyContext;
         private readonly RvpofficeContext rvpOfficeContext;
         private readonly IApprovalService approvalService;
+        private readonly ClaimDataContext claimDataContext;
 
-        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;
             this.rvpOfficeContext = rvpOfficeContext;
             this.approvalService = approvalService;
+            this.claimDataContext = claimDataContext;
         }
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
@@ -44,6 +47,8 @@ namespace Services
             var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s => new { s.EaAccNo, s.EaAccDate, s.EaAccPlace }).ToListAsync();
             var accHosList = await rvpOfficeContext.HosAccident.Where(w => accHosNo.Contains(w.AccNo)).Select(s => new { s.AccNo, s.DateAcc, s.AccPlace }).ToListAsync();
             var accViewModelList = new List<AccidentViewModel>();
+            //var sum = rvpOfficeContext.HosApproval.Where(w => w.ClaimNo == null).Sum(s => s.SumMoney);
+            
             foreach (var acc in accLineList)
             {
 
@@ -59,7 +64,8 @@ namespace Services
                 accVwModel.PlaceAcc = acc.EaAccPlace;
                 accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
                 accVwModel.Channel = "LINE";
-                accVwModel.Rights = await approvalService.GetApproval(acc.EaAccNo);
+                accVwModel.Rights = null;
+
                 accViewModelList.Add(accVwModel);
             }
             foreach (var acc in accHosList)
@@ -74,7 +80,8 @@ namespace Services
                 accVwModel.PlaceAcc = acc.AccPlace;
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
                 accVwModel.Channel = "HOSPITAL";
-                accVwModel.Rights = await approvalService.GetApproval(acc.AccNo);
+                //var sumlist = await claimDataContext.Approvalregis.Join(rvpOfficeContext.HosApproval, app => app.CrClaimno, hos => hos.ClaimNo, (app, hos) => new { appRegis = app, Sum = hos.SumMoney }).Where(w => w.appRegis.AccNo == acc.AccNo).Select(s => new { s.Sum, s.appRegis.AccNo }).FirstOrDefaultAsync();
+                accVwModel.Rights = null;
                 accViewModelList.Add(accVwModel);
             }
             return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();

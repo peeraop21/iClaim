@@ -63,7 +63,7 @@
                     </div>
                     <br>
                 </div>
-                <div>
+                <!--<div>
                     <div class="tab-user px-3" align="left">
                         <div class="row">
                             <div class="col-9">
@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <br>
-                </div>
+                </div>-->
 
                 <!-- Info 1 -->
                 <vs-dialog width="550px" not-center v-model="Info1">

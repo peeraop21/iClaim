@@ -118,7 +118,7 @@
                     <router-link class="btn-next" style="width: 100%; padding: 8px 0px;" to="/Accident">ดำเนินการต่อ</router-link>
                 </div>
             </div>
-
+            <br><br>
         </div>
 
 

@@ -148,6 +148,7 @@
             <div class="col-12">
                 <router-link class="btn-next" style="width: 100%; padding: 8px 0;" to="/Ocr">{{msg}}</router-link>
             </div>
+            <br><br><br>
         </div>
 
         <!-- Dialog 1 -->
@@ -250,13 +251,13 @@
                 <br />
                 <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีเสียชีวิต</strong></label>
                 <br />
-                <p>
+               <!-- <p>
                     1. ใบมรณบัตรของผู้ประสบภัยที่เสียชีวิต<br />
                     2. สำเนาทะเบียนบ้านของผู้เสียชีวิต<br />
                     3. สำเนาบัตรประจำตัวประชาชนของทายาทโดยธรรม<br />
                     4. สำเนาบันทึกประจำวันของพนักงานสอบสวน
                 </p>
-                <br />
+                <br />-->
             </div>
         </vs-dialog>
 
