@@ -15,12 +15,13 @@ namespace Services
 {
     public interface IApprovalService
     {
-        Task<List<ApprovalregisViewModel>> GetApproval(string accNo, int rightsType);
+        Task<List<ApprovalregisViewModel>> GetApproval(string accNo, int victimNo, int rightsType);
         Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, int rightsType);
-        Task<ClaimViewModel> GetApprovalByAccNo(string accNo);
+        Task<ClaimViewModel> GetApprovalByAccNo(string accNo, int? victimNo);
         Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim);
         Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo);
         Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo);
+        Task<double?> GetRightsBalance(string accNo, int? victimNo, string rightsType);
 
     }
 
@@ -89,9 +90,9 @@ namespace Services
             return hosApproval;
         }
 
-        public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo)
+        public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo, int? victimNo)
         {
-            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id}).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id}).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             //var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
             var claimVwModel = new ClaimViewModel();
             if (query != null)
@@ -128,11 +129,11 @@ namespace Services
 
             return claimVwModel;
         }
-        public async Task<List<ApprovalregisViewModel>> GetApproval(string accNo, int rightsType)
+        public async Task<List<ApprovalregisViewModel>> GetApproval(string accNo, int victimNo, int rightsType)
         {
 
             var approvalVwMdList = new List<ApprovalregisViewModel>();
-            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.Pt4 != null && w.Pt4 != "Compensate").Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
+            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.Pt4 != null && w.Pt4 != "Compensate" && (w.ApStatus == "P" || w.ApStatus == "A")).Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
             
             if (query != null)
             {
@@ -172,25 +173,8 @@ namespace Services
             var claimVwModel = new ClaimViewModel();
 
             if(rightsType == 1)
-            {
-                var predicateAnd = PredicateBuilder.False<DataAccess.EFCore.RvpOfficeModels.HosApproval>();
-                predicateAnd = predicateAnd.And(f => f.ServiceMoney == 0 && f.ServiceMoney == null);
-                predicateAnd = predicateAnd.And(f => f.CureMoney == 0 && f.CureMoney == null);
-                predicateAnd = predicateAnd.And(f => f.SumMoney > 0);
-                var predicateOr = PredicateBuilder.True<DataAccess.EFCore.RvpOfficeModels.HosApproval>();
-                predicateOr = predicateOr.Or(f => f.CureMoney > 0);
-                predicateOr = predicateOr.Or(f => f.ServiceMoney > 0);
-                predicateOr = predicateOr.Or(predicateAnd);
-                var predicate = PredicateBuilder.True<DataAccess.EFCore.RvpOfficeModels.HosApproval>();
-                predicate = predicate.And(f => f.ClaimNo == claimNo);
-                predicate = predicate.And(f => f.VictimNoClaim == victimNo);
-                predicate = predicate.And(f => f.RegNoClaim == regNo);
-                predicate = predicate.And(f => f.PayMore != "Y");
-                predicate = predicate.And(f => f.PayMore != "B");
-                predicate = predicate.And(predicateOr);
-
-
-                var curemoneyQuery = await rvpofficeContext.HosApproval.Where(predicate)
+            {              
+                var curemoneyQuery = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo && w.PayMore != "Y" && w.PayMore != "B" && (w.CrippledMoney == 0 || w.CrippledMoney == null))
                     .Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore })
                     .FirstOrDefaultAsync();
                 if(curemoneyQuery == null)
@@ -238,18 +222,8 @@ namespace Services
                 }
                 return claimVwModel;
             } else if (rightsType == 2)
-            {
-               
-                var predicate = PredicateBuilder.False<DataAccess.EFCore.RvpOfficeModels.HosApproval>();
-                predicate = predicate.And(f => f.ClaimNo == claimNo);
-                predicate = predicate.And(f => f.VictimNoClaim == victimNo);
-                predicate = predicate.And(f => f.RegNoClaim == regNo);
-                predicate = predicate.And(f => f.PayMore != "Y");
-                predicate = predicate.And(f => f.PayMore != "B");
-                predicate = predicate.And(f => f.CrippledMoney > 0);
-
-
-                var crippledQuery = await rvpofficeContext.HosApproval.Where(predicate)
+            {                  
+                var crippledQuery = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo && w.PayMore != "Y" && w.PayMore != "B" && w.CrippledMoney > 0)
                     .Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore })
                     .FirstOrDefaultAsync();
                 if (crippledQuery == null)
@@ -297,50 +271,7 @@ namespace Services
                 }
                 return claimVwModel;
             }
-            var query = await rvpofficeContext.HosApproval.Where(w => w.ClaimNo == claimNo && w.VictimNoClaim == victimNo && w.RegNoClaim == regNo && w.PayMore != "Y" && w.PayMore != "B").Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.VictimNoClaim, s.RegNoClaim, s.Pt4id, s.MedicineMoney, s.PlasticMoney, s.ServiceMoney, s.RoomMoney, s.VeihcleMoney, s.CureMoney, s.DeadMoney, s.HygieneMoney, s.CrippledMoney, s.SumMoney, s.BlindCrippled, s.UnHearCrippled, s.DeafCrippled, s.LostSexualCrippled, s.LostOrganCrippled, s.LostMindCrippled, s.CrippledPermanent, s.OtherCrippled, s.CrippledComment, s.PayMore }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
-            if (query != null)
-            {
-                claimVwModel.AccNo = query.AccNo;
-                claimVwModel.VictimNo = query.VictimNo;
-                claimVwModel.AppNo = query.AppNo;
-                claimVwModel.ClaimNo = query.ClaimNo;
-                claimVwModel.VictimNoClaim = query.VictimNoClaim;
-                claimVwModel.RegNoClaim = query.RegNoClaim;
-                claimVwModel.Pt4id = query.Pt4id;
-                claimVwModel.MedicineMoney = query.MedicineMoney;
-                claimVwModel.PlasticMoney = query.PlasticMoney;
-                claimVwModel.ServiceMoney = query.ServiceMoney;
-                claimVwModel.RoomMoney = query.RoomMoney;
-                claimVwModel.VeihcleMoney = query.VeihcleMoney;
-                claimVwModel.CureMoney = query.CureMoney;
-                claimVwModel.DeadMoney = query.DeadMoney;
-                claimVwModel.HygieneMoney = query.HygieneMoney;
-                claimVwModel.CrippledMoney = query.CrippledMoney;
-                claimVwModel.SumMoney = query.SumMoney;
-                claimVwModel.BlindCrippled = query.BlindCrippled;
-                claimVwModel.UnHearCrippled = query.UnHearCrippled;
-                claimVwModel.DeafCrippled = query.DeafCrippled;
-                claimVwModel.LostSexualCrippled = query.LostSexualCrippled;
-                claimVwModel.LostOrganCrippled = query.LostOrganCrippled;
-                claimVwModel.LostMindCrippled = query.LostMindCrippled;
-                claimVwModel.CrippledPermanent = query.CrippledPermanent;
-                claimVwModel.OtherCrippled = query.OtherCrippled;
-                claimVwModel.CrippledComment = query.CrippledComment;
-                claimVwModel.PayMore = query.PayMore;
-                if (claimVwModel.CrippledMoney > 0 && claimVwModel.CureMoney == 0)
-                {
-                    claimVwModel.SumCrippledMoney = query.CrippledMoney;
-                } 
-                if (claimVwModel.MedicineMoney != null && claimVwModel.PlasticMoney != null)
-                {
-                    claimVwModel.SumCureMoney = query.MedicineMoney + query.PlasticMoney + query.ServiceMoney + query.RoomMoney + query.VeihcleMoney;
-                }
-                else if (claimVwModel.CureMoney > 0)
-                {
-                    claimVwModel.SumCureMoney = query.CureMoney;
-                }
-
-            }
+            
             return claimVwModel;
         }
         public async Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo)
@@ -409,7 +340,47 @@ namespace Services
             return appStatusVwModelList;
         }
 
-        
+        public async Task<double?> GetRightsBalance(string accNo, int? victimNo,string rightsType)
+        {
+            double? rightsBalance = 0;                        
+            if (rightsType == "CureRights")
+            {
+                double? cureRights = 30000;
+                var claimNo = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && (w.ApStatus == "P" || w.ApStatus == "A")).Select(s => s.CrClaimno).FirstOrDefaultAsync();
+                if (claimNo == null)
+                {
+                    return cureRights;
+                }
+                var cureMoneyQuery = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ClaimNo == claimNo && w.PayMore != "Y" && w.PayMore != "B" && (w.CrippledMoney == 0 || w.CrippledMoney == null))
+                .Select(s => s.SumMoney)
+                .ToListAsync();
+                if (cureMoneyQuery == null)
+                {
+                    return cureRights;
+                }
+                rightsBalance = cureRights - cureMoneyQuery.Sum();
+            }
+            else if (rightsType == "CrippledRights")
+            {
+                double? crippledRights = 35000;
+                var claimNo = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.ApStatus == "P").Select(s => s.CrClaimno).FirstOrDefaultAsync();
+                if (claimNo == null)
+                {
+                    return crippledRights;
+                }
+                var crippledMoneyQuery = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ClaimNo == claimNo && w.PayMore != "Y" && w.PayMore != "B" && w.CrippledMoney > 0)
+                .Select(s => s.CrippledMoney)
+                .ToListAsync();
+                if (crippledMoneyQuery == null)
+                {
+                    return crippledRights;
+                }
+                rightsBalance = crippledRights - crippledMoneyQuery.Sum();
+            }
+            
+
+            return rightsBalance;
+        }
 
     }
 

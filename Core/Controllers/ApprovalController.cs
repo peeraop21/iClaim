@@ -76,10 +76,10 @@ namespace Core.Controllers
             this.approvalService = approvalService;
             this._mapper = _mapper;
         }
-        [HttpGet("{accNo}/{rightsType}")]
-        public async Task<IActionResult> GetApproval(string accNo, int rightsType)
+        [HttpGet("{accNo}/{victimNo}/{rightsType}")]
+        public async Task<IActionResult> GetApproval(string accNo, int victimNo, int rightsType)
         {
-            return Ok(await approvalService.GetApproval(accNo.Replace("-", "/"), rightsType));
+            return Ok(await approvalService.GetApproval(accNo.Replace("-", "/"), victimNo, rightsType));
         }
 
         [HttpGet("HosApproval/{accNo}/{victimNo}")]

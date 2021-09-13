@@ -11,7 +11,8 @@ namespace Services.ViewModels
     
     public class AccidentViewModel
     {
-        public string AccNo { get; set; }        
+        public string AccNo { get; set; }     
+        public int? VictimNo { get; set; }
         public ClaimViewModel LastClaim { get; set; }
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
@@ -20,7 +21,8 @@ namespace Services.ViewModels
         public List<VictimtViewModel> Victim { get; set; }
         public List<string> Car { get; set; }
         public string Channel { get; set; }
-        public List<ApprovalregisViewModel> Rights { get; set; }
+        public double? CureRightsBalance { get; set; }
+        public double? CrippledRightsBalance { get; set; }
         public int CountHosApp { get; set; }
 
         /*public string EaCarLicense { get; set; }

@@ -53,22 +53,24 @@
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
                                 <div class="answer">
-                                    <br />
+                                    
                                     <p>
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือ: {{ rights_amount }} บาท
-                                       <!-- <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`" >
-                                            {{ rights.apTotal  }} 
-                                        </label>-->
+                                        <label v-if="accident.cureRightsBalance >= 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: {{ accident.cureRightsBalance }} บาท</label>
+                                        <label v-if="accident.cureRightsBalance < 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: 0 บาท</label>
+                                        <br />
                                         
+                                        <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
+                                        <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>
+
                                         <br />
                                         <!--สิทธิ์คงเหลือค่าสูญเสียอวัยวะ / ทุพพลภาพ:
-                                            <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
-                                                {{ rights.claim.sumCrippledMoney }}
-                                            </label>
-                                            บาท-->
+        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
+            {{ rights.claim.sumCrippledMoney }}
+        </label>
+        บาท-->
                                     </p>
 
                                 </div>
@@ -160,14 +162,7 @@
                         alert(error);
                     });
             },
-            calRights() {
-                let sum = 0;
-                for (let l = 0; l < this.accData.length; l++) {
-                    for (let i = 0; i < this.accData[l].rights.length; i++) {
-                        sum = sum + parseInt(this.accData[l].rights[i].apTotal)
-                    }
-                } this.rights_amount = sum
-            },
+            
             
         },
         /*computed: {
@@ -182,7 +177,7 @@
         },*/
         async mounted() {
             await this.getJwtToken();
-            //await console.log("RightAmount", this.rights_amount);
+            
         }
     }
 </script>

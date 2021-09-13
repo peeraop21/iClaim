@@ -27,11 +27,12 @@
                         </div>
                         <p style="line-height: 25px;" class="mt-3">ค่ารักษาพยาบาลตามที่จ่าย โดยบริษัทจะจ่ายค่าเสียหายเบื้องต้นไม่เกิน 30,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">คงเหลือ: 0 บาท</a>
+                            <a v-if="accData.cureRightsBalance >= 0" style="margin-bottom: 7px;">คงเหลือ: {{ accData.cureRightsBalance }} บาท</a>
+                            <a v-if="accData.cureRightsBalance < 0" style="margin-bottom: 7px;">คงเหลือ: 0 บาท</a>
                             <br>
 
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 1}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 1}}">เลือก</router-link>
+                            <router-link v-if="accData.cureRightsBalance != 30000" class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 1}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData.stringAccNo, type: 1}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -54,11 +55,12 @@
                         </div>
                         <p style="line-height: 25px" class="mt-3">ผู้ประสบภัยที่สูญเสียอวัยวะ/ทุพพลภาพอย่างถาวร บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
+                            <a v-if="accData.crippledRightsBalance >= 0" style="margin-bottom: 7px;">คงเหลือ: {{ accData.crippledRightsBalance }} บาท</a>
+                            <a v-if="accData.crippledRightsBalance < 0" style="margin-bottom: 7px;">คงเหลือ: 0 บาท</a>
                             <br>
 
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 2}}">เลือก</router-link>
+                            <router-link v-if="accData.crippledRightsBalance != 35000" class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData.stringAccNo, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -84,8 +86,8 @@
                             <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
                             <br>
 
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData1.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData1.stringAccNo, type: 2}}">เลือก</router-link>
+                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData.stringAccNo, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -179,7 +181,7 @@
                     },
                 ],
                 userData: this.$store.state.userStateData,
-                accData1: this.$store.getters.accGetter(this.$route.params.id),
+                accData: this.$store.getters.accGetter(this.$route.params.id),
                 claimData: this.$store.getters.ptGetter(this.$route.params.pt),
                 Info1: false,
                 Info2: false,
@@ -195,7 +197,7 @@
         },
         mounted() {
             console.log(this.$route.params.id)
-            console.log(this.accData1)
+            console.log(this.accData)
             
         }
     }
