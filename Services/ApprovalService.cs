@@ -138,7 +138,7 @@ namespace Services
             {
                 foreach (var acc in query)
                 {
-
+                    var claimVwModel = new ClaimViewModel();
                     var approvalVwModel = new ApprovalregisViewModel();
                     approvalVwModel.CrClaimno = acc.CrClaimno;
                     approvalVwModel.StringCrClaimno = acc.CrClaimno.ToString().Replace("/", "-");

@@ -21,7 +21,7 @@
                             <div class="accordion-item" :id="'list' + hosApp.appNo">
                                 <a class="accordion-link" :href="'#list' + hosApp.appNo">
                                     <div>
-                                        <p>
+                                        <p style="margin-bottom: 10px">
                                             <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ hosApp.accNo }}
                                             <br>
                                             <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ hosApp.stringRegDate }}
@@ -29,7 +29,19 @@
                                             <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{hosApp.appStatusName}}
                                         </p>
                                     </div>
-                                    <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
+                                    <div align="right" style="margin-top: -10px;">
+                                        <div style="margin-top:-5px">
+                                            <router-link :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">
+                                                <vs-button circle
+                                                           icon
+                                                           primary
+                                                           flat>
+                                                    <ion-icon name="information" style="margin: -2px -7px -2px 0px; font-size: 17px"></ion-icon>
+                                                </vs-button>
+                                            </router-link>
+                                        </div>
+                                        <ion-icon name="chevron-down-outline" class="icon ion-md-add" style="margin-right: 6px; margin-top: 10px"></ion-icon>
+                                    </div>
                                 </a>
                                 <div class="answer">
                                     <p class="p-custom custom-p-status">สถานะ </p>
@@ -59,13 +71,16 @@
                                     </div>-->
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ดูเพิ่มเติม</router-link>
+                                    <router-link class="btn-select" :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
                                     <router-link class="btn-checked" :to="{ name: 'ConfirmMoney', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                </div>
+                                <div style="text-align: center">
+                                    <router-link class="btn-checked" :to="{ name: 'Rating', params: { id: hosApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <p v-if="isHasHosApprovalData == false">ไม่มีคำร้อง</p>
+                    <p v-if="isHasHosApprovalData == false" class="notData">- ไม่มีคำร้อง -</p>
                 </section>
             </div>
         </div>
