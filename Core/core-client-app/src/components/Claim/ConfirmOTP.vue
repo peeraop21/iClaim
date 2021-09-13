@@ -230,17 +230,7 @@
                 }
             },
             postData() {
-                //const data = {
-                //    'accNo': this.$store.state.inputApprovalData.AccNo,
-                //    'victimNo': this.$store.state.inputApprovalData.VictimNo,
-                //    'appNo': this.$store.state.inputApprovalData.AppNo,
-                //    'sumMoney': this.$store.state.inputApprovalData.SumMoney,
-                //    'claimNo': this.$store.state.inputApprovalData.ClaimNo,
-                //    'injury': this.$store.state.inputApprovalData.Injury,
-                //    'billsData': this.$store.state.inputApprovalData.BillsData,
-                //    'bankData': this.$store.state.inputApprovalData.BankData
-                //}
-                /*console.log(JSON.stringify(data));*/
+                
                 axios.post("/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                     headers: {
                         'Content-Type': 'application/json'
@@ -250,6 +240,15 @@
                         console.log(response);
                         this.$swal.close();
                         this.showSwal()
+                        this.$store.state.inputApprovalData.AccNo = null
+                        this.$store.state.inputApprovalData.VictimNo = null
+                        this.$store.state.inputApprovalData.AppNo = null
+                        this.$store.state.inputApprovalData.SumMoney = null
+                        this.$store.state.inputApprovalData.ClaimNo = null
+                        this.$store.state.inputApprovalData.Injury = null
+                        this.$store.state.inputApprovalData.BillsData = null
+                        this.$store.state.inputApprovalData.BankData = null
+                        this.$store.state.inputApprovalData.VictimData = null
                     })
                     .catch(function (error) {
                         console.log(error);

@@ -71,7 +71,7 @@ namespace Services
                 accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
                 accVwModel.Channel = "LINE";
                 accVwModel.Rights = null;
-
+                accVwModel.CountHosApp = await digitalclaimContext.HosApproval.Where(w => w.AccNo == acc.EaAccNo).CountAsync();
                 accViewModelList.Add(accVwModel);
             }
             foreach (var acc in accHosList)
@@ -87,6 +87,7 @@ namespace Services
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
                 accVwModel.Channel = "HOSPITAL";
                 //var sumlist = await rvpOfficeContext.HosAccident.Join(rvpOfficeContext.HosApproval, app => app.ClaimNo, hos => hos.ClaimNo, (app, hos) => new { appRegis = app, Sum = hos.SumMoney }).Where(w => w.appRegis.AccNo == acc.AccNo).Select(s => new { s.Sum, s.appRegis.AccNo }).FirstOrDefaultAsync();
+                
                 accVwModel.Rights = null;
                 accVwModel.CountHosApp = await digitalclaimContext.HosApproval.Where(w => w.AccNo == acc.AccNo).CountAsync();
                 accViewModelList.Add(accVwModel);

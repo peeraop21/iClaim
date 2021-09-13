@@ -32,7 +32,7 @@
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
                                 <div class="answer">
-                                    <p class="custom-p-status">สถานะ </p>
+                                    <p class="p-custom custom-p-status">สถานะ </p>
                                     <!--  รับคำร้อง<br>
                                      ตรวจสอบเอกสาร<br>
                                      อนุมัติจ่าย<br>
@@ -41,7 +41,7 @@
                                     <ul id="progress" v-for="status in hosApp.appStatus" :key="status.statusId">
                                         <li class="li-custom " :id="'liLbl' + status.statusId">
                                             <div class="node " v-bind:class="{green:status.active, grey:!status.active}" ></div>
-                                            <p class="divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
+                                            <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
                                         </li>
                                         <li v-if="status.statusId < hosApp.appStatus.length" class="li-custom " :id="'verticalLine' + status.statusId">
                                             <div class="divider grey"></div>
@@ -96,7 +96,7 @@
         transition: all 1000ms ease;
     }
     
-    .answer p {
+    .answer .p-custom {
         color: none;
         padding: 0rem 0 0 2rem;
     }
