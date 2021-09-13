@@ -127,10 +127,21 @@
                                        v-bind:files="idCardFile"
                                        v-on:addfile="onAddIdCardFile" />
                         </div>
+                        <p class="mb-0">สำเนาบันทึกประจำวันของพนักงานสอบสวน</p>
+                        <div>
+                            <file-pond name="diaryFile"
+                                       ref="pond"
+                                       label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบันทึกประจำวัน"
+                                       credits="null"
+                                       v-bind:allow-multiple="false"
+                                       v-bind:allowFileEncode="true"
+                                       accepted-file-types="image/jpeg, image/png"
+                                       v-bind:files="diaryFile"
+                                       v-on:addfile="onAddDiaryFile" />
+                        </div>
                     </div>
-
                     <br>
-                    <p class="p_right" style="font-size: 15px; font-weight: bold;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>
+                    <!--<p class="p_right" style="font-size: 15px; font-weight: bold;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>-->
                 </div>
                 <div class="" v-if="formType == 1">
                     <div align="left">
@@ -743,6 +754,8 @@
                 bankFile: null,
                 idCardFileDisplay: { file: null, filename: "", base64: "" },
                 bankFileDisplay: { file: null, filename: "", base64: "" },
+                diaryFile: null,
+                diaryFileDisplay: { file: null, filename: "", base64: "" },
                 // ----Dialog
                 active: false,
                 dialogHospital: false,
@@ -889,6 +902,11 @@
                 this.idCardFileDisplay.file = file
                 this.idCardFileDisplay.filename = file.filename
                 this.idCardFileDisplay.base64 = file.getFileEncodeDataURL()
+            },
+            onAddDiaryFile: function (error, file) {
+                this.diaryFileDisplay.file = file
+                this.diaryFileDisplay.filename = file.filename
+                this.diaryFileDisplay.base64 = file.getFileEncodeDataURL()
             },
             onAddBankAccountFile: function (error, file) {
                 this.bankFileDisplay.file = file

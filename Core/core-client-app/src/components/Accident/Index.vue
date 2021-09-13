@@ -58,11 +58,11 @@
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
                                         <br />
-                                        สิทธิ์คงเหลือ: {{ total_amount }}
+                                        สิทธิ์คงเหลือ: {{ rights_amount }} บาท
                                        <!-- <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`" >
                                             {{ rights.apTotal  }} 
                                         </label>-->
-                                        บาท
+                                        
                                         <br />
                                         <!--สิทธิ์คงเหลือค่าสูญเสียอวัยวะ / ทุพพลภาพ:
                                             <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
@@ -96,7 +96,7 @@
                 userToken: "U08881937e4faf1dc4a04522d138bmock",
                 userData: [],
                 accData: [],
-                total_amount: 0
+                rights_amount: 0
             }
         },
 
@@ -166,10 +166,9 @@
                     for (let i = 0; i < this.accData[l].rights.length; i++) {
                         sum = sum + parseInt(this.accData[l].rights[i].apTotal)
                     }
-                }
-                this.total_amount = sum
-
+                } this.rights_amount = sum
             },
+            
         },
         /*computed: {
             total: function () {
@@ -183,10 +182,8 @@
         },*/
         async mounted() {
             await this.getJwtToken();
-            this.calRights();
+            //await console.log("RightAmount", this.rights_amount);
         }
-
-
     }
 </script>
 

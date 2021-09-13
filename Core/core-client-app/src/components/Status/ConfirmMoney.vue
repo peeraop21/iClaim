@@ -7,29 +7,51 @@
                 </div>
                 <div class="col-12" align="center">
                     <div class="tab-user mt-4 mb-4">
-                            <div class="col-12">
-                                <p class="title-claim-number" style="margin-top: 0px; margin-bottom: 0px">
-                                    เลขที่รับแจ้ง : {{claimNo}}<br />
-                                    เลขที่เคลม : K61/660/00490<br />
-                                    เลขที่กรมธรรม์ : 8173060257008836<br />
-                                    วันที่ : 9/10/2021<br />
-                                    ครั้งที่เรียกร้อง : 2<br />
-                                    เลขที่ผู้ประสบภัย : 1<br />
-                                </p>
+                        <div class="col-12">
+                            <div class="title-claim-number" style="margin-top: 0px; margin-bottom: 0px; line-height: 4px">
+                                <p v-if="accData.accNo!=''">เลขที่รับแจ้ง : {{accData.accNo}}</p>
+                                <p v-else-if="accData.accNo===''">เลขที่รับแจ้ง : -</p>
+                                <p v-if="accData.lastClaim.claimNo!=''">เลขที่เคลม : {{accData.lastClaim.claimNo}}</p>
+                                <p v-else-if="accData.lastClaim.claimNo===''">เลขที่เคลม : -</p>
+                                <p v-if="accidentCarData.foundPolicyNo!=''">เลขที่กรมธรรม์ : {{accidentCarData.foundPolicyNo}}</p>
+                                <p v-else-if="accidentCarData.foundPolicyNo===''">เลขที่กรมธรรม์ : -</p>
+                                <p v-if="hosData.stringRegDate!=''">วันที่ยื่นคำร้อง : {{hosData.stringRegDate}}</p>
+                                <p v-else-if="hosData.stringRegDate===''">วันที่ยื่นคำร้อง : -</p>
+                                <p v-if="hosData.appNo!=''" style="margin-bottom: 3px">ครั้งที่เรียกร้อง : {{hosData.appNo}}</p>
+                                <p v-else-if="hosData.appNo===''" style="margin-bottom: 3px">ครั้งที่เรียกร้อง : -</p>
                             </div>
+                        </div>
                         
                     </div>
                 </div>
                 <div class="col-12">
-                    <p class="text-start">
-                        เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน {{money}} บาท
-                        โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
-                    </p>
-                    <p class="text-start">
-                        โดยการโอนเงินเข้าบัญชีธนาคาร <span style="font-weight: bold"> กรุงเทพ</span><br />
-                        ชื่อบัญชี <span style="font-weight: bold"> {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
-                        เลขที่บัญชี <span style="font-weight: bold">1234567890</span>
-                     </p>
+                    <div class="text-start">
+                        <div v-if="total_amount!=null">
+                            เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด
+                            <span class="p-main-color">เป็นจำนวนเงิน {{total_amount}} บาท</span>
+                            โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
+                        </div>
+                        <div v-else-if="total_amount===null">
+                            เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด
+                            <span class="p-main-color">เป็นจำนวนเงิน - บาท</span>
+                            โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
+                        </div>
+                        
+                    </div>
+                    <div class="text-start mt-4 mb-4">
+                        <div>
+                            <p v-if="accountReceiveData.accountBankName!=''">โดยการโอนเงินเข้าบัญชีธนาคาร <span class="p-main-color"> {{ accountReceiveData.accountBankName }}</span></p>
+                            <p v-else-if="accountReceiveData.accountBankName===''">โดยการโอนเงินเข้าบัญชีธนาคาร -</p>
+                        </div>
+                        <div style="margin-top: -15px">
+                            <p v-if="accountReceiveData.accountName!=''">ชื่อบัญชีธนาคาร <span class="p-main-color"> {{ accountReceiveData.accountName }}</span></p>
+                            <p v-else-if="accountReceiveData.accountName===''">ชื่อบัญชีธนาคาร -</p>
+                        </div>
+                        <div style="margin-top: -15px">
+                            <p v-if="accountReceiveData.accountNumber!=''">เลขที่บัญชีธนาคาร <span class="p-main-color"> {{ accountReceiveData.accountNumber }}</span></p>
+                            <p v-else-if="accountReceiveData.accountNumber===''">เลขที่บัญชีธนาคาร -</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -118,6 +140,12 @@
     }
     .title-claim-number{
         font-weight:bold;
+        font-size:12px;
+        text-align:start;
+    }
+    .p-main-color{
+        color: var(--main-color);
+        font-weight:bold;
         font-size:13px;
         text-align:start;
     }
@@ -125,6 +153,7 @@
 </style>
 
 <script>
+    import axios from 'axios'
     //Your Javascript lives within the Script Tag
     export default {
         name: "ConfirmMoney",
@@ -137,7 +166,23 @@
                 reason: '......',
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
-
+                bank: null,
+                total_amount: null,
+                //----Get AccidentCar
+                accidentCarData: { foundCarLicense: '', foundChassisNo: '', foundPolicyNo: '' },
+                //----Get AccidentCar
+                accidentVictimData: {
+                    accNo: null, victimNo: null, prefix: null, fname: null, lname: null, sex: null, age: null,
+                    drvSocNo: null, homeId: null, moo: null, soi: null, road: null, tumbol: null, tumbolName: null,
+                    district: null, districtName: null, province: null, provinceName: null, zipcode: null, telNo: null
+                },
+                accountReceiveData: {
+                    accountBankName: null,
+                    accountName: null,
+                    accountNumber: null
+                },
+                // HosApp
+                hosData: this.$store.getters.hosAppGetter(this.$route.params.id),
             }
         },
         methods: {
@@ -164,9 +209,50 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
+            getAccidentCar() {
+                console.log('getAccidentCar');
+                var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
+                axios.get(url)
+                    .then((response) => {
+                        this.accidentCarData = response.data[0];
+                        console.log(this.accidentCarData);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getAccidentVictim() {
+                console.log('getAccidentVictim');
+                var mockIdcard = this.userData.idcardNo /*'3149900145384'*/;
+                var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
+                axios.get(url)
+                    .then((response) => {
+                        this.accidentVictimData = response.data[0];
+                        console.log(this.accidentVictimData);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            getDocumentReceive() {
+                console.log('getDocumentReceive');
+                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo).replace('{appNo}', this.$route.params.appNo);
+                axios.get(url)
+                    .then((response) => {
+                        this.accountReceiveData = response.data[0];
+                        console.log(this.accountReceiveData);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
         },
         async mounted() {
-            await console.log('accData', this.accData)
+            await console.log('accData', this.accData);
+            console.log("hosApp: ", this.hosData);
+            await this.getAccidentCar();
+            await this.getAccidentVictim();
+            await this.getDocumentReceive();
         }
         
         

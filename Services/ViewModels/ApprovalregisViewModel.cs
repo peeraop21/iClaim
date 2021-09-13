@@ -229,5 +229,7 @@ namespace Services.ViewModels
         //public string MCardTypeOther { get; set; }
         // public short? ApRecnationalityId { get; set; }
         public ClaimViewModel Claim { get; set; }
+        public double? CureMoneyAmount { get; set; }
+        public double? CrippledMoneyAmount { get; set; }
     }
 }
