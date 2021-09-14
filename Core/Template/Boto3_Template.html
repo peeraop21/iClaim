@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href='https://fonts.googleapis.com/css?family=Kanit&display=swap&subset=thai' rel='stylesheet' />
+    <title>[SUBJECT]</title>
+    <style type="text/css">
+        body, html {
+            margin: 0;
+            height: 1754px;
+            width: 1242px;
+        }
+
+        .bg {
+            /*background-size: cover;*/
+            /*background-position:-10px 0;*/
+            height: 100%;
+            width: 100%;
+            position:absolute;
+        }
+
+        .mit-no {
+            margin-left: 165px;
+            padding-top: 170px;
+            font-size: 23px;
+            font-weight: 600;
+            color: #3a3a3c;
+        }
+
+        .mit-desc {
+            margin-left: 120px;
+            margin-top: 550px;
+            font-size: 34px;
+            font-weight: 600;
+            text-align: center;
+            color: #283890;
+            padding: 0 5% 0 5%;
+        }
+
+        .mit-date {
+            position: absolute;
+            top: 1610px;
+            left: 165px;
+            /*margin-left: 165px;
+            margin-top: 620px;*/
+            font-size: 23px;
+            font-weight: 600;
+            line-height: 5px;
+            color: #3a3a3c;
+        }
+
+        .img-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1244px;
+            height: 1759px;
+        }
+
+        .forAdjustment {
+            color: #FF8C00;
+        }
+    </style>
+    <title></title>
+</head>
+<body style="font-family:Kanit;justify-content:center">
+    <img src="{{BASE_URL}}/img/_forUserPage/Certificate _template/MiT_Cer_Template-Final-01.png?v=05052564" class="img-bg" />
+    <div class="bg">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="container mit-no">
+                    <p>เลขที่ @MiTno</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="container mit-desc">
+                    <p style="line-height:110%">ผลิตภัณฑ์ <span class="forAdjustment" style="font-weight:400">@ProductName</span> <!--รุ่น <span class="forAdjustment" style="font-weight:400">@Model</span>--></p>
+                    <!--<p style="line-height:110%">ประเภทผลิตภัณฑ์ <span class="forAdjustment" style="font-weight:400">@ProductTypeName</span></p>-->
+                    <p style="line-height:110%">รุ่น <span class="forAdjustment" style="font-weight:400">@Model</span></p>
+                    <p style="line-height:110%">ผลิตโดย <span class="forAdjustment" style="font-weight:400">@createdBy</span></p>
+                    <p style="line-height:110%">เลขทะเบียนนิติบุคคล <span class="forAdjustment" style="font-weight:400">@taxId</span></p>
+                    <p style="color:black;font-weight:500">เป็นผลิตภัณฑ์ที่ผลิตในประเทศไทย จริงทุกประการ</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="container mit-date">
+                    <p>ออกให้ ณ วันที่ <span class="forAdjustment">@approveDate</span></p>
+                    <p>มีผลถึง ณ วันที่ <span class="forAdjustment">@expiredDate</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
