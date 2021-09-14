@@ -3,10 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Core</RootNamespace>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="BaselineTypeDiscovery" Version="1.1.2" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.1" />
@@ -19,6 +22,6 @@
     <ProjectReference Include="..\DataAccess.EFCore\DataAccess.EFCore.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
-
+  
 
 </Project>

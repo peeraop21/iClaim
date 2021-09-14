@@ -23,9 +23,31 @@ using DataAccess.EFCore.ClaimDataModels;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Core.Mappers;
+using BaselineTypeDiscovery;
+using System.IO;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Core
 {
+    internal class CustomAssemblyLoadContext : AssemblyLoadContext
+    {
+        public IntPtr LoadUnmanagedLibrary(string absolutePath)
+        {
+            return LoadUnmanagedDll(absolutePath);
+        }
+        protected override IntPtr LoadUnmanagedDll(String unmanagedDllName)
+        {
+            return LoadUnmanagedDllFromPath(unmanagedDllName);
+        }
+
+        protected override Assembly Load(AssemblyName assemblyName)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -65,7 +87,9 @@ namespace Core
             services.AddScoped<IMasterService, MasterService>();
             services.AddTransient<IApprovalService, ApprovalService>();
             services.AddScoped<IApprovalService, ApprovalService>();
+            
 
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -79,6 +103,11 @@ namespace Core
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:key"]))
                 };
             });
+
+            CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
+            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+            var converter = new SynchronizedConverter(new PdfTools());
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

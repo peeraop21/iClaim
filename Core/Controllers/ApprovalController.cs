@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DataAccess.EFCore.DigitalClaimModels;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.ViewModels;
@@ -71,8 +74,10 @@ namespace Core.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IApprovalService approvalService;
-        public ApprovalController(IApprovalService approvalService, IMapper _mapper)
+        private readonly IConverter converter;
+        public ApprovalController(IApprovalService approvalService, IMapper _mapper, IConverter converter)
         {
+            this.converter = converter;
             this.approvalService = approvalService;
             this._mapper = _mapper;
         }
@@ -96,17 +101,63 @@ namespace Core.Controllers
 
         // POST api/<ApprovalController>
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody]vwApproval model)
+        public async Task<IActionResult> PostAsync([FromBody] vwApproval model)
         {
             var resultMapHosApproval = _mapper.Map<HosApproval>(model);
             var resultMapBank = _mapper.Map<InputBankViewModel>(model.BankData);
             var resultMapVictim = _mapper.Map<VictimtViewModel>(model.VictimData);
-            var addToDb  = await approvalService.AddAsync(resultMapHosApproval, resultMapBank, resultMapVictim);
+            var addToDb = await approvalService.AddAsync(resultMapHosApproval, resultMapBank, resultMapVictim);
             return Ok(new { status = "" });
         }
 
-        
+        [HttpGet("GetPDF")]
+        public async Task<IActionResult> GetApprovalDetailPDF()
+        {
+            byte[] file = null;
+            var globalSettings = new GlobalSettings
+            {
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings { Top= 0, Bottom = 0 ,Left = 0, Right = 0},
+                DocumentTitle = "บต3",
+                DPI = 300,
+                ImageDPI = 300,
+                Outline = false
+            };
 
+            string HtmlContent = string.Empty;
+            HtmlContent = await GenBotoBody();
+
+            var objectSettings = new ObjectSettings
+            {
+                PagesCount = true,
+                HtmlContent = HtmlContent,
+                WebSettings = { DefaultEncoding = "utf-8" },
+                LoadSettings =
+                {
+                    DebugJavascript = true,
+                    StopSlowScript = false
+                }
+            };
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = globalSettings,
+                Objects = { objectSettings }
+            };
+            file = converter.Convert(pdf);
+            return File(file, "application/pdf");
+        }
+
+        private async Task<string> GenBotoBody()
+        {
+            var template = System.IO.Directory.GetCurrentDirectory() + @"\Templates\Boto3_Template.html";
+            using (StreamReader reader = new StreamReader(template))
+            {
+                var htmlTemplate = await reader.ReadToEndAsync();
+                return htmlTemplate;
+            }
+        }
 
 
     }

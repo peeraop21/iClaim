@@ -31,6 +31,7 @@
                                     </div>
                                     <div align="right" style="margin-top: -10px;">
                                         <div style="margin-top:-5px">
+                                            <a v-on:click="getPDF">PDF</a>
                                             <router-link :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">
                                                 <vs-button circle
                                                            icon
@@ -194,7 +195,8 @@
                 hosApprovalData: null,
                 isHasHosApprovalData: false,
                 appStatus: [{ statusId: 0, statusName:"", active:false}],
-                isActive: true
+                isActive: true,
+                pdfsrc:null
 
 
             }
@@ -217,6 +219,30 @@
                         } else if (this.hosApprovalData.length > 0) {
                             this.isHasHosApprovalData = true
                         }
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+
+            },
+            getPDF() {
+                var url = '/api/approval/GetPDF'
+
+                axios.get(url,{                   
+                    responseType: 'arraybuffer'
+                })
+                    .then((response) => {
+                        console.log(response)
+                        let blob = new Blob([response.data], { type: 'application/pdf' }),
+                            url = window.URL.createObjectURL(blob)
+
+                        window.open(url)
+                        
+                        /*window.open("data:application/pdf," + encodeURI(response.data));*/
+                        //const blob = new Blob([response.data]);
+                        //const objectUrl = URL.createObjectURL(blob);
+                        //this.pdfsrc = objectUrl;
+                        //console.log(this.pdfsrc)
                     })
                     .catch(function (error) {
                         alert(error);
