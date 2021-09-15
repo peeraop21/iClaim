@@ -18,11 +18,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ApprovalStatusState]",
+         "Name": "[dbo].[HosApproval]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[HosApproval]",
+         "Name": "[dbo].[HosApprovalStatus]",
          "ObjectType": 0
       },
       {

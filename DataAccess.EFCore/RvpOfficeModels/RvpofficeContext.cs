@@ -23,6 +23,8 @@ namespace DataAccess.EFCore.RvpOfficeModels
         public virtual DbSet<HosApproval> HosApproval { get; set; }
         public virtual DbSet<HosCarAccident> HosCarAccident { get; set; }
         public virtual DbSet<HosVicTimAccident> HosVicTimAccident { get; set; }
+        public virtual DbSet<Invoicedt> Invoicedt { get; set; }
+        public virtual DbSet<Invoicehd> Invoicehd { get; set; }
         public virtual DbSet<Tumbol> Tumbol { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -2149,6 +2151,169 @@ namespace DataAccess.EFCore.RvpOfficeModels
                     .IsUnicode(false);
 
                 entity.Property(e => e.Zipcode)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Invoicedt>(entity =>
+            {
+                entity.HasKey(e => new { e.IdInvdt, e.Treatid });
+
+                entity.ToTable("invoicedt");
+
+                entity.Property(e => e.IdInvdt).HasColumnName("id_invdt");
+
+                entity.Property(e => e.Treatid).HasColumnName("treatid");
+
+                entity.Property(e => e.InvdtComment)
+                    .HasColumnName("invdt_comment")
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.Ip)
+                    .HasColumnName("ip")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Listno).HasColumnName("listno");
+
+                entity.Property(e => e.Price).HasColumnName("price");
+
+                entity.Property(e => e.Recordby)
+                    .HasColumnName("recordby")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Recorddate)
+                    .HasColumnName("recorddate")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Invoicehd>(entity =>
+            {
+                entity.HasKey(e => e.IdInvhd);
+
+                entity.ToTable("invoicehd");
+
+                entity.Property(e => e.IdInvhd)
+                    .HasColumnName("id_invhd")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AccNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Age).HasColumnName("age");
+
+                entity.Property(e => e.An)
+                    .HasColumnName("AN")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Consider)
+                    .HasColumnName("consider")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Daybed).HasColumnName("daybed");
+
+                entity.Property(e => e.Dispensedate)
+                    .HasColumnName("dispensedate")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Dispensetime)
+                    .HasColumnName("dispensetime")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Hn)
+                    .HasColumnName("HN")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Hosid)
+                    .HasColumnName("hosid")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Hostype)
+                    .HasColumnName("hostype")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.IdInvdt).HasColumnName("id_invdt");
+
+                entity.Property(e => e.InputBy)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('H')");
+
+                entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
+
+                entity.Property(e => e.InvoiceNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Maincomment)
+                    .HasColumnName("maincomment")
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Mainconsider)
+                    .HasColumnName("mainconsider")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ReceiptDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ReceiptNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecordBy)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Suminv).HasColumnName("suminv");
+
+                entity.Property(e => e.Takendate)
+                    .HasColumnName("takendate")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Takentime)
+                    .HasColumnName("takentime")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VictimType)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Victimname)
+                    .HasColumnName("victimname")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Vname)
+                    .HasColumnName("vname")
                     .HasMaxLength(10)
                     .IsUnicode(false);
             });

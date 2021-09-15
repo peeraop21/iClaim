@@ -17,8 +17,8 @@ namespace DataAccess.EFCore.DigitalClaimModels
         }
 
         public virtual DbSet<ApprovalStatus> ApprovalStatus { get; set; }
-        public virtual DbSet<ApprovalStatusState> ApprovalStatusState { get; set; }
         public virtual DbSet<HosApproval> HosApproval { get; set; }
+        public virtual DbSet<HosApprovalStatus> HosApprovalStatus { get; set; }
         public virtual DbSet<HosDocumentReceive> HosDocumentReceive { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,18 +30,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
                 entity.Property(e => e.StatusId).ValueGeneratedNever();
 
                 entity.Property(e => e.StatusName).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<ApprovalStatusState>(entity =>
-            {
-                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo, e.StateNo });
-
-                entity.Property(e => e.AccNo)
-                    .HasColumnName("AccNO")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InsertDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<HosApproval>(entity =>
@@ -160,6 +148,20 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .IsUnicode(false);
 
                 entity.Property(e => e.VictimNoClaim).HasColumnName("VictimNo_Claim");
+            });
+
+            modelBuilder.Entity<HosApprovalStatus>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo });
+
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<HosDocumentReceive>(entity =>

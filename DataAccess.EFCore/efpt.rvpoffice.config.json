@@ -42,6 +42,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[invoicedt]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[invoicehd]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[TUMBOL]",
          "ObjectType": 0
       }
@@ -55,6 +63,7 @@
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
