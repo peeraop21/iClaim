@@ -46,11 +46,6 @@
                                 </a>
                                 <div class="answer">
                                     <p class="p-custom custom-p-status">สถานะ </p>
-                                    <!--  รับคำร้อง<br>
-                                     ตรวจสอบเอกสาร<br>
-                                     อนุมัติจ่าย<br>
-                                     โอนเงินแล้ว
-                                     -->
                                     <ul id="progress" v-for="status in hosApp.appStatus" :key="status.statusId">
                                         <li class="li-custom " :id="'liLbl' + status.statusId">
                                             <div class="node " v-bind:class="{green:status.active, grey:!status.active}" ></div>
@@ -62,14 +57,6 @@
                                         
                                     </ul>
                                     <br />
-                                    <!--<div class="verticalLine" style="margin-top: -5px;" v-for="status in appStatus" :key="status.statusId">
-                                          <li style="margin-left: -3px; color: #04c042">{{status.statusName}}</li><br>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #04c042">ตรวจสอบเอกสาร</li><br>
-                                    <router-link :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo }}"><li style="margin-left: -3px; margin-top: -15px; color: #aaa"> ยื่นเอกสารเพิ่มเติม</li><br></router-link>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa"> อนุมัติจ่าย</li><br>
-                                    <li style="margin-left: -3px; margin-top: -15px; color: #aaa;">โอนเงินแล้ว</li><br />
-                                    <router-link :to="{ name: 'Rating', params: { id: hosApp.stringAccNo }}"><li style="margin-left: -3px; margin-top: -15px; color: #aaa; margin-bottom: 10px"> ประเมินความพึงพอใจ</li></router-link>
-                                    </div>-->
                                 </div>
                                 <div style="text-align: center">
                                     <router-link class="btn-select" :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
@@ -102,6 +89,7 @@
 
     #progress {
         margin-bottom: 0rem;
+        height: 24px;
     }
 
     .node {
@@ -142,7 +130,7 @@
 
     .custom-p-status {
         color: black;
-        
+        margin-bottom: 5px;
         margin-top: 5px;
     }
     .blue {
@@ -226,7 +214,7 @@
 
             },
             getPDF() {
-                var url = '/api/approval/GetPDF'
+                var url = '/api/genpdf/GetBoto3'
 
                 axios.get(url,{                   
                     responseType: 'arraybuffer'

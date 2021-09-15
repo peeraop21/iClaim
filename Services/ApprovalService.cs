@@ -77,14 +77,14 @@ namespace Services
             dataHosDocumentReceive.BankId = inputBank.accountBankName;
             await digitalclaimContext.HosDocumentReceive.AddAsync(dataHosDocumentReceive);
             
-            var dataApprovalStatusState = new ApprovalStatusState();
-            dataApprovalStatusState.AccNo = hosApproval.AccNo;
-            dataApprovalStatusState.VictimNo = hosApproval.VictimNo;
-            dataApprovalStatusState.AppNo = hosApproval.AppNo + 1;
-            dataApprovalStatusState.StateNo = 1;
-            dataApprovalStatusState.InsertDate = DateTime.Now;
-            dataApprovalStatusState.Status = 1;
-            await digitalclaimContext.ApprovalStatusState.AddAsync(dataApprovalStatusState);
+            var dataHosApprovalStatus = new HosApprovalStatus();
+            dataHosApprovalStatus.AccNo = hosApproval.AccNo;
+            dataHosApprovalStatus.VictimNo = hosApproval.VictimNo;
+            dataHosApprovalStatus.AppNo = hosApproval.AppNo + 1;
+            dataHosApprovalStatus.InsertDate = DateTime.Now;
+            dataHosApprovalStatus.LastUpdate = DateTime.Now;
+            dataHosApprovalStatus.Status = 1;
+            await digitalclaimContext.HosApprovalStatus.AddAsync(dataHosApprovalStatus);
             await digitalclaimContext.SaveChangesAsync();
 
             return hosApproval;
@@ -276,7 +276,7 @@ namespace Services
         }
         public async Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo)
         {
-            var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.AppNo, s.RegDate, }).ToListAsync();
+            var query = await digitalclaimContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.RegDate, }).ToListAsync();
             var vwHosAppList = new List<HosApprovalViewModel>();
             if (query == null)
             {
@@ -289,14 +289,38 @@ namespace Services
                 vwHosApp.AppNo = hosApp.AppNo;
                 vwHosApp.RegDate = hosApp.RegDate;
                 vwHosApp.StringRegDate = hosApp.RegDate.ToString().Replace("T", " ");
-                var queryStatus = await digitalclaimContext.ApprovalStatusState.Join(digitalclaimContext.ApprovalStatus, appss => appss.Status, apps => apps.StatusId, (appss, apps) => new { appStatusStateJoinAppStatus = appss, statusName = apps.StatusName })
-                    .Where(w => w.appStatusStateJoinAppStatus.AccNo == hosApp.AccNo && w.appStatusStateJoinAppStatus.AppNo == hosApp.AppNo).OrderByDescending(o => o.appStatusStateJoinAppStatus.InsertDate).Take(1).Select(s => new { s.statusName, s.appStatusStateJoinAppStatus.Status }).FirstOrDefaultAsync();
+                var queryStatus = await digitalclaimContext.HosApprovalStatus.Join(digitalclaimContext.ApprovalStatus, appss => appss.Status, apps => apps.StatusId, (appss, apps) => new { appStatusStateJoinAppStatus = appss, statusName = apps.StatusName })
+                    .Where(w => w.appStatusStateJoinAppStatus.AccNo == hosApp.AccNo && w.appStatusStateJoinAppStatus.AppNo == hosApp.AppNo && w.appStatusStateJoinAppStatus.VictimNo == hosApp.VictimNo).Select(s => new { s.statusName, s.appStatusStateJoinAppStatus.Status }).FirstOrDefaultAsync();
                 vwHosApp.AppStatusName = queryStatus.statusName;
-                vwHosApp.AppStatus = await GetApprovalStatus(hosApp.AccNo, hosApp.AppNo);
+                vwHosApp.AppStatus = await GetApprovalStatus(hosApp.AccNo, hosApp.VictimNo, hosApp.AppNo );
                 vwHosAppList.Add(vwHosApp);
             }
 
             return vwHosAppList;
+        }
+
+        private async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int victimNo, int appNo)
+        {
+            var query = await digitalclaimContext.ApprovalStatus.ToListAsync();
+            var appStatusState = await digitalclaimContext.HosApprovalStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == appNo).FirstOrDefaultAsync();
+            var appStatusVwModelList = new List<ApprovalStatusViewModel>();
+            foreach (var status in query)
+            {
+                var appStatusVwModel = new ApprovalStatusViewModel();
+                appStatusVwModel.StatusId = status.StatusId;
+                appStatusVwModel.StatusName = status.StatusName;
+                if (status.StatusId <= appStatusState.Status)
+                {
+                    appStatusVwModel.Active = true;
+                }
+                else
+                {
+                    appStatusVwModel.Active = false;
+                }
+                appStatusVwModelList.Add(appStatusVwModel);
+
+            }
+            return appStatusVwModelList;
         }
 
         public async Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo)
@@ -316,29 +340,7 @@ namespace Services
         }
 
 
-        public async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int appNo)
-        {          
-            var query = await digitalclaimContext.ApprovalStatus.ToListAsync();
-            var appStatusState = await digitalclaimContext.ApprovalStatusState.Where(w => w.AccNo == accNo && w.AppNo == appNo).OrderByDescending(o => o.InsertDate).Take(1).FirstOrDefaultAsync();
-            var appStatusVwModelList = new List<ApprovalStatusViewModel>();
-            foreach(var status in query)
-            {
-                var appStatusVwModel = new ApprovalStatusViewModel();
-                appStatusVwModel.StatusId = status.StatusId;
-                appStatusVwModel.StatusName = status.StatusName;
-                if(status.StatusId <= appStatusState.Status )
-                {
-                    appStatusVwModel.Active = true;
-                }
-                else
-                {
-                    appStatusVwModel.Active = false;
-                }
-                appStatusVwModelList.Add(appStatusVwModel);
-
-            }
-            return appStatusVwModelList;
-        }
+       
 
         public async Task<double?> GetRightsBalance(string accNo, int? victimNo,string rightsType)
         {
