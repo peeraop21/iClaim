@@ -23,36 +23,38 @@ using DataAccess.EFCore.ClaimDataModels;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Core.Mappers;
-using BaselineTypeDiscovery;
 using System.IO;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using System.Reflection;
 using System.Runtime.Loader;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+
 
 namespace Core
 {
-    internal class CustomAssemblyLoadContext : AssemblyLoadContext
-    {
-        public IntPtr LoadUnmanagedLibrary(string absolutePath)
-        {
-            return LoadUnmanagedDll(absolutePath);
-        }
-        protected override IntPtr LoadUnmanagedDll(String unmanagedDllName)
-        {
-            return LoadUnmanagedDllFromPath(unmanagedDllName);
-        }
-
-        protected override Assembly Load(AssemblyName assemblyName)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //public class CustomAssemblyLoadContext : AssemblyLoadContext
+    //{
+    //    public IntPtr LoadUnmanagedLibrary(string absolutePath)
+    //    {
+    //        return LoadUnmanagedDll(absolutePath);
+    //    }
+    //    protected override IntPtr LoadUnmanagedDll(String unmanagedDllName)
+    //    {
+    //        return LoadUnmanagedDllFromPath(unmanagedDllName);
+    //    }
+    //    protected override Assembly Load(AssemblyName assemblyName)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
     public class Startup
-    {
+    {        
+       
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -60,9 +62,10 @@ namespace Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
 
-            
+
+            services.AddControllers();
+          
             services.AddAutoMapper(typeof(DataMapperProfile));
 
             services.AddSwaggerGen(c =>
@@ -104,9 +107,16 @@ namespace Core
                 };
             });
 
-            CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
-            context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
-            var converter = new SynchronizedConverter(new PdfTools());
+            //var architectureFolder = (IntPtr.Size == 8) ? "64 bit" : "32 bit";
+            //var wkHtmlToPdfPath = Path.Combine(Directory.GetCurrentDirectory(), $"wkhtmltox\\v0.12.4\\{architectureFolder}\\libwkhtmltox");
+            //CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
+            //context.LoadUnmanagedLibrary(wkHtmlToPdfPath);
+            //services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            //CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
+            //context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+            //var converter = new SynchronizedConverter(new PdfTools());
+            //var context = new CustomAssemblyLoadContext();
+            //context.LoadUnmanagedLibrary(Path.GetFullPath(@"C:\Users\User\source\repos\WebSolution\WebApp\libwkhtmltox.dll"));
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         }
 

@@ -12,24 +12,25 @@ using System.Threading.Tasks;
 
 namespace Core.Controllers
 {
+    public class User
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+    }
+
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
     public class JWTController : Controller
     {
         private readonly IConfiguration Config;
+
         public JWTController(IConfiguration Config)
         {
             this.Config = Config;
         }
 
-        public class User
-        {
-            public string Name { get; set; }
-            public string Email { get; set; }
-        }
-
-
+       
         [AllowAnonymous]
         [HttpPost]
         public IActionResult CreateToken([FromBody]User login)
