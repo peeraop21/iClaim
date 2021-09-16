@@ -24,15 +24,21 @@ namespace Core.Controllers
         
         
         private readonly IConverter converter;
-        public GenPdfController(IApprovalService approvalService, IMapper _mapper, IConverter converter)
+        private readonly IAccidentService accidentService;
+        public GenPdfController( IConverter converter, IAccidentService accidentService)
         {
-            this.converter = converter;           
+            this.converter = converter;
+            this.accidentService = accidentService;
         }
         
 
-        [HttpGet("GetBoto3")]
-        public async Task<IActionResult> GetPDF()
+        [HttpGet("GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}")]
+        public async Task<IActionResult> GetPDF(string accNo, int victimNo, int appNo, string channel)
         {
+            var acc = await accidentService.GetAccidentForGenPDF(accNo.Replace("-", "/"), victimNo, appNo);
+            var accVictim = await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), channel, "", victimNo);
+            var accCar = await accidentService.GetAccidentCar(accNo.Replace("-", "/"), channel);
+
             byte[] file = null;
             var globalSettings = new GlobalSettings
             {
@@ -47,7 +53,7 @@ namespace Core.Controllers
             };
 
             string HtmlContent = string.Empty;
-            HtmlContent = await GenBotoBody();
+            HtmlContent = await GenBotoBody(acc, accVictim, accCar);
 
             var objectSettings = new ObjectSettings
             {
@@ -69,12 +75,41 @@ namespace Core.Controllers
             return File(file, "application/pdf");
         }
 
-        private async Task<string> GenBotoBody()
+        private async Task<string> GenBotoBody(AccidentPDFViewModel acc, VictimtViewModel accVictim, CarViewModel accCar)
         {
             var template = System.IO.Directory.GetCurrentDirectory() + @"\Templates\Boto3_Template.html";
             using (StreamReader reader = new StreamReader(template))
             {
                 var htmlTemplate = await reader.ReadToEndAsync();
+                htmlTemplate = htmlTemplate.Replace("{AccNo}", (string.IsNullOrEmpty(acc.AccNo)) ? "-" : acc.AccNo);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Name}", (string.IsNullOrEmpty(accVictim.Fname)) ? "-" : accVictim.Prefix + accVictim.Fname + " " + accVictim.Lname);
+                htmlTemplate = htmlTemplate.Replace("( ) ผู้ประสบภัย", "(X) ผู้ประสบภัย");
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Age}", (string.IsNullOrEmpty(accVictim.Age.ToString())) ? "-" : accVictim.Age.ToString());
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.HomeNo}", (string.IsNullOrEmpty(accVictim.HomeId)) ? "-" : accVictim.HomeId);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Moo}", (string.IsNullOrEmpty(accVictim.Moo)) ? "-" : accVictim.Moo);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Soi}", (string.IsNullOrEmpty(accVictim.Soi)) ? "-": accVictim.Soi);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Road}", (string.IsNullOrEmpty(accVictim.Road)) ? "-" : accVictim.Road);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Tumbol}", (string.IsNullOrEmpty(accVictim.TumbolName)) ? "-" : accVictim.TumbolName);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.District}", (string.IsNullOrEmpty(accVictim.DistrictName)) ? "-" : accVictim.DistrictName);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Province}", (string.IsNullOrEmpty(accVictim.ProvinceName)) ? "-" : accVictim.ProvinceName);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.Zipcode}", (string.IsNullOrEmpty(accVictim.Zipcode)) ? "-" : accVictim.Zipcode);
+                if (string.IsNullOrEmpty(acc.TimeAcc))
+                {
+                    htmlTemplate = htmlTemplate.Replace("{Acc.DateTime}", acc.DateAccString + " เวลา " + "-" + " น.");
+                }
+                else
+                {
+                    htmlTemplate = htmlTemplate.Replace("{Acc.DateTime}", acc.DateAccString + " เวลา " + acc.TimeAcc + " น.");
+                }
+                htmlTemplate = htmlTemplate.Replace("{Acc.Place}", acc.AccPlace);
+                htmlTemplate = htmlTemplate.Replace("{AccCar.FoundCarLicense}", (string.IsNullOrEmpty(accCar.FoundCarLicense)) ? "-" : accCar.FoundCarLicense);
+                htmlTemplate = htmlTemplate.Replace("{AccCar.FoundChassisNo}", (string.IsNullOrEmpty(accCar.FoundChassisNo)) ? "-" : accCar.FoundChassisNo);
+                htmlTemplate = htmlTemplate.Replace("{AccCar.FoundPolicyNo}", (string.IsNullOrEmpty(accCar.FoundPolicyNo)) ? "-" : accCar.FoundPolicyNo);
+                htmlTemplate = htmlTemplate.Replace("( ) รถคันเดียว ไม่มีคู่กรณี", "(X) รถคันเดียว ไม่มีคู่กรณี");
+
+
+
+
                 return htmlTemplate;
             }
         }

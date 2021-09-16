@@ -42,7 +42,7 @@ namespace Core.Controllers
         [HttpGet("Victim/{accNo}/{ch}/{userIdCard}")]
         public async Task<IActionResult> GetAccidentVictim(string accNo, string ch, string userIdCard)
         {
-            return Ok(await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), ch, userIdCard));
+            return Ok(await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), ch, userIdCard, 0));
         }
     }
 }

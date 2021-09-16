@@ -31,7 +31,7 @@
                                     </div>
                                     <div align="right" style="margin-top: -10px;">
                                         <div style="margin-top:-5px">
-                                            <a v-on:click="getPDF">PDF</a>
+                                            <a v-on:click="getPDF(hosApp.appNo)">PDF</a>
                                             <router-link :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">
                                                 <vs-button circle
                                                            icon
@@ -193,7 +193,7 @@
         methods: {
            
             getHosApproval() {
-                var url = '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo);
+                var url = '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
 
                 axios.get(url)
                     .then((response) => {
@@ -213,17 +213,28 @@
                     });
 
             },
-            getPDF() {
-                var url = '/api/genpdf/GetBoto3'
+            getPDF: async function(appNo) {
+                var url = '/api/genpdf/GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel);
+                this.$swal({
+                    title: 'กำลังโหลด',
+                    html: 'ขณะนี้ระบบกำลังโหลดเอกสาร คำร้องขอรับค่าเสียหายเบื้องต้น',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        this.$swal.showLoading()
 
-                axios.get(url,{                   
+                    },
+                    willClose: () => {
+
+                    }
+                })
+                await axios.get(url,{                   
                     responseType: 'arraybuffer'
                 })
                     .then((response) => {
                         console.log(response)
                         let blob = new Blob([response.data], { type: 'application/pdf' }),
                             url = window.URL.createObjectURL(blob)
-
+                        this.$swal.close();
                         window.open(url)
                         
                         /*window.open("data:application/pdf," + encodeURI(response.data));*/

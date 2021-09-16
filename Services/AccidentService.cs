@@ -17,8 +17,9 @@ namespace Services
     public interface IAccidentService
     {
         Task<List<AccidentViewModel>> GetAccident(string userToken);
-        Task<List<VictimtViewModel>> GetAccidentVictim(string accNo, string channal, string userIdCard);
-        Task<List<CarViewModel>> GetAccidentCar(string accNo, string channal);
+        Task<VictimtViewModel> GetAccidentVictim(string accNo, string channal, string userIdCard,int victimNo);
+        Task<CarViewModel> GetAccidentCar(string accNo, string channal);
+        Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo);
 
     }
 
@@ -102,12 +103,11 @@ namespace Services
             return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
         }
 
-        public async Task<List<VictimtViewModel>> GetAccidentVictim(string accNo, string channal, string userIdCard)
+        public async Task<VictimtViewModel> GetAccidentVictim(string accNo, string channal, string userIdCard, int victimNo)
         {
-            var vicViewModelList = new List<VictimtViewModel>();
+            var vicVwModel = new VictimtViewModel();
             if (channal == "LINE")
-            {                
-                var vicVwModel = new VictimtViewModel();
+            {                                
                 var vic = await rvpAccidentContext.TbAccidentMasterLineVictim.Where(w => w.EaIdCardVictim == userIdCard && w.EaAccno == accNo).Select(s => new { s.EaPrefixVictim, s.EaFnameVictim, s.EaLnameVictim, s.EaSexVictim, s.EaAgeVictim, s.EaPhoneNumber }).FirstOrDefaultAsync();
                 vicVwModel.Fname = vic.EaFnameVictim;
                 vicVwModel.Lname = vic.EaLnameVictim;
@@ -115,12 +115,11 @@ namespace Services
                 vicVwModel.Age = vic.EaAgeVictim;
                 vicVwModel.Sex = vic.EaSexVictim;
                 vicVwModel.TelNo = vic.EaPhoneNumber;
-                vicViewModelList.Add(vicVwModel);
             }
             else if (channal == "HOSPITAL")
             {
                 
-                var vicVwModel = new VictimtViewModel();
+                
                 /*var vic = await rvpOfficeContext.HosVicTimAccident
                     .Join(rvpOfficeContext.Tumbol, vicT => vicT.Tumbol, t => t.Tumbolid, (vicT, t) => new {victimJoinTumbol = vicT, tumbolName = t.Tumbolname, tumbolId = t.Tumbolid})
                     .Join(rvpOfficeContext.Amphur, vicA => vicA.victimJoinTumbol.District, amp => amp.Amphurid, (vicA, amp) => new {victimJoinAmphur = vicA, amphurName = amp.Amphurname, amphurId = amp.Amphurid})
@@ -156,11 +155,7 @@ namespace Services
                     .GroupJoin(rvpOfficeContext.Tumbol, jtum => jtum.Tumbol, t => t.Tumbolid, (jtum, t) => new { victimJoinTumbol = jtum, tumbolTb = t }).SelectMany(x => x.tumbolTb.DefaultIfEmpty(), (x, t) => new { vicT = x.victimJoinTumbol, tumbolName = t.Tumbolname, tumbolId = t.Tumbolid })
                     .GroupJoin(rvpOfficeContext.Amphur, jamp => jamp.vicT.District, amp => amp.Amphurid, (jamp, amp) => new { victimJoinAmphur = jamp, amphurTb = amp }).SelectMany(x => x.amphurTb.DefaultIfEmpty(), (x, amp) => new { vicA = x.victimJoinAmphur, amphurName = amp.Amphurname, amphurId = amp.Amphurid })
                     .GroupJoin(rvpOfficeContext.Changwat, jchw => jchw.vicA.vicT.Province, chw => chw.Changwatshortname, (jchw, chw) => new { victimJoinChangwat = jchw, changwatTb = chw }).SelectMany(x => x.changwatTb.DefaultIfEmpty(), (x, chw) => new { vicC = x.victimJoinChangwat, changwatName = chw.Changwatname, changwatShort = chw.Changwatshortname })
-                    .Where(w => w.vicC.vicA.vicT.DrvSocNo == userIdCard
-                    && w.vicC.vicA.vicT.AccNo == accNo
-                    /*  && w.vicC.vicA.vicT.Tumbol == w.victimJoinChangwat.victimJoinAmphur.tumbolId
-                      && w.vicC.vicA.vicT.District == w.victimJoinChangwat.amphurId
-                      && w.vicC.vicA.vicT.Province == w.changwatShort*/)
+                    .Where(w => (w.vicC.vicA.vicT.DrvSocNo == userIdCard || w.vicC.vicA.vicT.VictimNo == victimNo) && w.vicC.vicA.vicT.AccNo == accNo)
                     .Select(s => new {
                         s.vicC.vicA.vicT.AccNo,
                         s.vicC.vicA.vicT.VictimNo,
@@ -186,7 +181,7 @@ namespace Services
                     .FirstOrDefaultAsync();
                 if (vic == null)
                 {
-                    return vicViewModelList;
+                    return vicVwModel;
                 }
                 vicVwModel.AccNo = vic.AccNo;
                 vicVwModel.VictimNo = vic.VictimNo;
@@ -209,33 +204,29 @@ namespace Services
                 vicVwModel.ProvinceName = vic.changwatName;
                 vicVwModel.Zipcode = vic.Zipcode;
 
-                vicViewModelList.Add(vicVwModel);
+
             }
-            return vicViewModelList;
+            return vicVwModel;
         }
 
-        public async Task<List<CarViewModel>> GetAccidentCar(string accNo, string channal)
+        public async Task<CarViewModel> GetAccidentCar(string accNo, string channal)
         {
-            var carViewModelList = new List<CarViewModel>();
+            var carVwModel = new CarViewModel();
             if (channal == "LINE")
             {
                 var query = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == accNo).Select(s => new { s.EaCarFoundCarLicense, s.EaCarFoundChassisNo, s.EaCarFoundPolicyNo }).FirstOrDefaultAsync();
-                var carVwModel = new CarViewModel();
                 carVwModel.FoundCarLicense = query.EaCarFoundCarLicense;
                 carVwModel.FoundChassisNo = query.EaCarFoundChassisNo;
                 carVwModel.FoundPolicyNo = query.EaCarFoundPolicyNo;
-                carViewModelList.Add(carVwModel);
             }
             else if (channal == "HOSPITAL")
             {               
                 var query = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
-                var carVwModel = new CarViewModel();
                 carVwModel.FoundCarLicense = query.FoundCarLicense;
                 carVwModel.FoundChassisNo = query.FoundChassisNo;
                 carVwModel.FoundPolicyNo = query.FoundPolicyNo;
-                carViewModelList.Add(carVwModel);
             }           
-            return carViewModelList;
+            return carVwModel;
         }
         private List<string> GetLineAccNo(string userIdCard)
         {          
@@ -247,6 +238,19 @@ namespace Services
             return rvpOfficeContext.HosVicTimAccident.Where(w => w.DrvSocNo == userIdCard && w.AccNo != null).Select(s => s.AccNo).ToList();
         }
 
+        public async Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo)
+        {
+            var result = new AccidentPDFViewModel();
+            var query = await rvpOfficeContext.HosAccident.Where(w => w.AccNo == accNo).Select(s => new {s.AccNo, s.DateAcc, s.TimeAcc, s.AccPlace }).FirstOrDefaultAsync();
+            result.AccNo = query.AccNo;
+            result.DateAccString = query.DateAcc.Value.Date.ToString("dd-MM-yyyy");
+            result.DateAcc = query.DateAcc;
+            result.TimeAcc = query.TimeAcc;
+            result.AccPlace = query.AccPlace;
+            return result;
+        }
+
+        
 
     }
 }
