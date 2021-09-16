@@ -31,7 +31,14 @@
                                     </div>
                                     <div align="right" style="margin-top: -10px;">
                                         <div style="margin-top:-5px">
-                                            <a v-on:click="getPDF(hosApp.appNo)">PDF</a>
+                                            <!--<a v-on:click="getPDF(hosApp.appNo)">PDF</a>-->
+                                            <vs-button v-on:click="getPDF(hosApp.appNo)"
+                                                       
+                                                       icon
+                                                       primary
+                                                       flat>
+                                                PDF
+                                            </vs-button>
                                             <router-link :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">
                                                 <vs-button circle
                                                            icon
