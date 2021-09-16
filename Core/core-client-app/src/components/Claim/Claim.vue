@@ -878,7 +878,7 @@
                 var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
                 axios.get(url)
                     .then((response) => {
-                        this.accidentCarData = response.data[0];
+                        this.accidentCarData = response.data;
                         console.log(this.accidentCarData);
                     })
                     .catch(function (error) {
@@ -891,7 +891,7 @@
                 var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
                 axios.get(url)
                     .then((response) => {
-                        this.accidentVictimData = response.data[0];
+                        this.accidentVictimData = response.data;
                         console.log(this.accidentVictimData);
                     })
                     .catch(function (error) {
