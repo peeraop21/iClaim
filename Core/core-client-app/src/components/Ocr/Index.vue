@@ -175,6 +175,7 @@
                 URI: "/v1/compare-face-id-card",
                 URL: "https://iai.flashsoftapi.com/v1/compare-face-id-card",
                 acceptData: false,
+                ImageData: { IdCardBase64: null, FaceBase64:null}
             };
         },
 
@@ -247,10 +248,73 @@
                 let signature = hmacSHA256(string_to_sign, secret_signing).toString();
                 return "FC1-HMAC-SHA256" + " " + "Credential=" + secret_id.toString() + "/" + today + "/th/fc1_request" + ", " + "SignedHeaders=content-type;host" + ", " + "Signature=" + signature.toString();
             },
+            postIdCardImage() {
+
+                axios.post("/api/Ocr/IdCard", JSON.stringify(this.ImageData), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        this.dataIdCard = response.data.responseOcrIdCard;
+                        if (this.dataIdCard != "") {
+                            this.$swal.close();
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            postFaceImage() {
+
+                axios.post("/api/Ocr/CompareFace", JSON.stringify(this.ImageData), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        this.scoreCompare = response.data.resultCompare;
+                        let error = response.data.errorContent;
+                        if (error != null) {
+                            this.$swal.close();
+                            this.$swal({
+                                icon: 'error',
+                                text: error,
+                                title: 'ผิดพลาด',
+                                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                showCancelButton: false,
+                                showDenyButton: false,
+
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                            })
+                        }
+                        else if (this.scoreCompare != "") {
+                            this.$swal.close();
+                            this.$swal({
+                                icon: 'success',
+                                text: 'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกัน ' + this.scoreCompare.score + "%",
+                                title: 'ตรวจสอบสำเร็จ',
+                                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                showCancelButton: false,
+                                showDenyButton: false,
+
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                            })
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             onAddidCardFile: async function (error, file) {
                 this.idCardTest.file = file
                 this.idCardTest.filename = file.getFileEncodeDataURL()
                 this.idCardTest.base64 = file.getFileEncodeBase64String()
+                this.ImageData.IdCardBase64 = this.idCardTest.base64;
+                
+                console.log(file);
                 this.$swal({
                     title: 'กำลังอ่านข้อมูล',
                     html: 'ขณะนี้ระบบกำลังอ่านข้อมูลบัตรประจำตัวประชาชน',
@@ -263,7 +327,8 @@
 
                     }
                 })
-                await this.readIdCard()
+                await this.postIdCardImage();
+                /*await this.readIdCard()*/
 
 
             },
@@ -271,6 +336,7 @@
                 this.faceTest.file = file
                 this.faceTest.filename = file.getFileEncodeDataURL()
                 this.faceTest.base64 = file.getFileEncodeBase64String()
+                this.ImageData.FaceBase64 = this.faceTest.base64
                 this.$swal({
                     title: 'กำลังตรวจสอบ',
                     html: 'ขณะนี้ระบบกำลังตรวจสอบใบหน้าเทียบกับบัตรประจำตัวประชาชน',
@@ -283,16 +349,17 @@
 
                     }
                 })
-                await this.demo_url()
+                await this.postFaceImage()
 
             },
-            readIdCard() {
-                var url = "https://sv1.picz.in.th/images/2021/08/19/2vfhUf.jpg";
+            readIdCard: async function () {
+                console.log(this.idCardTest.base64.toString().replaceAll("/", "%2F"))
+                var url = this.idCardTest.base64.toString().replaceAll("/", "%2F");
                 let data = qs.stringify({
                     'url': url,
                 });
                 let timestamp = this.current_timestamp();
-                let token = this.generate_token_readIdCard(this.SECRET_ID, this.SECRET_KEY, timestamp, data);
+                let token = await this.generate_token_readIdCard(this.SECRET_ID, this.SECRET_KEY, timestamp, data);
                 let config = {
                     method: 'post',
                     url: 'https://iai.flashsoftapi.com/v1/thai-id-card-ocr',
@@ -314,7 +381,7 @@
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        console.log(error.response.data);
                     });
 
             },

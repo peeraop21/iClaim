@@ -242,6 +242,8 @@
                         let blob = new Blob([response.data], { type: 'application/pdf' }),
                             url = window.URL.createObjectURL(blob)
                         this.$swal.close();
+                        //this.$router.push(url)
+                        //window.location.href = url;
                         window.open(url)
                         
                         /*window.open("data:application/pdf," + encodeURI(response.data));*/

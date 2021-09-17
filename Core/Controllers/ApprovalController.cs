@@ -23,7 +23,6 @@ namespace Core.Controllers
         public double? SumMoney { get; set; }
         public string ClaimNo { get; set; }
         public string Injury { get; set; }
-
         public List<vwBillsData> BillsData { get; set; }
         public vwBankData BankData { get; set; }
         public vwVictim VictimData { get; set;}
