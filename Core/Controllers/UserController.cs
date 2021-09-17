@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using Services.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,17 +18,15 @@ namespace Core.Controllers
     {
 
         private readonly IUserService userService;
+        private readonly IMasterService masterService;
 
-        public UserController(IUserService userService)
+
+        public UserController(IUserService userService, IMasterService masterService)
         {
             this.userService = userService;
+            this.masterService = masterService;
         }
-        // GET: api/<UserController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        
 
         [Authorize]
         // GET api/<UserController>/5
@@ -36,22 +36,29 @@ namespace Core.Controllers
             return Ok(await userService.GetUser(userToken));
         }
 
-        // POST api/<UserController>
+        [Authorize]
+        // GET api/<UserController>/5
+        [HttpGet("CheckRegister/{userToken}")]
+        public async Task<IActionResult> CheckRegister(string userToken)
+        {
+            return Ok(await userService.CheckRegister(userToken));
+        }
+
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> PostAsync([FromBody] DirectPolicyKycViewModel model)
         {
-        }
-
-        // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UserController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var kycno = await userService.GetLastKyc();
+            var genAddress = await masterService.GetIdAddress(model.HomeProvinceId, model.HomeCityId, model.HomeTumbolId);
+            model.HomeProvinceId = genAddress.ProvinceId;
+            model.HomeCityId = genAddress.DistrictId;
+            model.HomeTumbolId = genAddress.SubDistrictId;
+            model.HomeZipcode = genAddress.ZipCode;
+            model.DateofBirth =(model.StringDateofBirth.Length == 10) ? DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-d", CultureInfo.InvariantCulture);
+            model.Kycno = kycno + 1;
+            model.IdcardNo = model.IdcardNo.Replace(" ", "");
+            model.InsertDate = DateTime.Now;
+            model.LastUpdateDate = DateTime.Now;
+            return Ok(await userService.AddAsync(model));
         }
     }
 }

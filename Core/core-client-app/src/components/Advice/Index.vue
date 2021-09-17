@@ -1,41 +1,6 @@
 ﻿<template>
     <div class="container mt-2">
-        <!--<div class="bg-main mt-2">
-        <div class="row">
-            <div class="col-3 px-0">
-                <img src="@/assets/kid.png" width="60" class="px-0 mb-2" style="margin-left: 35%">
-            </div>
-            <div class="col-9 text-start mt-3 px-3">
-                <span style="font-size: 13px; font-weight: bold">นายรำพี พีรำรำ</span>
-
-            </div>
-        </div>
-    </div>-->
-        <!-- <vs-alert :page.sync="page">
-        <template #title>
-            ขั้นตอนดำเนินการ
-        </template>
-
-        <template #page-1>
-            1. ลงทะเบียน (ถ้าท่านเคยลงทะเบียนแล้ว จะข้ามขั้นตอนนี้ไป)
-        </template>
-        <template #page-2>
-            2. เลือกรายการแจ้งอุบัติเหตุที่จะใช้สิทธิ์ (ถ้าไม่มีรายการแจ้ง ท่านสามารถเลือกที่แจ้งเหตุใหม่ได้)
-        </template>
-        <template #page-3>
-            3. เลือกประเภทสิทธิ์ที่ได้รับ
-            <br />(ค่ารักษาพยาบาล/ค่าสูญเสียอวัยวะ)
-        </template>
-        <template #page-4>
-            4. แนบเอกสารที่เกี่ยวข้องและกรอกข้อมูลเพิ่มเติม
-        </template>
-        <template #page-5>
-            5. ถ่ายภาพหน้าสมุดบัญชีธนาคาร
-        </template>
-        <template #page-6>
-            6. กดส่งคำร้องและยืนยันการส่งด้วย SMS OTP
-        </template>
-    </vs-alert>-->
+      
 
         <div align="center" class="mt-4">
             <h2 id="header2">คำแนะนำ</h2>
@@ -146,7 +111,7 @@
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
-                <router-link class="btn-next" style="width: 100%; padding: 8px 0;" to="/Ocr">{{msg}}</router-link>
+                <router-link class="btn-next" style="width: 100%; padding: 8px 0;" to="/Accident">{{msg}}</router-link>
             </div>
             <br><br><br>
         </div>
@@ -265,6 +230,7 @@
 </template>
 <script>
 
+    import axios from 'axios'
     
     export default {
         name: 'Advice',
@@ -277,12 +243,48 @@
                 riderDialog: false,
                 passangerDialog: false,
                 page: 1,
+                registered: null
             }
         },
         methods: {
+            getJwtToken() {
+                var urlJwt = '/api/jwt'
+                axios.post(urlJwt, {
+                    Name: 'Nior',
+                    Email: 'peeran@rvp.co.th'
+                }).then((response) => {
+                    this.$store.state.jwtToken = response.data
+                    this.checkRegister()
+                }).catch(function (error) {
+                    alert(error)
+                })
+            },
+            checkRegister() {
+                var url = '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
+                var tokenJwt = this.$store.state.jwtToken.token
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + tokenJwt
+                    }
+                }
+                axios.get(url, apiConfig)
+                    .then((response) => {
+                        /*this.userApi = response.data;*/
+                        this.registered = response.data;
+                        console.log(response)
+                        if (this.registered == false) {
+                            this.$router.push({ name: 'Ocr' })
+                        }
+
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
         },
-        mounted() {
-            
+        async mounted() {
+            this.$store.state.userTokenLine = "gggg"
+            /*await this.getJwtToken()*/ //ตรวจสอบการลงทะเบียน
         }
 
 

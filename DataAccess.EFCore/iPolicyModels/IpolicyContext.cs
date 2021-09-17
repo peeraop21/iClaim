@@ -154,6 +154,8 @@ namespace DataAccess.EFCore.iPolicyModels
                     .HasMaxLength(13)
                     .IsUnicode(false);
 
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+
                 entity.Property(e => e.LastUpdateDate).HasColumnType("datetime");
 
                 entity.Property(e => e.LastUpdateIp)

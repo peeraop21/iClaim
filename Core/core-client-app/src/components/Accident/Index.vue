@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="mb-4 mt-4">
-                    <router-link class="btn-next" to="/">แจ้งเหตุใหม่</router-link>
+                    <router-link class="btn-next" to="">แจ้งเหตุใหม่</router-link>
                 </div>
                 <div align="left" style="width: 100%;">
                     <label class="title-advice-menu">ประวัติการแจ้งอุบัติเหตุ</label>

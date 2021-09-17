@@ -35,6 +35,7 @@ namespace DataAccess.EFCore.iPolicyModels
         public string HomeCityId { get; set; }
         public string HomeProvinceId { get; set; }
         public string HomeZipcode { get; set; }
+        public DateTime? InsertDate { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateIp { get; set; }
         public string HashData { get; set; }

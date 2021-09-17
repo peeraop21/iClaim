@@ -115,7 +115,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <router-link class="btn-next" style="width: 100%; padding: 8px 0px;" to="/Accident">ดำเนินการต่อ</router-link>
+                    <button class="btn-next-submit" style="width: 100%; padding: 8px 0px;"  @click="submit">ดำเนินการต่อ</button>
                 </div>
             </div>
             <br><br>
@@ -128,9 +128,7 @@
 <script>
 
 
-    import qs from 'qs'
-    import sha256 from 'crypto-js/sha256'
-    import hmacSHA256 from 'crypto-js/hmac-sha256'
+  
 
     import axios from 'axios'
     import vueFilePond from 'vue-filepond';
@@ -148,6 +146,7 @@
     import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
     import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
     import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+
 
 
     // Create component
@@ -175,78 +174,147 @@
                 URI: "/v1/compare-face-id-card",
                 URL: "https://iai.flashsoftapi.com/v1/compare-face-id-card",
                 acceptData: false,
-                ImageData: { IdCardBase64: null, FaceBase64:null}
+                ImageData: { IdCardBase64: null, FaceBase64: null },
+                result:""
             };
         },
 
         methods: {
-            encode_utf8(s) {
-                return unescape(encodeURIComponent(s));
-            },
-            generate_nonce() {
-                let nonce = '';
-                for (let num = 1; num <= 16; num++) {
-                    nonce += Math.floor(Math.random() * 10).toString()
+            
+            submit: async function () {
+                
+                if (this.scoreCompare != null && this.scoreCompare.score >= 90) {
+                    this.$swal({
+                        title: 'กำลังประมวลผล',
+                        html: 'ขณะนี้ระบบกำลังประมวลผล และบันทึกข้อมูล',
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            this.$swal.showLoading()
+
+                        },
+                        willClose: () => {
+
+                        }
+                    })
+                    await this.postUserData();
+                   
+                } else if (this.scoreCompare != null && this.scoreCompare.score < 90) {
+                    
+                    this.$swal({
+                        icon: 'error',
+                        text: 'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกันต่ำกว่า 90%' + ' กรุณาอัพโหลดรูปใหม่เพื่อเปรียบเทียบอีกครั้ง',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else {
+                    
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรูณาอัพโหลดรูปถ่ายหน้าเซลฟี เพื่อทำการเปรียบใบหน้า',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
                 }
-                return nonce;
             },
-            current_timestamp() {
-                let now = parseInt(new Date().getTime() / 1000);
-                return now.toString();
-            },
-            get_date(timestamp) {
-                let now = new Date(parseInt(timestamp) * 1000);
-                now.setMinutes(now.getMinutes() + now.getTimezoneOffset());
-                let yy = now.getFullYear();
-                let mm = now.getMonth() + 1;
-                if (String(mm).length !== 2) {
-                    mm = '0' + mm
+            postUserData() {
+                let address = this.dataIdCard.address.split(/[\s,]+/)
+                
+                let splitMoo = null;
+                
+                console.log("splitMoo : ", splitMoo);
+                let homeid = null;
+                let hmo = null;
+                if (this.dataIdCard.address.includes("หมู่ที่")) {
+                    splitMoo = this.dataIdCard.address.split("หมู่ที่ ")[1];
+                    hmo = splitMoo.charAt(0);
                 }
-                let dd = now.getDate();
-                if (String(dd).length !== 2) {
-                    dd = '0' + dd
+                let road = null;
+                let tumbol = null;
+                let amphur = null;
+                let changwat = null;
+
+                for (let i = 0; i < address.length; i++) {
+                    if (address[i].includes("ต.")) {
+                        tumbol = address[i].replace("ต.", "")
+                    } else if (address[i].includes("แขวง")) {
+                        tumbol = address[i].replace("แขวง", "")
+                    } else if (address[i].includes("อ.")) {
+                        amphur = address[i].replace("อ.", "")
+                    } else if (address[i].includes("เขต")) {
+                        amphur = address[i].replace("เขต", "")
+                    } else if (address[i].includes("จ.")) {
+                        changwat = address[i].replace("จ.", "")
+                    } else if (i == (address.length - 1)) {
+                        changwat = address[i]
+                    } else if (address[i].includes("ถ.")) {
+                        road = address[i].replace("ถ.", "")
+                    } else if (i == 1) {
+                        homeid = address[i]
+                    } 
+
                 }
-                return yy + "-" + mm + "-" + dd;
-            },
-            generate_token_readIdCard(secret_id, secret_key, timestamp, data) {
-                let host = 'iai.flashsoftapi.com';
-                let today = this.get_date(timestamp);
+                let body = {
+                    idcardNo : this.dataIdCard.id,
+                    prefix : this.dataIdCard.name_th.split(" ", 1)[0],
+                    fname : this.dataIdCard.name_th.split(" ", 2)[1],
+                    lname: this.dataIdCard.name_th.split(" ", 3)[2],
+                    stringDateofBirth: this.dataIdCard.date_of_birth,
+                    homeHouseNo: homeid,
+                    homeHmo: hmo,
+                    homeRoad: road,
+                    homeTumbolId: tumbol,
+                    homeCityId: amphur,
+                    homeProvinceId: changwat,
+                    lineId: this.$store.state.userTokenLine
+                };
+                console.log(body)
+                axios.post("/api/User", JSON.stringify(body), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        this.$swal.close();
+                        this.$swal({
+                            icon: 'success',
+                            text: 'ระบบได้ทำการบันทึกข้อมูลการยืนยันตัวตนของท่านเรียบร้อยแล้ว',
+                            title: 'ยืนยันตัวตนสำเร็จ',
+                            /*footer: '<a href="">Why do I have this issue?</a>'*/
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+                                this.$router.push({ name: 'Accident' })
+                            }
+                        })
+                        
+                        console.log(response.data)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        this.$swal({
+                            icon: 'error',
+                            text: 'บันทึกข้อมูลไม่สำเร็จกรุณาลองใหม่อีกครั้ง',
+                            title: 'ผิดพลาด',
+                            /*footer: '<a href="">Why do I have this issue?</a>'*/
+                            showCancelButton: false,
+                            showDenyButton: false,
 
-                let payload = data;
-                let digest_data = sha256(payload);
-
-                let canonical_request = "POST" + "\n" + "/v1/thai-id-card-ocr" + "\n\n" + "content-type:application/x-www-form-urlencoded" + "\n" + "host:" + host + "\n\n" + "content-type;host" + "\n";
-                let digest = sha256(canonical_request + digest_data);
-
-                let string_to_sign = "FC1-HMAC-SHA256" + "\n" + timestamp + "\n" + today + "/th/fc1_request" + "\n" + digest
-                let secretkey = "FC1" + secret_key;
-                let v1 = this.encode_utf8(secretkey.toString());
-                let v2 = this.encode_utf8(today.toString());
-                let secret_date = hmacSHA256(v2, v1);
-                let secret_service = hmacSHA256('th', secret_date);
-                let secret_signing = hmacSHA256('fc1_request', secret_service);
-                let signature = hmacSHA256(string_to_sign, secret_signing).toString();
-                return "FC1-HMAC-SHA256" + " " + "Credential=" + secret_id.toString() + "/" + today + "/th/fc1_request" + ", " + "SignedHeaders=content-type;host" + ", " + "Signature=" + signature.toString();
-            },
-            generate_token(secret_id, secret_key, uri, timestamp, data) {
-                let host = 'iai.flashsoftapi.com';
-                let today = this.get_date(timestamp);
-
-                let payload = data;
-                let digest_data = sha256(payload);
-
-                let canonical_request = "POST" + "\n" + uri.toString() + "\n\n" + "content-type:application/x-www-form-urlencoded" + "\n" + "host:" + host + "\n\n" + "content-type;host" + "\n";
-                let digest = sha256(canonical_request + digest_data);
-
-                let string_to_sign = "FC1-HMAC-SHA256" + "\n" + timestamp + "\n" + today + "/th/fc1_request" + "\n" + digest
-                let secretkey = "FC1" + secret_key;
-                let v1 = this.encode_utf8(secretkey.toString());
-                let v2 = this.encode_utf8(today.toString());
-                let secret_date = hmacSHA256(v2, v1);
-                let secret_service = hmacSHA256('th', secret_date);
-                let secret_signing = hmacSHA256('fc1_request', secret_service);
-                let signature = hmacSHA256(string_to_sign, secret_signing).toString();
-                return "FC1-HMAC-SHA256" + " " + "Credential=" + secret_id.toString() + "/" + today + "/th/fc1_request" + ", " + "SignedHeaders=content-type;host" + ", " + "Signature=" + signature.toString();
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                        })
+                    });
             },
             postIdCardImage() {
 
@@ -257,6 +325,7 @@
                 })
                     .then((response) => {
                         this.dataIdCard = response.data.responseOcrIdCard;
+                        console.log(this.dataIdCard)
                         if (this.dataIdCard != "") {
                             this.$swal.close();
                         }
@@ -352,101 +421,41 @@
                 await this.postFaceImage()
 
             },
-            readIdCard: async function () {
-                console.log(this.idCardTest.base64.toString().replaceAll("/", "%2F"))
-                var url = this.idCardTest.base64.toString().replaceAll("/", "%2F");
-                let data = qs.stringify({
-                    'url': url,
-                });
-                let timestamp = this.current_timestamp();
-                let token = await this.generate_token_readIdCard(this.SECRET_ID, this.SECRET_KEY, timestamp, data);
-                let config = {
-                    method: 'post',
-                    url: 'https://iai.flashsoftapi.com/v1/thai-id-card-ocr',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': token,
-                        'X-FC-NONCE': this.generate_nonce(),
-                        'X-FC-TIMESTAMP': timestamp,
-                    },
-                    data: data
-                };
-
-                axios(config)
-                    .then((response) => {
-                        this.dataIdCard = response.data.result;
-                        console.log(this.dataIdCard);
-                        if (this.dataIdCard != "") {
-                            this.$swal.close();
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error.response.data);
-                    });
-
-            },
-            demo_url() {
-
-                var url_a = "https://sv1.picz.in.th/images/2021/08/19/2vfhUf.jpg";
-                var url_b = "https://sv1.picz.in.th/images/2021/08/19/2vfTcz.jpg";
-
-                let data = qs.stringify({
-                    'id_card_url': url_a,
-                    'selfie_url': url_b,
-                });
-                let timestamp = this.current_timestamp();
-                let token = this.generate_token(this.SECRET_ID, this.SECRET_KEY, this.URI, timestamp, data);
-                let config = {
-                    method: 'post',
-                    url: this.URL,
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': token,
-                        'X-FC-NONCE': this.generate_nonce(),
-                        'X-FC-TIMESTAMP': timestamp,
-                    },
-                    data: data
-                };
-
-                axios(config)
-                    .then((response) => {
-                        this.scoreCompare = response.data.result;
-                        console.log(this.scoreCompare);
-                        if (this.scoreCompare != "") {
-                            this.$swal.close();
-                            this.$swal({
-                                icon: 'success',
-                                text: 'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกัน ' + this.scoreCompare.score + "%",
-                                title: 'ตรวจสอบสำเร็จ',
-                                /*footer: '<a href="">Why do I have this issue?</a>'*/
-                                showCancelButton: false,
-                                showDenyButton: false,
-
-                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                                confirmButtonColor: '#5c2e91',
-                            })
-                        }
-                        //   console.log('result: ' +  JSON.stringify(data.result, null, 4));
-                        //   console.log('request_id: ' + data.request_id); // for debug use
-                    })
-                    .catch(function (error) {
-                        console.log(error.response.data);
-                    });
-
-            }
+            
+           
 
 
 
         },
         mounted() {
+            this.$swal({
+                icon: 'info',
+                text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
+                title: 'ขออภัย',
+                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                showCancelButton: false,
+                showDenyButton: false,
 
+                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                confirmButtonColor: '#5c2e91',
+            })
 
         }
     };
 </script>
 
 <style>
+    .btn-next-submit {
+        background-color: var(--main-color);
+        color: white;
+        padding: 5px 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 20px;
+        font-size: 15px;
+        border:none;
+    }
     .vs-checkbox-mask::before{
         background-color: white;
     }

@@ -67,6 +67,7 @@ namespace Core
             services.AddControllers();
           
             services.AddAutoMapper(typeof(DataMapperProfile));
+            services.AddAutoMapper(typeof(ServiceDataMapperProfile));
 
             services.AddSwaggerGen(c =>
             {

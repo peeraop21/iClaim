@@ -71,8 +71,8 @@ namespace Core.Controllers
     {
 
 
-        string secretId = "4de031cd4f5bdaf0aa791e2d692498da";
-        string secretKey = "6b3920aa8ae879dc5025462b810496106a40f8eb";
+        string secretId = "681eac5be10f3632cd659cfc7d87380e";
+        string secretKey = "86e6d2be10a59432ac1528b684224101b59313c2";
         public OcrController()
         {
            

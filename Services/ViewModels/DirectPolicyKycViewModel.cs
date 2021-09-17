@@ -19,7 +19,7 @@ namespace Services.ViewModels
         public string Lname { get; set; }
         public string MobileNo { get; set; }
         public string Email { get; set; }
-        public DateTime? DateofBirth { get; set; }
+        public DateTime? DateofBirth { get; set; }      
         public string Gender { get; set; }
         public string CurrentHouseNo { get; set; }
         public string CurrentHmo { get; set; }
@@ -40,10 +40,12 @@ namespace Services.ViewModels
         public string HomeCityId { get; set; }
         public string HomeProvinceId { get; set; }
         public string HomeZipcode { get; set; }
+        public DateTime? InsertDate { get; set; }
         public DateTime? LastUpdateDate { get; set; }
         public string LastUpdateIp { get; set; }
         public string HashData { get; set; }
         public string LineId { get; set; }
         public string Status { get; set; }
+        public string StringDateofBirth { get; set; }
     }
 }
