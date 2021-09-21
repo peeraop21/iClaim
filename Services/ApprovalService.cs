@@ -22,6 +22,7 @@ namespace Services
         Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo);
         Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo);
         Task<double?> GetRightsBalance(string accNo, int? victimNo, string rightsType);
+        Task<string> UpdateApprovalAsync(string accNo, int victimNo, int appNo, string status);
 
     }
 
@@ -382,6 +383,19 @@ namespace Services
             
 
             return rightsBalance;
+        }
+
+        public async Task<string> UpdateApprovalAsync(string accNo, int victimNo, int appNo, string status)
+        {
+            if (status == "ConfirmMoney")
+            {
+                var statusUpdate = await digitalclaimContext.ApprovalStatus.Where(w => w.StatusName == "อนุมัติจ่าย​").FirstOrDefaultAsync();
+                var approvalStatus = await digitalclaimContext.HosApprovalStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == appNo).FirstOrDefaultAsync();
+                approvalStatus.Status = statusUpdate.StatusId;
+                await digitalclaimContext.SaveChangesAsync();
+                return "Success";
+            }
+            return "Error";
         }
 
     }

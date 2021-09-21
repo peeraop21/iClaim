@@ -46,7 +46,9 @@ namespace Services
 
             return chwViewModel;
         }
-        public async Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol)
+
+        // ยังไม่สำบูรณ์ต้องแก้ insert ลง db แล้ว ลงแค่ proviceId
+        public async Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol) 
         {
             var changwatId = await rvpofficeContext.Changwat.Where(w => w.Changwatname.Contains(changwat)).Select(s => s.Provinceid).FirstOrDefaultAsync();
             var amphurId = await rvpofficeContext.Amphur.Where(w => w.Amphurname.Contains(amphur) && w.Changwatshortname == changwatId).Select(s => s.Amphurid).FirstOrDefaultAsync();

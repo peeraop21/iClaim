@@ -79,7 +79,7 @@
                             <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
                         </div>
                         <div class="col-5">
-                            <button class="btn-request-otp" type="button">ขอรหัส OTP</button>
+                            <button class="btn-request-otp" @click="requestOTP" v-bind:disabled="disableBtnReqOTP" type="button">ขอรหัส OTP</button>
                         </div>
                     </div>
                     <div class="row">
@@ -107,10 +107,10 @@
                     </div>
                     <div class="row">
                         <div class="col-6  pt-2">
-                            <p class=" pink-title fw-bold text-start "><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง</p>
+                            <p class=" pink-title fw-bold text-start " @click="requestOTP" v-if="countDown == 60"><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง</p>
                         </div>
                         <div class="col-6  pt-2">
-                            <p class=" black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:20 น.</p>
+                            <p class=" black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:{{countDown}} น.</p>
                         </div>
                     </div>
                     <div>
@@ -154,6 +154,7 @@
 
 <script>
     import axios from 'axios'
+    import qs from 'qs'
     //Your Javascript lives within the Script Tag
     export default {
         name: "ConfirmMoney",
@@ -183,6 +184,8 @@
                 },
                 // HosApp
                 hosData: this.$store.getters.hosAppGetter(this.$route.params.id),
+                countDown: 60,
+                disableBtnReqOTP: false,
             }
         },
         methods: {
@@ -245,6 +248,164 @@
                     .catch(function (error) {
                         alert(error);
                     });
+            },
+            countDownTimer() {
+                if (this.countDown > 0) {
+                    this.disableBtnReqOTP = true
+                    setTimeout(() => {
+                        this.countDown -= 1
+                        this.countDownTimer()
+                    }, 1000)
+                } else if (this.countDown <= 0) {
+                    this.disableBtnReqOTP = false
+                    this.countDown = 60
+
+                }
+            },
+            postData() {
+                var url = "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
+                axios.get(url)
+                    .then((response) => {
+                        console.log(response);
+                        this.$swal.close();
+                        this.showSwalSuccess();
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            requestOTP() {
+                //ตัวจริง
+                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
+                const body = {
+                    TelNo: this.userData.mobileNo
+                };
+                //var tel = "";
+
+
+                //ตัวเทส
+                //const url = "https://smsotp.rvpeservice.com/OTP/RequestOTP";
+                //const body = {
+                //    ProjectName: "OTP_DigitalClaim",
+                //    TelNo: this.userData.mobileNo
+                //};
+                console.log(qs.stringify(body))
+                axios.post(url, qs.stringify(body), {
+                    headers: {
+                        // Overwrite Axios's automatically set Content-Type
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                }).then((response) => {
+                    this.countDownTimer()
+                    this.dataOTP = response.data.result
+                    console.log(this.dataOTP);
+
+                }).catch((error) => {
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรุณากดปุ่มขอรหัสยืนยัน OTP อีกครัง',
+                        title: 'ผิดพลาด',
+                        showCancelButton: false,
+                        showDenyButton: true,
+                        showConfirmButton: false,
+                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        denyButtonColor: '#dad5e9'
+                    });
+                    console.log(error);
+                });
+            },
+
+            submit: async function () {
+                this.$swal({
+                    title: 'กำลังตรวจสอบ',
+                    html: 'ขณะนี้ระบบกำลังตรวจสอบรหัสยืนยัน OTP',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        this.$swal.showLoading()
+
+                    },
+                    willClose: () => {
+
+                    }
+                })
+                await this.verifyOTP()
+
+            },
+            verifyOTP() {
+                //ตัวจริง
+                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/VerifyOTP";
+                const body = {
+                    'token': this.dataOTP.token,
+                    'otp_code': this.inputOTP,
+                    'ref_code': this.dataOTP.ref_code
+                };
+
+
+                //ตัวเทส
+                //const url = "https://smsotp.rvpeservice.com/OTP/VerifyOTP";
+                //const body = {
+                //    'ProjectName': "OTP_DigitalClaim",
+                //    'token': this.dataOTP.token,
+                //    'otp_code': this.inputOTP,
+                //    'ref_code': this.dataOTP.ref_code
+                //};
+
+                console.log(qs.stringify(body))
+                axios.post(url, qs.stringify(body), {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then((response) => {
+                    this.verifyResultOTP = response.data
+                    console.log(this.verifyResultOTP.status);
+                    if (this.verifyResultOTP.status == "false") {
+                        this.$swal.close();
+                        this.$swal({
+                            icon: 'error',
+                            text: 'รหัสยืนยัน OTP ไม่ถูกต้องกรุณาลองใหม่อีกครั้ง',
+                            title: 'ผิดพลาด',
+                            showCancelButton: false,
+                            showDenyButton: true,
+                            showConfirmButton: false,
+                            denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            denyButtonColor: '#dad5e9',
+
+                        })
+                    } else if (this.verifyResultOTP.status == "true") {
+                        this.postData()
+
+
+
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+
+            },
+            showSwalSuccess() {
+                this.$swal({
+                    icon: 'success',
+                    text: 'บริษัทจะแจ้งวันที่โอนเงินให้ท่านทราบอีกครั้ง',
+                    title: 'ยืนยันจำนวนเงินเรียบร้อย',
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ติดตามสถานะ",
+                    confirmButtonColor: '#5c2e91',
+                    willClose: () => {
+                        this.$router.push({ name: 'Accident' })
+                    }
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                    } else if (result.isDenied) {
+                        this.$router.push({ name: 'Accident' })
+                    }
+                });
             },
         },
         async mounted() {

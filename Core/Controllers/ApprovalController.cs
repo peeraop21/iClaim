@@ -108,6 +108,12 @@ namespace Core.Controllers
             var addToDb = await approvalService.AddAsync(resultMapHosApproval, resultMapBank, resultMapVictim);
             return Ok(new { status = "" });
         }
+
+        [HttpGet("UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}")]
+        public async Task<IActionResult> UpdateStatus(string accNo, int victimNo, int appNo, string status)
+        {
+            return Ok(await approvalService.UpdateApprovalAsync(accNo.Replace('-', '/'), victimNo, appNo, status));
+        }
      
 
 
