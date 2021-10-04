@@ -101,14 +101,14 @@
                         </div>
                     </div>
                     <div v-if="acceptClaim && acceptData" class="mb-4 mt-2" align="center">
-                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.stringAccNo}}" >ยืนยันส่งคำร้อง</router-link>
+                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.stringAccNo}}">ยืนยันส่งคำร้อง</router-link>
                     </div>
                 </div>
             </div>
         </vs-dialog>
         <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="storeInputData">
-            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt">
-                <!--:before-change="processFilePageOne"-->
+            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="OnChangePageOne">
+                
                 <div class="" v-if="formType == 2">
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
@@ -147,28 +147,8 @@
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
                     </div>
-                    <div class="box-container">
-                        <label class="px-2">อาการบาดเจ็บ</label>
-                        <b-form-input class="mt-0 mb-2" v-model="injuri" placeholder=""></b-form-input>
-                        <label class="px-2">ประเภทผู้ป่วย</label><br />
-                        <div style="float: left; margin-top: 3px;">
-                            <vs-radio v-model="typePatient" val="ผู้ป่วยใน" style="float: left">
-                                ผู้ป่วยใน (นอนพักรักษาตัวในโรงพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป)
-                            </vs-radio>
-                            <vs-radio v-model="typePatient" val="ผู้ป่วยนอก" class="mt-1" style="float: left">
-                                ผู้ป่วยนอก (ไม่ได้นอนพักรักษาตัวในโรงพยาบาล)
-                            </vs-radio>
-                            
-                        </div>
-                        <br /><br /><br /><br />
-                        <!--VALIDATE FORM INPUT-->
-                        <!--<b-form-input class="mt-0 mb-2" v-model="$v.injuri.$model" placeholder="" v-bind:class="{ 'is-invalid': $v.injuri.$error }"></b-form-input>
-    <div class="error" v-if="!$v.injuri.required">Field is required</div>
-    <div class="error" v-if="!$v.injuri.minLength">Name must have at least {{$v.injuri.$params.minLength.min}} letters.</div>-->
 
-
-                    </div>
-                    <div class="box-container mt-2" v-for="(input, index) in bills" :key="`Bill-${index}`" >
+                    <div class="box-container mt-2" v-for="(input, index) in bills" :key="`Bill-${index}`">
                         <div class="input wrapper flex items-center">
                             <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                             <!--<input type="file" @change="onFileChange">-->
@@ -176,8 +156,7 @@
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
-                                       accepted-file-types="image/jpeg, image/png"
-                                       />
+                                       accepted-file-types="image/jpeg, image/png" />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
                                 <template #header>
                                     <h4 class="not-margin">
@@ -213,41 +192,94 @@
                                     </div>
                                 </template>
                             </vs-dialog>
+                            <label class="px-2">อาการบาดเจ็บ</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.injuri" placeholder=""></b-form-input>
+                            <label class="px-2">ประเภทผู้ป่วย</label>
+                            <br />
+                            <div class="mt-1 mb-2" style="float: left;">
+                                <vs-radio v-model="input.typePatient" val="IPD" style="float: left">
+                                    ผู้ป่วยใน (นอนพักรักษาตัวในโรงพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป)
+                                </vs-radio>
+                                <vs-radio v-model="input.typePatient" val="OPD" class="mt-1" style="float: left">
+                                    ผู้ป่วยนอก (ไม่ได้นอนพักรักษาตัวในโรงพยาบาล)
+                                </vs-radio>
+
+                            </div>
                             <label class="px-2">โรงพยาบาล</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.selectHospital" type="text" @click="modalHospital=!modalHospital" />
                             <label class="px-2">เลขที่ใบเสร็จ</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
                             <label class="px-2">จำนวนเงิน</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
-                            <label class="px-2">วันที่เข้ารักษา</label>
-                            <b-form-datepicker v-model="input.hospitalized_date"
-                                               selected-variant="primary"
-                                               label-selected=""
-                                               label-no-date-selected=""
-                                               :close-button="true"
-                                               :label-help="null"
-                                               label-close-button="ปิด"
-                                               :today-button="true"
-                                               label-today-button="เลือกวันปัจจุบัน"
-                                               :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                               size="sm"
-                                               class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
-                            <div v-if="typePatient==='ผู้ป่วยใน'">
-                                <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
-                                <b-form-datepicker v-model="input.out_hospital_date"
-                                                   selected-variant="primary"
-                                                   label-selected=""
-                                                   label-no-date-selected=""
-                                                   :close-button="true"
-                                                   :label-help="null"
-                                                   label-close-button="ปิด"
-                                                   :today-button="true"
-                                                   label-today-button="เลือกวันปัจจุบัน"
-                                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                                   size="sm"
-                                                   class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>
+                            <div class="row">
+                                <div class="col-8">
+                                    <label class="px-2">วันที่เข้ารักษา</label>
+                                </div>
+                                <div class="col-4">
+                                    <label class="px-2">เวลา</label>
+                                </div>
                             </div>
-                            
+
+                            <div class="row">
+                                <v-date-picker v-model="input.hospitalized_date" class="flex-grow col-8" locale="th" mode="date" :max-date='new Date()' :attributes='attrs'  :model-config="dateModelConfig">
+                                    <template v-slot="{ inputValue, inputEvents }">
+                                        <input class=" mt-0 mb-2 form-control "
+                                               :value="inputValue"
+                                               v-on="inputEvents"
+                                               readonly />
+                                    </template>
+                                </v-date-picker>
+                                <v-date-picker v-model="input.hospitalized_time" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig" :dayPopover="{}" >
+                                    <template v-slot="{ inputValue, inputEvents }">
+                                        <input class=" mt-0 mb-2 form-control "
+                                               :value="inputValue"
+                                               v-on="inputEvents"
+                                               readonly />
+                                    </template>
+                                </v-date-picker>
+                            </div>
+
+                            <div v-if="input.typePatient==='IPD'">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="px-2">เวลา</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <v-date-picker v-model="input.out_hospital_date" class="flex-grow col-8" locale="th" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
+                                        <template v-slot="{ inputValue, inputEvents }">
+                                            <input class=" mt-0 mb-2 form-control "
+                                                   :value="inputValue"
+                                                   v-on="inputEvents"
+                                                   readonly />
+                                        </template>
+                                    </v-date-picker>
+                                    <v-date-picker v-model="input.out_hospital_time" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig">
+                                        <template v-slot="{ inputValue, inputEvents }">
+                                            <input class=" mt-0 mb-2 form-control "
+                                                   :value="inputValue"
+                                                   v-on="inputEvents"
+                                                   readonly />
+                                        </template>
+                                    </v-date-picker>
+                                </div>
+                                <!--<b-form-datepicker v-model="input.out_hospital_date"
+                                       selected-variant="primary"
+                                       label-selected=""
+                                       label-no-date-selected=""
+                                       :close-button="true"
+                                       :label-help="null"
+                                       label-close-button="ปิด"
+                                       :today-button="true"
+                                       label-today-button="เลือกวันปัจจุบัน"
+                                       :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                                       size="sm"
+                                       class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>-->
+                            </div>
+
                             <br>
                             <!-- Add Svg Icon-->
                             <p style="color: green">
@@ -282,9 +314,10 @@
                 </div>
             </tab-content>
             <!-- บัญชีรับเงิน -->
-            <tab-content title="บัญชีรับเงิน" icon="ti ti-money">
+            <tab-content title="บัญชีรับเงิน" icon="ti ti-money" :before-change="OnChangePageTwo">
                 <div>
                     <p for="my-file" align="left" class="title-advice-menu mb-0">ภาพถ่ายหน้าสมุดบัญชีธนาคาร</p>
+                    
                     <div class="box-container mt-0">
                         <div class="form-group ">
 
@@ -295,19 +328,21 @@
                                        v-bind:allow-multiple="false"
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="bankFile"
-                                       v-on:addfile="onAddBankAccountFile" />
-                            <!--<input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file" style="margin-top: -10px">
-                            <div class="border p-2 mt-2">
-                                <p align="left">ภาพถ่ายที่เลือก:</p>
-                                <template v-if="preview">
-                                    <img :src="preview" class="img-fluid" style="width: 30%" />-->
-                            <!--<p class="mb-0">ชื่อไฟล์: {{ image.name }}</p>
-                            <p class="mb-0">size: {{ image.size/1024 }}KB</p>-->
-                            <!--</template>
-                            </div>-->
+                                       v-on:addfile="onAddBankAccountFile"
+                                       v-if="!haslastDocumentReceive" />
+                            <file-pond name="bankFile"
+                                       ref="pond"
+                                       credits="null"
+                                       label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
+                                       v-bind:allow-multiple="false"
+                                       accepted-file-types="image/jpeg, image/png"
+                                       v-bind:files="bankFile"
+                                       v-on:addfile="onAddBankAccountFile"
+                                       v-if="haslastDocumentReceive" />
+
                         </div>
 
-                        <div>
+                        <div v-if="!haslastDocumentReceive">
 
                             <p class="mb-0 px-2">ชื่อธนาคาร</p>
                             <div class="mb-2">
@@ -320,8 +355,26 @@
                             <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
                             <b-form-input class="mt-0 mb-2" v-model="inputBank.accountName" placeholder=""></b-form-input>
                             <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
-                            <b-form-input class="mt-0 mb-2" v-model="inputBank.accountNumber" placeholder=""></b-form-input>
+                            <b-form-input class="mt-0 mb-2 mb-4" v-model="inputBank.accountNumber" placeholder=""></b-form-input>
                         </div>
+                        <div v-if="haslastDocumentReceive">
+
+                            <p class="mb-0 px-2">ชื่อธนาคาร</p>
+                            <div class="mb-2">
+                                <!--<b-form-input id="defaultSelectBank" class="mt-0 mb-2" v-model="displayBankName" :disabled="haslastDocumentReceive"></b-form-input>-->
+                                <select id="defaultSelectBank" v-model="lastDocumentReceive.accountBankName" style="font-size: 13px;" :disabled="haslastDocumentReceive">
+                                    <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                        {{ bankName.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
+                            <b-form-input id="defaultInputAccountName" class="mt-0 mb-2" v-model="lastDocumentReceive.accountName" :disabled="haslastDocumentReceive"></b-form-input>
+                            <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
+                            <b-form-input id="defaultInputAccountNumber" class="mt-0 mb-2 mb-4" v-model="lastDocumentReceive.accountNumber" :disabled="haslastDocumentReceive"></b-form-input>
+
+                        </div>
+                        <button v-if="isBtnChangAccountBankShow" class="btn-change-bank " @click="changeAccountBank">{{displayBtnChangeAccountBank}}</button>
                         <br>
                     </div>
                 </div>
@@ -489,7 +542,7 @@
                         <hr class="mt-0">
                     </div>
                     <div class="mt-0" v-else-if="bank===''">
-                        <p class="label-text">-</p>                         
+                        <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">สถานที่เกิดเหตุ</p>
@@ -536,33 +589,32 @@
                     <ion-icon name="reader-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 25px"></ion-icon>
                     <label align="left" class="title-advice-menu mb-1">ข้อมูลเอกสารประกอบคำร้อง</label>
                 </div>
-                <div class="box-container mb-3">
-                    <p class="mb-0">อาการบาดเจ็บ</p>
-                    <div class="mt-0" v-if="injuri!=''">
-                        <p class="label-text">{{injuri}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="injuri===''">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
-                    <p class="mb-0">ประเภทผู้ป่วย</p>
-                    <div class="mt-0" v-if="typePatient!=''">
-                        <p class="label-text">{{typePatient}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="typePatient===''">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
+                <div class="box-container mb-3">                      
                     <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
-                        <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                        <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาลที่ {{bill.billNo}}</p>
                         <div v-if="bill.BillfileShow" align="center">
                             <img class="img-show" :src="bill.BillfileShow" />
                             <br />
                             <label>{{bill.filename}}</label>
                         </div>
-
+                        <p class="mb-0">อาการบาดเจ็บ</p>
+                        <div class="mt-0" v-if="bill.injuri!=''">
+                            <p class="label-text">{{bill.injuri}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bill.injuri===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
+                        <p class="mb-0">ประเภทผู้ป่วย</p>
+                        <div class="mt-0" v-if="bill.typePatient!=''">
+                            <p class="label-text">{{bill.typePatient}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="bill.typePatient===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
                         <p class="mb-0">ชื่อโรงพยาบาล</p>
                         <div class="mt-0" v-if="bill.selectHospital!=''">
                             <p class="label-text">{{ bill.selectHospital }}</p>
@@ -573,7 +625,64 @@
                             <hr class="mt-0">
                         </div>
                         <div class="row">
+                            <div class="col-7">
+                                <p class="mb-0">วันที่เข้ารักษา</p>
+                                <div class="mt-0" v-if="bill.hospitalized_date!=''">
+                                    <p class="label-text">{{bill.hospitalized_date}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.hospitalized_date===''">
+                                    <p class="label-text">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <p class="mb-0">เวลา</p>
+                                <div class="mt-0" v-if="bill.hospitalized_time!=''">
+                                    <p class="label-text">{{bill.hospitalized_time}} น.</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.hospitalized_time===''">
+                                    <p class="label-text">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-7">
+                                <p class="mb-0">วันที่ออกจากโรงพยาบาล</p>
+                                <div class="mt-0" v-if="bill.out_hospital_date!=''">
+                                    <p class="label-text">{{bill.out_hospital_date}}</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.out_hospital_date===''">
+                                    <p class="label-text">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <p class="mb-0">เวลา</p>
+                                <div class="mt-0" v-if="bill.out_hospital_time!=''">
+                                    <p class="label-text">{{bill.out_hospital_time}} น.</p>
+                                    <hr class="mt-0">
+                                </div>
+                                <div class="mt-0" v-else-if="bill.out_hospital_time===''">
+                                    <p class="label-text">-</p>
+                                    <hr class="mt-0">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!--<div class="row">
                             <div class="col-6">
+
+                            </div>
+                            <div class="col-6">
+
+                            </div>
+                        </div>-->
+                        <div class="row">
+                            <div class="col-7">
                                 <p class="mb-0">เลขที่ใบเสร็จ</p>
                                 <div class="mt-0" v-if="bill.bill_no!=''">
                                     <p class="label-text">{{bill.bill_no}}</p>
@@ -584,7 +693,7 @@
                                     <hr class="mt-0">
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-5">
                                 <p class="mb-0">จำนวนเงิน</p>
                                 <div class="mt-0" v-if="bill.money!=''">
                                     <p class="label-text">{{bill.money}}</p>
@@ -596,37 +705,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <p class="mb-0">วันที่เข้ารักษา</p>
-                                <div class="mt-0" v-if="bill.hospitalized_date!=''">
-                                    <p class="label-text">{{bill.hospitalized_date}}</p>
-                                    <hr class="mt-0">
-                                </div>
-                                <div class="mt-0" v-else-if="bill.hospitalized_date===''">
-                                    <p class="label-text">-</p>
-                                    <hr class="mt-0">
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <p class="mb-0">วันที่ออกจากโรงพยาบาล</p>
-                                <div class="mt-0" v-if="bill.out_hospital_date!=''">
-                                    <p class="label-text">{{bill.out_hospital_date}}</p>
-                                    <hr class="mt-0">
-                                </div>
-                                <div class="mt-0" v-else-if="bill.out_hospital_date===''">
-                                    <p class="label-text">-</p>
-                                    <hr class="mt-0">
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                     <p class="mb-0">จำนวนเงินรวมทั้งหมด</p>
-                    <div class="mt-0" v-if="total_amount!=''">
+                    <div class="mt-0" v-if="total_amount > 0">
                         <p class="label-text">{{total_amount}} บาท</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="total_amount===''">
+                    <div class="mt-0" v-else-if="total_amount <= 0">
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
@@ -637,42 +723,83 @@
                     <label align="left" class="title-advice-menu mb-1">ข้อมูลบัญชีรับเงิน</label>
                 </div>
                 <div class="box-container mb-3">
-                    <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
+                    <div v-if="!haslastDocumentReceive">
+                        <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
-                    <div v-if="bankFileDisplay" align="center">
-                        <img class="img-show" :src="bankFileDisplay.base64" />
-                        <br />
-                        <label>{{bankFileDisplay.filename}}</label>
-                    </div>
+                        <div v-if="bankFileDisplay" align="center">
+                            <img class="img-show" :src="bankFileDisplay.base64" />
+                            <br />
+                            <label>{{bankFileDisplay.filename}}</label>
+                        </div>
 
-                    <p class="mb-0">ชื่อธนาคาร</p>
-                    <div class="mt-0" v-if="inputBank.accountBankName!=''">
-                        <p class="label-text">{{ inputBank.accountBankName }}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="inputBank.accountBankName===''">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
+                        <p class="mb-0">ชื่อธนาคาร</p>
+                        <div class="mt-0" v-if="inputBank.accountBankName!=''">
+                            <p class="label-text">{{ inputBank.accountBankName }}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="inputBank.accountBankName===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
 
-                    <p class="mb-0">ชื่อบัญชีธนาคาร</p>
-                    <div class="mt-0" v-if="inputBank.accountName!=''">
-                        <p class="label-text">{{inputBank.accountName}}</p>
-                        <hr class="mt-0">
+                        <p class="mb-0">ชื่อบัญชีธนาคาร</p>
+                        <div class="mt-0" v-if="inputBank.accountName!=''">
+                            <p class="label-text">{{inputBank.accountName}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="inputBank.accountName===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
+                        <p class="mb-0">เลขบัญชีธนาคาร</p>
+                        <div class="mt-0" v-if="inputBank.accountNumber!=''">
+                            <p class="label-text">{{inputBank.accountNumber}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="inputBank.accountNumber===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
                     </div>
-                    <div class="mt-0" v-else-if="inputBank.accountName===''">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
+                    <div v-if="haslastDocumentReceive">
+                        <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
+
+                        <div v-if="bankFileDisplay" align="center">
+                            <img class="img-show" :src="bankFileDisplay.base64" />
+                            <br />
+                            <label>{{bankFileDisplay.filename}}</label>
+                        </div>
+
+                        <p class="mb-0">ชื่อธนาคาร</p>
+                        <div class="mt-0" v-if="lastDocumentReceive.accountBankName!=''">
+                            <p class="label-text">{{ lastDocumentReceive.accountBankName }}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="lastDocumentReceive.accountBankName===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
+
+                        <p class="mb-0">ชื่อบัญชีธนาคาร</p>
+                        <div class="mt-0" v-if="lastDocumentReceive.accountName!=''">
+                            <p class="label-text">{{lastDocumentReceive.accountName}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="lastDocumentReceive.accountName===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
+                        <p class="mb-0">เลขบัญชีธนาคาร</p>
+                        <div class="mt-0" v-if="lastDocumentReceive.accountNumber!=''">
+                            <p class="label-text">{{lastDocumentReceive.accountNumber}}</p>
+                            <hr class="mt-0">
+                        </div>
+                        <div class="mt-0" v-else-if="lastDocumentReceive.accountNumber===''">
+                            <p class="label-text">-</p>
+                            <hr class="mt-0">
+                        </div>
                     </div>
-                    <p class="mb-0">เลขบัญชีธนาคาร</p>
-                    <div class="mt-0" v-if="inputBank.accountNumber!=''">
-                        <p class="label-text">{{inputBank.accountNumber}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="inputBank.accountNumber===''">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
+                    
 
                     <!-- <div class="form-check">
                     <input class="form-check-input" type="checkbox" v-model="acceptClaim">
@@ -692,7 +819,6 @@
     import { FormWizard, TabContent } from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
     import vueFilePond from 'vue-filepond';
-    
 
     // Import FilePond styles
     import 'filepond/dist/filepond.min.css'
@@ -721,18 +847,37 @@
         components: {
             FormWizard,
             TabContent,
-            FilePond
+            FilePond,
+           
+            
+           
         },
         data() {
             return {
+                attrs: [
+                    {
+                        key: 'today',
+                        dot: true,
+                        dates: new Date(),
+                    },
+                ],
+                dateModelConfig: {
+                    type: 'string',
+                    mask: 'YYYY-MM-DD', 
+                },
+                timeModelConfig: {
+                    type: 'string',
+                    mask: 'HH:mm', 
+                },
+                date: new Date(),
                 inputDataAll: [],
                 // ---Bill
-                injuri: '',
                 patientType: '',
-                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", out_hospital_date: ""/* file: null, BillfileShow: "", filename: "" */}],
+                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time:"", typePatient: "OPD", injuri: "", selectHospitalId: ""/* file: null, BillfileShow: "", filename: "" */ }],
                 total_amount: 0,
                 // --BookBank
-                inputBank: { accountName: '', accountNumber: '', accountBankName:'' },
+                displayBankName:"",
+                inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '' },
                 bank: '',
                 phoneNumbers: [{ phone: "" }],
                 image: '',
@@ -767,6 +912,10 @@
                 selectBank: {
                     bankName: ''
                 },
+                //----Get Last Document Receive
+                lastDocumentReceive: [],
+                haslastDocumentReceive: false,
+                isBtnChangAccountBankShow:false,
                 //----Get Hospital Name
                 hospitals: [],
                 //selectHospital: '',
@@ -790,6 +939,7 @@
                 saysoHospital: '',
                 modalSaysoHospital: false,
                 mockSaysoHospital: '',
+                displayBtnChangeAccountBank:""
             };
         },
         //---Validate
@@ -807,7 +957,30 @@
                     dirty: validation.$dirty
                 }
             },*/
+           
+            changeAccountBank() {
+                if (this.haslastDocumentReceive == false) {
+                    this.haslastDocumentReceive = true
+                    this.displayBtnChangeAccountBank = "เปลี่ยนบัญชีรับเงิน"
+                } else {
+                    this.haslastDocumentReceive = false
+                    this.displayBtnChangeAccountBank = "ใช้บัญชีเดิม"
+                }
+                
+            },
             storeInputData() {
+                for (let i = 0; i < this.bankNames.length; i++) {
+                    if (this.inputBank.accountBankName == this.bankNames[i].name) {
+                        this.inputBank.bankId = this.bankNames[i].bankCode
+                    }
+                }
+                for (let j = 0; j < this.bills.length; j++) {
+                    for (let i = 0; i < this.hospitals.length; i++) {
+                        if (this.bills[j].selectHospital == this.hospitals[i].HOSPITALNAME) {
+                            this.bills[j].selectHospitalId = this.hospitals[i].HOSPITALID
+                        }
+                    }
+                }
                 
                 this.active = true
 
@@ -818,9 +991,9 @@
                 this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
                 this.$store.state.inputApprovalData.Injury = this.injuri
                 this.$store.state.inputApprovalData.BillsData = this.bills
-                this.$store.state.inputApprovalData.BankData = this.inputBank
+                this.$store.state.inputApprovalData.BankData = (this.haslastDocumentReceive) ? this.lastDocumentReceive : this.inputBank
                 this.$store.state.inputApprovalData.VictimData = this.accidentVictimData
-                console.log(this.$store.state.inputApprovalData);                                               
+                console.log(this.$store.state.inputApprovalData);
             },
             getBankNames() {
                 console.log('getBankNames');
@@ -837,18 +1010,24 @@
                         alert(error);
                     });
             },
-            /*getHospitalNames() {
+            getLastDocumentReceive() {
                 console.log('getHospitalNames');
-                var url = '/api/Master/Hospital';
+                var url = '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
                 axios.get(url)
                     .then((response) => {
-                        this.hospitals = response.data;
-                        console.log(response.data);
+                        this.lastDocumentReceive = response.data[0]
+                        if (this.lastDocumentReceive != null) {                            
+                            this.isBtnChangAccountBankShow = true;
+                            this.displayBtnChangeAccountBank = "เปลี่ยนบัญชีรับเงิน";
+                            this.haslastDocumentReceive = true;
+                        }
+
+                        console.log('last document: ', response.data[0]);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
-            },*/
+            },
             getHospitalNames() {
                 console.log('getHospitalNames');
                 var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
@@ -862,7 +1041,7 @@
                     });
             },
             getChangwatNames() {
-                console.log('getChangwatNames');  
+                console.log('getChangwatNames');
                 var url = '/api/Master/Changwat';
                 axios.get(url)
                     .then((response) => {
@@ -913,10 +1092,31 @@
                 this.bankFileDisplay.filename = file.filename
                 this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
             },
-            processFilePageOne() {
-                for (let i = 0; i < this.bills.length; i++) {
-                    this.bills[i].BillfileShow = this.bills[i].file[0].getFileEncodeDataURL()
-                    this.bills[i].filename = this.bills[i].file[0].filename
+            OnChangePageOne() {
+                console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
+                for (let i = 0; i < this.bankNames.length; i++) {
+                    if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
+                        this.lastDocumentReceive.accountBankName = this.bankNames[i].name
+                        this.lastDocumentReceive.bankId = this.bankNames[i].bankCode
+                        console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
+                        return true;
+                    }
+                }
+                //for (let i = 0; i < this.bills.length; i++) {
+                //    this.bills[i].BillfileShow = this.bills[i].file[0].getFileEncodeDataURL()
+                //    this.bills[i].filename = this.bills[i].file[0].filename
+                //}
+                return true;
+            },
+            OnChangePageTwo() {
+                
+                console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
+                for (let i = 0; i < this.bankNames.length; i++) {
+                    if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
+                        this.lastDocumentReceive.accountBankName = this.bankNames[i].name
+                        console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
+                        return true;
+                    }
                 }
                 return true;
             },
@@ -926,7 +1126,7 @@
             onChangwatChange() {
 
                 this.divHospitalModal = true;
-                
+
             },
             submitModalHospital(index) {
                 this.bills[index].selectHospital = this.mockHospital
@@ -953,7 +1153,7 @@
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", out_hospital_date: ""/*file: null, BillfileShow: "", filename: ""*/ });
+                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", selectHospitalId: ""/*file: null, BillfileShow: "", filename: ""*/ });
                 this.calMoney()
                 console.log(this.bills)
             },
@@ -1004,13 +1204,14 @@
             await this.getAccidentCar();
             await this.getAccidentVictim();
             this.getBankNames();
+            this.getLastDocumentReceive();
             this.getHospitalNames();
-            this.getChangwatNames();         
+            this.getChangwatNames();
             this.selectChangwat = 0;
             this.selectHospital = 0;
-            
+
         },
-  
+
         computed: {
             filteredItems: function () {
                 return this.hospitals.filter(function (el) {
@@ -1022,6 +1223,18 @@
 </script>
 
 <style>
+    span.vc-day {
+        display: none;
+    }
+    span.vc-weekday {
+        display:none;
+    }
+    span.vc-month {
+        display: none;
+    }
+    span.vc-year {
+        display: none;
+    }
     .vue-form-wizard.xs .wizard-icon-circle {
         background-color: #f0f0f0;
     }
@@ -1175,9 +1388,25 @@
             outline: none;
         }
 
-    .label-text{
-        margin-bottom:0px;
-        
-        color:gray;
+    .label-text {
+        margin-bottom: 0px;
+        color: gray;
+    }
+
+    .btn-change-bank {
+        background-color: white;
+        color: #5c2e91;
+        padding: 3px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        border-style: solid;
+        border-color: var(--main-color);
+        font-weight: bold;
+        font-size: 12px;
+        margin-top: 10px;
+        margin: 0 auto;
+        display: block;
     }
 </style>

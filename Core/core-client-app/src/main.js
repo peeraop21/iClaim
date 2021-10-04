@@ -9,6 +9,7 @@ import VueFormWizard from 'vue-form-wizard'
 import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import VCalendar from 'v-calendar';
 
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' 
@@ -34,6 +35,7 @@ Vue.use(StarRating)
 
 Vue.config.ignoredElements = [/^ion-/]
 Vue.use(CalendarPlugin)
+Vue.use(VCalendar)
 Vue.use(VueSweetalert2)
 Vue.use(VueFormWizard)
 Vue.use(BootstrapVue)

@@ -7,6 +7,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
     public partial class ApprovalStatus
     {
         public int StatusId { get; set; }
-        public string StatusName { get; set; }
+        public string StatusNameIclaim { get; set; }
+        public string StatusNameEclaim { get; set; }
     }
 }

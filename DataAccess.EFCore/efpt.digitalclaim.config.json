@@ -26,8 +26,20 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[HosApprovalStatusState]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[HosDocumentReceive]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[invoicehd]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[fn_IDCardValidate]",
+         "ObjectType": 2
       }
    ],
    "UiHint": "T1DB18.DigitalClaim",

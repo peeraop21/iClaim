@@ -126,7 +126,7 @@ namespace Services
                             from hsai in result2.DefaultIfEmpty()
                             join t in rvpOfficeContext.Tumbol on new { key1 = hs.Province, key2 = hs.District, key3 = hs.Tumbol } equals new { key1 = t.Changwatshortname, key2 = t.Amphurid, key3 = t.Tumbolid } into result3
                             from hsti in result3.DefaultIfEmpty()
-                            where hs.AccNo == accNo && hs.DrvSocNo == userIdCard
+                            where (hs.AccNo == accNo && hs.DrvSocNo == userIdCard) || (hs.AccNo == accNo && hs.VictimNo == victimNo)
                             select new 
                             {
                                 AccNo = hs.AccNo,

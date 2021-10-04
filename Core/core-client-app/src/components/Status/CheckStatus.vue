@@ -24,7 +24,7 @@
                                         <p style="margin-bottom: 10px">
                                             <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ hosApp.accNo }}
                                             <br>
-                                            <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ hosApp.stringRegDate }}
+                                            <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ hosApp.stringRegDate }} น.
                                             <br>
                                             <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{hosApp.appStatusName}}
                                         </p>
@@ -33,7 +33,6 @@
                                         <div style="margin-top:-5px">
                                             <!--<a v-on:click="getPDF(hosApp.appNo)">PDF</a>-->
                                             <vs-button v-on:click="getPDF(hosApp.appNo)"
-                                                       
                                                        icon
                                                        primary
                                                        flat>
@@ -51,17 +50,21 @@
                                         <ion-icon name="chevron-down-outline" class="icon ion-md-add" style="margin-right: 6px; margin-top: 10px"></ion-icon>
                                     </div>
                                 </a>
-                                <div class="answer">
+                                <div class="answer" style="padding-left:30px;">
+                                    
                                     <p class="p-custom custom-p-status">สถานะ </p>
+
                                     <ul id="progress" v-for="status in hosApp.appStatus" :key="status.statusId">
                                         <li class="li-custom " :id="'liLbl' + status.statusId">
-                                            <div class="node " v-bind:class="{green:status.active, grey:!status.active}" ></div>
+                                            <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -12px; margin-top: -1px;">{{status.statusDate}}</p>
+                                            <p v-if="status.statusTime != null" class="p-custom divider-p" style="font-size: 10px; position: absolute; left: -1px; margin-top: 7px; ">{{status.statusTime}}</p>
+                                            <div class="node " v-bind:class="{green:status.active, grey:!status.active}"></div>
                                             <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
                                         </li>
                                         <li v-if="status.statusId < hosApp.appStatus.length" class="li-custom " :id="'verticalLine' + status.statusId">
                                             <div class="divider grey"></div>
                                         </li>
-                                        
+
                                     </ul>
                                     <br />
                                 </div>
@@ -106,17 +109,20 @@
         display: inline-block;
         transition: all 1000ms ease;
     }
-    
+
     .answer .p-custom {
         color: none;
         padding: 0rem 0 0 2rem;
     }
+
     .activated {
         box-shadow: 0px 0px 3px 2px rgba(194, 255, 194, 0.8);
     }
+
     .pgreen {
         color: rgba(92, 184, 92, 1);
     }
+
     .divider {
         height: 20px;
         width: 2px;
@@ -140,6 +146,7 @@
         margin-bottom: 5px;
         margin-top: 5px;
     }
+
     .blue {
         background-color: rgba(82, 165, 255, 1);
     }
@@ -189,16 +196,16 @@
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 hosApprovalData: null,
                 isHasHosApprovalData: false,
-                appStatus: [{ statusId: 0, statusName:"", active:false}],
+                appStatus: [{ statusId: 0, statusName: "", active: false, statusDate: "", statusTime: "" }],
                 isActive: true,
-                pdfsrc:null
+                pdfsrc: null
 
 
             }
 
         },
         methods: {
-           
+
             getHosApproval() {
                 var url = '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
 
@@ -220,8 +227,16 @@
                     });
 
             },
-            getPDF: async function(appNo) {
-                var url = '/api/genpdf/GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel);
+            getPDF(appNo) {
+
+                /*var url = '/api/genpdf/GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel);*/
+                var url = '/api/genpdf';
+                const body = {
+                    AccNo: this.$route.params.id,
+                    VictimNo: this.accData.victimNo,
+                    AppNo: appNo,
+                    Channel: this.accData.channel
+                };
                 this.$swal({
                     title: 'กำลังโหลด',
                     html: 'ขณะนี้ระบบกำลังโหลดเอกสาร คำร้องขอรับค่าเสียหายเบื้องต้น',
@@ -234,8 +249,11 @@
 
                     }
                 })
-                await axios.get(url,{                   
-                    responseType: 'arraybuffer'
+                axios.post(url, JSON.stringify(body), {
+                    responseType: 'arraybuffer',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
                 })
                     .then((response) => {
                         console.log(response)
@@ -245,7 +263,7 @@
                         //this.$router.push(url)
                         //window.location.href = url;
                         window.open(url)
-                        
+
                         /*window.open("data:application/pdf," + encodeURI(response.data));*/
                         //const blob = new Blob([response.data]);
                         //const objectUrl = URL.createObjectURL(blob);
@@ -260,7 +278,7 @@
         },
         async mounted() {
             await this.getHosApproval();
-            
+
         }
     }
 </script>

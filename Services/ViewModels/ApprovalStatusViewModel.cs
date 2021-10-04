@@ -14,5 +14,7 @@ namespace Services.ViewModels
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public bool Active { get; set; }
+        public string StatusDate { get; set; }
+        public string StatusTime { get; set; }
     }
 }

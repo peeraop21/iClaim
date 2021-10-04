@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.ViewModels;
 using DataAccess.EFCore.DigitalClaimModels;
 using DinkToPdf;
 using DinkToPdf.Contracts;
+using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.ViewModels;
@@ -32,12 +36,13 @@ namespace Core.Controllers
         }
         
 
-        [HttpGet("GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}")]
-        public async Task<IActionResult> GetPDF(string accNo, int victimNo, int appNo, string channel)
+        //[HttpGet("GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}")]
+        [HttpPost]
+        public async Task<IActionResult> GetPDF([FromBody]PostDataViewModel model)
         {
-            var acc = await accidentService.GetAccidentForGenPDF(accNo.Replace("-", "/"), victimNo, appNo);
-            var accVictim = await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), channel, "", victimNo);
-            var accCar = await accidentService.GetAccidentCar(accNo.Replace("-", "/"), channel);
+            var acc = await accidentService.GetAccidentForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.AppNo);
+            var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.Channel, "", model.VictimNo);
+            var accCar = await accidentService.GetAccidentCar(model.AccNo.Replace("-", "/"), model.Channel);
 
             byte[] file = null;
             var globalSettings = new GlobalSettings
@@ -113,6 +118,8 @@ namespace Core.Controllers
                 return htmlTemplate;
             }
         }
+
+        
 
 
     }

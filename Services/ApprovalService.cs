@@ -18,9 +18,10 @@ namespace Services
         Task<List<ApprovalregisViewModel>> GetApproval(string accNo, int victimNo, int rightsType);
         Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, int rightsType);
         Task<ClaimViewModel> GetApprovalByAccNo(string accNo, int? victimNo);
-        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim);
+        Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim, DataAccess.EFCore.DigitalClaimModels.Invoicehd[] invoicehd);
         Task<List<HosApprovalViewModel>> GetHosApprovalsAsync(string accNo, int victimNo);
         Task<List<InputBankViewModel>> GetHosDocumentReceiveAsync(string accNo, int victimNo, int appNo);
+        Task<List<InputBankViewModel>> GetLastHosDocumentReceiveAsync(string accNo, int victimNo);
         Task<double?> GetRightsBalance(string accNo, int? victimNo, string rightsType);
         Task<string> UpdateApprovalAsync(string accNo, int victimNo, int appNo, string status);
 
@@ -39,9 +40,11 @@ namespace Services
             this.rvpofficeContext = rvpofficeContext;
             this.claimDataContext = claimDataContext;
         }
-        public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim)
+        public async Task<DataAccess.EFCore.DigitalClaimModels.HosApproval> AddAsync(DataAccess.EFCore.DigitalClaimModels.HosApproval hosApproval, InputBankViewModel inputBank, VictimtViewModel victim, DataAccess.EFCore.DigitalClaimModels.Invoicehd[] invoicehd)
         {
+
             /*var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == hosApproval.AccNo && w.VictimNo == hosApproval.VictimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id }).LastOrDefaultAsync();*/
+
             var dataHosApproval = new DataAccess.EFCore.DigitalClaimModels.HosApproval();
             dataHosApproval.AccNo = hosApproval.AccNo;
             dataHosApproval.VictimNo = hosApproval.VictimNo;
@@ -68,16 +71,18 @@ namespace Services
             }
             await digitalclaimContext.HosApproval.AddAsync(dataHosApproval);
 
+            var runNo = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == hosApproval.AccNo && w.VictimNo == (short)hosApproval.VictimNo && w.Appno == (short)hosApproval.AppNo).Select(s => s.RunNo).OrderByDescending(o => o).FirstOrDefaultAsync();
             var dataHosDocumentReceive = new HosDocumentReceive();
             dataHosDocumentReceive.AccNo = hosApproval.AccNo;
             dataHosDocumentReceive.VictimNo = (short)hosApproval.VictimNo;
             dataHosDocumentReceive.Appno = (short)(hosApproval.AppNo + 1);
+            dataHosDocumentReceive.RunNo = (runNo == null || runNo  == 0) ? (short)1 : (short)(runNo + 1);
             dataHosDocumentReceive.PaymentType = "D";
             dataHosDocumentReceive.AccountNo = inputBank.accountNumber;
             dataHosDocumentReceive.AccountName = inputBank.accountName;
-            dataHosDocumentReceive.BankId = inputBank.accountBankName;
+            dataHosDocumentReceive.BankId = inputBank.bankId;
             await digitalclaimContext.HosDocumentReceive.AddAsync(dataHosDocumentReceive);
-            
+
             var dataHosApprovalStatus = new HosApprovalStatus();
             dataHosApprovalStatus.AccNo = hosApproval.AccNo;
             dataHosApprovalStatus.VictimNo = hosApproval.VictimNo;
@@ -86,6 +91,43 @@ namespace Services
             dataHosApprovalStatus.LastUpdate = DateTime.Now;
             dataHosApprovalStatus.Status = 1;
             await digitalclaimContext.HosApprovalStatus.AddAsync(dataHosApprovalStatus);
+
+
+            var idInvhd = await digitalclaimContext.Invoicehd.Select(s => s.IdInvhd).OrderByDescending(o => o).FirstOrDefaultAsync();
+            for (int i = 0; i < invoicehd.Length; i++)
+            {
+                var dataInvoicehd = new DataAccess.EFCore.DigitalClaimModels.Invoicehd();
+                
+                dataInvoicehd.IdInvhd = idInvhd + i + 1;
+                dataInvoicehd.AccNo = hosApproval.AccNo;
+                dataInvoicehd.VictimNo = hosApproval.VictimNo;
+                dataInvoicehd.AppNo = hosApproval.AppNo + 1;
+                dataInvoicehd.Takendate = invoicehd[i].Takendate;
+                dataInvoicehd.Takentime = invoicehd[i].Takentime;
+                dataInvoicehd.Dispensedate = invoicehd[i].Dispensedate;
+                dataInvoicehd.Dispensetime = invoicehd[i].Dispensetime;
+                TimeSpan calDate = (TimeSpan)(invoicehd[i].Dispensedate - invoicehd[i].Takendate);
+                dataInvoicehd.Daybed = (int?)calDate.TotalDays;
+                dataInvoicehd.ReceiptNo = invoicehd[i].ReceiptNo;
+                dataInvoicehd.Suminv = invoicehd[i].Suminv;
+                dataInvoicehd.VictimType = invoicehd[i].VictimType;
+                dataInvoicehd.Hosid = invoicehd[i].Hosid;
+                
+                await digitalclaimContext.Invoicehd.AddAsync(dataInvoicehd);
+            }
+
+            //for (int i = 0; i < invoicehd.Length; i++)
+            //{
+            //    invoicehd[i].IdInvhd = idInvhd + 1;
+            //    invoicehd[i].AccNo = hosApproval.AccNo;
+            //    invoicehd[i].VictimNo = hosApproval.VictimNo;
+            //    invoicehd[i].AppNo = hosApproval.AppNo + 1;
+            //    var test = invoicehd[i].Takendate.Value.ToShortDateString();
+            //    invoicehd[i].Takendate = null;
+            //    await digitalclaimContext.Invoicehd.AddAsync(invoicehd[i]);
+            //}
+
+
             await digitalclaimContext.SaveChangesAsync();
 
             return hosApproval;
@@ -289,11 +331,12 @@ namespace Services
                 vwHosApp.StringAccNo = hosApp.AccNo.Replace("/", "-");
                 vwHosApp.AppNo = hosApp.AppNo;
                 vwHosApp.RegDate = hosApp.RegDate;
-                vwHosApp.StringRegDate = hosApp.RegDate.ToString().Replace("T", " ");
-                var queryStatus = await digitalclaimContext.HosApprovalStatus.Join(digitalclaimContext.ApprovalStatus, appss => appss.Status, apps => apps.StatusId, (appss, apps) => new { appStatusStateJoinAppStatus = appss, statusName = apps.StatusName })
+                vwHosApp.StringRegDate = hosApp.RegDate.Value.ToString("dd/MM/yyyy HH:mm");
+                var queryStatus = await digitalclaimContext.HosApprovalStatus.Join(digitalclaimContext.ApprovalStatus, appss => appss.Status, apps => apps.StatusId, (appss, apps) => new { appStatusStateJoinAppStatus = appss, statusName = apps.StatusNameIclaim })
                     .Where(w => w.appStatusStateJoinAppStatus.AccNo == hosApp.AccNo && w.appStatusStateJoinAppStatus.AppNo == hosApp.AppNo && w.appStatusStateJoinAppStatus.VictimNo == hosApp.VictimNo).Select(s => new { s.statusName, s.appStatusStateJoinAppStatus.Status }).FirstOrDefaultAsync();
-                vwHosApp.AppStatusName = queryStatus.statusName;
+                
                 vwHosApp.AppStatus = await GetApprovalStatus(hosApp.AccNo, hosApp.VictimNo, hosApp.AppNo );
+                vwHosApp.AppStatusName = vwHosApp.AppStatus.Where(w => w.Active == true).Select(s => new { s.StatusName , s.StatusId}).OrderByDescending(o => o.StatusId).Select(s => s.StatusName).FirstOrDefault();
                 vwHosAppList.Add(vwHosApp);
             }
 
@@ -303,14 +346,18 @@ namespace Services
         private async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int victimNo, int appNo)
         {
             var query = await digitalclaimContext.ApprovalStatus.ToListAsync();
-            var appStatusState = await digitalclaimContext.HosApprovalStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == appNo).FirstOrDefaultAsync();
+            var appStatus = await digitalclaimContext.HosApprovalStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == appNo).FirstOrDefaultAsync();
+            var appStatusState = await digitalclaimContext.HosApprovalStatusState.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == appNo).ToListAsync();
+            
             var appStatusVwModelList = new List<ApprovalStatusViewModel>();
-            foreach (var status in query)
+            for(int i = 0; i < query.Count; i++)
             {
                 var appStatusVwModel = new ApprovalStatusViewModel();
-                appStatusVwModel.StatusId = status.StatusId;
-                appStatusVwModel.StatusName = status.StatusName;
-                if (status.StatusId <= appStatusState.Status)
+                appStatusVwModel.StatusId = query[i].StatusId;
+                appStatusVwModel.StatusName = query[i].StatusNameIclaim;
+                appStatusVwModel.StatusDate = appStatusState.Where(w => w.NewStatus == query[i].StatusId).Select(s => s.InsertDate.Value.Date.ToString("dd/MM/yyyy")).FirstOrDefault();
+                appStatusVwModel.StatusTime = appStatusState.Where(w => w.NewStatus == query[i].StatusId).Select(s => s.InsertDate.Value.ToString("HH:mm")).FirstOrDefault();
+                if (query[i].StatusId <= appStatus.Status)
                 {
                     appStatusVwModel.Active = true;
                 }
@@ -318,9 +365,30 @@ namespace Services
                 {
                     appStatusVwModel.Active = false;
                 }
-                appStatusVwModelList.Add(appStatusVwModel);
-
+                if (!string.IsNullOrEmpty(appStatusVwModel.StatusName))
+                {
+                    appStatusVwModelList.Add(appStatusVwModel);
+                }
+                
             }
+            //foreach (var status in query)
+            //{
+            //    var appStatusVwModel = new ApprovalStatusViewModel();
+            //    appStatusVwModel.StatusId = status.StatusId;
+            //    appStatusVwModel.StatusName = status.StatusNameIclaim;
+            //    appStatusVwModel.StatusDate = appStatusState.Where(w => w.NewStatus == status.StatusId).Select(s => s.InsertDate.Value.Date.ToString("dd/MM/yyyy")).FirstOrDefault();
+            //    appStatusVwModel.StatusTime = appStatusState.Where(w => w.NewStatus == status.StatusId).Select(s => s.InsertDate.Value.ToString("HH:mm")).FirstOrDefault();
+            //    if (status.StatusId <= appStatus.Status)
+            //    {
+            //        appStatusVwModel.Active = true;
+            //    }
+            //    else
+            //    {
+            //        appStatusVwModel.Active = false;
+            //    }
+            //    appStatusVwModelList.Add(appStatusVwModel);
+
+            //}
             return appStatusVwModelList;
         }
 
@@ -339,9 +407,24 @@ namespace Services
             inputBankViewModelsList.Add(inputBankViewModel);
             return inputBankViewModelsList;
         }
+        public async Task<List<InputBankViewModel>> GetLastHosDocumentReceiveAsync(string accNo, int victimNo)
+        {
+            var query = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.PaymentType == "D").Select(s => new { s.AccountNo, s.AccountName, s.BankId, s.Appno}).OrderByDescending(o => o.Appno).FirstOrDefaultAsync();
+            var inputBankViewModelsList = new List<InputBankViewModel>();
+            if (query == null)
+            {
+                return inputBankViewModelsList;
+            }
+            var inputBankViewModel = new InputBankViewModel();
+            inputBankViewModel.accountNumber = query.AccountNo;
+            inputBankViewModel.accountName = query.AccountName;
+            inputBankViewModel.accountBankName = query.BankId;
+            inputBankViewModelsList.Add(inputBankViewModel);
+            return inputBankViewModelsList;
+        }
 
 
-       
+
 
         public async Task<double?> GetRightsBalance(string accNo, int? victimNo,string rightsType)
         {
@@ -389,7 +472,7 @@ namespace Services
         {
             if (status == "ConfirmMoney")
             {
-                var statusUpdate = await digitalclaimContext.ApprovalStatus.Where(w => w.StatusName == "อนุมัติจ่าย​").FirstOrDefaultAsync();
+                var statusUpdate = await digitalclaimContext.ApprovalStatus.Where(w => w.StatusNameIclaim == "อนุมัติจ่าย​").FirstOrDefaultAsync();
                 var approvalStatus = await digitalclaimContext.HosApprovalStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == appNo).FirstOrDefaultAsync();
                 approvalStatus.Status = statusUpdate.StatusId;
                 await digitalclaimContext.SaveChangesAsync();

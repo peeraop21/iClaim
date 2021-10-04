@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />    
-    <PackageReference Include="Haukcode.DinkToPdf" Version="1.1.2" />
+    <PackageReference Include="Haukcode.DinkToPdf" Version="1.1.2" />    
+    <PackageReference Include="iTextSharp" Version="5.5.13.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
@@ -63,8 +64,4 @@
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </None>
 -->  </ItemGroup>
-    
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
 </Project>

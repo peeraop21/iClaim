@@ -73,6 +73,7 @@
                 <br>
                 <!--<button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>-->
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
+                <button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>
             </div>
         </div>
     </div>

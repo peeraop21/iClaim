@@ -21,7 +21,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public string Pt4id { get; set; }
         public string InvoiceNo { get; set; }
         public string InvoiceId { get; set; }
-        public string HosId { get; set; }
+        public string HosIdRefer { get; set; }
         public DateTime? LastUpdate { get; set; }
         public string ClaimNo { get; set; }
         public short? VictimNoClaim { get; set; }
@@ -46,5 +46,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public string RecSocNo { get; set; }
         public string AcceptBy { get; set; }
         public DateTime? AcceptDate { get; set; }
+        public string CanCelStatus { get; set; }
     }
 }
