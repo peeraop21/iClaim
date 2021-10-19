@@ -153,10 +153,15 @@
                             <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
+                                       ref="pond"
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
-                                       accepted-file-types="image/jpeg, image/png" />
+                                       accepted-file-types="image/jpeg, image/png"
+                                       v-bind:files="input.file"
+                                       v-model="input.file"
+                                       v-on:addfile="onAddBillFile(index)"
+                                       />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
                                 <template #header>
                                     <h4 class="not-margin">
@@ -192,8 +197,43 @@
                                     </div>
                                 </template>
                             </vs-dialog>
+                            <vs-dialog width="550px" not-center v-model="modalWounded">
+                                <template #header>
+                                    <h4 class="not-margin">
+                                        เลือกอาการบาดเจ็บ
+                                    </h4>
+                                </template>
+                                <div class="con-content" align="left">
+                                    <div class="d-block text-left">
+                                        <div class="mb-2">
+                                            <label class="px-2">ประเภท</label>
+                                            <select name="category" id="category" v-model="selectOrgan" @change="onOrganChange">
+                                                <option v-for="(category, index) in organ" :value="category" :key="index" style="font-size: 12px; line-height: 0px">
+                                                    {{ category }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2" v-show="divWoundedModal">
+                                            <label class="px-2">อาการบาดเจ็บ</label>
+                                            <select name="item" id="item" v-model="mockWounded">
+                                                <option v-for="(item, index) in filteredWoundedItems" :value="item.wounded" :key="index">
+                                                    {{ item.wounded  }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template #footer>
+                                    <div class="footer-dialog">
+                                        <vs-button block @click="submitModalWounded(index)">
+                                            ยืนยัน
+                                        </vs-button>
+
+                                    </div>
+                                </template>
+                            </vs-dialog>
                             <label class="px-2">อาการบาดเจ็บ</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.injuri" placeholder=""></b-form-input>
+                            <b-form-input class="mt-0 mb-2" v-model="input.injuri" placeholder="" type="text" @click="modalWounded=!modalWounded"></b-form-input>
                             <label class="px-2">ประเภทผู้ป่วย</label>
                             <br />
                             <div class="mt-1 mb-2" style="float: left;">
@@ -208,7 +248,7 @@
                             <label class="px-2">โรงพยาบาล</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.selectHospital" type="text" @click="modalHospital=!modalHospital" />
                             <label class="px-2">เลขที่ใบเสร็จ</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
+                            <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" required  />
                             <label class="px-2">จำนวนเงิน</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
                             <div class="row">
@@ -221,7 +261,7 @@
                             </div>
 
                             <div class="row">
-                                <v-date-picker v-model="input.hospitalized_date" class="flex-grow col-8" locale="th" mode="date" :max-date='new Date()' :attributes='attrs'  :model-config="dateModelConfig">
+                                <v-date-picker v-model="input.hospitalized_date" class="flex-grow col-8" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
                                     <template v-slot="{ inputValue, inputEvents }">
                                         <input class=" mt-0 mb-2 form-control "
                                                :value="inputValue"
@@ -229,7 +269,7 @@
                                                readonly />
                                     </template>
                                 </v-date-picker>
-                                <v-date-picker v-model="input.hospitalized_time" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig" :dayPopover="{}" >
+                                <v-date-picker v-model="input.hospitalized_time" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig" :dayPopover="{}">
                                     <template v-slot="{ inputValue, inputEvents }">
                                         <input class=" mt-0 mb-2 form-control "
                                                :value="inputValue"
@@ -267,17 +307,17 @@
                                     </v-date-picker>
                                 </div>
                                 <!--<b-form-datepicker v-model="input.out_hospital_date"
-                                       selected-variant="primary"
-                                       label-selected=""
-                                       label-no-date-selected=""
-                                       :close-button="true"
-                                       :label-help="null"
-                                       label-close-button="ปิด"
-                                       :today-button="true"
-                                       label-today-button="เลือกวันปัจจุบัน"
-                                       :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                                       size="sm"
-                                       class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>-->
+               selected-variant="primary"
+               label-selected=""
+               label-no-date-selected=""
+               :close-button="true"
+               :label-help="null"
+               label-close-button="ปิด"
+               :today-button="true"
+               label-today-button="เลือกวันปัจจุบัน"
+               :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+               size="sm"
+               class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>-->
                             </div>
 
                             <br>
@@ -330,7 +370,7 @@
                                        v-bind:files="bankFile"
                                        v-on:addfile="onAddBankAccountFile"
                                        v-if="!haslastDocumentReceive" />
-                            <file-pond name="bankFile"
+                            <!--<file-pond name="bankFile"
                                        ref="pond"
                                        credits="null"
                                        label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
@@ -338,7 +378,14 @@
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="bankFile"
                                        v-on:addfile="onAddBankAccountFile"
-                                       v-if="haslastDocumentReceive" />
+                                       v-if="haslastDocumentReceive" />-->
+                            <div class="div-center-image" v-if="haslastDocumentReceive" >
+                                <div class="divImage" >
+                                    <img class="img-show" :src="bankFileDisplay.base64"/>
+                                    <br />
+                                    <label class="lblFilename"></label>
+                                </div>
+                            </div>
 
                         </div>
 
@@ -353,7 +400,7 @@
                                 </select>
                             </div>
                             <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
-                            <b-form-input class="mt-0 mb-2" v-model="inputBank.accountName" placeholder=""></b-form-input>
+                            <b-form-input class="mt-0 mb-2" v-model="inputBank.accountName" placeholder="" readonly></b-form-input>
                             <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
                             <b-form-input class="mt-0 mb-2 mb-4" v-model="inputBank.accountNumber" placeholder=""></b-form-input>
                         </div>
@@ -537,11 +584,11 @@
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">ลักษณะเกิดเหตุ</p>
-                    <div class="mt-0" v-if="bank!=''">
-                        <p class="label-text">{{bank}}</p>
+                    <div class="mt-0" v-if="accData.accNature!=''">
+                        <p class="label-text">{{accData.accNature}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="bank===''">
+                    <div class="mt-0" v-else-if="accData.accNature===''">
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
@@ -592,11 +639,14 @@
                 <div class="box-container mb-3">                      
                     <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
                         <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาลที่ {{bill.billNo}}</p>
-                        <div v-if="bill.BillfileShow" align="center">
-                            <img class="img-show" :src="bill.BillfileShow" />
-                            <br />
-                            <label>{{bill.filename}}</label>
+                        <div class="div-center-image">
+                            <div class="divImage" v-if="bill.billFileShow != null" align="center">
+                                <img class="img-show" :src="bill.billFileShow" />
+                                <br />
+                                <label class="lblFilename">{{bill.filename}}</label>
+                            </div>
                         </div>
+                        
                         <p class="mb-0">อาการบาดเจ็บ</p>
                         <div class="mt-0" v-if="bill.injuri!=''">
                             <p class="label-text">{{bill.injuri}}</p>
@@ -727,9 +777,14 @@
                         <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
                         <div v-if="bankFileDisplay" align="center">
-                            <img class="img-show" :src="bankFileDisplay.base64" />
-                            <br />
-                            <label>{{bankFileDisplay.filename}}</label>
+                            <div class="div-center-image">
+                                <div class="divImage">
+                                    <img class="img-show" :src="bankFileDisplay.base64" />
+                                    <br />
+                                    <label>{{bankFileDisplay.filename}}</label>
+                                </div>
+                            </div>
+                            
                         </div>
 
                         <p class="mb-0">ชื่อธนาคาร</p>
@@ -765,11 +820,14 @@
                         <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
                         <div v-if="bankFileDisplay" align="center">
-                            <img class="img-show" :src="bankFileDisplay.base64" />
-                            <br />
-                            <label>{{bankFileDisplay.filename}}</label>
+                            <div class="div-center-image">
+                                <div class="divImage">
+                                    <img class="img-show" :src="bankFileDisplay.base64" />
+                                    <br />
+                                    <label class="lblFilename">{{bankFileDisplay.filename}}</label>
+                                </div>                                
+                            </div>                           
                         </div>
-
                         <p class="mb-0">ชื่อธนาคาร</p>
                         <div class="mt-0" v-if="lastDocumentReceive.accountBankName!=''">
                             <p class="label-text">{{ lastDocumentReceive.accountBankName }}</p>
@@ -838,8 +896,8 @@
     // Create component
     const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode);
 
-    // Validate
-    //import { required, minLength } from 'vuelidate/lib/validators';
+    
+    /*import { required, minLength } from 'vuelidate/lib/validators';*/
 
     //Your Javascript lives within the Script Tag
     export default {
@@ -847,11 +905,9 @@
         components: {
             FormWizard,
             TabContent,
-            FilePond,
-           
-            
-           
+            FilePond,  
         },
+        
         data() {
             return {
                 attrs: [
@@ -873,11 +929,11 @@
                 inputDataAll: [],
                 // ---Bill
                 patientType: '',
-                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time:"", typePatient: "OPD", injuri: "", selectHospitalId: ""/* file: null, BillfileShow: "", filename: "" */ }],
+                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId:"", selectHospitalId: "", file: null, billFileShow: "", filename: ""  }],
                 total_amount: 0,
                 // --BookBank
                 displayBankName:"",
-                inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '' },
+                inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '' ,bankBase64String:'', bankFilename:''},
                 bank: '',
                 phoneNumbers: [{ phone: "" }],
                 image: '',
@@ -913,6 +969,7 @@
                     bankName: ''
                 },
                 //----Get Last Document Receive
+                base64FromECM:null,
                 lastDocumentReceive: [],
                 haslastDocumentReceive: false,
                 isBtnChangAccountBankShow:false,
@@ -923,9 +980,17 @@
                 changwats: [],
                 selectChangwat: '',
                 modalHospital: false,
+                
                 mockHospital: '',
                 divHospitalModal: false,
-
+                //----Get Wounded
+                wounded: [],
+                organ:[],
+                mockWounded:'',
+                modalWounded: false,
+                selectWounded: '',
+                selectOrgan: '',
+                divWoundedModal: false,
                 //----Get AccidentCar
                 accidentCarData: { foundCarLicense: '', foundChassisNo: '', foundPolicyNo: '' },
                 //----Get AccidentCar
@@ -943,12 +1008,12 @@
             };
         },
         //---Validate
-        /*validations: {
-            injuri: {
-                required,
-                minLength: minLength(5)
-            }
-        },*/
+        //validations: {
+        //    selectHospital: {
+        //        required,
+        //        minLength: minLength(5)
+        //    }
+        //},
         methods: {
             //---Validate
             /*status(validation) {
@@ -978,22 +1043,32 @@
                     for (let i = 0; i < this.hospitals.length; i++) {
                         if (this.bills[j].selectHospital == this.hospitals[i].HOSPITALNAME) {
                             this.bills[j].selectHospitalId = this.hospitals[i].HOSPITALID
+                        }                        
+                    }                   
+                }
+                console.log("orgen", this.organ.length)
+                for (let j = 0; j < this.bills.length; j++) {
+                    for (let i = 0; i < this.wounded.length; i++) {
+                        if (this.bills[j].injuri == this.wounded[i].wounded) {
+                            this.bills[j].injuriId = this.wounded[i].woundedId
                         }
                     }
                 }
+               
                 
                 this.active = true
-
+                
                 this.$store.state.inputApprovalData.AccNo = this.accData.accNo
-                this.$store.state.inputApprovalData.VictimNo = this.accData.lastClaim.victimNo
+                this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
                 this.$store.state.inputApprovalData.AppNo = this.accData.lastClaim.appNo
                 this.$store.state.inputApprovalData.SumMoney = this.total_amount
                 this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
+                this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
                 this.$store.state.inputApprovalData.Injury = this.injuri
                 this.$store.state.inputApprovalData.BillsData = this.bills
                 this.$store.state.inputApprovalData.BankData = (this.haslastDocumentReceive) ? this.lastDocumentReceive : this.inputBank
                 this.$store.state.inputApprovalData.VictimData = this.accidentVictimData
-                console.log(this.$store.state.inputApprovalData);
+                console.log("stored",this.$store.state.inputApprovalData);
             },
             getBankNames() {
                 console.log('getBankNames');
@@ -1016,12 +1091,20 @@
                 axios.get(url)
                     .then((response) => {
                         this.lastDocumentReceive = response.data[0]
-                        if (this.lastDocumentReceive != null) {                            
+                        
+                        if (response.data.length == 0) {
+                            this.isBtnChangAccountBankShow = false;
+                            this.displayBtnChangeAccountBank = "ใช้บัญชีเดิม";
+                            this.lastDocumentReceive = null;
+                            this.haslastDocumentReceive = false;
+                        } else if (this.lastDocumentReceive != null) {
                             this.isBtnChangAccountBankShow = true;
                             this.displayBtnChangeAccountBank = "เปลี่ยนบัญชีรับเงิน";
                             this.haslastDocumentReceive = true;
+                            this.getFileFromECM()
                         }
-
+                         
+                        console.log('last documenttttt: ', response.data.length);
                         console.log('last document: ', response.data[0]);
                     })
                     .catch(function (error) {
@@ -1052,6 +1135,19 @@
                         alert(error);
                     });
             },
+            getWoundeds() {
+                console.log('getWoundeds');
+                var url = '/api/Master/Wounded';
+                axios.get(url)
+                    .then((response) => {
+                        this.wounded = response.data.woundedList;
+                        this.organ = response.data.organ
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
             getAccidentCar() {
                 console.log('getAccidentCar');
                 var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
@@ -1071,11 +1167,31 @@
                 axios.get(url)
                     .then((response) => {
                         this.accidentVictimData = response.data;
+                        this.inputBank.accountName = this.accidentVictimData.fname + " " + this.accidentVictimData.lname
                         console.log(this.accidentVictimData);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
+            },
+            getFileFromECM() {
+                var url = '/api/Approval/DownloadFromECM'
+                const body = {
+                    SystemId: '03',
+                    TemplateId: '09',
+                    DocumentId: '01',
+                    RefId: this.$store.state.userTokenLine + '|' + this.accData.accNo + '|' + this.accData.victimNo + '|' + this.lastDocumentReceive.appNo,
+                };
+                axios.post(url, JSON.stringify(body), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then((response) => {
+                    this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                    
             },
             onAddIdCardFile: function (error, file) {
                 this.idCardFileDisplay.file = file
@@ -1088,45 +1204,59 @@
                 this.diaryFileDisplay.base64 = file.getFileEncodeDataURL()
             },
             onAddBankAccountFile: function (error, file) {
+                console.log(file)
                 this.bankFileDisplay.file = file
                 this.bankFileDisplay.filename = file.filename
                 this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
+                this.inputBank.bankBase64String = file.getFileEncodeBase64String()
+                this.inputBank.bankFilename = file.filename
+            },
+            onAddBillFile: function (index) {
+                this.bills[index].filename = this.bills[index].file[0].filename
+                this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()
+                console.log("add bill: ",this.bills[index])
             },
             OnChangePageOne() {
-                console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
-                for (let i = 0; i < this.bankNames.length; i++) {
-                    if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
-                        this.lastDocumentReceive.accountBankName = this.bankNames[i].name
-                        this.lastDocumentReceive.bankId = this.bankNames[i].bankCode
-                        console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
-                        return true;
+                if (this.lastDocumentReceive != null) {
+                    console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
+                    for (let i = 0; i < this.bankNames.length; i++) {
+                        if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
+                            this.lastDocumentReceive.accountBankName = this.bankNames[i].name
+                            this.lastDocumentReceive.bankId = this.bankNames[i].bankCode
+                            console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
+                            return true;
+                        }
                     }
                 }
+                
                 //for (let i = 0; i < this.bills.length; i++) {
-                //    this.bills[i].BillfileShow = this.bills[i].file[0].getFileEncodeDataURL()
-                //    this.bills[i].filename = this.bills[i].file[0].filename
+                //    this.bills[i].BillfileShow = this.bills[i].file.getFileEncodeDataURL()
+                //    this.bills[i].filename = this.bills[i].file.filename
                 //}
                 return true;
             },
             OnChangePageTwo() {
-                
-                console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
-                for (let i = 0; i < this.bankNames.length; i++) {
-                    if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
-                        this.lastDocumentReceive.accountBankName = this.bankNames[i].name
-                        console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
-                        return true;
+                if (this.lastDocumentReceive != null) {
+                    console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
+                    for (let i = 0; i < this.bankNames.length; i++) {
+                        if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
+                            this.lastDocumentReceive.accountBankName = this.bankNames[i].name
+                            console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
+                            return true;
+                        }
                     }
                 }
+                
                 return true;
             },
             //getIt: function () {
             //    console.log(this.$refs.pond.getFiles());
             //},
             onChangwatChange() {
-
                 this.divHospitalModal = true;
-
+            },
+            onOrganChange() {
+                this.divWoundedModal = true;
             },
             submitModalHospital(index) {
                 this.bills[index].selectHospital = this.mockHospital
@@ -1134,6 +1264,13 @@
                 this.selectChangwat = 0;
                 this.mockHospital = 0;
                 this.divHospitalModal = false;
+            },
+            submitModalWounded(index) {
+                this.bills[index].injuri = this.mockWounded
+                this.modalWounded = false
+                this.selectOrgan = 0;
+                this.mockWounded = 0;
+                this.divWoundedModal = false;
             },
             submitModalSaysoHospital() {
                 this.saysoHospital = this.mockSaysoHospital
@@ -1153,48 +1290,50 @@
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", selectHospitalId: ""/*file: null, BillfileShow: "", filename: ""*/ });
+                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",file: null, billFileShow: "", filename: "" });
                 this.calMoney()
                 console.log(this.bills)
             },
             removeField(index, fieldType) {
                 //type.splice(index, 1);
                 fieldType.splice(index, 1);
+                console.log(this.bills[index].file[0].id);
+                /*this.$refs.pond.removeFile(this.bills[index].file[0].id);*/
                 this.calMoney()
                 console.log(this.bills)
             },
-            onFileChange(event) {
-                var files = event.target.files || event.dataTransfer.files;
-                if (!files.length)
-                    return;
-                console.log(files[0]);
-            },
-            createImage(file) {
-                var Image = new Image();
-                var reader = new FileReader();
-                var vm = this;
+            //onFileChange(event) {
+            //    var files = event.target.files || event.dataTransfer.files;
+            //    if (!files.length)
+            //        return;
+            //    console.log(files[0]);
+            //},
+            //createImage(file) {
+            //    var Image = new Image();
+            //    var reader = new FileReader();
+            //    var vm = this;
 
-                reader.onload = (e) => {
-                    vm.image = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            },
-            removeImage: function () {
-                this.image = '';
-            },
+            //    reader.onload = (e) => {
+            //        vm.image = e.target.result;
+            //    };
+            //    reader.readAsDataURL(file);
+            //},
+            //removeImage: function () {
+            //    this.image = '';
+            //},
             // --- BookBank
-            previewImage: function (event) {
-                var input = event.target;
-                if (input.files) {
-                    var reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.preview = e.target.result;
-                        console.log(this.preview)
-                    }
-                    this.image = input.files[0];
-                    reader.readAsDataURL(input.files[0]);
-                }
-            },
+            //previewImage: function (event) {
+            //    var input = event.target;
+            //    if (input.files) {
+            //        var reader = new FileReader();
+            //        reader.onload = (e) => {
+            //            this.preview = e.target.result;
+            //            console.log(this.preview)
+            //        }
+            //        this.image = input.files[0];
+            //        reader.readAsDataURL(input.files[0]);
+            //    }
+            //},
             //---Alert
             onComplete: function () {
                 alert("Thank you for your response! We will contact you soon.");
@@ -1207,6 +1346,7 @@
             this.getLastDocumentReceive();
             this.getHospitalNames();
             this.getChangwatNames();
+            this.getWoundeds();
             this.selectChangwat = 0;
             this.selectHospital = 0;
 
@@ -1217,12 +1357,34 @@
                 return this.hospitals.filter(function (el) {
                     return el.CHANGWATSHORTNAME === this.selectChangwat;
                 }, this);
+            },
+            filteredWoundedItems: function () {
+                return this.wounded.filter(function (el) {
+                    return el.organ === this.selectOrgan;
+                }, this);
             }
         }
     };
 </script>
 
 <style>
+    .div-center-image {
+        text-align: -webkit-center;
+    }
+    .divImage {
+        width: 75%;
+        border-style: dashed;
+        border-radius: 10px;
+        border-color: #d9d9d9;
+        background-color: #ffffff;
+        border-width: thin;
+    }
+    .lblFilename {
+        margin-bottom:5px;
+        font-size: 12px;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+    }
     span.vc-day {
         display: none;
     }
@@ -1317,7 +1479,8 @@
 
     .img-show {
         margin: 5px;
-        width: 30%;
+        max-height: 90px;
+        border-radius: 10px;
     }
 
     .card-file {

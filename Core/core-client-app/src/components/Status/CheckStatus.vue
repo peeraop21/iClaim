@@ -32,7 +32,7 @@
                                     <div align="right" style="margin-top: -10px;">
                                         <div style="margin-top:-5px">
                                             <!--<a v-on:click="getPDF(hosApp.appNo)">PDF</a>-->
-                                            <vs-button v-on:click="getPDF(hosApp.appNo)"
+                                            <vs-button v-on:click="externalPagePDF(hosApp.appNo)"
                                                        icon
                                                        primary
                                                        flat>
@@ -69,11 +69,12 @@
                                     <br />
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
-                                    <router-link class="btn-checked" :to="{ name: 'ConfirmMoney', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                    <router-link class="btn-select" v-if="hosApp.appStatusName == 'รอยื่นเอกสารเพิ่มเติม'" :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
+                                    <router-link class="btn-checked" v-if="hosApp.appStatusName == 'รอยืนยันจำนวนเงิน'" :to="{ name: 'ConfirmMoney', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                    <router-link class="btn-checked" v-if="hosApp.appStatusName == 'โอนเงิน'" :to="{ name: 'Rating', params: { id: hosApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-checked" :to="{ name: 'Rating', params: { id: hosApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -164,6 +165,7 @@
     }
 </style>
 <script>
+    import liff from '@line/liff'
     import axios from 'axios'
     export default {
         name: 'Accident',
@@ -227,6 +229,11 @@
                     });
 
             },
+            externalPagePDF(appNo) {
+                liff.openWindow({
+                    url: 'https://ts2digitalclaim.rvp.co.th/DownloadPDF/{accNo}/{victimNo}/{appNo}/{channel}/?openExternalBrowser=1'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel)
+                });
+            },
             getPDF(appNo) {
 
                 /*var url = '/api/genpdf/GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel);*/
@@ -262,13 +269,24 @@
                         this.$swal.close();
                         //this.$router.push(url)
                         //window.location.href = url;
-                        window.open(url)
-
+                        console.log(url)
+                        /*window.open(url)*/
+                        liff.openWindow({
+                            url: 'https://www.youtube.com/?openExternalBrowser=1'
+                        });
+                        
                         /*window.open("data:application/pdf," + encodeURI(response.data));*/
                         //const blob = new Blob([response.data]);
                         //const objectUrl = URL.createObjectURL(blob);
                         //this.pdfsrc = objectUrl;
                         //console.log(this.pdfsrc)
+
+                        //var link = document.createElement('a');
+                        //link.href = window.URL.createObjectURL(blob);
+                        //var fileName = "PT3";
+                        //link.download = fileName;
+                        //link.click();
+                        //this.$swal.close();
                     })
                     .catch(function (error) {
                         alert(error);

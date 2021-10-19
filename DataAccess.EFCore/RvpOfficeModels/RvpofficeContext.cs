@@ -18,13 +18,16 @@ namespace DataAccess.EFCore.RvpOfficeModels
 
         public virtual DbSet<Amphur> Amphur { get; set; }
         public virtual DbSet<BankNames> BankNames { get; set; }
+        public virtual DbSet<Branch> Branch { get; set; }
         public virtual DbSet<Changwat> Changwat { get; set; }
         public virtual DbSet<HosAccident> HosAccident { get; set; }
         public virtual DbSet<HosApproval> HosApproval { get; set; }
         public virtual DbSet<HosCarAccident> HosCarAccident { get; set; }
+        public virtual DbSet<HosPt4> HosPt4 { get; set; }
         public virtual DbSet<HosVicTimAccident> HosVicTimAccident { get; set; }
         public virtual DbSet<Invoicedt> Invoicedt { get; set; }
         public virtual DbSet<Invoicehd> Invoicehd { get; set; }
+        public virtual DbSet<Mcwounded> Mcwounded { get; set; }
         public virtual DbSet<Tumbol> Tumbol { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,6 +94,79 @@ namespace DataAccess.EFCore.RvpOfficeModels
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(75)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Branch>(entity =>
+            {
+                entity.HasKey(e => new { e.Branchid, e.Regionid, e.Branchoff })
+                    .HasName("PK_BRANCH_1");
+
+                entity.ToTable("BRANCH");
+
+                entity.Property(e => e.Branchid)
+                    .HasColumnName("BRANCHID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasComment("รหัสสาขา");
+
+                entity.Property(e => e.Regionid)
+                    .HasColumnName("REGIONID")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Branchoff)
+                    .HasColumnName("BRANCHOFF")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.AcBranchId)
+                    .HasColumnName("AcBranchID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BankNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BranchPvr)
+                    .HasColumnName("BranchPVR")
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BranchShortName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Branchname)
+                    .HasColumnName("BRANCHNAME")
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CanRegis)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Ceo)
+                    .HasColumnName("CEO")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.ChangwatShortName)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.MainBranchId)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TelNo)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -1597,6 +1673,49 @@ namespace DataAccess.EFCore.RvpOfficeModels
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<HosPt4>(entity =>
+            {
+                entity.HasKey(e => e.Pt4id)
+                    .HasName("PK_HosPT4_1");
+
+                entity.ToTable("HosPT4");
+
+                entity.HasIndex(e => e.Pt4date)
+                    .HasName("XPT4Date");
+
+                entity.Property(e => e.Pt4id)
+                    .HasColumnName("PT4ID")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DocumentType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength()
+                    .HasDefaultValueSql("('N')");
+
+                entity.Property(e => e.Pt4date)
+                    .HasColumnName("PT4Date")
+                    .HasColumnType("smalldatetime");
+
+                entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SendStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UserCreate)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<HosVicTimAccident>(entity =>
             {
                 entity.HasKey(e => new { e.AccNo, e.VictimNo })
@@ -2315,6 +2434,54 @@ namespace DataAccess.EFCore.RvpOfficeModels
                 entity.Property(e => e.Vname)
                     .HasColumnName("vname")
                     .HasMaxLength(10)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Mcwounded>(entity =>
+            {
+                entity.HasKey(e => e.WoundedId);
+
+                entity.ToTable("MCWounded");
+
+                entity.Property(e => e.WoundedId).HasColumnName("WoundedID");
+
+                entity.Property(e => e.GroupId)
+                    .HasColumnName("GroupID")
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ioc)
+                    .HasColumnName("IOC")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.OrderBy)
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Organ)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecordBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecordDate)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.RecordIp)
+                    .HasColumnName("RecordIP")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.WoundedName)
+                    .HasMaxLength(255)
                     .IsUnicode(false);
             });
 

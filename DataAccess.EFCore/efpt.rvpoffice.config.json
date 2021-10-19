@@ -22,6 +22,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[BRANCH]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[CHANGWAT]",
          "ObjectType": 0
       },
@@ -38,6 +42,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[HosPT4]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[HosVicTimAccident]",
          "ObjectType": 0
       },
@@ -47,6 +55,10 @@
       },
       {
          "Name": "[dbo].[invoicehd]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MCWounded]",
          "ObjectType": 0
       },
       {

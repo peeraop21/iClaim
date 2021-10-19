@@ -11,7 +11,8 @@ export default new Vuex.Store({
         hosAppStateData: [],
         userTokenLine:null,
         jwtToken: [],
-        inputApprovalData: { AccNo: null, VictimNo:null, AppNo:null, SumMoney:null, ClaimNo:null, Injury: null, BillsData: null, BankData: null, VictimData:null}
+        inputApprovalData: { AccNo: null, VictimNo: null, AppNo: null, SumMoney: null, ClaimNo: null, Injury: null, BillsData: null, BankData: null, VictimData: null, UserIdLine:null},
+        hasRegistered:false
 
   },
   mutations: {
@@ -29,9 +30,9 @@ export default new Vuex.Store({
             console.log("Getter", state.claimStateData)
             return state.claimStateData.filter(w => w.stringPt4 === id)[0]
         },
-        hosAppGetter: (state) => (id) => {
+        hosAppGetter: (state) => (id,appNo) => {
             console.log("HosGetter", state.hosAppStateData)
-            return state.hosAppStateData.filter(w => w.stringAccNo === id)[0]
+            return state.hosAppStateData.filter(w => w.stringAccNo === id && w.appNo === appNo)[0]
         },
         userGetter: (state) => (id) => {
             return state.userStateData.filter(w => w.lineId !== id)

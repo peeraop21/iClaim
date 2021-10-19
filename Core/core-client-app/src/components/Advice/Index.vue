@@ -111,7 +111,7 @@
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
-                <router-link class="btn-next" style="width: 100%; padding: 8px 0;" to="/Accident">{{msg}}</router-link>
+                <button class="button-next1" style="width: 100%; padding: 8px 0;"  @click="checkRegisAgain">{{msg}}</button>
             </div>
             <br><br><br>
         </div>
@@ -229,8 +229,9 @@
     </div>
 </template>
 <script>
-
+    import liff from '@line/liff'
     import axios from 'axios'
+
     
     export default {
         name: 'Advice',
@@ -243,7 +244,9 @@
                 riderDialog: false,
                 passangerDialog: false,
                 page: 1,
-                registered: null
+                registered: null,
+                
+
             }
         },
         methods: {
@@ -273,7 +276,25 @@
                         this.registered = response.data;
                         console.log(response)
                         if (this.registered == false) {
-                            this.$router.push({ name: 'Ocr' })
+                            this.$swal({
+                                icon: 'info',
+                                text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
+                                title: 'ขออภัย',
+                                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                showCancelButton: false,
+                                showDenyButton: false,
+
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+                                    /*this.$router.push({ name: 'Accident' })*/
+                                    liff.openWindow({
+                                        url: 'https://ts2digitalclaim.rvp.co.th/Ocr/?openExternalBrowser=1'
+                                    });
+                                }
+                            })
+                            
+                            /*this.$router.push({ name: 'Ocr' })*/
                         }
 
                     })
@@ -281,16 +302,52 @@
                         alert(error);
                     });
             },
+            checkRegisAgain() {
+                let hasRegisterd = this.$store.state.hasRegistered
+                if (hasRegisterd || this.registered) {
+                    this.$router.push({ name: 'Accident' })
+                } else {
+                    this.$swal({
+                        icon: 'info',
+                        text: 'ท่านยังไม่ได้ทำการยืนยันตัวตน โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
+                        title: 'ขออภัย',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            /*this.$router.push({ name: 'Accident' })*/
+                            liff.openWindow({
+                                url: 'https://ts2digitalclaim.rvp.co.th/Ocr/?openExternalBrowser=1'
+                            });
+                        }
+                    })
+                }
+            }
+
         },
-        async mounted() {
-            this.$store.state.userTokenLine = "gggg"
-            /*await this.getJwtToken()*/ //ตรวจสอบการลงทะเบียน
-        }
-
-
+        created: function () {
+            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+        },
+       
     }
+
+    
 </script>
 <style>
+    .button-next1 {
+        background-color: var(--main-color);
+        color: white;
+        padding: 5px 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 20px;
+        font-size: 15px;
+        border: none;
+    }
     .bg-main {
         /*background-color: var(--main-color);
         background: -webkit-linear-gradient(rgb(114 60 177), rgb(144 96 199));*/

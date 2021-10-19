@@ -1,56 +1,24 @@
 ﻿{
    "CodeGenerationMode": 1,
-   "ContextClassName": "DigitalclaimContext",
+   "ContextClassName": "RvpSystemContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
-   "OutputPath": "DigitalClaimModels",
+   "OutputPath": "RvpSystemModels",
    "ProjectRootNamespace": "DataAccess.EFCore",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[ApprovalStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosApproval]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosApprovalStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosApprovalStatusState]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosDocumentCheck]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosDocumentCheckInvoice]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosDocumentReceive]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosPT4]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[invoicehd]",
+         "Name": "[dbo].[eDocDetail]",
          "ObjectType": 0
       }
    ],
-   "UiHint": "T1DB18.DigitalClaim",
+   "UiHint": "T1DB11.RVPSystem",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": false,

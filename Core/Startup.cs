@@ -29,25 +29,11 @@ using DinkToPdf;
 using System.Reflection;
 using System.Runtime.Loader;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-
+using DataAccess.EFCore.RvpSystemModels;
 
 namespace Core
 {
-    //public class CustomAssemblyLoadContext : AssemblyLoadContext
-    //{
-    //    public IntPtr LoadUnmanagedLibrary(string absolutePath)
-    //    {
-    //        return LoadUnmanagedDll(absolutePath);
-    //    }
-    //    protected override IntPtr LoadUnmanagedDll(String unmanagedDllName)
-    //    {
-    //        return LoadUnmanagedDllFromPath(unmanagedDllName);
-    //    }
-    //    protected override Assembly Load(AssemblyName assemblyName)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+    
     public class Startup
     {        
        
@@ -83,6 +69,7 @@ namespace Core
             services.AddDbContext<IpolicyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("iPolicy")));
             services.AddDbContext<DigitalclaimContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DigitalClaim")));
             services.AddDbContext<ClaimDataContext>(o => o.UseSqlServer(Configuration.GetConnectionString("ClaimData")));
+            services.AddDbContext<RvpSystemContext>(o => o.UseSqlServer(Configuration.GetConnectionString("RVPSystem")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
             services.AddTransient<IUserService, UserService>();
@@ -91,9 +78,11 @@ namespace Core
             services.AddScoped<IMasterService, MasterService>();
             services.AddTransient<IApprovalService, ApprovalService>();
             services.AddScoped<IApprovalService, ApprovalService>();
-            
+            services.AddTransient<IAttachmentService, AttachmentService>();
+            services.AddScoped<IAttachmentService, AttachmentService>();
 
-            
+
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

@@ -16,6 +16,7 @@ import ConfirmMoney from "@/components/Status/ConfirmMoney.vue";
 import Ocr from "@/components/Ocr/Index.vue";
 import Rating from "@/components/Rating/Index.vue";
 import AddDocument from "@/components/Claim/AddDocument.vue";
+import DownloadPDF from "@/components/Claim/DownloadPDF.vue";
 
 Vue.use(VueRouter)
 
@@ -102,6 +103,11 @@ const routes = [
         name: "AddDocument",
         component: AddDocument,
         props: true
+    },
+    {
+        path: "/DownloadPDF/:accNo/:victimNo/:appNo/:channel",
+        name: "DownloadPDF",
+        component: DownloadPDF,
     },
 ]
 

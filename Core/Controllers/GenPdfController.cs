@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.IO;
 using System.Threading.Tasks;
-using AutoMapper;
 using Core.ViewModels;
-using DataAccess.EFCore.DigitalClaimModels;
 using DinkToPdf;
 using DinkToPdf.Contracts;
-using iTextSharp.text;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.ViewModels;
@@ -19,7 +11,7 @@ using Services.ViewModels;
 
 namespace Core.Controllers
 {
-    
+
 
     [Route("api/[controller]")]
     [ApiController]
@@ -27,6 +19,7 @@ namespace Core.Controllers
     {
         
         
+
         private readonly IConverter converter;
         private readonly IAccidentService accidentService;
         public GenPdfController( IConverter converter, IAccidentService accidentService)
@@ -77,6 +70,28 @@ namespace Core.Controllers
                 Objects = { objectSettings }
             };
             file = converter.Convert(pdf);
+            //var path = @"C:\Users\ROIN\source\repos\iRVP\Digital Claim\Core\license.key";
+            //try
+            //{
+            //    HashAlgorithm hashAlgorithm = HashAlgorithm.SHA256;
+            //    Rectangle signatureRectCert = new Rectangle(100, 100, 400, 800);
+            //    signatureRectCert = new Rectangle(0, 0, 0, 0);
+            //    Font signatureFont = new Font(Font.FontFamily.COURIER, 7.0f, Font.NORMAL, BaseColor.BLACK);
+            //    Pkcs11CsWrapper pks = new Pkcs11CsWrapper(NShieldLibraryPath, useOsLocking, UserPIN, TokenSerial, TokenLabel, path);
+
+
+            //    string subject = "Accident No : " + acc.AccNo;
+            //    byte[] contentByte = Encoding.UTF8.GetBytes(subject);
+            //    byte[] contentHash = pks.signContent(contentByte);
+            //    string contentBase64 = Convert.ToBase64String(contentHash);
+
+            //    pks.initPkcs11RsaSignature(ckaLabel, null, hashAlgorithm, certificateThumbprint, onlyValidCertificate);
+            //    byte[] fileSigned = pks.signPdf(file, signingBlockName, contentBase64, signatureRectCert, signatureFont);
+            //}
+            //catch(Exception ex)
+            //{
+            //    var e = ex;
+            //}
             return File(file, "application/pdf");
         }
 

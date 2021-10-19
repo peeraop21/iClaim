@@ -20,7 +20,10 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public virtual DbSet<HosApproval> HosApproval { get; set; }
         public virtual DbSet<HosApprovalStatus> HosApprovalStatus { get; set; }
         public virtual DbSet<HosApprovalStatusState> HosApprovalStatusState { get; set; }
+        public virtual DbSet<HosDocumentCheck> HosDocumentCheck { get; set; }
+        public virtual DbSet<HosDocumentCheckInvoice> HosDocumentCheckInvoice { get; set; }
         public virtual DbSet<HosDocumentReceive> HosDocumentReceive { get; set; }
+        public virtual DbSet<HosPt4> HosPt4 { get; set; }
         public virtual DbSet<Invoicehd> Invoicehd { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -184,6 +187,68 @@ namespace DataAccess.EFCore.DigitalClaimModels
                 entity.Property(e => e.InsertDate).HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<HosDocumentCheck>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo });
+
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookbankComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookbankStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdCardComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdCardStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SumStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<HosDocumentCheckInvoice>(entity =>
+            {
+                entity.HasKey(e => e.IdInvhd);
+
+                entity.Property(e => e.IdInvhd)
+                    .HasColumnName("id_invhd")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AccNo)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReceiptNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<HosDocumentReceive>(entity =>
             {
                 entity.HasKey(e => new { e.AccNo, e.VictimNo, e.Appno, e.RunNo });
@@ -252,6 +317,45 @@ namespace DataAccess.EFCore.DigitalClaimModels
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(10);
+            });
+
+            modelBuilder.Entity<HosPt4>(entity =>
+            {
+                entity.HasKey(e => e.Pt4id)
+                    .HasName("PK_HosPT4_1");
+
+                entity.ToTable("HosPT4");
+
+                entity.Property(e => e.Pt4id)
+                    .HasColumnName("PT4ID")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DocumentType)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+
+                entity.Property(e => e.GetRecordStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Pt4date)
+                    .HasColumnName("PT4Date")
+                    .HasColumnType("smalldatetime");
+
+                entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+                entity.Property(e => e.SendStatus)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UserCreate)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Invoicehd>(entity =>

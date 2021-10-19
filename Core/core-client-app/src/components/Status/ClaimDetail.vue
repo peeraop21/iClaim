@@ -159,11 +159,11 @@
                     <hr class="mt-0">
                 </div>
                 <p class="mb-0">ลักษณะเกิดเหตุ</p>
-                <div class="mt-0" v-if="bank!=''">
-                    <p class="label-text">{{bank}}</p>
+                <div class="mt-0" v-if="accData.accNature!=''">
+                    <p class="label-text">{{accData.accNature}}</p>
                     <hr class="mt-0">
                 </div>
-                <div class="mt-0" v-else-if="bank===''">
+                <div class="mt-0" v-else-if="accData.accNature===''">
                     <p class="label-text">-</p>
                     <hr class="mt-0">
                 </div>
@@ -394,7 +394,7 @@
             },
             getDocumentReceive() {
                 console.log('getDocumentReceive');
-                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.accountReceiveData = response.data[0];

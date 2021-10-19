@@ -95,7 +95,7 @@
         name: 'Accident',
         data() {
             return {
-                userToken: "U08881937e4faf1dc4a04522d138bmock",
+                /*userToken: "U08881937e4faf1dc4a04522d138bmock",*/
                 userData: [],
                 accData: [],
                 rights_amount: 0
@@ -124,7 +124,7 @@
                 })
             },
             getAccidents() {
-                var url = '/api/accident/{userToken}'.replace('{userToken}', this.userToken);
+                var url = '/api/accident/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
                 var tokenJwt = this.$store.state.jwtToken.token
                 var apiConfig = {
                     headers: {
@@ -144,7 +144,7 @@
                     });
             },
             getUser() {
-                var url = '/api/user/{userToken}'.replace('{userToken}', this.userToken);
+                var url = '/api/user/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
                 var tokenJwt = this.$store.state.jwtToken.token
                 var apiConfig = {
                     headers: {
@@ -154,7 +154,10 @@
                 axios.get(url, apiConfig)
                     .then((response) => {
                         /*this.userApi = response.data;*/
-                        this.$store.state.userStateData = response.data;
+                        if (response.data == null) {
+                            this.$router.push({ name: 'Advice' })
+                        }
+                        this.$store.state.userStateData = response.data;                       
                         this.userData = this.$store.state.userStateData;
                         console.log('userdata', this.$store.state.userStateData);
                     })
@@ -176,6 +179,7 @@
             }
         },*/
         async mounted() {
+            /*this.$store.state.userTokenLine = "FrameMock"*/
             await this.getJwtToken();
             
         }

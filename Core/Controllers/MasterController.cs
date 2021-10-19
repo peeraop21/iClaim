@@ -32,6 +32,12 @@ namespace Core.Controllers
             return Ok(await masterService.GetChangwat());
         }
 
+        [HttpGet("Wounded")]
+        public async Task<IActionResult> GetWoundeds()
+        {
+            return Ok(await masterService.GetWoundeds());
+        }
+
         
     }
 }

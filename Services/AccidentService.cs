@@ -55,11 +55,11 @@ namespace Services
             //var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s => new { s.EaAccNo, s.EaAccDate, s.EaAccPlace }).ToListAsync();
             var accLineList = await rvpAccidentContext.TbAccidentMasterLine
                 .Join(rvpAccidentContext.TbAccidentMasterLineVictim, accVic => accVic.EaAccNo, vic => vic.EaAccno, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.EaVictimNo, victimIdCard = vic.EaIdCardVictim })
-                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.EaAccNo, s.victimNo, s.accJoinVictim.EaAccDate, s.accJoinVictim.EaAccPlace }).ToListAsync();
+                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.EaAccNo, s.victimNo, s.accJoinVictim.EaAccDate, s.accJoinVictim.EaAccPlace, s.accJoinVictim.EaAccNature, s.accJoinVictim.EaAccTime}).ToListAsync();
             //var accHosList = await rvpOfficeContext.HosAccident.Where(w => accHosNo.Contains(w.AccNo)).Select(s => new { s.AccNo, s.DateAcc, s.AccPlace }).ToListAsync();
             var accHosList = await rvpOfficeContext.HosAccident
                 .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo })
-                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace }).ToListAsync();
+                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace , s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc}).ToListAsync();
 
             var accViewModelList = new List<AccidentViewModel>();
             //var sum = rvpOfficeContext.HosApproval.Where(w => w.ClaimNo == null).Sum(s => s.SumMoney);
@@ -73,7 +73,8 @@ namespace Services
                 accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo, acc.victimNo);
                 accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
-                accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
+                accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.EaAccTime.Replace(".", ":") + " น.";
+                accVwModel.AccNature = acc.EaAccNature;
                 accVwModel.PlaceAcc = acc.EaAccPlace;
                 accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
                 accVwModel.Channel = "LINE";
@@ -91,7 +92,8 @@ namespace Services
                 accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo, acc.victimNo);
                 accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
-                accVwModel.StringAccDate = accVwModel.AccDate.ToString().Replace("12:00:00 AM", " ");
+                accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.TimeAcc.Replace(".",":") + " น.";
+                accVwModel.AccNature = acc.AccNature;
                 accVwModel.PlaceAcc = acc.AccPlace;
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
                 accVwModel.Channel = "HOSPITAL";                

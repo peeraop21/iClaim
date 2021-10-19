@@ -30,13 +30,15 @@
                     <div class="col-6">
                         <file-pond credits="null"
                                    label-idle="รูปบัตรประจำตัวประชาชน"
+                                   capture="user"
+                                   accept="image/*"
                                    v-bind:allow-multiple="false"
                                    v-bind:allowFileEncode="true"
                                    accepted-file-types="image/jpeg, image/png"
                                    v-bind:files="idCardFile"
                                    v-on:addfile="onAddidCardFile" />
                     </div>
-                    <div class="col-6">
+                    <div v-if="ImageData.IdCardBase64 != null" class="col-6">
                         <file-pond credits="null"
                                    label-idle="รูปถ่ายหน้าเซลฟี"
                                    v-bind:allow-multiple="false"
@@ -112,13 +114,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm form-flex">
+                            <label class="form-label" style="min-width: 145px;">รหัสหลังบัตรประจำตัว :</label>
+                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="behindIdCardNo"></b-form-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-control-sm form-flex">
+                            <label class="form-label" style="min-width: 205px ">เบอร์โทร (ใช้ในการขอรหัส OTP) :</label>
+                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="telNo"></b-form-input>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             <div class="row">
                 <div class="col-12">
-                    <button class="btn-next-submit" style="width: 100%; padding: 8px 0px;"  @click="submit">ดำเนินการต่อ</button>
+                    <button class="btn-next-submit" style="width: 100%; padding: 8px 0px;" @click="submit">ดำเนินการต่อ</button>
                 </div>
             </div>
-            <br><br>
+            <br>
+            <br>
         </div>
 
 
@@ -128,7 +149,7 @@
 <script>
 
 
-  
+    import liff from '@line/liff'
 
     import axios from 'axios'
     import vueFilePond from 'vue-filepond';
@@ -163,6 +184,8 @@
         data() {
             return {
                 /*dataCard: { address: "", date_of_birth: "", date_of_expiry: "", date_of_issue: "", first_name_en: "", id: "", last_name_en: "", name_th: "", religion: "", serial_number: "" },*/
+                telNo: "",
+                behindIdCardNo: "",
                 dataIdCard: {},
                 scoreCompare: {},
                 idCardFile: null,
@@ -175,15 +198,88 @@
                 URL: "https://iai.flashsoftapi.com/v1/compare-face-id-card",
                 acceptData: false,
                 ImageData: { IdCardBase64: null, FaceBase64: null },
-                result:""
+                uploadFaceError:null,
+                result: ""
             };
         },
 
         methods: {
-            
+
             submit: async function () {
-                
-                if (this.scoreCompare != null && this.scoreCompare.score >= 90) {
+                if (this.ImageData.IdCardBase64 == null) {
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรูณาอัพโหลดรูปถ่ายบัตรประจำตัวประชาชน',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else if (this.ImageData.FaceBase64 == null) {
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรูณาอัพโหลดรูปถ่ายหน้าเซลฟี เพื่อทำการเปรียบเทียบใบหน้า',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else if (this.behindIdCardNo == "" && this.telNo == "") {
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรูณากรอกข้อมูลรหัสหลังบัตรประจำตัว และเบอร์โทร',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else if (this.behindIdCardNo == "" && this.telNo != "") {
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรูณากรอกข้อมูลรหัสหลังบัตรประจำตัว',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else if (this.behindIdCardNo != "" && this.telNo == "") {
+                    this.$swal({
+                        icon: 'error',
+                        text: 'กรูณากรอกข้อมูลเบอร์โทร',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else if (this.scoreCompare != null && this.scoreCompare.score < 70) {
+
+                    this.$swal({
+                        icon: 'error',
+                        text: 'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกันต่ำกว่า 90%' + ' กรุณาอัพโหลดรูปใหม่เพื่อเปรียบเทียบอีกครั้ง',
+                        title: 'ผิดพลาด',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                    })
+                } else if (this.scoreCompare != null && this.scoreCompare.score >= 70) {
                     this.$swal({
                         title: 'กำลังประมวลผล',
                         html: 'ขณะนี้ระบบกำลังประมวลผล และบันทึกข้อมูล',
@@ -197,25 +293,11 @@
                         }
                     })
                     await this.postUserData();
-                   
-                } else if (this.scoreCompare != null && this.scoreCompare.score < 90) {
-                    
-                    this.$swal({
-                        icon: 'error',
-                        text: 'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกันต่ำกว่า 90%' + ' กรุณาอัพโหลดรูปใหม่เพื่อเปรียบเทียบอีกครั้ง',
-                        title: 'ผิดพลาด',
-                        /*footer: '<a href="">Why do I have this issue?</a>'*/
-                        showCancelButton: false,
-                        showDenyButton: false,
 
-                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                        confirmButtonColor: '#5c2e91',
-                    })
-                } else {
-                    
+                } else if (this.uploadFaceError != null) {
                     this.$swal({
                         icon: 'error',
-                        text: 'กรูณาอัพโหลดรูปถ่ายหน้าเซลฟี เพื่อทำการเปรียบใบหน้า',
+                        text: 'กรูณาอัพโหลดรูปถ่ายหน้าเซลฟีอีกครั้ง เพื่อทำการเปรียบเทียบใบหน้า',
                         title: 'ผิดพลาด',
                         /*footer: '<a href="">Why do I have this issue?</a>'*/
                         showCancelButton: false,
@@ -225,12 +307,15 @@
                         confirmButtonColor: '#5c2e91',
                     })
                 }
+                 
+                    
+                 
             },
             postUserData() {
                 let address = this.dataIdCard.address.split(/[\s,]+/)
-                
+
                 let splitMoo = null;
-                
+
                 console.log("splitMoo : ", splitMoo);
                 let homeid = null;
                 let hmo = null;
@@ -260,13 +345,13 @@
                         road = address[i].replace("ถ.", "")
                     } else if (i == 1) {
                         homeid = address[i]
-                    } 
+                    }
 
                 }
                 let body = {
-                    idcardNo : this.dataIdCard.id,
-                    prefix : this.dataIdCard.name_th.split(" ", 1)[0],
-                    fname : this.dataIdCard.name_th.split(" ", 2)[1],
+                    idcardNo: this.dataIdCard.id,
+                    prefix: this.dataIdCard.name_th.split(" ", 1)[0],
+                    fname: this.dataIdCard.name_th.split(" ", 2)[1],
                     lname: this.dataIdCard.name_th.split(" ", 3)[2],
                     stringDateofBirth: this.dataIdCard.date_of_birth,
                     homeHouseNo: homeid,
@@ -275,6 +360,8 @@
                     homeTumbolId: tumbol,
                     homeCityId: amphur,
                     homeProvinceId: changwat,
+                    idcardLaserCode: this.behindIdCardNo,
+                    mobileNo: this.telNo,
                     lineId: this.$store.state.userTokenLine
                 };
                 console.log(body)
@@ -295,10 +382,12 @@
                             confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
                             confirmButtonColor: '#5c2e91',
                             willClose: () => {
-                                this.$router.push({ name: 'Accident' })
+                                this.$store.state.hasRegistered = true;
+                                /*this.$router.push({ name: 'Accident' })*/
+                                liff.closeWindow()
                             }
                         })
-                        
+
                         console.log(response.data)
                     })
                     .catch(function (error) {
@@ -343,12 +432,13 @@
                 })
                     .then((response) => {
                         this.scoreCompare = response.data.resultCompare;
-                        let error = response.data.errorContent;
-                        if (error != null) {
+                        console.log("score! = " ,response.data.resultCompare)
+                        this.uploadFaceError= response.data.errorContent;
+                        if (this.uploadFaceError != null) {
                             this.$swal.close();
                             this.$swal({
                                 icon: 'error',
-                                text: error,
+                                text: this.uploadFaceError,
                                 title: 'ผิดพลาด',
                                 /*footer: '<a href="">Why do I have this issue?</a>'*/
                                 showCancelButton: false,
@@ -362,7 +452,7 @@
                             this.$swal.close();
                             this.$swal({
                                 icon: 'success',
-                                text: 'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกัน ' + this.scoreCompare.score + "%",
+                                text: /*'ผลการเทียบใบหน้ากับบัตรประจำตัวประชาชนตรงกัน ' + this.scoreCompare.score + "%"*/"ผลการเปรียบเทียบรูปถ่ายใบหน้ากับบัตรประจำตัวประชาชนเป็นคนเดียวกัน",
                                 title: 'ตรวจสอบสำเร็จ',
                                 /*footer: '<a href="">Why do I have this issue?</a>'*/
                                 showCancelButton: false,
@@ -382,7 +472,7 @@
                 this.idCardTest.filename = file.getFileEncodeDataURL()
                 this.idCardTest.base64 = file.getFileEncodeBase64String()
                 this.ImageData.IdCardBase64 = this.idCardTest.base64;
-                
+
                 console.log(file);
                 this.$swal({
                     title: 'กำลังอ่านข้อมูล',
@@ -421,30 +511,24 @@
                 await this.postFaceImage()
 
             },
-            
-           
+
+
 
 
 
         },
         mounted() {
-            this.$swal({
-                icon: 'info',
-                text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
-                title: 'ขออภัย',
-                /*footer: '<a href="">Why do I have this issue?</a>'*/
-                showCancelButton: false,
-                showDenyButton: false,
-
-                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                confirmButtonColor: '#5c2e91',
-            })
+            
 
         }
     };
 </script>
 
 <style>
+    .form-flex {
+        display: flex;
+    }
+
     .btn-next-submit {
         background-color: var(--main-color);
         color: white;
@@ -454,9 +538,10 @@
         display: inline-block;
         border-radius: 20px;
         font-size: 15px;
-        border:none;
+        border: none;
     }
-    .vs-checkbox-mask::before{
+
+    .vs-checkbox-mask::before {
         background-color: white;
     }
 </style>

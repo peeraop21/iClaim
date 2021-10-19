@@ -17,6 +17,7 @@ namespace Services.ViewModels
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
         public string StringAccDate { get; set; }
+        public string AccNature { get; set; }
         public string PlaceAcc { get; set; }
         public List<VictimtViewModel> Victim { get; set; }
         public List<string> Car { get; set; }

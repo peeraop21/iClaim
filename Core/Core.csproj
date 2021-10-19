@@ -34,6 +34,54 @@
   </ItemGroup>
 
   <!--<ItemGroup>
+    <Reference Include="Pkcs11Interop">
+      <HintPath>Pkcs11Interop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DigitalSigning">
+      <HintPath>DigitalSignDll\DigitalSigning.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>DigitalSignDll\log4net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="LicenseManager">
+      <HintPath>DigitalSignDll\LicenseManager.dll</HintPath>
+    </Reference>
+  </ItemGroup>-->
+  <!--<ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>DigitalSignDll\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DigitalSigningWcf">
+      <HintPath>DigitalSignDll\DigitalSigningWcf.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Security.Cryptography">
+      <HintPath>DigitalSignDll\Security.Cryptography.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="XadesNetLib">
+      <HintPath>DigitalSignDll\XadesNetLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="license">
+      <HintPath>license.key</HintPath>
+    </Reference>
+  </ItemGroup>-->
+
+
+
+  <!--<ItemGroup>
     <None Remove="libwkhtmltox.dll" />
   </ItemGroup>-->
 
@@ -51,8 +99,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Templates\Boto3_Template.html" />
-
+    
   </ItemGroup>
+  <!--<ItemGroup>
+    <_ContentIncludedByDefault Remove="boto3.pdf" />
+  </ItemGroup>-->
     
   <ItemGroup>
         <None Update="libwkhtmltox.dll">

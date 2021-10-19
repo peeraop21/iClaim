@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div id="app">
     <nav-menu></nav-menu>
     <router-view/>
@@ -6,15 +6,38 @@
 </template>
 
 <script>
+    /*import liff from '@line/liff'*/
     import NavMenu from './components/_Layout/NavMenu.vue'
 
-export default {
-  name: 'App',
-  components: {
-      NavMenu
-  },
+
+
+    export default {
+        components: {
+            NavMenu
+        },
+
+        name: 'App',
+        methods: {
+            
+
+        },
+        async mounted() {
+            //await liff.init({
+            //    liffId: '1656525617-BqQZ3o1z',
+            //    withLoginOnExternalBrowser: true,
+            //}).then(() => {
+                
+            //    const getContext = liff.getContext();
+            //    this.$store.state.userTokenLine = getContext.userId
+            //    /*alert(getContext.userTokenLine);*/
+
+            //}).catch(err => { throw err });
+            this.$store.state.userTokenLine = "Uf3f96dd0506eec532162b377d7c0nior";
+
+        }
+      
      
-}
+    }
 </script>
 <style>
 #app {

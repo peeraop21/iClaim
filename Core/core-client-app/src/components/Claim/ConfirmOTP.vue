@@ -14,7 +14,7 @@
                             <label class="lbl-tel">xxx-xxx-9898</label>
                         </div>
                     </div>-->
-                    <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" v-model="mockTel" :maxlength="10" />
+                    <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" v-model="mockTel" :maxlength="10" disabled/>
                 </div>
                 <div class="col-5 mb-5">
                     <button class="btn-request-otp" type="button" @click="requestOTP" v-bind:disabled="disableBtnReqOTP">ขอรหัส OTP</button>
@@ -73,7 +73,7 @@
                 <br>
                 <!--<button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>-->
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
-                <button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>
+                <button class="btn-confirm-money" type="button" @click="postData" >TestPostData</button>
             </div>
         </div>
     </div>
@@ -230,8 +230,35 @@
 
                 }
             },
+            uploadFileToECM() {
+                const body = {
+                    SystemId: "02",
+                    TemplateId: "03",
+                    DocID: "01",
+                    refNo: this.$store.state.userTokenLine + "|" + this.$store.state.inputApprovalData.AccNo + "|" + this.$store.state.inputApprovalData.VictimNo + "|" + this.$store.state.inputApprovalData.AppNo,
+                    FileName: "",
+                    Base64String:""
+                };
+                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                    body.FileName = this.$store.state.inputApprovalData.BillsData[i].filename
+                    body.Base64String = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
+                    axios.post("http://172.41.1.77/api/api/webscan/upload64", JSON.stringify(body), {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then((response) => {
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+                console.log(body);
+            },
             postData() {
-                
+                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                    this.$store.state.inputApprovalData.BillsData[i].billFileShow = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
+                }
+                console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
                 axios.post("/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                     headers: {
                         'Content-Type': 'application/json'

@@ -76,7 +76,7 @@
                     </p>
                     <div class="row mb-4">
                         <div class="col-7">
-                            <b-form-input class="mb-3" type="text" placeholder="xxx-xxx-9898" disabled />
+                            <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" disabled />
                         </div>
                         <div class="col-5">
                             <button class="btn-request-otp" @click="requestOTP" v-bind:disabled="disableBtnReqOTP" type="button">ขอรหัส OTP</button>
@@ -115,7 +115,7 @@
                     </div>
                     <div>
                         <br>
-                        <button class="btn-confirm-money" type="button" @click="showSwal">{{lblButton}}</button>
+                        <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
                     </div>
                 </div>
             </div>
@@ -180,12 +180,14 @@
                 accountReceiveData: {
                     accountBankName: null,
                     accountName: null,
-                    accountNumber: null
+                    accountNumber: null,
+                    bankId:null
                 },
                 // HosApp
-                hosData: this.$store.getters.hosAppGetter(this.$route.params.id),
+                hosData: this.$store.getters.hosAppGetter(this.$route.params.id, this.$route.params.appNo),
                 countDown: 60,
                 disableBtnReqOTP: false,
+                inputOTP:null
             }
         },
         methods: {
@@ -205,6 +207,7 @@
             },
             handleOnComplete(value) {
                 console.log('OTP completed: ', value);
+                this.inputOTP = value
             },
             handleOnChange(value) {
                 console.log('OTP changed: ', value);
@@ -239,11 +242,11 @@
             },
             getDocumentReceive() {
                 console.log('getDocumentReceive');
-                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.accountReceiveData = response.data[0];
-                        console.log(this.accountReceiveData);
+                        console.log("bank",this.accountReceiveData);
                     })
                     .catch(function (error) {
                         alert(error);
@@ -263,12 +266,18 @@
                 }
             },
             postData() {
-                var url = "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.lastClaim.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
+                var url = "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
                 axios.get(url)
                     .then((response) => {
                         console.log(response);
-                        this.$swal.close();
-                        this.showSwalSuccess();
+                        if (response.data == "Success") {
+                            this.$swal.close();
+                            this.showSwalSuccess();
+                        } else {
+                            this.$swal.close();
+                            this.showSwalError();
+                        }
+                        
                         
                     })
                     .catch(function (error) {
@@ -351,7 +360,7 @@
                 //    'ref_code': this.dataOTP.ref_code
                 //};
 
-                console.log(qs.stringify(body))
+                console.log("dataotp",qs.stringify(body))
                 axios.post(url, qs.stringify(body), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -382,6 +391,30 @@
                     console.log(error);
                 });
 
+            },
+            showSwalError() {
+                this.$swal({
+                    icon: 'error',
+                    text: 'เนื่องจากสถานะคำร้องของท่านไม่ได้อยู่ระหว่างการยืนยันจำนวนเงิน',
+                    title: 'ไม่สามารถยืนยันจำนวนเงินได้',
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ติดตามสถานะ",
+                    confirmButtonColor: '#5c2e91',
+                    willClose: () => {
+                        this.$router.push({ name: 'Accident' })
+                    }
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                    } else if (result.isDenied) {
+                        this.$router.push({ name: 'Accident' })
+                    }
+                });
             },
             showSwalSuccess() {
                 this.$swal({

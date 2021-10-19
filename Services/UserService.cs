@@ -37,7 +37,10 @@ namespace Services
         {
             var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).
                 Select(s => new { s.LineId, s.Prefix, s.Fname, s.Lname, s.IdcardNo, s.MobileNo, s.Kycno}).FirstOrDefaultAsync();
-
+            if (query == null)
+            {
+                return null;
+            }
             var directPolicyKyc = new DirectPolicyKycViewModel();
             directPolicyKyc.Kycno = query.Kycno;
             directPolicyKyc.LineId = query.LineId;
