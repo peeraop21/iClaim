@@ -9,7 +9,7 @@
 
     public class DataMapperProfile : Profile {
         public DataMapperProfile() {           
-            CreateMap<ApprovalViewModel, HosApproval>();
+            CreateMap<ApprovalViewModel, IclaimApproval>();
             CreateMap<BankViewModel, InputBankViewModel>();
             CreateMap<VictimViewModel, VictimtViewModel>();
             CreateMap<BillViewModel, Invoicehd>()
@@ -21,6 +21,7 @@
                 .ForMember(m => m.VictimType, opt => opt.MapFrom(src => src.typePatient))
                 .ForMember(m => m.Hosid, opt => opt.MapFrom(src => src.selectHospitalId))
                 .ForMember(m => m.Mainconsider, opt => opt.MapFrom(src => src.injuriId.ToString()))
+                .ForMember(m => m.BookNo, opt => opt.MapFrom(src => src.bookNo))
                 .ForMember(m => m.Suminv, opt => opt.MapFrom(src => double.Parse(src.money)));
             CreateMap<ECMViewModel, EdocDetailViewModel>()
                 .ForMember(m => m.SystemId, opt => opt.MapFrom(src => src.SystemId))
@@ -29,6 +30,8 @@
                 .ForMember(m => m.RefId, opt => opt.MapFrom(src => src.RefNo))
                 .ForMember(m => m.CreateDate, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(m => m.StatusDoc, opt => opt.MapFrom(src => "A"));
+            CreateMap<BillViewModel, UpdateInvoiceViewModel>();
+            CreateMap<BankViewModel, UpdateBankViewModel>();
 
         }
     }

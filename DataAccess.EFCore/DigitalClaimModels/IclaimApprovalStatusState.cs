@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.EFCore.DigitalClaimModels
 {
-    public partial class HosApprovalStatusState
+    public partial class IclaimApprovalStatusState
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }

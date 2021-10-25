@@ -1,9 +1,15 @@
-﻿
+﻿using DataAccess.EFCore.iPolicyModels;
+using DataAccess.EFCore.AccidentModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Core.ViewModels
+namespace Services.ViewModels
 {
-
-    public class BillViewModel
+    
+    public class UpdateInvoiceViewModel
     {
         public int billNo { get; set; }
         public string bill_no { get; set; }
@@ -22,6 +28,5 @@ namespace Core.ViewModels
         public string filename { get; set; }
         public string editBillImage { get; set; }
         public bool isEditImage { get; set; }
-
     }
 }

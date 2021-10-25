@@ -16,29 +16,29 @@
                     </div>
                 </div>-->
                 <section>
-                    <div v-if="isHasHosApprovalData == true" style="height: 90%; width: 100%;">
-                        <div class="accordion" v-for="hosApp in hosApprovalData" :key="hosApp.appNo">
-                            <div class="accordion-item" :id="'list' + hosApp.appNo">
-                                <a class="accordion-link" :href="'#list' + hosApp.appNo">
+                    <div v-if="isHasIclaimApprovalData == true" style="height: 90%; width: 100%;">
+                        <div class="accordion" v-for="iclaimApp in iclaimApprovalData" :key="iclaimApp.appNo">
+                            <div class="accordion-item" :id="'list' + iclaimApp.appNo">
+                                <a class="accordion-link" :href="'#list' + iclaimApp.appNo">
                                     <div>
                                         <p style="margin-bottom: 10px">
-                                            <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ hosApp.accNo }}
+                                            <ion-icon name="newspaper-outline"></ion-icon>คำร้องที่: {{ iclaimApp.appNo }}
                                             <br>
-                                            <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ hosApp.stringRegDate }} น.
+                                            <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ iclaimApp.stringRegDate }} น.
                                             <br>
-                                            <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{hosApp.appStatusName}}
+                                            <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{iclaimApp.appStatusName}}
                                         </p>
                                     </div>
                                     <div align="right" style="margin-top: -10px;">
                                         <div style="margin-top:-5px">
-                                            <!--<a v-on:click="getPDF(hosApp.appNo)">PDF</a>-->
-                                            <vs-button v-on:click="externalPagePDF(hosApp.appNo)"
+                                            <!--<a v-on:click="getPDF(iclaimApp.appNo)">PDF</a>-->
+                                            <vs-button v-on:click="externalPagePDF(iclaimApp.appNo)"
                                                        icon
                                                        primary
                                                        flat>
                                                 PDF
                                             </vs-button>
-                                            <router-link :to="{ name: 'ClaimDetail', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">
+                                            <router-link :to="{ name: 'ClaimDetail', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">
                                                 <vs-button circle
                                                            icon
                                                            primary
@@ -54,14 +54,14 @@
                                     
                                     <p class="p-custom custom-p-status">สถานะ </p>
 
-                                    <ul id="progress" v-for="status in hosApp.appStatus" :key="status.statusId">
+                                    <ul id="progress" v-for="status in iclaimApp.appStatus" :key="status.statusId">
                                         <li class="li-custom " :id="'liLbl' + status.statusId">
                                             <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -12px; margin-top: -1px;">{{status.statusDate}}</p>
                                             <p v-if="status.statusTime != null" class="p-custom divider-p" style="font-size: 10px; position: absolute; left: -1px; margin-top: 7px; ">{{status.statusTime}}</p>
                                             <div class="node " v-bind:class="{green:status.active, grey:!status.active}"></div>
                                             <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
                                         </li>
-                                        <li v-if="status.statusId < hosApp.appStatus.length" class="li-custom " :id="'verticalLine' + status.statusId">
+                                        <li v-if="status.statusId < iclaimApp.appStatus.length + iclaimApp.appStatus.length" class="li-custom " :id="'verticalLine' + status.statusId">
                                             <div class="divider grey"></div>
                                         </li>
 
@@ -69,9 +69,9 @@
                                     <br />
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" v-if="hosApp.appStatusName == 'รอยื่นเอกสารเพิ่มเติม'" :to="{ name: 'AddDocument', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
-                                    <router-link class="btn-checked" v-if="hosApp.appStatusName == 'รอยืนยันจำนวนเงิน'" :to="{ name: 'ConfirmMoney', params: { id: hosApp.stringAccNo, appNo: hosApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
-                                    <router-link class="btn-checked" v-if="hosApp.appStatusName == 'โอนเงิน'" :to="{ name: 'Rating', params: { id: hosApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
+                                    <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'AddDocument', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
+                                    <router-link class="btn-checked" v-if="iclaimApp.appStatusName == 'รอยืนยันจำนวนเงิน'" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                    <router-link class="btn-checked" v-if="iclaimApp.appStatusName == 'โอนเงิน'" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
                                 </div>
                                 <div style="text-align: center">
                                     
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    <p v-if="isHasHosApprovalData == false" class="notData">- ไม่มีคำร้อง -</p>
+                    <p v-if="isHasIclaimApprovalData == false" class="notData">- ไม่มีคำร้อง -</p>
                 </section>
             </div>
         </div>
@@ -196,8 +196,8 @@
                 ],
 
                 accData: this.$store.getters.accGetter(this.$route.params.id),
-                hosApprovalData: null,
-                isHasHosApprovalData: false,
+                iclaimApprovalData: null,
+                isHasIclaimApprovalData: false,
                 appStatus: [{ statusId: 0, statusName: "", active: false, statusDate: "", statusTime: "" }],
                 isActive: true,
                 pdfsrc: null
@@ -208,20 +208,57 @@
         },
         methods: {
 
-            getHosApproval() {
+            getIclaimApproval() {
                 var url = '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
 
                 axios.get(url)
                     .then((response) => {
                         /*this.userApi = response.data;*/
                         this.$store.state.hosAppStateData = response.data;
-                        this.hosApprovalData = this.$store.state.hosAppStateData;
-                        console.log("hosApp: ", this.hosApprovalData.length);
-                        console.log("hosApp: ", this.hosApprovalData);
-                        if (this.hosApprovalData.length == 0) {
-                            this.isHasHosApprovalData = false
-                        } else if (this.hosApprovalData.length > 0) {
-                            this.isHasHosApprovalData = true
+                        this.iclaimApprovalData = this.$store.state.hosAppStateData;
+                        var appNoDocumentNotPass = [];
+                        var appNoConfirmMoney = [];
+                        var showNoti = false;
+                        for (let i = 0; i < this.iclaimApprovalData.length; i++) {
+                            if (this.iclaimApprovalData[i].status == 2 ) {
+                                appNoDocumentNotPass.push(this.iclaimApprovalData[i].appNo);
+                                showNoti = true;
+                            }
+                            if (this.iclaimApprovalData[i].status == 4) {
+                                appNoConfirmMoney.push(this.iclaimApprovalData[i].appNo);
+                                showNoti = true;
+                            }
+                        }
+                        if (showNoti) {
+                            var htmlMessage = "";
+                            htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoDocumentNotPass + ' </strong><br>&emsp;&emsp;เอกสารของท่านไม่สมบูรณ์ กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"แนบเอกสารเพิ่มเติม"</label> เพื่อดูรายละเอียด และแนบเอกสารที่ไม่สมบูรณ์</p>'
+                            if (appNoConfirmMoney.length > 0) {
+                                htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoConfirmMoney + ' </strong><br>&emsp;&emsp;เนื่องจากจำนวนเงินที่เจ้าหน้าที่พิจารณา ไม่ตรงตามจำนวนเงินที่ท่านส่งคำร้องขอไป กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"ยอมรับจำนวนเงิน"</label> เพื่อดูรายละเอียด และยอมรับจำนวนเงิน</p>'
+                                
+                            }
+                            
+                            this.$swal({
+                                icon: 'info',
+                                html: htmlMessage,
+                                title: 'แจ้งเตือน',
+                                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                showCancelButton: false,
+                                showDenyButton: false,
+
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+
+                                }
+                            })
+                        }
+                        
+                        console.log("hosApp: ", this.iclaimApprovalData.length);
+                        console.log("hosApp: ", this.iclaimApprovalData);
+                        if (this.iclaimApprovalData.length == 0) {
+                            this.isHasIclaimApprovalData = false
+                        } else if (this.iclaimApprovalData.length > 0) {
+                            this.isHasIclaimApprovalData = true
                         }
                     })
                     .catch(function (error) {
@@ -294,9 +331,13 @@
 
             }
         },
-        async mounted() {
-            await this.getHosApproval();
+        async created() {
+            await this.getIclaimApproval();
+        },
+        //async mounted() {
+            
 
-        }
+        //}
+
     }
 </script>

@@ -247,8 +247,17 @@
                             </div>
                             <label class="px-2">โรงพยาบาล</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.selectHospital" type="text" @click="modalHospital=!modalHospital" />
-                            <label class="px-2">เลขที่ใบเสร็จ</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" required  />
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="px-2">ใบเสร็จเล่มที่</label>
+                                    <b-form-input class="mt-0 mb-2" v-model="input.bookNo" type="text" placeholder="" required />
+                                </div>
+                                <div class="col-6">
+                                    <label class="px-2">เลขที่ใบเสร็จ</label>
+                                    <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" required />
+                                </div>
+                            </div>
+                            
                             <label class="px-2">จำนวนเงิน</label>
                             <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
                             <div class="row">
@@ -368,6 +377,7 @@
                                        v-bind:allow-multiple="false"
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="bankFile"
+                                       v-model="bankFile"
                                        v-on:addfile="onAddBankAccountFile"
                                        v-if="!haslastDocumentReceive" />
                             <!--<file-pond name="bankFile"
@@ -929,7 +939,7 @@
                 inputDataAll: [],
                 // ---Bill
                 patientType: '',
-                bills: [{ billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId:"", selectHospitalId: "", file: null, billFileShow: "", filename: ""  }],
+                bills: [{ billNo: 1, bill_no: "", bookNo:"", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId:"", selectHospitalId: "", file: null, billFileShow: "", filename: ""  }],
                 total_amount: 0,
                 // --BookBank
                 displayBankName:"",
@@ -1180,13 +1190,14 @@
                     SystemId: '03',
                     TemplateId: '09',
                     DocumentId: '01',
-                    RefId: this.$store.state.userTokenLine + '|' + this.accData.accNo + '|' + this.accData.victimNo + '|' + this.lastDocumentReceive.appNo,
+                    RefId: this.accData.accNo + '|' + this.accData.victimNo + '|' /*+ this.lastDocumentReceive.appNo*/,
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 }).then((response) => {
+                    this.lastDocumentReceive.bankBase64String = response.data;
                     this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
                 }).catch(function (error) {
                     console.log(error);
@@ -1290,7 +1301,7 @@
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",file: null, billFileShow: "", filename: "" });
+                fieldType.push({ billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",file: null, billFileShow: "", filename: "" });
                 this.calMoney()
                 console.log(this.bills)
             },

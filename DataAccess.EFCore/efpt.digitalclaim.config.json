@@ -14,35 +14,27 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[ApprovalStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosApproval]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosApprovalStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosApprovalStatusState]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosDocumentCheck]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[HosDocumentCheckInvoice]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[HosDocumentReceive]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[HosPT4]",
+         "Name": "[dbo].[IClaimApproval]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IClaimApprovalStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IClaimApprovalStatusState]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IClaimCheckDocuments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IClaimCheckInvoiceDocuments]",
          "ObjectType": 0
       },
       {

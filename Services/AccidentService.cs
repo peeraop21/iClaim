@@ -80,7 +80,7 @@ namespace Services
                 accVwModel.Channel = "LINE";
                 accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CureRights");
                 accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CrippledRights");
-                accVwModel.CountHosApp = await digitalclaimContext.HosApproval.Where(w => w.AccNo == acc.EaAccNo).CountAsync();
+                accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.EaAccNo).CountAsync();
                 accViewModelList.Add(accVwModel);
             }
             foreach (var acc in accHosList)
@@ -99,7 +99,7 @@ namespace Services
                 accVwModel.Channel = "HOSPITAL";                
                 accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CureRights");
                 accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CrippledRights");
-                accVwModel.CountHosApp = await digitalclaimContext.HosApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo).CountAsync();
+                accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo).CountAsync();
                 accViewModelList.Add(accVwModel);
             }
             return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();

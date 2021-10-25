@@ -23,6 +23,8 @@ namespace Services
         Task<string> GetDocumentPath(EdocDetailViewModel model);
         Task<EdocDetailRes> SaveToEdocDetail(EdocDetailViewModel model);
         Task<ECMViewModelRes> UploadFileToECM(ECMViewModel model);
+        Task<string> UpdateToEdocDetail(EdocDetailViewModel model);
+        Task<string> GetLastEdocDetailAsync(string systemId, string templateId, string documentId, string refId);
     }
     public class AttachmentService: IAttachmentService
     {
@@ -199,9 +201,27 @@ namespace Services
                       
         }
 
+        public async Task<string> UpdateToEdocDetail(EdocDetailViewModel model)
+        {
+            var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId == model.RefId).FirstOrDefaultAsync();
+            edocDetail.Paths = model.Paths;
+            await rvpSystemContext.SaveChangesAsync();
+            return null;
+        }
         public async Task<string> GetDocumentPath(EdocDetailViewModel model)
         {
-            return await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId == model.RefId).Select(s => s.Paths).FirstOrDefaultAsync();
+            var query = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId)).Select(s => new { s.Paths, s.CreateDate }).OrderByDescending(o => o.CreateDate).FirstOrDefaultAsync();
+            return query.Paths;
+        }
+        public async Task<string> GetLastEdocDetailAsync(string systemId, string templateId, string documentId, string refId)
+        {
+            var query = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == systemId && w.TemplateId == templateId && w.DocumentId == documentId && w.RefId.StartsWith(refId))
+                .Select(s => new { s.RefId, s.CreateDate }).OrderByDescending(o => o.CreateDate).FirstOrDefaultAsync();
+            if(query == null)
+            {
+                return null;
+            }
+            return query.RefId;
         }
     }
 }

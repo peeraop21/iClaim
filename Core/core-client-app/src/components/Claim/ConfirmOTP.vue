@@ -255,32 +255,73 @@
                 console.log(body);
             },
             postData() {
-                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
-                    this.$store.state.inputApprovalData.BillsData[i].billFileShow = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
-                }
-                console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
-                axios.post("/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
-                    headers: {
-                        'Content-Type': 'application/json'
+                if (this.$route.params.from == "AddDocument") {
+                    for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                        this.$store.state.inputApprovalData.BillsData[i].money = this.$store.state.inputApprovalData.BillsData[i].money.toString()
                     }
-                })
-                    .then((response) => {
-                        console.log(response);
-                        this.$swal.close();
-                        this.showSwal()
-                        this.$store.state.inputApprovalData.AccNo = null
-                        this.$store.state.inputApprovalData.VictimNo = null
-                        this.$store.state.inputApprovalData.AppNo = null
-                        this.$store.state.inputApprovalData.SumMoney = null
-                        this.$store.state.inputApprovalData.ClaimNo = null
-                        this.$store.state.inputApprovalData.Injury = null
-                        this.$store.state.inputApprovalData.BillsData = null
-                        this.$store.state.inputApprovalData.BankData = null
-                        this.$store.state.inputApprovalData.VictimData = null
+                    axios.post("/api/Approval/UpdateApproval", JSON.stringify(this.$store.state.inputApprovalData), {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                        .then((response) => {
+                            console.log(response);
+                            this.$swal.close();
+                            this.$swal({
+                                icon: 'success',
+                                //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
+                                title: 'ส่งเอกสารเพิ่มเติมแล้ว',
+                                showCancelButton: false,
+                                showDenyButton: false,
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+                                    this.$router.push({ name: 'CheckStatus', params: { id: this.$store.state.inputApprovalData.AccNo } })
+                                }
+                            })
+                            this.$store.state.inputApprovalData.AccNo = null
+                            this.$store.state.inputApprovalData.VictimNo = null
+                            this.$store.state.inputApprovalData.AppNo = null
+                            this.$store.state.inputApprovalData.SumMoney = null
+                            this.$store.state.inputApprovalData.ClaimNo = null
+                            this.$store.state.inputApprovalData.Injury = null
+                            this.$store.state.inputApprovalData.BillsData = null
+                            this.$store.state.inputApprovalData.BankData = null
+                            this.$store.state.inputApprovalData.VictimData = null
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                } else {
+                    for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                        this.$store.state.inputApprovalData.BillsData[i].billFileShow = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
+                    }
+                    console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
+                    axios.post("/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then((response) => {
+                            console.log(response);
+                            this.$swal.close();
+                            this.showSwal()
+                            this.$store.state.inputApprovalData.AccNo = null
+                            this.$store.state.inputApprovalData.VictimNo = null
+                            this.$store.state.inputApprovalData.AppNo = null
+                            this.$store.state.inputApprovalData.SumMoney = null
+                            this.$store.state.inputApprovalData.ClaimNo = null
+                            this.$store.state.inputApprovalData.Injury = null
+                            this.$store.state.inputApprovalData.BillsData = null
+                            this.$store.state.inputApprovalData.BankData = null
+                            this.$store.state.inputApprovalData.VictimData = null
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+                
             },
 
             requestOTP() {

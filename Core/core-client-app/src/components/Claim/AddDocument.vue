@@ -80,11 +80,11 @@
                                v-bind:allow-multiple="false"
                                v-bind:allowFileEncode="true"
                                accepted-file-types="image/jpeg, image/png"
-                               v-if="input.editImage"
+                               v-if="input.isEditImage"
                                v-bind:files="input.file"
                                v-model="input.file"
                                v-on:addfile="onAddBillFile(index)" />
-                    <div class="mt-2 mb-2" v-if="!input.editImage" align="center">
+                    <div class="mt-2 mb-2" v-if="!input.isEditImage" align="center">
                         <div class="div-center-image">
                             <div class="divImage">
                                 <img class="img-show" :src="input.billFileShow" />
@@ -179,8 +179,16 @@
                     </div>
                     <label class="px-2">โรงพยาบาล</label>
                     <b-form-input class="mt-0 mb-2" v-model="input.selectHospital" type="text" @click="modalHospital=!modalHospital" />
-                    <label class="px-2">เลขที่ใบเสร็จ</label>
-                    <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" />
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="px-2">ใบเสร็จเล่มที่</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.bookNo" type="text" placeholder="" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="px-2">เลขที่ใบเสร็จ</label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.bill_no" type="text" placeholder="" required />
+                        </div>
+                    </div>
                     <label class="px-2">จำนวนเงิน</label>
                     <b-form-input class="mt-0 mb-2" v-model="input.money" type="number" placeholder="" @change="calMoney" />
                     <div class="row">
@@ -253,30 +261,7 @@
                     </div>
 
                     <br>
-                    <!-- Add Svg Icon-->
-                    <p style="color: green">
-                        <svg @click="addField(input, bills)"
-                             xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 30 30"
-                             width="30"
-                             height="30"
-                             class="ml-2 cursor-pointer">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path fill="green" d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-                        </svg>เพิ่มใบเสร็จ
-                    </p>
-                    <!-- Remove Svg Icon-->
-                    <svg v-show="bills.length > 1"
-                         @click="removeField(index, bills)"
-                         xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 30 30"
-                         width="30"
-                         height="30"
-                         class="ml-2 cursor-pointer mb-2"
-                         style="margin-top: -10px;">
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path fill="#EC4899" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z" />
-                    </svg>
+                    
 
                 </div>
             </div>
@@ -338,9 +323,9 @@
                                v-bind:allow-multiple="false"
                                accepted-file-types="image/jpeg, image/png"
                                v-on:addfile="onAddBankAccountFile"
-                               v-if="inputBank.editBankImage" />
+                               v-if="inputBank.isEditBankImage" />
 
-                    <div class="mt-2 mb-2" v-if="!inputBank.editBankImage" align="center">
+                    <div class="mt-2 mb-2" v-if="!inputBank.isEditBankImage" align="center">
                         <div class="div-center-image">
                             <div class="divImage">
                                 <img class="img-show" :src="bankFileDisplay.base64"/>
@@ -362,7 +347,7 @@
                     </select>
                 </div>
                 <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
-                <b-form-input class="mt-0 mb-2" v-model="inputBank.accountName" placeholder=""></b-form-input>
+                <b-form-input class="mt-0 mb-2" v-model="inputBank.accountName" placeholder="" readonly></b-form-input>
                 <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
                 <b-form-input class="mt-0 mb-2 mb-4" v-model="inputBank.accountNumber" placeholder=""></b-form-input>
                 <!--<div v-if="haslastDocumentReceive">
@@ -389,7 +374,7 @@
 
         <br />
         <br />
-        <button class="btn-confirm-money" type="button" @click="showSwal">ส่งเอกสารเพิ่มเติม</button>
+        <button class="btn-confirm-money" type="button" @click="submit">ส่งเอกสารเพิ่มเติม</button>
         <br>
         <br>
         <br>
@@ -430,13 +415,13 @@
                 typePatient: 0,
                 typeContect: 1,
                 bills: [{
-                    billNo: 1, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: ""
+                    billNo: 1, bill_no: "", bookNo:"", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: ""
                     , out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: ""
-                    , file: null, billFileShow: "", filename: "", editBillImage:"", editImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
+                    , file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
                 }],
                 total_amount: 0,
                 // --BookBank
-                inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '', bankBase64String: '', bankFilename: '', editBankImage: false, displayBtnChangeBankImage: ''},
+                inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '', bankBase64String: '', bankFilename: '', isEditBankImage: false, displayBtnChangeBankImage: ''},
                 bank: '',
                 phoneNumbers: [{ phone: "" }],
                 image: '',
@@ -501,23 +486,23 @@
             },
             changeAccountBank() {
                 console.log("ChangeBank")
-                if (!this.inputBank.editBankImage) {
+                if (!this.inputBank.isEditBankImage) {
                     console.log("ChangeBank1", this.inputBank )
 
-                    this.inputBank.editBankImage = true
+                    this.inputBank.isEditBankImage = true
                     this.inputBank.displayBtnChangeBankImage = "ใช้รูปบัญชีเดิม"
                 } else {
-                    this.inputBank.editBankImage = false
+                    this.inputBank.isEditBankImage = false
                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
                 }
 
             },
             changeBillImage(index) {
-                if (this.bills[index].editImage == false) {
-                    this.bills[index].editImage = true
+                if (this.bills[index].isEditImage == false) {
+                    this.bills[index].isEditImage = true
                     this.bills[index].displayBtnChangeBillImage = "ใช้รูปใบเสร็จเดิม"
                 } else {
-                    this.bills[index].editImage = false
+                    this.bills[index].isEditImage = false
                     this.bills[index].displayBtnChangeBillImage = "แก้ไขรูปใบเสร็จ"
                 }
 
@@ -552,6 +537,7 @@
                     console.log(this.bills[i].billFileShow)
                     this.bills[i].billNo = this.invoicehd[i].idInvhd;
                     this.bills[i].money = this.invoicehd[i].suminv;
+                    this.bills[i].bookNo = this.invoicehd[i].bookNo;
                     this.bills[i].bill_no = this.invoicehd[i].receiptNo;
                     this.bills[i].typePatient = this.invoicehd[i].victimType
                     this.bills[i].hospitalized_date = moment(this.invoicehd[i].takendate).format("YYYY-MM-DD");
@@ -581,8 +567,8 @@
                     });
             },
             getLastDocumentReceive() {
-                console.log('getLastDocumentReceive');
-                var url = '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
+                console.log('getDocumentReceive');
+                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.getBankFileFromECM()
@@ -593,7 +579,7 @@
                                     this.inputBank.bankId = this.bankNames[i].bankCode
                                     this.inputBank.accountName = response.data[0].accountName
                                     this.inputBank.accountNumber = response.data[0].accountNumber
-                                    this.inputBank.editBankImage = false
+                                    this.inputBank.isEditBankImage = false
                                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
                                     return true;
                                 }
@@ -687,7 +673,7 @@
                     SystemId: '02',
                     TemplateId: '03',
                     DocumentId: '01',
-                    RefId: idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo + '|' + this.$route.params.appNo,
+                    RefId: idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo + '|' ,
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
@@ -727,6 +713,7 @@
                 this.bankFileDisplay.file = file
                 this.inputBank.bankBase64String = file.getFileEncodeBase64String()
                 this.inputBank.bankFilename = file.filename
+                
             },
             onAddBillFile: function (index) {
                 this.bills[index].filename = this.bills[index].file[0].filename
@@ -755,12 +742,42 @@
                 this.mockWounded = 0;
                 this.divWoundedModal = false;
             },
-            submitModalSaysoHospital() {
-                this.saysoHospital = this.mockSaysoHospital
-                this.modalSaysoHospital = false
-                this.selectChangwat = 0;
-                this.mockSaysoHospital = 0;
-                this.divHospitalModal = false;
+            submit() {
+                this.$swal({
+                    icon: 'info',
+                    text: 'ท่านยืนยันที่จะส่งเอกสารเพิ่มเติมหรือไม่?',
+                    title: 'แจ้งเตือน',
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                    confirmButtonColor: '#5c2e91',
+                    willClose: () => {
+                        
+                    }
+                }).then((result) => {
+                    this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                    this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                    this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
+                    this.$store.state.inputApprovalData.SumMoney = this.total_amount
+                    this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
+                    this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
+                    this.$store.state.inputApprovalData.Injury = this.injuri
+                    this.$store.state.inputApprovalData.BillsData = this.bills
+                    this.$store.state.inputApprovalData.BankData = this.inputBank
+                    this.$store.state.inputApprovalData.VictimData = null
+                    console.log(this.$store.state.inputApprovalData)
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'ConfirmOTP', params: { from: "AddDocument" } })
+                    }
+                    //} else if (result.isDenied) {
+                        
+                    //}
+                });
+                
             },
             calMoney() {
                 let sum = 0;
@@ -774,9 +791,9 @@
             addField(value, fieldType) {
                 var index = this.bills.length + 1
                 fieldType.push({
-                    billNo: index, bill_no: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "",
+                    billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "",
                     out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",
-                    file: null, billFileShow: "", filename: "", editBillImage:"", editImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
+                    file: null, billFileShow: "", filename: "", editBillImage:"", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
                 });
                 this.calMoney()
                 console.log("fieldType: ", fieldType)

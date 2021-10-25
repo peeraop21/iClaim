@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 namespace DataAccess.EFCore.DigitalClaimModels
 {
-    public partial class HosApprovalStatus
+    public partial class IclaimCheckInvoiceDocuments
     {
+        public int IdInvhd { get; set; }
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
         public int AppNo { get; set; }
-        public DateTime? InsertDate { get; set; }
-        public DateTime? LastUpdate { get; set; }
-        public int? Status { get; set; }
+        public string ReceiptNo { get; set; }
+        public string InvoiceStatus { get; set; }
+        public string InvoiceComment { get; set; }
     }
 }

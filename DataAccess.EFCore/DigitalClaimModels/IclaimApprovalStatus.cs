@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.EFCore.DigitalClaimModels
 {
-    public partial class ApprovalStatus
+    public partial class IclaimApprovalStatus
     {
         public int StatusId { get; set; }
         public string StatusNameIclaim { get; set; }

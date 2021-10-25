@@ -1,9 +1,15 @@
-﻿
+﻿using DataAccess.EFCore.iPolicyModels;
+using DataAccess.EFCore.AccidentModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Core.ViewModels
+namespace Services.ViewModels
 {
-
-    public class BankViewModel
+    
+    public class UpdateBankViewModel
     {
         public string accountName { get; set; }
         public string accountNumber { get; set; }

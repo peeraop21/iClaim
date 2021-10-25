@@ -43,7 +43,7 @@ namespace Core.Controllers
         [HttpGet("HosApproval/{accNo}/{victimNo}")]
         public async Task<IActionResult> GetHosApproval(string accNo, int victimNo)
         {
-            return Ok(await approvalService.GetHosApprovalsAsync(accNo.Replace("-", "/"), victimNo));
+            return Ok(await approvalService.GetIClaimApprovalAsync(accNo.Replace("-", "/"), victimNo));
         }
 
         [HttpGet("DocumentReceive/{accNo}/{victimNo}/{appNo}")]
@@ -57,7 +57,7 @@ namespace Core.Controllers
         public async Task<IActionResult> PostAsync([FromBody] ApprovalViewModel model)
         {
 
-            var resultMapHosApproval = _mapper.Map<HosApproval>(model);
+            var resultMapHosApproval = _mapper.Map<IclaimApproval>(model);
             var resultMapBank = _mapper.Map<InputBankViewModel>(model.BankData);
             var resultMapVictim = _mapper.Map<VictimtViewModel>(model.VictimData);
             var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
@@ -67,22 +67,48 @@ namespace Core.Controllers
             
             for (int i = 0; i < model.BillsData.Count; i++)
             {
-                ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+                
+                //var refTemplate = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+                
                 ecmModel.SystemId = "02";
                 ecmModel.TemplateId = "03";
-                ecmModel.DocID = "01";               
-                ecmModel.FileName = model.BillsData[i].filename;
+                ecmModel.DocID = "01";
+                //var lastRefNo = await attachmentService.GetLastEdocDetailAsync(ecmModel.SystemId, ecmModel.TemplateId, ecmModel.DocID, refTemplate);
+                //if (lastRefNo != null)
+                //{
+                //    int runNo = int.Parse(lastRefNo.Substring(lastRefNo.Length - 5)) + 1;
+                //    var leadZeroRunNo = runNo.ToString().PadLeft(5, '0');
+                //    ecmModel.RefNo = refTemplate + "-" + leadZeroRunNo;
+                //}
+                //else
+                //{
+                //    ecmModel.RefNo = refTemplate + "-" + "00001";
+                //}
+                ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+                ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename;
                 ecmModel.Base64String = model.BillsData[i].billFileShow;
                 var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
                 var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
                 resultMapEdocDetail.Paths = invoiceEcmRes.Path;
                 await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
             }
-            ecmModel.RefNo = result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+            //var refTemplateBank = result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;            
             ecmModel.SystemId = "03";
             ecmModel.TemplateId = "09";
             ecmModel.DocID = "01";
-            ecmModel.FileName = model.BankData.bankFilename;
+            //var lastRefNoBank = await attachmentService.GetLastEdocDetailAsync(ecmModel.SystemId, ecmModel.TemplateId, ecmModel.DocID, refTemplateBank);
+            //if (lastRefNoBank != null)
+            //{
+            //    int runNoBank = int.Parse(lastRefNoBank.Substring(lastRefNoBank.Length - 5)) + 1;
+            //    var leadZeroRunNoBank = runNoBank.ToString().PadLeft(5, '0');
+            //    ecmModel.RefNo =  refTemplateBank + "-" + leadZeroRunNoBank;
+            //}
+            //else
+            //{
+            //    ecmModel.RefNo = refTemplateBank + "-" + "00001";
+            //}
+            ecmModel.RefNo = result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+            ecmModel.FileName = (string.IsNullOrEmpty(model.BankData.bankFilename)) ? DateTime.Now.ToString("ddMMyyyyHHmmss") + "bankold.png" : DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
             ecmModel.Base64String = model.BankData.bankBase64String;
             var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
             var bookbankResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
@@ -95,7 +121,7 @@ namespace Core.Controllers
         [HttpGet("UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}")]
         public async Task<IActionResult> UpdateStatus(string accNo, int victimNo, int appNo, string status)
         {
-            return Ok(await approvalService.UpdateApprovalAsync(accNo.Replace('-', '/'), victimNo, appNo, status));
+            return Ok(await approvalService.UpdateApprovalStatusAsync(accNo.Replace('-', '/'), victimNo, appNo, status));
         }
 
         [HttpGet("LastDocumentReceive/{accNo}/{victimNo}")]
@@ -126,6 +152,49 @@ namespace Core.Controllers
         {
             var documentPath = await attachmentService.GetDocumentPath(model);            
             return Ok(await attachmentService.DownloadFileFromECM(documentPath));
+        }
+
+        [HttpPost("UpdateApproval")]
+        public async Task<IActionResult> UpdateApproval([FromBody] ApprovalViewModel model)
+        {
+            var resultMapBank = _mapper.Map<UpdateBankViewModel>(model.BankData);
+            var resultMapToInvoicehd = _mapper.Map<UpdateInvoiceViewModel[]>(model.BillsData);
+            var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, resultMapBank, resultMapToInvoicehd);
+            ECMViewModel ecmModel = new ECMViewModel();
+            
+            for (int i = 0; i < model.BillsData.Count; i++)
+            {
+                if (resultMapToInvoicehd[i].isEditImage)
+                {
+                    ecmModel.SystemId = "02";
+                    ecmModel.TemplateId = "03";
+                    ecmModel.DocID = "01";
+                    
+                    ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo + "|" + model.AppNo; ;
+                    ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename;
+                    ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage;
+                    var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                    var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                    resultMapEdocDetail.Paths = invoiceEcmRes.Path;
+                    await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                }
+                
+            }
+            if (resultMapBank.isEditBankImage)
+            {
+                ecmModel.RefNo = model.AccNo + "|" + model.VictimNo + "|" + model.AppNo;
+                ecmModel.SystemId = "03";
+                ecmModel.TemplateId = "09";
+                ecmModel.DocID = "01";
+                ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
+                ecmModel.Base64String = model.BankData.bankBase64String;
+                var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                var bookbankResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
+                await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
+            }
+            
+            return Ok();
         }
 
     }

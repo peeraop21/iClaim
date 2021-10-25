@@ -16,239 +16,16 @@ namespace DataAccess.EFCore.DigitalClaimModels
         {
         }
 
-        public virtual DbSet<ApprovalStatus> ApprovalStatus { get; set; }
-        public virtual DbSet<HosApproval> HosApproval { get; set; }
-        public virtual DbSet<HosApprovalStatus> HosApprovalStatus { get; set; }
-        public virtual DbSet<HosApprovalStatusState> HosApprovalStatusState { get; set; }
-        public virtual DbSet<HosDocumentCheck> HosDocumentCheck { get; set; }
-        public virtual DbSet<HosDocumentCheckInvoice> HosDocumentCheckInvoice { get; set; }
         public virtual DbSet<HosDocumentReceive> HosDocumentReceive { get; set; }
-        public virtual DbSet<HosPt4> HosPt4 { get; set; }
+        public virtual DbSet<IclaimApproval> IclaimApproval { get; set; }
+        public virtual DbSet<IclaimApprovalStatus> IclaimApprovalStatus { get; set; }
+        public virtual DbSet<IclaimApprovalStatusState> IclaimApprovalStatusState { get; set; }
+        public virtual DbSet<IclaimCheckDocuments> IclaimCheckDocuments { get; set; }
+        public virtual DbSet<IclaimCheckInvoiceDocuments> IclaimCheckInvoiceDocuments { get; set; }
         public virtual DbSet<Invoicehd> Invoicehd { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ApprovalStatus>(entity =>
-            {
-                entity.HasKey(e => e.StatusId);
-
-                entity.Property(e => e.StatusId).ValueGeneratedNever();
-
-                entity.Property(e => e.StatusNameEclaim).HasMaxLength(50);
-
-                entity.Property(e => e.StatusNameIclaim).HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<HosApproval>(entity =>
-            {
-                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo });
-
-                entity.Property(e => e.AccNo)
-                    .HasColumnName("AccNO")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.AcceptBy)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.AcceptDate).HasColumnType("datetime");
-
-                entity.Property(e => e.BranchId)
-                    .HasColumnName("BranchID")
-                    .HasMaxLength(5)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.CanCelStatus)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.ClaimNo)
-                    .HasMaxLength(13)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DateCreate).HasColumnType("datetime");
-
-                entity.Property(e => e.DocumentNo)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GetRecordStatus)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.HosIdRefer)
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.InvoiceId)
-                    .HasColumnName("InvoiceID")
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.InvoiceNo)
-                    .HasColumnName("InvoiceNO")
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.LastUpdate).HasColumnType("datetime");
-
-                entity.Property(e => e.PayMore)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Pt4id)
-                    .HasColumnName("PT4ID")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RecFname)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RecLname)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RecPrefix)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RecRelate)
-                    .HasMaxLength(3)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RecSocNo)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RegDate).HasColumnType("datetime");
-
-                entity.Property(e => e.RegNoClaim).HasColumnName("RegNo_Claim");
-
-                entity.Property(e => e.RegType)
-                    .HasMaxLength(2)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RevFname)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RevLname)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RevPrefix)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RevRelate)
-                    .HasMaxLength(3)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserId)
-                    .HasColumnName("UserID")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.VictimNoClaim).HasColumnName("VictimNo_Claim");
-            });
-
-            modelBuilder.Entity<HosApprovalStatus>(entity =>
-            {
-                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo });
-
-                entity.Property(e => e.AccNo)
-                    .HasColumnName("AccNO")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InsertDate).HasColumnType("datetime");
-
-                entity.Property(e => e.LastUpdate).HasColumnType("datetime");
-            });
-
-            modelBuilder.Entity<HosApprovalStatusState>(entity =>
-            {
-                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo, e.StateNo });
-
-                entity.Property(e => e.AccNo)
-                    .HasColumnName("AccNO")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InsertDate).HasColumnType("datetime");
-            });
-
-            modelBuilder.Entity<HosDocumentCheck>(entity =>
-            {
-                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo });
-
-                entity.Property(e => e.AccNo)
-                    .HasColumnName("AccNO")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BookbankComment)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BookbankStatus)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IdCardComment)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IdCardStatus)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InvoiceStatus)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SumStatus)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-            });
-
-            modelBuilder.Entity<HosDocumentCheckInvoice>(entity =>
-            {
-                entity.HasKey(e => e.IdInvhd);
-
-                entity.Property(e => e.IdInvhd)
-                    .HasColumnName("id_invhd")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.AccNo)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InvoiceComment)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.InvoiceStatus)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ReceiptNo)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-            });
-
             modelBuilder.Entity<HosDocumentReceive>(entity =>
             {
                 entity.HasKey(e => new { e.AccNo, e.VictimNo, e.Appno, e.RunNo });
@@ -319,41 +96,168 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .HasMaxLength(10);
             });
 
-            modelBuilder.Entity<HosPt4>(entity =>
+            modelBuilder.Entity<IclaimApproval>(entity =>
             {
-                entity.HasKey(e => e.Pt4id)
-                    .HasName("PK_HosPT4_1");
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo })
+                    .HasName("PK_HosApprovalStatus");
 
-                entity.ToTable("HosPT4");
+                entity.ToTable("IClaimApproval");
 
-                entity.Property(e => e.Pt4id)
-                    .HasColumnName("PT4ID")
-                    .HasMaxLength(20);
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.DocumentType)
+                entity.Property(e => e.BranchId)
+                    .HasColumnName("BranchID")
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdate).HasColumnType("datetime");
+
+                entity.Property(e => e.LineId)
+                    .HasColumnName("LineID")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PayMore)
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.GetRecordDate).HasColumnType("datetime");
+                entity.Property(e => e.RecFname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.GetRecordStatus)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.RecLname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Pt4date)
-                    .HasColumnName("PT4Date")
-                    .HasColumnType("smalldatetime");
+                entity.Property(e => e.RecPrefix)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.SendDate).HasColumnType("datetime");
+                entity.Property(e => e.RecRelate)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.SendStatus)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.RecSocNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.UserCreate)
+                entity.Property(e => e.RevFname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevLname)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevPrefix)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RevRelate)
+                    .HasMaxLength(3)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<IclaimApprovalStatus>(entity =>
+            {
+                entity.HasKey(e => e.StatusId)
+                    .HasName("PK_ApprovalStatus");
+
+                entity.ToTable("IClaimApprovalStatus");
+
+                entity.Property(e => e.StatusId).ValueGeneratedNever();
+
+                entity.Property(e => e.StatusNameEclaim).HasMaxLength(50);
+
+                entity.Property(e => e.StatusNameIclaim).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<IclaimApprovalStatusState>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo, e.StateNo })
+                    .HasName("PK_HosApprovalStatusState");
+
+                entity.ToTable("IClaimApprovalStatusState");
+
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<IclaimCheckDocuments>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.VictimNo, e.AppNo })
+                    .HasName("PK_HosDocumentCheck");
+
+                entity.ToTable("IClaimCheckDocuments");
+
+                entity.Property(e => e.AccNo)
+                    .HasColumnName("AccNO")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookbankComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BookbankStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdCardComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IdCardStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SumStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<IclaimCheckInvoiceDocuments>(entity =>
+            {
+                entity.HasKey(e => e.IdInvhd)
+                    .HasName("PK_HosDocumentCheckInvoice");
+
+                entity.ToTable("IClaimCheckInvoiceDocuments");
+
+                entity.Property(e => e.IdInvhd)
+                    .HasColumnName("id_invhd")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AccNo)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InvoiceStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReceiptNo)
                     .HasMaxLength(20)
                     .IsUnicode(false);
             });
