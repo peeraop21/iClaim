@@ -258,6 +258,7 @@
                 }).then((response) => {
                     this.$store.state.jwtToken = response.data
                     this.checkRegister()
+                    
                 }).catch(function (error) {
                     alert(error)
                 })
@@ -274,8 +275,9 @@
                     .then((response) => {
                         /*this.userApi = response.data;*/
                         this.registered = response.data;
-                        console.log(response)
+                        console.log(response)                       
                         if (this.registered == false) {
+                            
                             this.$swal({
                                 icon: 'info',
                                 text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
@@ -289,7 +291,7 @@
                                 willClose: () => {
                                     /*this.$router.push({ name: 'Accident' })*/
                                     liff.openWindow({
-                                        url: 'https://ts2digitalclaim.rvp.co.th/Ocr/?openExternalBrowser=1'
+                                        url: location.origin + '/Ocr'
                                     });
                                 }
                             })
@@ -320,7 +322,7 @@
                         willClose: () => {
                             /*this.$router.push({ name: 'Accident' })*/
                             liff.openWindow({
-                                url: 'https://ts2digitalclaim.rvp.co.th/Ocr/?openExternalBrowser=1'
+                                url: location.origin + '/Ocr'
                             });
                         }
                     })
@@ -328,8 +330,36 @@
             }
 
         },
-        created: function () {
+        created() {
+            
+            console.log("ss advice", this.$testOverlay)
+            
+            //await liff.init({
+            //    liffId: '1656525617-BqQZ3o1z',
+
+            //    /*withLoginOnExternalBrowser: false,*/
+            //}).then(() => {
+            //    if (liff.isLoggedIn()) {
+            //        liff.getProfile().then(profile => {
+            //            this.$store.state.userTokenLine = profile.userId
+            //            this.overlay = false
+                        
+            //        }).catch(err => alert(err));
+            //    } else {
+            //        liff.login();
+            //    }
+
+            //    //const getContext = liff.getContext();
+            //    //this.$store.state.userTokenLine = getContext.userId
+            //    //alert(getContext.userTokenLine);
+
+            //}).catch(err => {
+            //    alert(err);
+            //    throw err
+            //});
+            this.$store.state.userTokenLine = "Uf3f96dd0506eec532162b377d7c0niorq";
             this.getJwtToken()//ตรวจสอบการลงทะเบียน
+            
         },
        
     }

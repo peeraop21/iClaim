@@ -42,6 +42,7 @@ Vue.use(VueFormWizard)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.config.productionTip = false
+Vue.prototype.$testOverlay = false
 
 new Vue({
   router,

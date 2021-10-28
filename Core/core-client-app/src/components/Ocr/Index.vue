@@ -433,7 +433,8 @@
                     .then((response) => {
                         this.scoreCompare = response.data.resultCompare;
                         console.log("score! = " ,response.data.resultCompare)
-                        this.uploadFaceError= response.data.errorContent;
+                        this.uploadFaceError = response.data.errorContent;
+                        console.log(this.uploadFaceError)
                         if (this.uploadFaceError != null) {
                             this.$swal.close();
                             this.$swal({
@@ -520,6 +521,11 @@
         mounted() {
             
 
+        },
+        created() {
+            
+            
+            
         }
     };
 </script>

@@ -14,6 +14,7 @@
 </template>
 
 <script>
+    import liff from '@line/liff'
     export default {
         name: "NavMenu",
         data() {
@@ -47,7 +48,7 @@
                 } else if (routeName == "ClaimDetail") {
                     this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
                 } else if (routeName == "Ocr") {
-                    this.$router.push({ name: 'Advice' })
+                    liff.closeWindow()
                 } else if (routeName == "Rating") {
                     this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
                 } else if (routeName == "AddDocument") {
