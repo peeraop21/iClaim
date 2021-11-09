@@ -7,6 +7,36 @@
                     <p>โรงพยาบาล : </p>
                     <p style="margin-top: -10px; margin-bottom: 0px">วันที่เข้ารักษา : {{ claimData.stringApRegdate }}</p>
                 </div>
+                <table id="treatments" class="mb-4">
+                    <thead>
+                        <tr>
+                            <th>รายการ</th>
+                            <th>จำนวนเงิน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ค่ารักษาพยาบาล</td>
+                            <td v-if="claimData.claim.cureMoney">{{ claimData.claim.cureMoney }} บาท</td>
+                            <td v-else-if="!claimData.claim.cureMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าสูญเสียอวัยวะ / ทุพพลภาพ</td>
+                            <td v-if="claimData.claim.crippledMoney">{{ claimData.claim.crippledMoney }} บาท</td>
+                            <td v-else-if="!claimData.claim.crippledMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าอนามัย</td>
+                            <td v-if="claimData.claim.hygieneMoney">{{ claimData.claim.hygieneMoney }} บาท</td>
+                            <td v-else-if="!claimData.claim.hygieneMoney">0 บาท</td>
+                        </tr>
+                        <tr>
+                            <td>ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ</td>
+                            <td v-if="claimData.claim.deadMoney">{{ claimData.claim.deadMoney }} บาท</td>
+                            <td v-else-if="!claimData.claim.deadMoney">0 บาท</td>
+                        </tr>
+                    </tbody>
+                </table>
                 <div v-if="(formTypePT==='pt3' || formTypePT==='KCL') && formTypeRights === 2">
                     <table id="treatments" class="mb-4">
                         <tr>
@@ -15,37 +45,51 @@
                         </tr>
                         <tr>
                             <td>ตาบอด</td>
-                            <td v-if="claimData.claim.blindCrippled === 'Y'"><ion-icon name="checkmark" style="font-size: 20px"></ion-icon></td>
+                            <td v-if="claimData.claim.blindCrippled === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                         <tr>
                             <td>หูหนวก</td>
-                            <td v-if="claimData.claim.unHearCrippled === 'Y'"><ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon></td>
+                            <td v-if="claimData.claim.unHearCrippled === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                         <tr>
                             <td>เป็นใบ้ ลิ้นขาด หรือสุญเสียความสามารถในการพูด</td>
-                            <td v-if="claimData.claim.deafCrippled === 'Y'"><ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon></td>
+                            <td v-if="claimData.claim.deafCrippled === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                         <tr>
                             <td>สูญเสียอวัยวะสืบพันธุ์</td>
-                            <td v-if="claimData.claim.lostSexualCrippled === 'Y'"><ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon></td>
+                            <td v-if="claimData.claim.lostSexualCrippled === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                         <tr>
                             <td>สูญเสียแขน ขา มือ เท้า นิ้ว หรืออวัยวะอื่นใด</td>
-                            <td v-if="claimData.claim.lostOrganCrippled === 'Y'"><ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon></td>
+                            <td v-if="claimData.claim.lostOrganCrippled === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                         <tr>
                             <td>จิตพิการอย่างติดตัว</td>
-                            <td v-if="claimData.claim.lostMindCrippled === 'Y'"><ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon></td>
+                            <td v-if="claimData.claim.lostMindCrippled === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                         <tr>
                             <td>ทุพพลภาพอย่างถาวร</td>
-                            <td v-if="claimData.claim.crippledPermanent === 'Y'"><ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon></td>
+                            <td v-if="claimData.claim.crippledPermanent === 'Y'">
+                                <ion-icon name="checkmark" style="font-size: 20px; color: var(--main-color)"></ion-icon>
+                            </td>
                             <td v-else></td>
                         </tr>
                     </table>
@@ -88,30 +132,34 @@
                 </div>
                 <div v-else-if="formTypePT==='pt3' && formTypeRights === 1 && !claimData.claim.medicineMoney">
                     <table id="treatments" class="mb-4">
-                        <tr>
-                            <th>รายการ</th>
-                            <th>จำนวนเงิน</th>
-                        </tr>
-                        <tr>
-                            <td>ค่ารักษาพยาบาล</td>
-                            <td v-if="claimData.claim.cureMoney">{{ claimData.claim.cureMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.cureMoney">0 บาท</td>
-                        </tr>
-                        <tr>
-                            <td>ค่าสูญเสียอวัยวะ / ทุพพลภาพ</td>
-                            <td v-if="claimData.claim.crippledMoney">{{ claimData.claim.crippledMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.crippledMoney">0 บาท</td>
-                        </tr>
-                        <tr>
-                            <td>ค่าอนามัย</td>
-                            <td v-if="claimData.claim.hygieneMoney">{{ claimData.claim.hygieneMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.hygieneMoney">0 บาท</td>
-                        </tr>
-                        <tr>
-                            <td>ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ</td>
-                            <td v-if="claimData.claim.deadMoney">{{ claimData.claim.deadMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.deadMoney">0 บาท</td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>รายการ</th>
+                                <th>จำนวนเงิน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ค่ารักษาพยาบาล</td>
+                                <td v-if="claimData.claim.cureMoney">{{ claimData.claim.cureMoney }} บาท</td>
+                                <td v-else-if="!claimData.claim.cureMoney">0 บาท</td>
+                            </tr>
+                            <tr>
+                                <td>ค่าสูญเสียอวัยวะ / ทุพพลภาพ</td>
+                                <td v-if="claimData.claim.crippledMoney">{{ claimData.claim.crippledMoney }} บาท</td>
+                                <td v-else-if="!claimData.claim.crippledMoney">0 บาท</td>
+                            </tr>
+                            <tr>
+                                <td>ค่าอนามัย</td>
+                                <td v-if="claimData.claim.hygieneMoney">{{ claimData.claim.hygieneMoney }} บาท</td>
+                                <td v-else-if="!claimData.claim.hygieneMoney">0 บาท</td>
+                            </tr>
+                            <tr>
+                                <td>ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ</td>
+                                <td v-if="claimData.claim.deadMoney">{{ claimData.claim.deadMoney }} บาท</td>
+                                <td v-else-if="!claimData.claim.deadMoney">0 บาท</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
                 <div v-else-if="formTypePT==='pt4' && !claimData.claim.crippledMoney">
@@ -207,34 +255,38 @@
             </div>
         </div>
         <br>
-     
+
     </div>
 </template>
 
 <style>
-#treatments {
-  border-collapse: collapse;
-  width: 100%;
-  border-radius: 20px;
-}
-
-    #treatments td, #treatments th {
-        border: 1px solid #ccc;
-        padding: 8px;
+    #treatments {
+        border-collapse: collapse;
+        width: 100%;
+        border-radius: 20px;
     }
 
-#treatments tr:nth-child(even){background-color: #ddd;}
+        #treatments td, #treatments th {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
 
-#treatments tr:hover {background-color: white;}
+        #treatments tr:nth-child(even) {
+            background-color: #ddd;
+        }
 
-    #treatments th {
-        border: 1.8px solid #ddd;
-        padding-top: 12px;
-        padding-bottom: 12px;
-        text-align: center;
-        background-color: var(--main-color);
-        color: white;
-    }
+        #treatments tr:hover {
+            background-color: white;
+        }
+
+        #treatments th {
+            border: 1.8px solid #ddd;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            background-color: var(--main-color);
+            color: white;
+        }
 </style>
 
 <script>
@@ -243,7 +295,7 @@
         /*props: {
             approval: Array
         },*/
-        data () {
+        data() {
             return {
                 msg: "ดูเพิ่มเติม",
                 msg2: "เบิกค่ารักษาเบื้องต้น",
@@ -254,10 +306,10 @@
                 formTypeRights: this.$route.params.typerights,
             }
         },
-        
+
         mounted() {
             console.log("ClaimData", this.claimData);
             console.log("AccData", this.accData);
         }
-}
+    }
 </script>

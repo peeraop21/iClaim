@@ -210,7 +210,7 @@ namespace Services
         }
         public async Task<string> GetDocumentPath(EdocDetailViewModel model)
         {
-            var query = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId)).Select(s => new { s.Paths, s.CreateDate }).OrderByDescending(o => o.CreateDate).FirstOrDefaultAsync();
+            var query = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId)).Select(s => new { s.Paths, s.CreateDate, s.RunningNo }).OrderByDescending(o => o.RunningNo).FirstOrDefaultAsync();
             return query.Paths;
         }
         public async Task<string> GetLastEdocDetailAsync(string systemId, string templateId, string documentId, string refId)

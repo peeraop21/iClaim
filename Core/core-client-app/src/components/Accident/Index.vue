@@ -1,5 +1,11 @@
 <template>
     <div class="container">
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"
+                 :is-full-page="true">                   
+        </loading>
         <div class="row">
             <div align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
@@ -91,14 +97,23 @@
 
 <script>
     import axios from 'axios'
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+
     export default {
         name: 'Accident',
+        components: {
+            Loading
+        },
         data() {
             return {
                 /*userToken: "U08881937e4faf1dc4a04522d138bmock",*/
                 userData: [],
                 accData: [],
-                rights_amount: 0
+                rights_amount: 0,
+                isLoading: true
             }
         },
 
@@ -133,11 +148,12 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
+                        
                         /*this.accidentsApi = response.data;*/
                         this.$store.state.accStateData = response.data;
                         this.accData = this.$store.state.accStateData
                         console.log('accdata', this.$store.state.accStateData);
-                        
+                        this.isLoading = false
                     })
                     .catch(function (error) {
                         alert(error);

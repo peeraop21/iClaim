@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace DataAccess.EFCore.DigitalClaimModels
 {
-    public partial class IclaimApprovalStatusState
+    public partial class IclaimApprovalState
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
-        public int AppNo { get; set; }
+        public int ReqNo { get; set; }
         public int StateNo { get; set; }
         public int? OldStatus { get; set; }
         public int? NewStatus { get; set; }

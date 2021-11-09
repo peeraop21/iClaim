@@ -32,7 +32,8 @@
                                     <div align="right" style="margin-top: -10px;">
                                         <div style="margin-top:-5px">
                                             <!--<a v-on:click="getPDF(iclaimApp.appNo)">PDF</a>-->
-                                            <vs-button v-on:click="externalPagePDF(iclaimApp.appNo)"
+                                            <vs-button v-if="iclaimApp.status >= 5"
+                                                       v-on:click="externalPagePDF(iclaimApp.appNo)"
                                                        icon
                                                        primary
                                                        flat>
@@ -70,8 +71,8 @@
                                 </div>
                                 <div style="text-align: center">
                                     <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'AddDocument', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
-                                    <router-link class="btn-checked" v-if="iclaimApp.appStatusName == 'รอยืนยันจำนวนเงิน'" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
-                                    <router-link class="btn-checked" v-if="iclaimApp.appStatusName == 'โอนเงิน'" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
+                                    <router-link class="btn-checked" v-if="iclaimApp.status == 4" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                    <router-link class="btn-checked" v-if="iclaimApp.status == 9" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
                                 </div>
                                 <div style="text-align: center">
                                     
@@ -171,30 +172,8 @@
         name: 'Accident',
         data() {
             return {
-                accidents: [
-                    {
-                        id: 1,
-                        accident_no: "64/XXX/00001",
-                        accident_date: "05/06/2564",
-                        status: "รับคำร้อง",
-                        money: 10000
-                    },
-                    {
-                        id: 2,
-                        accident_no: "64/XXX/00002",
-                        accident_date: "29/07/2564",
-                        status: "ตรวจสอบคำร้อง",
-                        money: 4000
-                    },
-                    {
-                        id: 3,
-                        accident_no: "64/XXX/00003",
-                        accident_date: "13/08/2564",
-                        license_plare: "พิจารณาจ่าย",
-                        money: 7000
-                    }
-                ],
-
+                
+                userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 iclaimApprovalData: null,
                 isHasIclaimApprovalData: false,
@@ -231,7 +210,9 @@
                         }
                         if (showNoti) {
                             var htmlMessage = "";
-                            htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoDocumentNotPass + ' </strong><br>&emsp;&emsp;เอกสารของท่านไม่สมบูรณ์ กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"แนบเอกสารเพิ่มเติม"</label> เพื่อดูรายละเอียด และแนบเอกสารที่ไม่สมบูรณ์</p>'
+                            if (appNoDocumentNotPass.length > 0) {
+                                htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoDocumentNotPass + ' </strong><br>&emsp;&emsp;เอกสารของท่านไม่สมบูรณ์ กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"แนบเอกสารเพิ่มเติม"</label> เพื่อดูรายละเอียด และแนบเอกสารที่ไม่สมบูรณ์</p>'
+                            }
                             if (appNoConfirmMoney.length > 0) {
                                 htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoConfirmMoney + ' </strong><br>&emsp;&emsp;เนื่องจากจำนวนเงินที่เจ้าหน้าที่พิจารณา ไม่ตรงตามจำนวนเงินที่ท่านส่งคำร้องขอไป กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"ยอมรับจำนวนเงิน"</label> เพื่อดูรายละเอียด และยอมรับจำนวนเงิน</p>'
                                 
@@ -268,7 +249,8 @@
             },
             externalPagePDF(appNo) {
                 liff.openWindow({
-                    url: 'https://ts2digitalclaim.rvp.co.th/DownloadPDF/{accNo}/{victimNo}/{appNo}/{channel}/?openExternalBrowser=1'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel)
+                    url: location.origin + '/DownloadPDF/{accNo}/{victimNo}/{appNo}/{userIdCard}/?openExternalBrowser=1'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{userIdCard}', this.userData.idcardNo),
+                    external: true
                 });
             },
             getPDF(appNo) {

@@ -8,7 +8,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
-        public int AppNo { get; set; }
+        public int ReqNo { get; set; }
         public string IdCardStatus { get; set; }
         public string IdCardComment { get; set; }
         public string BookbankStatus { get; set; }

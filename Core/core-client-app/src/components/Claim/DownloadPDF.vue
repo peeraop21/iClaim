@@ -29,7 +29,8 @@
                     AccNo: this.$route.params.accNo,
                     VictimNo: parseInt(this.$route.params.victimNo),
                     AppNo: parseInt(this.$route.params.appNo),
-                    Channel: this.$route.params.channel,
+                    Channel: 'HOSPITAL',
+                    UserIdCard: this.$route.params.userIdCard
                 };
                 console.log(body)
                 this.$swal({
@@ -63,18 +64,7 @@
                             url: url
                         });
                         liff.closeWindow();
-                        /*window.open("data:application/pdf," + encodeURI(response.data));*/
-                        //const blob = new Blob([response.data]);
-                        //const objectUrl = URL.createObjectURL(blob);
-                        //this.pdfsrc = objectUrl;
-                        //console.log(this.pdfsrc)
-
-                        //var link = document.createElement('a');
-                        //link.href = window.URL.createObjectURL(blob);
-                        //var fileName = "PT3";
-                        //link.download = fileName;
-                        //link.click();
-                        //this.$swal.close();
+                        
                     })
                     .catch(function (error) {
                         alert(error);

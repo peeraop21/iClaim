@@ -1,10 +1,10 @@
 ﻿<template>
     <div id="app">
-        <b-overlay :show="$testOverlay" rounded="sm">
-            <nav-menu></nav-menu>
 
-            <router-view />
-        </b-overlay>
+        <nav-menu></nav-menu>
+
+        <router-view />
+
 
     </div>
 </template>
@@ -31,12 +31,12 @@
 
         },
         mounted() {
-            
+
 
         },
         created() {
             
-            
+
             //liff.getProfile().then(profile => {
             //    const getProfile = profile.userId;
             //    alert(getProfile);

@@ -64,6 +64,10 @@
       {
          "Name": "[dbo].[TUMBOL]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HOSPITAL]",
+         "ObjectType": 3
       }
    ],
    "UiHint": "T1DB10.RvpOffice",

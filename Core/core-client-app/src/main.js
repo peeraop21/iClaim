@@ -10,9 +10,9 @@ import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import VCalendar from 'v-calendar';
-
 import Vuesax from 'vuesax'
-import 'vuesax/dist/vuesax.css' 
+import 'vuesax/dist/vuesax.css'
+import Vuelidate from 'vuelidate'
 
 Vue.use(Vuesax, {
   colors: {
@@ -28,8 +28,7 @@ Vue.use(Vuesax, {
 import OtpInput from "@bachdgvn/vue-otp-input";
 Vue.component("v-otp-input", OtpInput);
 
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
+
 
 import StarRating from 'vue-star-rating'
 Vue.use(StarRating)
@@ -41,8 +40,9 @@ Vue.use(VueSweetalert2)
 Vue.use(VueFormWizard)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(Vuelidate)
 Vue.config.productionTip = false
-Vue.prototype.$testOverlay = false
+/*Vue.prototype.$testOverlay = false*/
 
 new Vue({
   router,

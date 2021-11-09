@@ -10,6 +10,7 @@ using Services.ViewModels;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
+using DataAccess.EFCore.RvpOfficeModels;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -37,7 +38,7 @@ namespace Core.Controllers
         [HttpGet("{accNo}/{victimNo}/{rightsType}")]
         public async Task<IActionResult> GetApproval(string accNo, int victimNo, int rightsType)
         {
-            return Ok(await approvalService.GetApproval(accNo.Replace("-", "/"), victimNo, rightsType));
+            return Ok(await approvalService.GetApprovalRegis(accNo.Replace("-", "/"), victimNo, rightsType));
         }
 
         [HttpGet("HosApproval/{accNo}/{victimNo}")]
@@ -49,7 +50,7 @@ namespace Core.Controllers
         [HttpGet("DocumentReceive/{accNo}/{victimNo}/{appNo}")]
         public async Task<IActionResult> GetDocumentReceive(string accNo, int victimNo, int appNo)
         {
-            return Ok(await approvalService.GetHosDocumentReceiveAsync(accNo.Replace("-", "/"), victimNo, appNo));
+            return Ok(await approvalService.GetIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo, appNo));
         }
 
         // POST api/<ApprovalController>
@@ -62,7 +63,7 @@ namespace Core.Controllers
             var resultMapVictim = _mapper.Map<VictimtViewModel>(model.VictimData);
             var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
 
-            var result = await approvalService.AddAsync(resultMapHosApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd);
+            var result = await approvalService.AddAsync(resultMapHosApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
             ECMViewModel ecmModel = new ECMViewModel();
             
             for (int i = 0; i < model.BillsData.Count; i++)
@@ -84,7 +85,7 @@ namespace Core.Controllers
                 //{
                 //    ecmModel.RefNo = refTemplate + "-" + "00001";
                 //}
-                ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+                ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo /* + "|" + result[0].AppNo*/;
                 ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename;
                 ecmModel.Base64String = model.BillsData[i].billFileShow;
                 var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
@@ -107,7 +108,7 @@ namespace Core.Controllers
             //{
             //    ecmModel.RefNo = refTemplateBank + "-" + "00001";
             //}
-            ecmModel.RefNo = result[0].AccNo + "|" + result[0].VictimNo + "|" + result[0].AppNo;
+            ecmModel.RefNo = result[0].IclaimAppNo + "|" + result[0].AccNo + "|" + result[0].VictimNo;
             ecmModel.FileName = (string.IsNullOrEmpty(model.BankData.bankFilename)) ? DateTime.Now.ToString("ddMMyyyyHHmmss") + "bankold.png" : DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
             ecmModel.Base64String = model.BankData.bankBase64String;
             var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
@@ -127,12 +128,12 @@ namespace Core.Controllers
         [HttpGet("LastDocumentReceive/{accNo}/{victimNo}")]
         public async Task<IActionResult> GetLastDocumentReceive(string accNo, int victimNo)
         {
-            return Ok(await approvalService.GetLastHosDocumentReceiveAsync(accNo.Replace("-", "/"), victimNo));
+            return Ok(await approvalService.GetLastIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo));
         }
         [HttpGet("Invoicehd/{accNo}/{victimNo}/{appNo}")]
         public async Task<IActionResult> GetInvoicehd(string accNo, int victimNo, int appNo)
         {
-            return Ok(await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo,appNo));
+            return Ok(await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, appNo, 2));
         }
 
         [HttpGet("DocumentCheck/{accNo}/{victimNo}/{appNo}")]
@@ -170,7 +171,7 @@ namespace Core.Controllers
                     ecmModel.TemplateId = "03";
                     ecmModel.DocID = "01";
                     
-                    ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo + "|" + model.AppNo; ;
+                    ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo  /*+ "|" + model.AppNo*/;
                     ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename;
                     ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage;
                     var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
@@ -182,7 +183,7 @@ namespace Core.Controllers
             }
             if (resultMapBank.isEditBankImage)
             {
-                ecmModel.RefNo = model.AccNo + "|" + model.VictimNo + "|" + model.AppNo;
+                ecmModel.RefNo = model.AppNo + "|" + model.AccNo + "|" + model.VictimNo;
                 ecmModel.SystemId = "03";
                 ecmModel.TemplateId = "09";
                 ecmModel.DocID = "01";
@@ -195,6 +196,24 @@ namespace Core.Controllers
             }
             
             return Ok();
+        }
+
+        [HttpGet("testService/{pt}")]
+        public async Task<IActionResult> GetDocumentCheck(string pt)
+        {
+            return Ok(await approvalService.GetHistoryInvoicedt(pt.Replace("-", "/")));
+        }
+
+        [HttpGet("DataConfirmMoney/{accNo}/{victimNo}/{reqNo}")]
+        public async Task<IActionResult> GetDataConfirmMoney(string accNo, int victimNo, int reqNo)
+        {
+            return Ok(await approvalService.GetDataForConfirmMoney(accNo.Replace("-", "/"), victimNo, reqNo));
+        }
+
+        [HttpGet("ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}")]
+        public async Task<IActionResult> GetApprovalDataForApprovalDetailPage(string accNo, int victimNo, int reqNo,string userIdCard)
+        {
+            return Ok(await approvalService.GetApprovalDetail(accNo.Replace("-", "/"), victimNo, reqNo, userIdCard));
         }
 
     }

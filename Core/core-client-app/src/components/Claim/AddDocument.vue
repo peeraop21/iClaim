@@ -566,19 +566,19 @@
                         alert(error);
                     });
             },
-            getLastDocumentReceive() {
+            getDocumentReceive() {
                 console.log('getDocumentReceive');
                 var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.getBankFileFromECM()
-                        if (response.data[0] != null) {
+                        if (response.data != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
-                                if (response.data[0].accountBankName == this.bankNames[i].bankCode) {
+                                if (response.data.accountBankName == this.bankNames[i].bankCode) {
                                     this.inputBank.accountBankName = this.bankNames[i].name
                                     this.inputBank.bankId = this.bankNames[i].bankCode
-                                    this.inputBank.accountName = response.data[0].accountName
-                                    this.inputBank.accountNumber = response.data[0].accountNumber
+                                    this.inputBank.accountName = response.data.accountName
+                                    this.inputBank.accountNumber = response.data.accountNumber
                                     this.inputBank.isEditBankImage = false
                                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
                                     return true;
@@ -597,7 +597,7 @@
                     .then((response) => {
                         this.bankNames = response.data;
                         console.log(response.data);
-                        this.getLastDocumentReceive();
+                        this.getDocumentReceive();
                     })
                     .catch(function (error) {
                         alert(error);
@@ -654,10 +654,10 @@
                     .then((response) => {
                         this.documentCheck = response.data;
                         if (this.documentCheck != null) {
-                            if (this.documentCheck.bookbankStatus == "ไม่ผ่าน") {
+                            if (this.documentCheck.bookbankStatus == "N") {
                                 this.accountDoc = true;
                             }
-                            if (this.documentCheck.invoiceStatus == "ไม่ผ่าน") {
+                            if (this.documentCheck.invoiceStatus == "N") {
                                 this.invoiceDoc = true;
                             }
                         }
@@ -673,7 +673,7 @@
                     SystemId: '02',
                     TemplateId: '03',
                     DocumentId: '01',
-                    RefId: idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo + '|' ,
+                    RefId: idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo  ,
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
@@ -696,7 +696,7 @@
                     SystemId: '03',
                     TemplateId: '09',
                     DocumentId: '01',
-                    RefId: this.accData.accNo + '|' + this.accData.victimNo + '|' + this.$route.params.appNo,
+                    RefId: this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo ,
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {

@@ -22,10 +22,12 @@ namespace Core.Controllers
 
         private readonly IConverter converter;
         private readonly IAccidentService accidentService;
-        public GenPdfController( IConverter converter, IAccidentService accidentService)
+        private readonly IApprovalService approvalService;
+        public GenPdfController( IConverter converter, IAccidentService accidentService, IApprovalService approvalService)
         {
             this.converter = converter;
             this.accidentService = accidentService;
+            this.approvalService = approvalService;
         }
         
 
@@ -34,8 +36,9 @@ namespace Core.Controllers
         public async Task<IActionResult> GetPDF([FromBody]PostDataViewModel model)
         {
             var acc = await accidentService.GetAccidentForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.AppNo);
-            var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.Channel, "", model.VictimNo);
+            var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.Channel, model.UserIdCard, model.VictimNo);
             var accCar = await accidentService.GetAccidentCar(model.AccNo.Replace("-", "/"), model.Channel);
+            var approvalData = await approvalService.GetApprovalDataForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.AppNo);
 
             byte[] file = null;
             var globalSettings = new GlobalSettings
@@ -51,7 +54,7 @@ namespace Core.Controllers
             };
 
             string HtmlContent = string.Empty;
-            HtmlContent = await GenBotoBody(acc, accVictim, accCar);
+            HtmlContent = await GenBotoBody(acc, accVictim, accCar, approvalData);
 
             var objectSettings = new ObjectSettings
             {
@@ -95,7 +98,7 @@ namespace Core.Controllers
             return File(file, "application/pdf");
         }
 
-        private async Task<string> GenBotoBody(AccidentPDFViewModel acc, VictimtViewModel accVictim, CarViewModel accCar)
+        private async Task<string> GenBotoBody(AccidentPDFViewModel acc, VictimtViewModel accVictim, CarViewModel accCar, ApprovalPDFViewModel approvalData)
         {
             var template = System.IO.Directory.GetCurrentDirectory() + @"\Templates\Boto3_Template.html";
             using (StreamReader reader = new StreamReader(template))
@@ -113,6 +116,7 @@ namespace Core.Controllers
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.District}", (string.IsNullOrEmpty(accVictim.DistrictName)) ? "-" : accVictim.DistrictName);
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Province}", (string.IsNullOrEmpty(accVictim.ProvinceName)) ? "-" : accVictim.ProvinceName);
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Zipcode}", (string.IsNullOrEmpty(accVictim.Zipcode)) ? "-" : accVictim.Zipcode);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.TelNo}", (string.IsNullOrEmpty(accVictim.TelNo)) ? "-" : accVictim.TelNo);
                 if (string.IsNullOrEmpty(acc.TimeAcc))
                 {
                     htmlTemplate = htmlTemplate.Replace("{Acc.DateTime}", acc.DateAccString + " เวลา " + "-" + " น.");
@@ -126,6 +130,23 @@ namespace Core.Controllers
                 htmlTemplate = htmlTemplate.Replace("{AccCar.FoundChassisNo}", (string.IsNullOrEmpty(accCar.FoundChassisNo)) ? "-" : accCar.FoundChassisNo);
                 htmlTemplate = htmlTemplate.Replace("{AccCar.FoundPolicyNo}", (string.IsNullOrEmpty(accCar.FoundPolicyNo)) ? "-" : accCar.FoundPolicyNo);
                 htmlTemplate = htmlTemplate.Replace("( ) รถคันเดียว ไม่มีคู่กรณี", "(X) รถคันเดียว ไม่มีคู่กรณี");
+                if (accVictim.VictimIs == "ผขป")
+                {
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ขับขี่", "(X) ผู้ขับขี่");
+                }else if (accVictim.VictimIs == "ผสป")
+                {
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้โดยสารรถคันเอาประกันภัย", "(X) ผู้โดยสารรถคันเอาประกันภัย");
+                }
+                if (accVictim.VictimType == "IPD")
+                {
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ป่วยใน", "(X) ผู้ป่วยใน");
+                }else
+                {
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ป่วยนอก", "(X) ผู้ป่วยนอก");
+                }
+                
+
+
 
 
 

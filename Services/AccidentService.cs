@@ -46,43 +46,37 @@ namespace Services
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
             var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync(); /*"3149900145384";*/
-            //var accLineNo = GetLineAccNo(userIdCard);
-            //var accHosNo = GetHosAccNo(userIdCard);
-            //var mockQueryHos = await rvpOfficeContext.HosAccident
-            //    .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo })
-            //    .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace }).ToListAsync();
-
-            //var accLineList = await rvpAccidentContext.TbAccidentMasterLine.Where(w => accLineNo.Contains(w.EaAccNo)).Select(s => new { s.EaAccNo, s.EaAccDate, s.EaAccPlace }).ToListAsync();
-            var accLineList = await rvpAccidentContext.TbAccidentMasterLine
-                .Join(rvpAccidentContext.TbAccidentMasterLineVictim, accVic => accVic.EaAccNo, vic => vic.EaAccno, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.EaVictimNo, victimIdCard = vic.EaIdCardVictim })
-                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.EaAccNo, s.victimNo, s.accJoinVictim.EaAccDate, s.accJoinVictim.EaAccPlace, s.accJoinVictim.EaAccNature, s.accJoinVictim.EaAccTime}).ToListAsync();
-            //var accHosList = await rvpOfficeContext.HosAccident.Where(w => accHosNo.Contains(w.AccNo)).Select(s => new { s.AccNo, s.DateAcc, s.AccPlace }).ToListAsync();
+         
+            //var accLineList = await rvpAccidentContext.TbAccidentMasterLine
+            //    .Join(rvpAccidentContext.TbAccidentMasterLineVictim, accVic => accVic.EaAccNo, vic => vic.EaAccno, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.EaVictimNo, victimIdCard = vic.EaIdCardVictim })
+            //    .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.EaAccNo, s.victimNo, s.accJoinVictim.EaAccDate, s.accJoinVictim.EaAccPlace, s.accJoinVictim.EaAccNature, s.accJoinVictim.EaAccTime}).ToListAsync();
+           
             var accHosList = await rvpOfficeContext.HosAccident
                 .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo })
                 .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace , s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc}).ToListAsync();
 
             var accViewModelList = new List<AccidentViewModel>();
-            //var sum = rvpOfficeContext.HosApproval.Where(w => w.ClaimNo == null).Sum(s => s.SumMoney);
             
-            foreach (var acc in accLineList)
-            {
+            
+            //foreach (var acc in accLineList)
+            //{
 
-                var accVwModel = new AccidentViewModel();
-                accVwModel.AccNo = acc.EaAccNo;
-                accVwModel.VictimNo = acc.victimNo;
-                accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo, acc.victimNo);
-                accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
-                accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
-                accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.EaAccTime.Replace(".", ":") + " น.";
-                accVwModel.AccNature = acc.EaAccNature;
-                accVwModel.PlaceAcc = acc.EaAccPlace;
-                accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
-                accVwModel.Channel = "LINE";
-                accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CureRights");
-                accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CrippledRights");
-                accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.EaAccNo).CountAsync();
-                accViewModelList.Add(accVwModel);
-            }
+            //    var accVwModel = new AccidentViewModel();
+            //    accVwModel.AccNo = acc.EaAccNo;
+            //    accVwModel.VictimNo = acc.victimNo;
+            //    accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo, acc.victimNo);
+            //    accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
+            //    accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
+            //    accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.EaAccTime.Replace(".", ":") + " น.";
+            //    accVwModel.AccNature = acc.EaAccNature;
+            //    accVwModel.PlaceAcc = acc.EaAccPlace;
+            //    accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
+            //    accVwModel.Channel = "LINE";
+            //    accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CureRights");
+            //    accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CrippledRights");
+            //    accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.EaAccNo).CountAsync();
+            //    accViewModelList.Add(accVwModel);
+            //}
             foreach (var acc in accHosList)
             {
                 
@@ -121,7 +115,7 @@ namespace Services
             else if (channal == "HOSPITAL")
             {
 
-                var vic = await (from hs in rvpOfficeContext.HosVicTimAccident
+                var accVic = await (from hs in rvpOfficeContext.HosVicTimAccident
                             join ch in rvpOfficeContext.Changwat on hs.Province equals ch.Changwatshortname into result1
                             from hschi in result1.DefaultIfEmpty()
                             join a in rvpOfficeContext.Amphur on new { key1 = hs.Province, key2 = hs.District} equals new { key1 = a.Changwatshortname, key2 = a.Amphurid}  into result2
@@ -150,127 +144,66 @@ namespace Services
                                 AmphurId = hs.District,
                                 AmphurName = hsai.Amphurname,
                                 ChangwatShort = hs.Province,
-                                ChangwatName = hschi.Changwatname
+                                ChangwatName = hschi.Changwatname,
+                                VictimIs = hs.VicTimIs,
+                                VictimType = hs.VictimType
                             }).FirstOrDefaultAsync();
-                            
-                //var vic1 = await rvpOfficeContext.HosVicTimAccident
-                //    .Join(rvpOfficeContext.Tumbol, vicT => vicT.Tumbol, t => t.Tumbolid, (vicT, t) => new { victimJoinTumbol = vicT, tumbolName = t.Tumbolname, tumbolId = t.Tumbolid })
-                //    .Join(rvpOfficeContext.Amphur, vicA => vicA.victimJoinTumbol.District, amp => amp.Amphurid, (vicA, amp) => new { victimJoinAmphur = vicA, amphurName = amp.Amphurname, amphurId = amp.Amphurid })
-                //    .Join(rvpOfficeContext.Changwat, vicC => vicC.victimJoinAmphur.victimJoinTumbol.Province, chw => chw.Changwatshortname, (vicC, chw) => new { victimJoinChangwat = vicC, changwatName = chw.Changwatname, changwatShort = chw.Changwatshortname })
-                //    .Where(w => w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.DrvSocNo == userIdCard
-                //    && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.AccNo == accNo
-                //    && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Tumbol == w.victimJoinChangwat.victimJoinAmphur.tumbolId
-                //    && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.District == w.victimJoinChangwat.amphurId
-                //    && w.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Province == w.changwatShort)
-                //    .Select(s => new
-                //    {
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.AccNo,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.VictimNo,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.DrvSocNo,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Fname,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Lname,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Prefix,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Age,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Sex,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.TelNo,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.HomeId,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Moo,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Soi,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Road,
-                //        s.victimJoinChangwat.victimJoinAmphur.tumbolId,
-                //        s.victimJoinChangwat.victimJoinAmphur.tumbolName,
-                //        s.victimJoinChangwat.amphurId,
-                //        s.victimJoinChangwat.amphurName,
-                //        s.changwatShort,
-                //        s.changwatName,
-                //        s.victimJoinChangwat.victimJoinAmphur.victimJoinTumbol.Zipcode
-                //    }).FirstOrDefaultAsync();
-                //var victest = await rvpOfficeContext.HosVicTimAccident
-                //    .GroupJoin(rvpOfficeContext.Changwat, jchw => jchw.Province, chw => chw.Changwatshortname, (jchw, chw) => new { joinChangwat = jchw, changwat = chw }).SelectMany(x => x.changwat.DefaultIfEmpty(), (x, chw) => new { vicC = x.joinChangwat, changwatName = chw.Changwatname, changwatShort = chw.Changwatshortname })
-                //    .GroupJoin(rvpOfficeContext.Amphur, jamp => jamp.vicC.District, amp => amp.Amphurid, (jamp, amp) => new { joinAmphur = jamp, amphur = amp }).SelectMany(x => x.amphur.DefaultIfEmpty(), (x, amp) => new { vicA = x.joinAmphur, amphurName = amp.Amphurname, amphurId = amp.Amphurid })
-                //    .GroupJoin(rvpOfficeContext.Tumbol, jtum => jtum.vicA.vicC.Tumbol, t => t.Tumbolid, (jtum, t) => new { joinTumbol = jtum, tumbol = t }).SelectMany(x => x.tumbol.DefaultIfEmpty(), (x, t) => new { vicT = x.joinTumbol, tumbolName = t.Tumbolname, tumbolId = t.Tumbolid, zipcode = t.Zipcode })
-                //    .Where(w => (w.vicT.vicA.vicC.DrvSocNo == userIdCard || w.vicT.vicA.vicC.VictimNo == victimNo)
-                //    && w.vicT.vicA.vicC.AccNo == accNo)
-                //    .Select(s => new {
-                //        s.vicT.vicA.vicC.AccNo,
-                //        s.vicT.vicA.vicC.VictimNo,
-                //        s.vicT.vicA.vicC.DrvSocNo,
-                //        s.vicT.vicA.vicC.Fname,
-                //        s.vicT.vicA.vicC.Lname,
-                //        s.vicT.vicA.vicC.Prefix,
-                //        s.vicT.vicA.vicC.Age,
-                //        s.vicT.vicA.vicC.Sex,
-                //        s.vicT.vicA.vicC.TelNo,
-                //        s.vicT.vicA.vicC.HomeId,
-                //        s.vicT.vicA.vicC.Moo,
-                //        s.vicT.vicA.vicC.Soi,
-                //        s.vicT.vicA.vicC.Road,
-                //        s.vicT.vicA.vicC.Tumbol,
-                //        s.tumbolName,
-                //        s.vicT.vicA.vicC.District,
-                //        s.vicT.amphurName,
-                //        s.vicT.vicA.vicC.Province,
-                //        s.vicT.vicA.changwatShort,
-                //        s.vicT.vicA.vicC.Zipcode,
-                //        s.zipcode
-                //    })
-                //    .FirstOrDefaultAsync();
-                //var vic = await rvpOfficeContext.HosVicTimAccident
-                //    .GroupJoin(rvpOfficeContext.Tumbol, jtum => jtum.Tumbol, t => t.Tumbolid, (jtum, t) => new { victimJoinTumbol = jtum, tumbolTb = t }).SelectMany(x => x.tumbolTb.DefaultIfEmpty(), (x, t) => new { vicT = x.victimJoinTumbol, tumbolName = t.Tumbolname, tumbolId = t.Tumbolid })
-                //    .GroupJoin(rvpOfficeContext.Amphur, jamp => jamp.vicT.District, amp => amp.Amphurid, (jamp, amp) => new { victimJoinAmphur = jamp, amphurTb = amp }).SelectMany(x => x.amphurTb.DefaultIfEmpty(), (x, amp) => new { vicA = x.victimJoinAmphur, amphurName = amp.Amphurname, amphurId = amp.Amphurid })
-                //    .GroupJoin(rvpOfficeContext.Changwat, jchw => jchw.vicA.vicT.Province, chw => chw.Changwatshortname, (jchw, chw) => new { victimJoinChangwat = jchw, changwatTb = chw }).SelectMany(x => x.changwatTb.DefaultIfEmpty(), (x, chw) => new { vicC = x.victimJoinChangwat, changwatName = chw.Changwatname, changwatShort = chw.Changwatshortname })
-                //    .Where(w => (w.vicC.vicA.vicT.DrvSocNo == userIdCard || w.vicC.vicA.vicT.VictimNo == victimNo)
-                //    && w.vicC.vicA.vicT.AccNo == accNo
-                //    && w.vicC.vicA.vicT.Tumbol == w.vicC.vicA.tumbolId
-                //    && w.vicC.vicA.vicT.District == w.vicC.amphurId
-                //    && w.vicC.vicA.vicT.Province == w.changwatShort)
-                //    .Select(s => new {
-                //        s.vicC.vicA.vicT.AccNo,
-                //        s.vicC.vicA.vicT.VictimNo,
-                //        s.vicC.vicA.vicT.DrvSocNo,
-                //        s.vicC.vicA.vicT.Fname,
-                //        s.vicC.vicA.vicT.Lname,
-                //        s.vicC.vicA.vicT.Prefix,
-                //        s.vicC.vicA.vicT.Age,
-                //        s.vicC.vicA.vicT.Sex,
-                //        s.vicC.vicA.vicT.TelNo,
-                //        s.vicC.vicA.vicT.HomeId,
-                //        s.vicC.vicA.vicT.Moo,
-                //        s.vicC.vicA.vicT.Soi,
-                //        s.vicC.vicA.vicT.Road,
-                //        s.vicC.vicA.tumbolId,
-                //        s.vicC.vicA.tumbolName,
-                //        s.vicC.amphurId,
-                //        s.vicC.amphurName,
-                //        s.changwatShort,
-                //        s.changwatName,
-                //        s.vicC.vicA.vicT.Zipcode
-                //    })
-                //    .FirstOrDefaultAsync();
-                if (vic == null)
+                var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard).FirstOrDefaultAsync();                
+                var address = await (from t in rvpOfficeContext.Tumbol
+                                 join a in rvpOfficeContext.Amphur on new { key1 = t.Amphurid, key2 = t.Provinceid } equals new { key1 = a.Amphurid, key2 = a.Provinceid } into result1
+                                 from ta in result1.DefaultIfEmpty()
+                                 join ch in rvpOfficeContext.Changwat on  t.Changwatshortname equals ch.Changwatshortname into result2
+                                 from tch in result2.DefaultIfEmpty()                                
+                                 where (t.Tumbolid == kyc.HomeTumbolId && t.Amphurid == kyc.HomeCityId && t.Provinceid == kyc.HomeProvinceId)
+                                 select new
+                                 {                                    
+                                     Zipcode = t.Zipcode,
+                                     TumbolId = t.Tumbolid,
+                                     TumbolName = t.Tumbolname,
+                                     AmphurId = ta.Amphurid,
+                                     AmphurName = ta.Amphurname,
+                                     ChangwatShort = tch.Changwatshortname,
+                                     ChangwatName = tch.Changwatname
+                                 }).FirstOrDefaultAsync();
+
+                if (accVic == null)
                 {
                     return vicVwModel;
                 }
-                vicVwModel.AccNo = vic.AccNo;
-                vicVwModel.VictimNo = vic.VictimNo;
-                vicVwModel.DrvSocNo = vic.DrvSocNo;
-                vicVwModel.Fname = vic.Fname;
-                vicVwModel.Lname = vic.Lname;
-                vicVwModel.Prefix = vic.Prefix;
-                vicVwModel.Age = vic.Age;
-                vicVwModel.Sex = vic.Sex;
-                vicVwModel.TelNo = vic.TelNo;
-                vicVwModel.HomeId = vic.HomeId;
-                vicVwModel.Moo = vic.Moo;
-                vicVwModel.Soi = vic.Soi;
-                vicVwModel.Road = vic.Road;
-                vicVwModel.Tumbol = vic.TumbolId;
-                vicVwModel.TumbolName = vic.TumbolName;
-                vicVwModel.District = vic.AmphurId;
-                vicVwModel.DistrictName = vic.AmphurName;
-                vicVwModel.Province = vic.ChangwatShort;
-                vicVwModel.ProvinceName = vic.ChangwatName;
-                vicVwModel.Zipcode = vic.Zipcode;
+
+                vicVwModel.IdCardNo = kyc.IdcardNo;
+                vicVwModel.Fname = kyc.Fname;
+                vicVwModel.Lname = kyc.Lname;
+                vicVwModel.Prefix = kyc.Prefix;
+                vicVwModel.Age = accVic.Age;
+                vicVwModel.Sex = accVic.Sex;
+                vicVwModel.TelNo = kyc.MobileNo;
+                vicVwModel.HomeId = kyc.HomeHouseNo;
+                vicVwModel.Moo = kyc.HomeHmo;
+                vicVwModel.Soi = kyc.HomeSoi;
+                vicVwModel.Road = kyc.HomeRoad;
+                vicVwModel.Tumbol = address.TumbolId;
+                vicVwModel.TumbolName = address.TumbolName;
+                vicVwModel.District = address.AmphurId;
+                vicVwModel.DistrictName = address.AmphurName;
+                vicVwModel.Province = address.ChangwatShort;
+                vicVwModel.ProvinceName = address.ChangwatName;
+                vicVwModel.Zipcode = address.Zipcode;
+                vicVwModel.AccHomeId = accVic.HomeId;
+                vicVwModel.AccMoo = accVic.Moo;
+                vicVwModel.AccSoi = accVic.Soi;
+                vicVwModel.AccRoad = accVic.Road;
+                vicVwModel.AccTumbol = accVic.TumbolId;
+                vicVwModel.AccTumbolName = accVic.TumbolName;
+                vicVwModel.AccDistrict = accVic.AmphurId;
+                vicVwModel.AccDistrictName = accVic.AmphurName;
+                vicVwModel.AccProvince = accVic.ChangwatShort;
+                vicVwModel.AccProvinceName = accVic.ChangwatName;
+                vicVwModel.AccZipcode = accVic.Zipcode;
+                vicVwModel.VictimIs = accVic.VictimIs;
+                vicVwModel.VictimType = accVic.VictimType;
+
+
 
 
             }

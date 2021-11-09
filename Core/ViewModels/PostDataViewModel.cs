@@ -8,6 +8,7 @@ namespace Core.ViewModels
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
         public int AppNo { get; set; }
+        public string UserIdCard { get; set; }
         public string Channel { get; set; }
 
     }

@@ -11,7 +11,6 @@ namespace Services.ViewModels
     
     public class CarViewModel
     {
-
         public string FoundCarLicense { get; set; }
         public string FoundChassisNo { get; set; }
         public string FoundPolicyNo { get; set; }

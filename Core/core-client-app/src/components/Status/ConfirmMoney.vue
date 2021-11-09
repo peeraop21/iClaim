@@ -1,5 +1,12 @@
 ﻿<template>
     <div class="container space-contianer" align="center">
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"
+                 :is-full-page="true">
+
+        </loading>
         <div class="container">
             <div class="row">
                 <div class="col-12" align="center">
@@ -13,12 +20,12 @@
                                 <p v-else-if="accData.accNo===''">เลขที่รับแจ้ง : -</p>
                                 <p v-if="accData.lastClaim.claimNo!=''">เลขที่เคลม : {{accData.lastClaim.claimNo}}</p>
                                 <p v-else-if="accData.lastClaim.claimNo===''">เลขที่เคลม : -</p>
-                                <p v-if="accidentCarData.foundPolicyNo!=''">เลขที่กรมธรรม์ : {{accidentCarData.foundPolicyNo}}</p>
-                                <p v-else-if="accidentCarData.foundPolicyNo===''">เลขที่กรมธรรม์ : -</p>
-                                <p v-if="hosData.stringRegDate!=''">วันที่ยื่นคำร้อง : {{hosData.stringRegDate}}</p>
-                                <p v-else-if="hosData.stringRegDate===''">วันที่ยื่นคำร้อง : -</p>
-                                <p v-if="hosData.appNo!=''" style="margin-bottom: 3px">ครั้งที่เรียกร้อง : {{hosData.appNo}}</p>
-                                <p v-else-if="hosData.appNo===''" style="margin-bottom: 3px">ครั้งที่เรียกร้อง : -</p>
+                                <p v-if="confirmMoneyData.car.foundPolicyNo != null">เลขที่กรมธรรม์ : {{confirmMoneyData.car.foundPolicyNo}}</p>
+                                <p v-else-if="confirmMoneyData.car.foundPolicyNo === null">เลขที่กรมธรรม์ : -</p>
+                                <p v-if="confirmMoneyData.reqDate != null">วันที่ยื่นคำร้อง : {{confirmMoneyData.reqDate}} เวลา {{confirmMoneyData.reqTime}} น.</p>
+                                <p v-else-if="confirmMoneyData.reqDate === null">วันที่ยื่นคำร้อง : -</p>
+                                <p v-if="hosData.appNo!=''" style="margin-bottom: 3px">คำร้องขอที่ : {{hosData.appNo}}</p>
+                                <p v-else-if="hosData.appNo===''" style="margin-bottom: 3px">คำร้องขอที่ : -</p>
                             </div>
                         </div>
                         
@@ -26,30 +33,53 @@
                 </div>
                 <div class="col-12">
                     <div class="text-start">
-                        <div v-if="total_amount!=null">
-                            เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด
-                            <span class="p-main-color">เป็นจำนวนเงิน {{total_amount}} บาท</span>
+                        <div>
+                            &emsp;&emsp;จากที่ท่านได้ทำการยื่นคำร้องขอเบิกค่ารักษาพยาบาลเป็นจำนวนเงิน <span class="p-main-color">{{confirmMoneyData.sumReqMoney}}</span> บาท มีบางรายการในใบเสร็จค่ารักษาจำเป็นต้องเปลี่ยนแปลง เพื่อให้ตรงตามเงื่อนไขของการเบิกค่ารักษาพยาบาลกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด โดยมีรายละเอียดดังนี้
+                        </div>
+                        <div class="my-3" v-for="inv in confirmMoneyData.invoiceList" :key="inv.idInvhd">
+                            <div class="div-center-image">
+                                <div class="divImage" style="width:80%" v-if="inv.base64Image != null" align="left">
+                                    <div class="row">
+                                        <div class="col-5" align="center">
+                                            <img class="img-show" :src="inv.base64Image" />
+                                        </div>
+                                        <div class="col-7 px-0">                                            
+                                            <div class="row mt-2">
+                                                <p class="inv-text">เล่มที่ใบเสร็จ : {{inv.bookNo}}</p>
+                                                <p class="inv-text">เลขที่ใบเสร็จ : {{inv.receiptNo}}</p>
+                                                <p class="inv-text">จำนวนเงินที่ร้องขอ : {{inv.reqMoney}} บาท</p>
+                                                <p class="inv-text">จำนวนเงินที่จ่ายได้ : {{inv.payMoney}} บาท</p>
+                                            </div>
+                                        </div>                                       
+                                    </div>
+                                                                             
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="confirmMoneyData.sumReqMoney != null">
+                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน <span class="p-main-color">{{confirmMoneyData.sumPayMoney}}</span> บาท
+                            
                             โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
                         </div>
-                        <div v-else-if="total_amount===null">
-                            เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด
+                        <!--<div v-else-if="total_amount===null">
+                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด
                             <span class="p-main-color">เป็นจำนวนเงิน - บาท</span>
                             โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
-                        </div>
+                        </div>-->
                         
                     </div>
                     <div class="text-start mt-4 mb-4">
                         <div>
-                            <p v-if="accountReceiveData.accountBankName!=''">โดยการโอนเงินเข้าบัญชีธนาคาร <span class="p-main-color"> {{ accountReceiveData.accountBankName }}</span></p>
-                            <p v-else-if="accountReceiveData.accountBankName===''">โดยการโอนเงินเข้าบัญชีธนาคาร -</p>
+                            <p v-if="confirmMoneyData.bankAccount.accountBankName != null">โดยการโอนเงินเข้าบัญชีธนาคาร <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountBankName }}</span></p>
+                            <p v-else-if="confirmMoneyData.bankAccount.accountBankName === null">โดยการโอนเงินเข้าบัญชีธนาคาร -</p>
                         </div>
                         <div style="margin-top: -15px">
-                            <p v-if="accountReceiveData.accountName!=''">ชื่อบัญชีธนาคาร <span class="p-main-color"> {{ accountReceiveData.accountName }}</span></p>
-                            <p v-else-if="accountReceiveData.accountName===''">ชื่อบัญชีธนาคาร -</p>
+                            <p v-if="confirmMoneyData.bankAccount.accountName != null">ชื่อบัญชีธนาคาร <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountName }}</span></p>
+                            <p v-else-if="confirmMoneyData.bankAccount.accountName === null">ชื่อบัญชีธนาคาร -</p>
                         </div>
                         <div style="margin-top: -15px">
-                            <p v-if="accountReceiveData.accountNumber!=''">เลขที่บัญชีธนาคาร <span class="p-main-color"> {{ accountReceiveData.accountNumber }}</span></p>
-                            <p v-else-if="accountReceiveData.accountNumber===''">เลขที่บัญชีธนาคาร -</p>
+                            <p v-if="confirmMoneyData.bankAccount.accountNumber != null">เลขที่บัญชีธนาคาร <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountNumber }}</span></p>
+                            <p v-else-if="confirmMoneyData.bankAccount.accountNumber === null">เลขที่บัญชีธนาคาร -</p>
                         </div>
                     </div>
                 </div>
@@ -116,6 +146,7 @@
                     <div>
                         <br>
                         <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
+                        <button @click="postData">TestPostData</button>
                     </div>
                 </div>
             </div>
@@ -127,6 +158,11 @@
 </template>
 
 <style>
+    .inv-text {
+        padding: 0px;
+        margin-bottom: 2px;
+        font-size: 12px;
+    }
     .btn-confirm-money {
         background-color: var(--main-color);
         border: none;
@@ -156,38 +192,51 @@
     import axios from 'axios'
     import qs from 'qs'
     //Your Javascript lives within the Script Tag
+    // Import loading-overlay
+    import Loading from 'vue-loading-overlay';
+    import 'vue-loading-overlay/dist/vue-loading.css';
+
     export default {
         name: "ConfirmMoney",
+        components: {            
+            Loading
+        },
         data() {
             return {
                 acceptR: false,
-                lblButton: 'ยืนยันจำนวนเงิน',
-                claimNo: '61/660/00337',
-                money: '1,000',
-                reason: '......',
+                lblButton: 'ยืนยันจำนวนเงิน',               
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 bank: null,
                 total_amount: null,
-                //----Get AccidentCar
-                accidentCarData: { foundCarLicense: '', foundChassisNo: '', foundPolicyNo: '' },
-                //----Get AccidentCar
-                accidentVictimData: {
-                    accNo: null, victimNo: null, prefix: null, fname: null, lname: null, sex: null, age: null,
-                    drvSocNo: null, homeId: null, moo: null, soi: null, road: null, tumbol: null, tumbolName: null,
-                    district: null, districtName: null, province: null, provinceName: null, zipcode: null, telNo: null
-                },
-                accountReceiveData: {
-                    accountBankName: null,
-                    accountName: null,
-                    accountNumber: null,
-                    bankId:null
-                },
+                
                 // HosApp
                 hosData: this.$store.getters.hosAppGetter(this.$route.params.id, this.$route.params.appNo),
                 countDown: 60,
                 disableBtnReqOTP: false,
-                inputOTP:null
+                inputOTP: null,
+                confirmMoneyData: {
+                    reqNo: null, reqDate: null, reqTime: null, sumReqMoney: null, sumPayMoney: null,
+                    car: {
+                        foundCarLicense: null, foundChassisNo: null, foundPolicyNo: null
+                    },
+                    bankAccount: {
+                        accountBankName: null,
+                        accountName: null,
+                        accountNumber: null,
+                        bankId: null
+                    },
+                    invoiceList: [{
+                        idInvhd: null,
+                        bookNo: null,
+                        receiptNo: null,
+                        reqMoney: null,
+                        payMoney: null
+
+                    }]
+                },
+                bankNames:null,
+                isLoading:true,
             }
         },
         methods: {
@@ -215,38 +264,40 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
-            getAccidentCar() {
-                console.log('getAccidentCar');
-                var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
+            
+            getBankNames() {
+                console.log('getBankNames');
+                var url = '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
-                        this.accidentCarData = response.data;
-                        console.log(this.accidentCarData);
+                        this.bankNames = response.data;
+                        console.log(response.data);
+                        this.getDataConfirmMoney();
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            getAccidentVictim() {
-                console.log('getAccidentVictim');
-                var mockIdcard = this.userData.idcardNo /*'3149900145384'*/;
-                var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
+            getDataConfirmMoney() {
+                console.log('getDataConfirmMoney');
+                var url = '/api/Approval/DataConfirmMoney/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
-                        this.accidentVictimData = response.data;
-                        console.log(this.accidentVictimData);
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getDocumentReceive() {
-                console.log('getDocumentReceive');
-                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-                axios.get(url)
-                    .then((response) => {
-                        this.accountReceiveData = response.data[0];
-                        console.log("bank",this.accountReceiveData);
+                        this.confirmMoneyData = response.data;
+                        if (this.confirmMoneyData != null) {
+                            for (let i = 0; i < this.bankNames.length; i++) {
+                                if (this.confirmMoneyData.bankAccount.accountBankName == this.bankNames[i].bankCode) {
+                                    this.confirmMoneyData.bankAccount.accountBankName = this.bankNames[i].name
+                                    this.confirmMoneyData.bankAccount.bankId = this.bankNames[i].bankCode
+                                    
+                                }
+                            }
+                        }
+                        for (let i = 0; i < this.confirmMoneyData.invoiceList.length; i++) {
+                            this.confirmMoneyData.invoiceList[i].base64Image = 'data:image/png;base64,' + this.confirmMoneyData.invoiceList[i].base64Image
+                        }
+                        this.isLoading = false;
+                        console.log("confirmData: ",this.confirmMoneyData)
                     })
                     .catch(function (error) {
                         alert(error);
@@ -441,12 +492,12 @@
                 });
             },
         },
-        async mounted() {
-            await console.log('accData', this.accData);
-            console.log("hosApp: ", this.hosData);
-            await this.getAccidentCar();
-            await this.getAccidentVictim();
-            await this.getDocumentReceive();
+        async created() {
+            //await console.log('accData', this.accData);
+            //console.log("hosApp: ", this.hosData);
+            //await this.getAccidentCar();
+            //await this.getAccidentVictim();
+            await this.getBankNames();
         }
         
         

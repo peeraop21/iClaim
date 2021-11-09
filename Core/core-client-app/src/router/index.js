@@ -105,7 +105,7 @@ const routes = [
         props: true
     },
     {
-        path: "/DownloadPDF/:accNo/:victimNo/:appNo/:channel",
+        path: "/DownloadPDF/:accNo/:victimNo/:appNo/:userIdCard",
         name: "DownloadPDF",
         component: DownloadPDF,
     },

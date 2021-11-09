@@ -276,7 +276,7 @@
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-                                    this.$router.push({ name: 'CheckStatus', params: { id: this.$store.state.inputApprovalData.AccNo } })
+                                    this.$router.push({ name: 'CheckStatus', params: { id: this.$store.state.inputApprovalData.AccNo.replace('/', '-') } })
                                 }
                             })
                             this.$store.state.inputApprovalData.AccNo = null

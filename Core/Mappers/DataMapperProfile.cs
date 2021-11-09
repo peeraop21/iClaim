@@ -6,10 +6,13 @@
     using Core.ViewModels;
     using System;
     using System.Globalization;
+    using DataAccess.EFCore.RvpOfficeModels;
 
     public class DataMapperProfile : Profile {
         public DataMapperProfile() {           
-            CreateMap<ApprovalViewModel, IclaimApproval>();
+            CreateMap<ApprovalViewModel, IclaimApproval>()
+                .ForMember(m => m.SumReqMoney, opt => opt.MapFrom(src => src.SumMoney))
+                .ForMember(m => m.CureMoney, opt => opt.MapFrom(src => src.SumMoney));
             CreateMap<BankViewModel, InputBankViewModel>();
             CreateMap<VictimViewModel, VictimtViewModel>();
             CreateMap<BillViewModel, Invoicehd>()

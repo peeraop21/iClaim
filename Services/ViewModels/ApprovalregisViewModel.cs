@@ -11,7 +11,7 @@ namespace Services.ViewModels
     
     public class ApprovalregisViewModel
     {
-
+        
         /// <summary>
         /// เลขเคลม
         /// </summary>
@@ -228,8 +228,9 @@ namespace Services.ViewModels
         /// </summary>
         //public string MCardTypeOther { get; set; }
         // public short? ApRecnationalityId { get; set; }
-        public ClaimViewModel Claim { get; set; }
+        public object Claim { get; set; }
         public double? CureMoneyAmount { get; set; }
         public double? CrippledMoneyAmount { get; set; }
+        public object PtDetail { get; set; }
     }
 }

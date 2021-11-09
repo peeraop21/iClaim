@@ -1,6 +1,13 @@
 ﻿<template>
+    
     <div class="container mt-2">
-      
+
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"                
+                 :is-full-page="true"></loading>
+
 
         <div align="center" class="mt-4">
             <h2 id="header2">คำแนะนำ</h2>
@@ -111,9 +118,11 @@
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
-                <button class="button-next1" style="width: 100%; padding: 8px 0;"  @click="checkRegisAgain">{{msg}}</button>
+                <button class="button-next1" style="width: 100%; padding: 8px 0;" @click="checkRegisAgain">{{msg}}</button>
             </div>
-            <br><br><br>
+            <br>
+            <br>
+            <br>
         </div>
 
         <!-- Dialog 1 -->
@@ -195,34 +204,38 @@
                 <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีบาดเจ็บเบิกค่ารักษาพยาบาล</strong></label>
                 <br />
                 <p>
-                    1. สำเนาบัตรประจำตัวประชาชน<br />
+                    1. สำเนาบัตรประจำตัวประชาชน
+                    <br />
                     2. ใบเสร็จรับเงินค่ารักษาพยาบาล
                 </p>
                 <br />
                 <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีเบิกค่าชดเชย นอนรักษาตัวในโรงพยาบาล (ผู้ป่วยใน)</strong></label>
                 <br />
                 <p>
-                    1. สำเนาบัตรประจำตัวประชาชน<br />
+                    1. สำเนาบัตรประจำตัวประชาชน
+                    <br />
                     2. ใบเสร็จรับเงินค่ารักษาพยาบาล หรือใบสรุปหน้างบ หรือหนังสือรับรองการรักษาตัวเป็นผู้ป่วยในจากโรงพยาบาล
                 </p>
                 <br />
                 <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีทุพพลภาพถาวร หรือสูญเสียอวัยวะ</strong></label>
                 <br />
                 <p>
-                    1. สำเนาบัตรประจำตัวประชาชน<br />
-                    2. ใบรับรองแพทย์หรือหลักฐานอื่นที่แสดงว่าผู้นั้นได้รับความเสียหายเพราะประสบภัยจากรถ และหลักฐานรับรองแสดงถึงการสูญเสียอวัยวะ หรือ ทุพพลภาพถาวร เช่น หนังสือรับรองความพิการ<br />
+                    1. สำเนาบัตรประจำตัวประชาชน
+                    <br />
+                    2. ใบรับรองแพทย์หรือหลักฐานอื่นที่แสดงว่าผู้นั้นได้รับความเสียหายเพราะประสบภัยจากรถ และหลักฐานรับรองแสดงถึงการสูญเสียอวัยวะ หรือ ทุพพลภาพถาวร เช่น หนังสือรับรองความพิการ
+                    <br />
                     3. สำเนาบันทึกประจำวันของพนักงานสอบสวน
                 </p>
                 <br />
                 <!-- <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีเสียชีวิต</strong></label>
-                 <br />
-                <p>
-                     1. ใบมรณบัตรของผู้ประสบภัยที่เสียชีวิต<br />
-                     2. สำเนาทะเบียนบ้านของผู้เสียชีวิต<br />
-                     3. สำเนาบัตรประจำตัวประชาชนของทายาทโดยธรรม<br />
-                     4. สำเนาบันทึกประจำวันของพนักงานสอบสวน
-                 </p>
-                 <br />-->
+             <br />
+            <p>
+                 1. ใบมรณบัตรของผู้ประสบภัยที่เสียชีวิต<br />
+                 2. สำเนาทะเบียนบ้านของผู้เสียชีวิต<br />
+                 3. สำเนาบัตรประจำตัวประชาชนของทายาทโดยธรรม<br />
+                 4. สำเนาบันทึกประจำวันของพนักงานสอบสวน
+             </p>
+             <br />-->
             </div>
         </vs-dialog>
 
@@ -231,10 +244,17 @@
 <script>
     import liff from '@line/liff'
     import axios from 'axios'
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
 
-    
+
     export default {
         name: 'Advice',
+        components: {
+            Loading
+        },
         data() {
             return {
                 msg: "ดำเนินการต่อ",
@@ -245,7 +265,8 @@
                 passangerDialog: false,
                 page: 1,
                 registered: null,
-                
+                isLoading: true
+
 
             }
         },
@@ -258,7 +279,7 @@
                 }).then((response) => {
                     this.$store.state.jwtToken = response.data
                     this.checkRegister()
-                    
+
                 }).catch(function (error) {
                     alert(error)
                 })
@@ -273,11 +294,15 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
+                        setTimeout(() => {
+                            this.isLoading = false
+                        }, 1000)
                         /*this.userApi = response.data;*/
                         this.registered = response.data;
-                        console.log(response)                       
+
+                        alert(this.registered)
                         if (this.registered == false) {
-                            
+
                             this.$swal({
                                 icon: 'info',
                                 text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
@@ -295,7 +320,7 @@
                                     });
                                 }
                             })
-                            
+
                             /*this.$router.push({ name: 'Ocr' })*/
                         }
 
@@ -322,7 +347,8 @@
                         willClose: () => {
                             /*this.$router.push({ name: 'Accident' })*/
                             liff.openWindow({
-                                url: location.origin + '/Ocr'
+                                url: location.origin + '/Ocr',
+                                external:true
                             });
                         }
                     })
@@ -330,20 +356,20 @@
             }
 
         },
-        created() {
-            
-            console.log("ss advice", this.$testOverlay)
-            
+         created() {
+           
+
             //await liff.init({
-            //    liffId: '1656525617-BqQZ3o1z',
+            //    liffId: '1656611867-ylXVO2D8',
 
             //    /*withLoginOnExternalBrowser: false,*/
             //}).then(() => {
             //    if (liff.isLoggedIn()) {
             //        liff.getProfile().then(profile => {
             //            this.$store.state.userTokenLine = profile.userId
-            //            this.overlay = false
-                        
+            //            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+
+            //            alert(this.$store.state.userTokenLine);
             //        }).catch(err => alert(err));
             //    } else {
             //        liff.login();
@@ -357,14 +383,14 @@
             //    alert(err);
             //    throw err
             //});
-            this.$store.state.userTokenLine = "Uf3f96dd0506eec532162b377d7c0niorq";
+            this.$store.state.userTokenLine = "Uf3f96dd0506eec532162b377d7c0nior";
             this.getJwtToken()//ตรวจสอบการลงทะเบียน
-            
+
         },
-       
+
     }
 
-    
+
 </script>
 <style>
     .button-next1 {
@@ -378,6 +404,7 @@
         font-size: 15px;
         border: none;
     }
+
     .bg-main {
         /*background-color: var(--main-color);
         background: -webkit-linear-gradient(rgb(114 60 177), rgb(144 96 199));*/
@@ -387,10 +414,10 @@
     .vs-card__img {
         width: 50%;
         height: 120px;
-        
     }
+
     .con-footer {
-        display: flex; 
+        display: flex;
         align-items: center;
         justify-content: flex-end;
     }
@@ -400,16 +427,18 @@
     .vs-button__content {
         padding: 10px 30px;
     }
+
     .vs-button {
         margin-left: 10px;
     }
+
     .not-margin {
         margin: 0px;
         font-weight: normal;
         padding: 10px;
         padding-bottom: 0px;
     }
-    
+
     /*-----*/
     .purple-title {
         color: var(--main-color);
@@ -464,5 +493,4 @@
         border-radius: 10px;
         font-size: 15px;
     }
-
 </style>
