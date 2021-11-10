@@ -49,11 +49,11 @@
                         <br>
                     </div>
                     <div v-for="approvals in approval" :key="approvals.pt4">
-                        <div v-if="!approvals.claim.accNo">
+                        <!--<div v-if="!approvals.claim.accNo">
                         </div>
                         <div v-else-if="approvals.claim.crippledMoney > 0 && approvals.claim.cureMoney == 0">
-                        </div>
-                        <div v-else>
+                        </div>-->
+                        <div >
                             <section>
                                 <div style="height: 100%; width: 100%;">
                                     <div class="accordion">
@@ -74,11 +74,10 @@
                                                 <p v-else>สถานะการจ่ายเงิน: -</p>
                                                 <p style="margin-top: -25px;">
                                                     วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
-                                                </p>
-                                                <p style="margin-top: -25px;">โรงพยาบาลที่รักษา:</p>
+                                                </p>                                        
                                             </div>
                                             <div style="text-align: center">
-                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, typerights: 1, pt: approvals.stringPt4, typept: approvals.subPt4 }}">ดูเพิ่มเติม</router-link>
+                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, appNo: approvals.accAppNo, victimNo: approvals.accVictimNo, typerights: 1,sumMoney: approvals.apTotal}}">ดูเพิ่มเติม</router-link>
 
                                             </div>
                                         </div>
@@ -93,7 +92,7 @@
                         <label>ประวัติการใช้สิทธิ์กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
                         <br>
                     </div>
-                    <div v-for="approvals in approval" :key="approvals.pt4">
+                    <!--<div v-for="approvals in approval" :key="approvals.pt4">
                         <div v-if="approvals.subPt4 === 'pt4' || !approvals.claim.crippledMoney || approvals.claim.crippledMoney === 0 || !approvals.claim.accNo">
                         </div>
                         <div v-else-if="approvals.claim.crippledMoney > 0 ">
@@ -131,7 +130,7 @@
                         </div>
                         <div v-else>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>

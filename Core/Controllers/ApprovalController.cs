@@ -198,10 +198,10 @@ namespace Core.Controllers
             return Ok();
         }
 
-        [HttpGet("testService/{pt}")]
-        public async Task<IActionResult> GetDocumentCheck(string pt)
+        [HttpGet("Invoicedt/{accNo}/{victimNo}/{appNo}")]
+        public async Task<IActionResult> GetInvoicedtDetail(string accNo, int victimNo, int appNo)
         {
-            return Ok(await approvalService.GetHistoryInvoicedt(pt.Replace("-", "/")));
+            return Ok(await approvalService.GetHistoryInvoicedt(accNo.Replace("-", "/"), victimNo, appNo));
         }
 
         [HttpGet("DataConfirmMoney/{accNo}/{victimNo}/{reqNo}")]

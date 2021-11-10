@@ -300,7 +300,7 @@
                         /*this.userApi = response.data;*/
                         this.registered = response.data;
 
-                        alert(this.registered)
+                        
                         if (this.registered == false) {
 
                             this.$swal({

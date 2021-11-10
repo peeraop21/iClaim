@@ -3,41 +3,29 @@
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">รายละเอียดการรักษา</h2>
-                <div align="left" class="tab-user mb-4 mt-4 px-3">
-                    <p>โรงพยาบาล : </p>
-                    <p style="margin-top: -10px; margin-bottom: 0px">วันที่เข้ารักษา : {{ claimData.stringApRegdate }}</p>
+                <div align="left" class="tab-user mb-4 mt-4 px-3" v-for="invdt in invdtData" :key="invdt.invdtId">
+                    <p class="inv-header">โรงพยาบาล : {{invdt.hospital}}</p>
+                    <p class="inv-header">วันที่เข้ารักษา : {{invdt.takenDate}} เวลา {{invdt.takenTime}} น.</p>
+                    <p class="inv-header">จำนวนเงิน : {{invdt.sumMoney}} บาท</p>
+                    <table id="treatments" class="mb-4 mt-2">
+                        <thead>
+                            <tr>
+                                <th>รายการ</th>
+                                <th>จำนวนเงิน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in invdt.items" :key="item.listNo">
+                                <td>{{item.treatName}}</td>
+                                <td>{{item.money}} บาท</td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
                 </div>
-                <table id="treatments" class="mb-4">
-                    <thead>
-                        <tr>
-                            <th>รายการ</th>
-                            <th>จำนวนเงิน</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>ค่ารักษาพยาบาล</td>
-                            <td v-if="claimData.claim.cureMoney">{{ claimData.claim.cureMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.cureMoney">0 บาท</td>
-                        </tr>
-                        <tr>
-                            <td>ค่าสูญเสียอวัยวะ / ทุพพลภาพ</td>
-                            <td v-if="claimData.claim.crippledMoney">{{ claimData.claim.crippledMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.crippledMoney">0 บาท</td>
-                        </tr>
-                        <tr>
-                            <td>ค่าอนามัย</td>
-                            <td v-if="claimData.claim.hygieneMoney">{{ claimData.claim.hygieneMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.hygieneMoney">0 บาท</td>
-                        </tr>
-                        <tr>
-                            <td>ค่าปลงศพและค่าใช้จ่ายเกี่ยวกับการจัดการศพ</td>
-                            <td v-if="claimData.claim.deadMoney">{{ claimData.claim.deadMoney }} บาท</td>
-                            <td v-else-if="!claimData.claim.deadMoney">0 บาท</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div v-if="(formTypePT==='pt3' || formTypePT==='KCL') && formTypeRights === 2">
+                
+                <!--<div v-if="(formTypePT==='pt3' || formTypePT==='KCL') && formTypeRights === 2">
                     <table id="treatments" class="mb-4">
                         <tr>
                             <th>รายการ</th>
@@ -250,8 +238,8 @@
                             <td v-else-if="!claimData.claim.deadMoney">0 บาท</td>
                         </tr>
                     </table>
-                </div>
-                <p class="p_right mt-4">รวมจำนวนเงิน: {{ claimData.claim.sumMoney }} บาท</p>
+                </div>-->
+                <p class="p_right mt-4">รวมจำนวนเงิน: {{sumMoneyTotal}} บาท</p>
             </div>
         </div>
         <br>
@@ -260,6 +248,10 @@
 </template>
 
 <style>
+    .inv-header {
+        margin-bottom: 0px;
+
+    }
     #treatments {
         border-collapse: collapse;
         width: 100%;
@@ -290,6 +282,8 @@
 </style>
 
 <script>
+    import axios from 'axios'
+
     export default {
         name: 'RightsHistorydetail',
         /*props: {
@@ -301,15 +295,30 @@
                 msg2: "เบิกค่ารักษาเบื้องต้น",
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
-                claimData: this.$store.getters.ptGetter(this.$route.params.pt),
-                formTypePT: this.$route.params.typept,
-                formTypeRights: this.$route.params.typerights,
+                sumMoneyTotal: this.$route.params.sumMoney,
+                /*claimData: this.$store.getters.ptGetter(this.$route.params.pt),*/
+                //formTypePT: this.$route.params.typept,
+                //formTypeRights: this.$route.params.typerights,
+                invdtData:null
             }
         },
-
-        mounted() {
-            console.log("ClaimData", this.claimData);
-            console.log("AccData", this.accData);
+        methods: {
+            getInvoicedtDetail() {
+                console.log('getInvoicedtDetail');
+                var url = '/api/Approval/Invoicedt/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo);
+                axios.get(url)
+                    .then((response) => {
+                        this.invdtData = response.data;
+                        
+                        console.log("invDetail: ", this.invdtData);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+        },
+        created() {
+            this.getInvoicedtDetail();
         }
     }
 </script>

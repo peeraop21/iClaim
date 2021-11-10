@@ -31,7 +31,7 @@ namespace Services
         Task<IclaimCheckDocuments> GetDocumentCheck(string accNo, int victimNo, int appNo);
         Task<ConfirmMoneyViewModel> GetDataForConfirmMoney(string accNo, int victimNo, int reqNo);
         //Task<string> GeneratePT(string accN);
-        Task<object> GetHistoryInvoicedt(string pt4);
+        Task<object> GetHistoryInvoicedt(string accNo, int victimNo, int appNo);
         Task<ApprovalDetailViewModel> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard);
         Task<ApprovalPDFViewModel> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo);
     }
@@ -262,7 +262,8 @@ namespace Services
         {
 
             var approvalVwMdList = new List<ApprovalregisViewModel>();
-            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.Pt4 != null && w.Pt4 != "Compensate" && (w.ApStatus == "P" || w.ApStatus == "A")).Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
+            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.Pt4 != null && w.Pt4 != "Compensate" /*&& (w.ApStatus == "P" || w.ApStatus == "A")*/)
+                .Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.AccAppNo, s.AccVictimNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
 
             if (query != null)
             {
@@ -271,23 +272,25 @@ namespace Services
                     var claimVwModel = new ClaimViewModel();
                     var approvalVwModel = new ApprovalregisViewModel();
                     approvalVwModel.CrClaimno = acc.CrClaimno;
-                    approvalVwModel.StringCrClaimno = acc.CrClaimno.ToString().Replace("/", "-");
+                    //approvalVwModel.StringCrClaimno = acc.CrClaimno.ToString().Replace("/", "-");
                     approvalVwModel.VVictimno = acc.VVictimno;
                     approvalVwModel.ApRegno = acc.ApRegno;
-                    approvalVwModel.ApRegdate = acc.ApRegdate ?? DateTime.Now;
-                    approvalVwModel.StringApRegdate = acc.ApRegdate.ToString().Replace("12:00:00 AM", " ");
+                    approvalVwModel.ApRegdate = acc.ApRegdate ?? null;
+                    approvalVwModel.StringApRegdate = acc.ApRegdate.Value.ToString("dd/MM/yyyy เวลา HH:mm น.");
                     approvalVwModel.ApPaytype = acc.ApPaytype;
                     approvalVwModel.ApMoney = acc.ApMoney;
                     approvalVwModel.AccNo = acc.AccNo;
+                    approvalVwModel.AccAppNo = (int)acc.AccAppNo;
+                    approvalVwModel.AccVictimNo = (int)acc.AccVictimNo;
                     approvalVwModel.ApTotal = acc.ApTotal;
-                    approvalVwModel.DailyReceiveno = acc.DailyReceiveno;
+                    //approvalVwModel.DailyReceiveno = acc.DailyReceiveno;
 
                     approvalVwModel.Pt4 = acc.Pt4;
                     approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
-                    approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
-                    approvalVwModel.PtDetail = await GetHistoryInvoicedt(acc.Pt4);
+                    //approvalVwModel.SubPt4 = approvalVwModel.Pt4.Substring(0, 3).Replace("บต", "pt");
+                    //approvalVwModel.PtDetail = await GetHistoryInvoicedt(acc.Pt4);
                     approvalVwModel.ApStatus = acc.ApStatus;
-                    approvalVwModel.Claim = await GetApprovalByClaimNo(acc.CrClaimno, acc.VVictimno, acc.ApRegno, rightsType);
+                    //approvalVwModel.Claim = await GetApprovalByClaimNo(acc.CrClaimno, acc.VVictimno, acc.ApRegno, rightsType);
 
                     approvalVwMdList.Add(approvalVwModel);
 
@@ -423,7 +426,7 @@ namespace Services
             return claimVwModel;
         }
 
-        public async Task<object> GetHistoryInvoicedt(string pt4)
+        public async Task<object> GetHistoryInvoicedt(string accNo, int victimNo, int appNo)
         {
             //var query = await rvpofficeContext.Invoicehd
             //    .Join(rvpofficeContext.HosApproval,
@@ -431,9 +434,74 @@ namespace Services
             //    hosApp => new { accNo = hosApp.AccNo, victimNo = hosApp.VictimNo, appNo = hosApp.AppNo },
             //    (invhd, hosApp) => new { hosAppJoinInvhd = hosApp, invhd = invhd })
             //    .Where(w => w.hosAppJoinInvhd.Pt4id == pt4).Select(s => s.invhd.IdInvhd).ToListAsync();
-            var q = await rvpofficeContext.HosApproval.Where(w => w.Pt4id == pt4).Select(s => new { s.AccNo, s.VictimNo, s.AppNo }).FirstOrDefaultAsync();
-            var query = await rvpofficeContext.Invoicehd.Where(w => w.AccNo == q.AccNo && w.VictimNo == q.VictimNo && w.AppNo == q.AppNo).Select(s => s.IdInvdt).ToListAsync();
-            var qq = await rvpofficeContext.Invoicedt.Where(w => query.Contains(w.IdInvdt)).ToListAsync();
+            //var hosApp = await rvpofficeContext.HosApproval.Where(w => w.Pt4id == pt4).Select(s => new { s.AccNo, s.VictimNo, s.AppNo }).FirstOrDefaultAsync();
+            var invdt = await rvpofficeContext.Invoicehd.Join(rvpofficeContext.Hospital, invhd => invhd.Hosid, hos => hos.Hospitalid, (invhd, hos) => new { Invhd = invhd ,HospitalName = hos.Hospitalname})
+                .Where(w => w.Invhd.AccNo == accNo && w.Invhd.VictimNo == victimNo && w.Invhd.AppNo == appNo)
+                .Select(s => new { s.Invhd.IdInvdt, s.Invhd.Hostype, s.HospitalName, s.Invhd.Takendate, s.Invhd.Takentime, s.Invhd.Suminv }).ToListAsync();
+            
+            if (invdt.Count > 0)
+            {
+                var invhdHosTypeP = invdt.Where(w => w.Hostype != "G").Select(s => new { s.IdInvdt, s.HospitalName, s.Takendate, s.Takentime, s.Suminv }).ToList();
+                var invhdHosTypeG = invdt.Where(w => w.Hostype == "G").Select(s => new { s.IdInvdt, s.HospitalName, s.Takendate, s.Takentime, s.Suminv }).ToList();
+                //var hospitalP = invhdHosTypeP.Select(s => s.HospitalName).FirstOrDefault();
+                //var hospitalG = invhdHosTypeG.Select(s => s.HospitalName).FirstOrDefault();
+                if (invhdHosTypeP.Count > 0 && invhdHosTypeG.Count > 0)
+                {
+                    var invdtItemsP = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeP.Select(s => s.IdInvdt).Contains(w.invdtID)).ToListAsync();
+                    var invdtItemsG = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars3, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno,treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeG.Select(s => s.IdInvdt).Contains(w.invdtID)).ToListAsync();
+                    var mergeInvdtList = invdtItemsP.Concat(invdtItemsG).ToList();
+                    var mergeHospital = invhdHosTypeP.Concat(invhdHosTypeG).ToList();
+
+
+
+                    return mergeInvdtList.GroupBy(item => item.invdtID,
+                    (key, group) => new {
+                        invdtId = key,
+                        hospital = mergeHospital.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
+                        takenDate = mergeHospital.Where(w => w.IdInvdt == key).Select(s => s.Takendate.Value.ToString("dd/MM/yyyy")).FirstOrDefault(),
+                        takenTime = mergeHospital.Where(w => w.IdInvdt == key).Select(s => s.Takentime).FirstOrDefault(),
+                        sumMoney = mergeHospital.Where(w => w.IdInvdt == key).Select(s => s.Suminv).FirstOrDefault(),
+                        Items = group.Select(s => new { s.listNo, s.treatName, s.money }).OrderBy(o => o.listNo).ToList() 
+                    }).ToList();
+                }
+                else if (invhdHosTypeP.Count > 0 && invhdHosTypeG.Count == 0)
+                {
+                    var invdtItemsP = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeP.Select(s => s.IdInvdt).Contains(w.invdtID)).ToListAsync();
+
+                    return invdtItemsP.GroupBy(item => item.invdtID,
+                    (key, group) => new {
+                        invdtId = key,
+                        hospital = invhdHosTypeP.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
+                        takenDate = invhdHosTypeP.Where(w => w.IdInvdt == key).Select(s => s.Takendate.Value.ToString("dd/MM/yyyy")).FirstOrDefault(),
+                        takenTime = invhdHosTypeP.Where(w => w.IdInvdt == key).Select(s => s.Takentime).FirstOrDefault(),
+                        sumMoney = invhdHosTypeP.Where(w => w.IdInvdt == key).Select(s => s.Suminv).FirstOrDefault(),
+                        Items = group.Select(s => new { s.listNo, s.treatName, s.money }).OrderBy(o => o.listNo).ToList() 
+                    }).ToList();
+                }
+                else if (invhdHosTypeG.Count > 0 && invhdHosTypeP.Count == 0)
+                {
+                    var invdtItemsG = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars3, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price})
+                    .Where(w => invhdHosTypeG.Select(s => s.IdInvdt).Contains(w.invdtID)).ToListAsync();
+
+                    return invdtItemsG.GroupBy(item => item.invdtID,
+                    (key, group) => new {
+                        invdtId = key, hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
+                        takenDate = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takendate.Value.ToString("dd/MM/yyyy")).FirstOrDefault(),
+                        takenTime = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takentime).FirstOrDefault(),
+                        sumMoney = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Suminv).FirstOrDefault(),
+                        Items = group.Select(s => new { s.listNo, s.treatName, s.money }).OrderBy(o => o.listNo).ToList() 
+                    }).ToList();
+                }
+            }
+            
+           
             //var query1 = await rvpofficeContext.HosApproval
             //    .Join(rvpofficeContext.Invoicehd,
             //    hosApp => new { accNo = hosApp.AccNo, victimNo = hosApp.VictimNo, appNo = hosApp.AppNo },
@@ -441,7 +509,7 @@ namespace Services
             //    (hosApp, invhd) => new { hosAppJoinInvhd = hosApp, invhd = invhd })
             //    .Where(w => w.hosAppJoinInvhd.Pt4id == pt4).ToListAsync();
 
-            return qq;
+            return null;
         }
         public async Task<List<IcliamApprovalViewModel>> GetIClaimApprovalAsync(string accNo, int victimNo)
         {
@@ -569,7 +637,8 @@ namespace Services
             if (rightsType == "CureRights")
             {
                 double? cureRights = 30000;
-                var claimNo = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && (w.ApStatus == "P" || w.ApStatus == "A")).Select(s => s.CrClaimno).FirstOrDefaultAsync();
+                var claimNo = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo /*&& (w.ApStatus == "P" || w.ApStatus == "A")*/)
+                    .Select(s => s.CrClaimno).FirstOrDefaultAsync();
                 if (claimNo == null)
                 {
                     return cureRights;
@@ -586,7 +655,7 @@ namespace Services
             else if (rightsType == "CrippledRights")
             {
                 double? crippledRights = 35000;
-                var claimNo = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.ApStatus == "P").Select(s => s.CrClaimno).FirstOrDefaultAsync();
+                var claimNo = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo /*&& w.ApStatus == "P"*/).Select(s => s.CrClaimno).FirstOrDefaultAsync();
                 if (claimNo == null)
                 {
                     return crippledRights;

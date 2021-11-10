@@ -62,6 +62,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[particulars]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[particulars3]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[TUMBOL]",
          "ObjectType": 0
       },

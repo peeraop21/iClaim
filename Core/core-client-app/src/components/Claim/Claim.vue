@@ -624,7 +624,7 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
-                            <p class="mb-0">บ้านเลขที่ที่เกิดเหตุ</p>
+                            <p class="mb-0">บ้านเลขที่</p>
                             <div class="mt-0" v-if="accidentVictimData.accHomeId != null">
                                 <p class="label-text">{{accidentVictimData.accHomeId}}</p>
                                 <hr class="mt-0">
@@ -635,7 +635,7 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <p class="mb-0">หมู่ที่เกิดเหตุ</p>
+                            <p class="mb-0">หมู่</p>
                             <div class="mt-0" v-if="accidentVictimData.accMoo != null">
                                 <p class="label-text">{{accidentVictimData.accMoo}}</p>
                                 <hr class="mt-0">

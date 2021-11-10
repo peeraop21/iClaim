@@ -29,6 +29,8 @@ namespace DataAccess.EFCore.RvpOfficeModels
         public virtual DbSet<Invoicedt> Invoicedt { get; set; }
         public virtual DbSet<Invoicehd> Invoicehd { get; set; }
         public virtual DbSet<Mcwounded> Mcwounded { get; set; }
+        public virtual DbSet<Particulars> Particulars { get; set; }
+        public virtual DbSet<Particulars3> Particulars3 { get; set; }
         public virtual DbSet<Tumbol> Tumbol { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -2687,6 +2689,82 @@ namespace DataAccess.EFCore.RvpOfficeModels
                 entity.Property(e => e.WoundedName)
                     .HasMaxLength(255)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Particulars>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("particulars");
+
+                entity.Property(e => e.Code)
+                    .HasColumnName("code")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DoiCode)
+                    .HasColumnName("doi_code")
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Level)
+                    .HasColumnName("level")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pos).HasColumnName("pos");
+
+                entity.Property(e => e.Topic).HasColumnName("topic");
+            });
+
+            modelBuilder.Entity<Particulars3>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("particulars3");
+
+                entity.Property(e => e.ArcbgAbbrev)
+                    .HasColumnName("ARCBG_Abbrev")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ArcbgCode)
+                    .HasColumnName("ARCBG_Code")
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Code)
+                    .HasColumnName("code")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DoiCode)
+                    .HasColumnName("doi_code")
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Level)
+                    .HasColumnName("level")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Pos).HasColumnName("pos");
+
+                entity.Property(e => e.Topic).HasColumnName("topic");
             });
 
             modelBuilder.Entity<Tumbol>(entity =>

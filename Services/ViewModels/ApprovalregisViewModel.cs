@@ -167,6 +167,8 @@ namespace Services.ViewModels
         /// เลขรับแจ้ง
         /// </summary>
         public string AccNo { get; set; }
+        public int AccAppNo { get; set; }
+        public int AccVictimNo { get; set; }
         /// <summary>
         /// หมายเหตุต่างๆ เช่นการเรียกร้อง
         /// </summary>
@@ -175,7 +177,7 @@ namespace Services.ViewModels
         /// <summary>
         /// ลำดับผู้ประสบภัยของรับแจ้ง
         /// </summary>
-       // public int? AccVictimNo { get; set; }
+        // public int? AccVictimNo { get; set; }
         /// <summary>
         /// ลำดับคำร้องของรับแจ้ง
         /// </summary>
@@ -232,5 +234,7 @@ namespace Services.ViewModels
         public double? CureMoneyAmount { get; set; }
         public double? CrippledMoneyAmount { get; set; }
         public object PtDetail { get; set; }
+
+
     }
 }
