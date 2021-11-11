@@ -1,5 +1,12 @@
 <template>
     <div class=" container" align="center">
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"
+                 :is-full-page="true">
+
+        </loading>
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ประวัติการใช้สิทธิ์</h2>
@@ -34,13 +41,13 @@
                                 <span v-if="accData.crippledRightsBalance >= 0">สิทธิ์คงเหลือ: <span style="color: var(--main-color)">{{ accData.crippledRightsBalance }} บาท</span></span>
                                 <span v-if="accData.crippledRightsBalance < 0">สิทธิ์คงเหลือ: <span style="color: var(--main-color)">0 บาท</span></span>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
                 <br>
                 <br>
-                <div v-if="!accData.lastClaim.claimNo">
+                <div v-if="approval.length == 0">
                     <p class="notData">- ไม่มีข้อมูลประวัติ -</p>
                 </div>
                 <div v-else-if="formType==1">
@@ -53,7 +60,7 @@
                         </div>
                         <div v-else-if="approvals.claim.crippledMoney > 0 && approvals.claim.cureMoney == 0">
                         </div>-->
-                        <div >
+                        <div>
                             <section>
                                 <div style="height: 100%; width: 100%;">
                                     <div class="accordion">
@@ -74,7 +81,7 @@
                                                 <p v-else>สถานะการจ่ายเงิน: -</p>
                                                 <p style="margin-top: -25px;">
                                                     วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
-                                                </p>                                        
+                                                </p>
                                             </div>
                                             <div style="text-align: center">
                                                 <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, appNo: approvals.accAppNo, victimNo: approvals.accVictimNo, typerights: 1,sumMoney: approvals.apTotal}}">ดูเพิ่มเติม</router-link>
@@ -142,11 +149,15 @@
     import axios from 'axios'
     //import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
 
+    // Import loading-overlay
+    import Loading from 'vue-loading-overlay';
+    import 'vue-loading-overlay/dist/vue-loading.css';
+
     export default {
         name: 'RightsHistory',
-        /*components: {
-            RightsHistoryDetail
-        },*/
+        components: {
+            Loading
+        },
         data() {
             return {
                 userData: this.$store.state.userStateData,
@@ -154,8 +165,9 @@
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 formType: this.$route.params.typerights,
                 cureRightsUsed: 30000,
-                crippledRightsUsed: 35000
-                
+                crippledRightsUsed: 35000,
+                isLoading: true
+
             }
         },
         methods: {
@@ -167,6 +179,7 @@
                         this.$store.state.claimStateData = response.data;
                         this.approval = this.$store.state.claimStateData;
                         console.log("claimData", this.approval);
+                        this.isLoading = false
                     })
                     .catch(function (error) {
                         alert(error);
@@ -175,11 +188,11 @@
             calRightsUsed() {
                 if (this.accData.cureRightsBalance >= 0) {
                     this.cureRightsUsed = this.cureRightsUsed - parseFloat(this.accData.cureRightsBalance)
-                } 
+                }
                 if (this.accData.crippledRightsBalance >= 0) {
                     this.crippledRightsUsed = this.crippledRightsUsed - parseFloat(this.accData.crippledRightsBalance)
                 }
-                
+
             }
         },
         mounted() {

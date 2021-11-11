@@ -37,7 +37,7 @@ const routes = [
         component: Rights,
     },
     {
-        path: "/RightsHistory",
+        path: "/RightsHistory/:id/:typerights",
         name: "RightsHistory",
         component: RightsHistory,
     },
@@ -74,7 +74,7 @@ const routes = [
         component: ConfirmOTP,
     },
     {
-        path: "/CheckStatus",
+        path: "/CheckStatus/:id",
         name: "CheckStatus",
         component: CheckStatus,
     },

@@ -250,7 +250,7 @@
             externalPagePDF(appNo) {
                 liff.openWindow({
                     url: location.origin + '/DownloadPDF/{accNo}/{victimNo}/{appNo}/{userIdCard}/?openExternalBrowser=1'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{userIdCard}', this.userData.idcardNo),
-                    external: true
+                    
                 });
             },
             getPDF(appNo) {

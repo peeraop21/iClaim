@@ -63,7 +63,10 @@
                         liff.openWindow({
                             url: url
                         });
-                        liff.closeWindow();
+                        setTimeout(() => {
+                            liff.closeWindow();
+                        }, 3000)
+                        
                         
                     })
                     .catch(function (error) {

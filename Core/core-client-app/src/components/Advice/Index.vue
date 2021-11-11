@@ -356,35 +356,37 @@
             }
 
         },
-         created() {
+         async created() {
            
+            //--Publish--
+            await liff.init({
+                liffId: '1656611867-ylXVO2D8',
 
-            //await liff.init({
-            //    liffId: '1656611867-ylXVO2D8',
+                /*withLoginOnExternalBrowser: false,*/
+            }).then(() => {
+                if (liff.isLoggedIn()) {
+                    liff.getProfile().then(profile => {
+                        this.$store.state.userTokenLine = profile.userId
+                        this.getJwtToken()//ตรวจสอบการลงทะเบียน
 
-            //    /*withLoginOnExternalBrowser: false,*/
-            //}).then(() => {
-            //    if (liff.isLoggedIn()) {
-            //        liff.getProfile().then(profile => {
-            //            this.$store.state.userTokenLine = profile.userId
-            //            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+                        /*alert(this.$store.state.userTokenLine);*/
+                    }).catch(err => alert(err));
+                } else {
+                    liff.login();
+                }
 
-            //            alert(this.$store.state.userTokenLine);
-            //        }).catch(err => alert(err));
-            //    } else {
-            //        liff.login();
-            //    }
+                //const getContext = liff.getContext();
+                //this.$store.state.userTokenLine = getContext.userId
+                //alert(getContext.userTokenLine);
 
-            //    //const getContext = liff.getContext();
-            //    //this.$store.state.userTokenLine = getContext.userId
-            //    //alert(getContext.userTokenLine);
+            }).catch(err => {
+                alert(err);
+                throw err
+            });
 
-            //}).catch(err => {
-            //    alert(err);
-            //    throw err
-            //});
-            this.$store.state.userTokenLine = "Uf3f96dd0506eec532162b377d7c0nior";
-            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+            ////--LocalHost--
+            //this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069a4ba";
+            //this.getJwtToken()//ตรวจสอบการลงทะเบียน
 
         },
 
