@@ -13,6 +13,12 @@ import VCalendar from 'v-calendar';
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 import Vuelidate from 'vuelidate'
+import OtpInput from "@bachdgvn/vue-otp-input";
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
+import "vue-select/src/scss/vue-select.scss";
+
+
 
 Vue.use(Vuesax, {
   colors: {
@@ -25,8 +31,9 @@ Vue.use(Vuesax, {
   }
 })
 
-import OtpInput from "@bachdgvn/vue-otp-input";
+
 Vue.component("v-otp-input", OtpInput);
+Vue.component('v-select', vSelect)
 
 
 

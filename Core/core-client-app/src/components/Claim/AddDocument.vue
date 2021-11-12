@@ -549,7 +549,7 @@
             },
             getInvoicehd() {
                 console.log('getInvoicehd');
-                var url = '/api/approval/Invoicehd/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/approval/Invoicehd/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.invoicehd = response.data;
@@ -568,7 +568,7 @@
             },
             getDocumentReceive() {
                 console.log('getDocumentReceive');
-                var url = '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.getBankFileFromECM()
@@ -592,7 +592,7 @@
             },
             getBankNames() {
                 console.log('getBankNames');
-                var url = '/api/Master/Bank';
+                var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
                         this.bankNames = response.data;
@@ -605,7 +605,7 @@
             },
             getHospitalNames() {
                 console.log('getHospitalNames');
-                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                var url = this.$store.state.envUrl + "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;
@@ -619,7 +619,7 @@
             },
             getChangwatNames() {
                 console.log('getChangwatNames');
-                var url = '/api/Master/Changwat';
+                var url = this.$store.state.envUrl + '/api/Master/Changwat';
                 axios.get(url)
                     .then((response) => {
                         this.changwats = response.data;
@@ -633,7 +633,7 @@
             },
             getWoundeds() {
                 console.log('getWoundeds');
-                var url = '/api/Master/Wounded';
+                var url = this.$store.state.envUrl + '/api/Master/Wounded';
                 axios.get(url)
                     .then((response) => {
                         this.wounded = response.data.woundedList;
@@ -649,7 +649,7 @@
             },
             getDocumentCheck() {
                 console.log('getDocumentCheck');
-                var url = '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.documentCheck = response.data;
@@ -668,7 +668,7 @@
                     });
             },
             getBillFileFromECM(idInvhd) {
-                var url = '/api/Approval/DownloadFromECM'
+                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
                     SystemId: '02',
                     TemplateId: '03',
@@ -691,7 +691,7 @@
 
             },
             getBankFileFromECM() {
-                var url = '/api/Approval/DownloadFromECM'
+                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
                     SystemId: '03',
                     TemplateId: '09',

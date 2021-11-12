@@ -267,7 +267,7 @@
             
             getBankNames() {
                 console.log('getBankNames');
-                var url = '/api/Master/Bank';
+                var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
                         this.bankNames = response.data;
@@ -280,7 +280,7 @@
             },
             getDataConfirmMoney() {
                 console.log('getDataConfirmMoney');
-                var url = '/api/Approval/DataConfirmMoney/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/Approval/DataConfirmMoney/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.confirmMoneyData = response.data;
@@ -317,7 +317,7 @@
                 }
             },
             postData() {
-                var url = "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
+                var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
                 axios.get(url)
                     .then((response) => {
                         console.log(response);

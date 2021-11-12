@@ -173,7 +173,7 @@
         methods: {
             getApprovals() {
                 console.log('getApproval');
-                var url = '/api/Approval/{accNo}/{victimNo}/{rightsType}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{rightsType}', this.$route.params.typerights);
+                var url = this.$store.state.envUrl + '/api/Approval/{accNo}/{victimNo}/{rightsType}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{rightsType}', this.$route.params.typerights);
                 axios.get(url)
                     .then((response) => {
                         this.$store.state.claimStateData = response.data;

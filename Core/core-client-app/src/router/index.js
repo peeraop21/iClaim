@@ -6,9 +6,6 @@ import Rights from "@/components/Rights/Index.vue";
 import RightsHistory from "@/components/Rights/RightsHistory.vue";
 import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
 import Claim from "@/components/Claim/Claim.vue";
-import Bill from "@/components/Claim/Bill.vue";
-import Bookbank from "@/components/Claim/Bookbank.vue";
-import Preview from "@/components/Claim/Preview.vue";
 import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
 import CheckStatus from "@/components/Status/CheckStatus.vue";
 import ClaimDetail from "@/components/Status/ClaimDetail.vue";
@@ -52,22 +49,6 @@ const routes = [
         name: "Claim",
         component: Claim,
     },
-    {
-        path: "/Bill",
-        name: "Bill",
-        component: Bill,
-    },
-    {
-        path: "/Bookbank",
-        name: "Bookbank",
-        component: Bookbank,
-    },
-    {
-        path: "/Preview",
-        name: "Preview",
-        component: Preview,
-    },
-
     {
         path: "/ConfirmOTP/:id",
         name: "ConfirmOTP",

@@ -38,6 +38,12 @@ namespace Core.Controllers
             return Ok(await masterService.GetWoundeds());
         }
 
-        
+        [HttpGet("Prefix")]
+        public async Task<IActionResult> GetPrefixes()
+        {
+            return Ok(await masterService.GetPrefixesAsync());
+        }
+
+
     }
 }

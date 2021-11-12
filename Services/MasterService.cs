@@ -19,6 +19,7 @@ namespace Services
         Task<List<ChangwatViewModel>> GetChangwat();
         Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol);
         Task<JJJ> GetWoundeds();
+        Task<List<string>> GetPrefixesAsync();
     }
 
     public class MasterService : IMasterService
@@ -106,6 +107,11 @@ namespace Services
 
             
             return jjj;
+        }
+        public async Task<List<string>> GetPrefixesAsync()
+        {
+            var query = await rvpofficeContext.Prefix.Where(w => w.Sex != null).Select(s => new { s.Titlename, s.Seq}).OrderBy(o => o.Seq).ToListAsync();
+            return query.Select(s => s.Titlename).ToList();
         }
         
     }

@@ -18,7 +18,7 @@
             </div>
         </div>
         <div v-if="acceptData">
-            <div class="box-container space-contianer">
+            <div class="box-container space-contianer px-2">
                 <div class="row" align="center">
                     <div class="col-12">
                         <div class="form-control-sm">
@@ -50,8 +50,8 @@
                 </div>
 
             </div>
-            <div class="box-container  space-contianer">
-                <div class="row" align="center">
+            <div class="box-container  space-contianer px-2">
+                <div class="row mb-2" align="center">
                     <div class="col-12">
                         <div class="form-control-sm">
                             <label class="form-label title-advice-menu">ข้อมูลจากรูปบัตรประจำตัวประชาชน</label>
@@ -59,77 +59,54 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">เลขที่บัตรประจำตัว : {{dataIdCard.id}}</label>
-                        </div>
+                    <div class="col-6" style="padding-right:5px">
+                        <label class="form-label-ocr">เลขบัตรประจำตัว</label>
+                        <b-form-input class="mt-0 mb-2" placeholder="" v-model="input.idCardNo"></b-form-input>
+                    </div>
+                    <div class="col-6" style="padding-left:5px">
+                        <label class="form-label-ocr">รหัสหลังบัตร</label>
+                        <b-form-input class="mt-0 mb-2" placeholder="" v-model="input.idcardLaserCode"></b-form-input>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">ชื่อ-สกุล (ภาษาไทย) : {{dataIdCard.name_th}}</label>
-                        </div>
+                    <div class="col-3" style="padding-right:0px">
+                        <label class="form-label-ocr">คำนำหน้า</label>
+                        <v-select class=" style-chooser" style="border:none;" :clearable="false" :options="prefixes"></v-select>
+                        
+                    </div>
+                    <div class="col-5 ">
+                        <label class="form-label-ocr">ชื่อ</label>
+                        <b-form-input class="mt-0 mb-2" placeholder="" v-model="input.firstname"></b-form-input>
+                    </div>
+                    <div class="col-4 " style="padding-left:0px">
+                        <label class="form-label-ocr">นามสกุล</label>
+                        <b-form-input class="mt-0 mb-2" placeholder="" v-model="input.lastname"></b-form-input>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">ชื่อ-สกุล (ภาษาอังกฤษ) : {{dataIdCard.first_name_en}} {{dataIdCard.last_name_en}}</label>
-                        </div>
+                    <div class="col-6" style="padding-right:5px">
+                        <label class="form-label-ocr">วันเกิด</label>
+                    </div>
+                    <div class="col-6" style="padding-left:5px">
+                        <label class="form-label-ocr">เบอร์โทร</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">วันเกิด (ค.ศ.) : {{dataIdCard.date_of_birth}}</label>
-                        </div>
+                    <div class="col-6" style="padding-right:5px">
+                        <v-date-picker v-model="input.dateBirth" class="flex-grow col-8" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
+                            <template v-slot="{ inputValue, inputEvents }">
+                                <input class=" mt-0 mb-2 form-control "
+                                       :value="inputValue"
+                                       v-on="inputEvents"
+                                       readonly />
+                            </template>
+                        </v-date-picker>
+                    </div>  
+                    <div class="col-6" style="padding-left:5px">
+                        <b-form-input class="mt-0 mb-2" placeholder="" v-model="input.telNo"></b-form-input>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">ศาสนา : {{dataIdCard.religion}}</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">ที่อยู่ : {{dataIdCard.address}}</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">วันที่ออกบัตร (ค.ศ.) : {{dataIdCard.date_of_issue}}</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm">
-                            <label class="form-label">วันที่หมดอายุ (ค.ศ.) : {{dataIdCard.date_of_expiry}}</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm form-flex">
-                            <label class="form-label" style="min-width: 145px;">รหัสหลังบัตรประจำตัว :</label>
-                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="behindIdCardNo"></b-form-input>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-control-sm form-flex">
-                            <label class="form-label" style="min-width: 205px ">เบอร์โทร (ใช้ในการขอรหัส OTP) :</label>
-                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="telNo"></b-form-input>
-                        </div>
-                    </div>
-                </div>
+                
 
 
             </div>
@@ -183,7 +160,20 @@
         },
         data() {
             return {
+                attrs: [
+                    {
+                        key: 'today',
+                        dot: true,
+                        dates: new Date(),
+                    },
+                ],
+                dateModelConfig: {
+                    type: 'string',
+                    mask: 'YYYY-MM-DD',
+                },
+                date: new Date(),
                 /*dataCard: { address: "", date_of_birth: "", date_of_expiry: "", date_of_issue: "", first_name_en: "", id: "", last_name_en: "", name_th: "", religion: "", serial_number: "" },*/
+                input: { idCardNo: null, prefix: null, firstname: null, lastname: null, dateBirth: null, idcardLaserCode: null, address: null },
                 telNo: "",
                 behindIdCardNo: "",
                 dataIdCard: {},
@@ -198,8 +188,9 @@
                 URL: "https://iai.flashsoftapi.com/v1/compare-face-id-card",
                 acceptData: false,
                 ImageData: { IdCardBase64: null, FaceBase64: null },
-                uploadFaceError:null,
-                result: ""
+                uploadFaceError: null,
+                result: "",
+                prefixes:null
             };
         },
 
@@ -307,9 +298,9 @@
                         confirmButtonColor: '#5c2e91',
                     })
                 }
-                 
-                    
-                 
+
+
+
             },
             postUserData() {
                 let address = this.dataIdCard.address.split(/[\s,]+/)
@@ -365,7 +356,7 @@
                     lineId: this.$store.state.userTokenLine
                 };
                 console.log(body)
-                axios.post("/api/User", JSON.stringify(body), {
+                axios.post(this.$store.state.envUrl + "/api/User", JSON.stringify(body), {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -407,7 +398,7 @@
             },
             postIdCardImage() {
 
-                axios.post("/api/Ocr/IdCard", JSON.stringify(this.ImageData), {
+                axios.post(this.$store.state.envUrl + "/api/Ocr/IdCard", JSON.stringify(this.ImageData), {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -416,6 +407,7 @@
                         this.dataIdCard = response.data.responseOcrIdCard;
                         console.log(this.dataIdCard)
                         if (this.dataIdCard != "") {
+
                             this.$swal.close();
                         }
                     })
@@ -425,14 +417,14 @@
             },
             postFaceImage() {
 
-                axios.post("/api/Ocr/CompareFace", JSON.stringify(this.ImageData), {
+                axios.post(this.$store.state.envUrl + "/api/Ocr/CompareFace", JSON.stringify(this.ImageData), {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
                     .then((response) => {
                         this.scoreCompare = response.data.resultCompare;
-                        console.log("score! = " ,response.data.resultCompare)
+                        console.log("score! = ", response.data.resultCompare)
                         this.uploadFaceError = response.data.errorContent;
                         console.log(this.uploadFaceError)
                         if (this.uploadFaceError != null) {
@@ -512,6 +504,18 @@
                 await this.postFaceImage()
 
             },
+            getPrefixes() {
+                console.log('getPrefixes');
+                var url = this.$store.state.envUrl + '/api/Master/Prefix';
+                axios.get(url)
+                    .then((response) => {
+                        this.prefixes = response.data;
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
 
 
 
@@ -519,18 +523,41 @@
 
         },
         mounted() {
-            
+
 
         },
         created() {
-            
-            
-            
+            this.getPrefixes()
+
+
         }
     };
 </script>
 
 <style>
+    .style-chooser .vs__search::placeholder,
+    .style-chooser .vs__dropdown-toggle,
+    .style-chooser .vs__dropdown-menu {
+        background: #e1deec;
+        border: none;
+        color: #394066;
+        text-transform: lowercase;
+        font-variant: small-caps;
+        border-radius: 7px;
+        font-size: 13px;
+    }
+    .select2-dropdown {
+        background-color: #e1deec;
+        border: none;
+        border-radius: 7px;
+        outline: none;
+        font-size: 13px;
+    }
+    .form-label-ocr {
+        margin-bottom: 0px;
+        margin-left: 5px;
+    }
+
     .form-flex {
         display: flex;
     }

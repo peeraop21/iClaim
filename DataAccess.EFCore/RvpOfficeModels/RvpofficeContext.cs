@@ -31,6 +31,7 @@ namespace DataAccess.EFCore.RvpOfficeModels
         public virtual DbSet<Mcwounded> Mcwounded { get; set; }
         public virtual DbSet<Particulars> Particulars { get; set; }
         public virtual DbSet<Particulars3> Particulars3 { get; set; }
+        public virtual DbSet<Prefix> Prefix { get; set; }
         public virtual DbSet<Tumbol> Tumbol { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -2765,6 +2766,41 @@ namespace DataAccess.EFCore.RvpOfficeModels
                 entity.Property(e => e.Pos).HasColumnName("pos");
 
                 entity.Property(e => e.Topic).HasColumnName("topic");
+            });
+
+            modelBuilder.Entity<Prefix>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("PREFIX");
+
+                entity.Property(e => e.Seq)
+                    .HasColumnName("SEQ")
+                    .HasDefaultValueSql("((99))")
+                    .HasComment("ลำดับการแสดง");
+
+                entity.Property(e => e.Sex)
+                    .HasColumnName("SEX")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Titledesc)
+                    .HasColumnName("TITLEDESC")
+                    .HasMaxLength(18)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Titlename)
+                    .IsRequired()
+                    .HasColumnName("TITLENAME")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Titlepolice)
+                    .HasColumnName("TITLEPOLICE")
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
             });
 
             modelBuilder.Entity<Tumbol>(entity =>

@@ -528,7 +528,7 @@
         methods: {
             getApprovalDetail() {
                 console.log('getApprovalDetail');
-                var url = '/api/Approval/ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo).replace('{userIdCard}', this.userData.idcardNo);
+                var url = this.$store.state.envUrl + '/api/Approval/ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo).replace('{userIdCard}', this.userData.idcardNo);
                 axios.get(url)
                     .then((response) => {
                         this.approvalData = response.data;
@@ -544,7 +544,7 @@
                     });
             },
             getBankFileFromECM() {
-                var url = '/api/Approval/DownloadFromECM'
+                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
                     SystemId: '03',
                     TemplateId: '09',

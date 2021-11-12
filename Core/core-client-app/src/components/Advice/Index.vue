@@ -1,11 +1,11 @@
 ﻿<template>
-    
+
     <div class="container mt-2">
 
         <loading :active.sync="isLoading"
                  :can-cancel="false"
                  color="#5c2e91"
-                 loader="dots"                
+                 loader="dots"
                  :is-full-page="true"></loading>
 
 
@@ -17,8 +17,8 @@
             <div class="col-12">
                 <vs-card type="3" align="center">
                     <!-- <template #title>
-                    <h3>Pot with a plant</h3>
-                </template>-->
+                        <h3>Pot with a plant</h3>
+                    </template>-->
                     <template #img>
                         <img src="@/assets/money.jpg" alt="">
                     </template>
@@ -34,8 +34,8 @@
             <div class="col-12">
                 <vs-card type="3" align="center">
                     <!-- <template #title>
-                    <h3>Pot with a plant</h3>
-                </template>-->
+                        <h3>Pot with a plant</h3>
+                    </template>-->
                     <template #img>
                         <img src="@/assets/search.jpg" alt="">
                     </template>
@@ -51,8 +51,8 @@
             <div class="col-12">
                 <vs-card type="3" align="center">
                     <!-- <template #title>
-                    <h3>Pot with a plant</h3>
-                </template>-->
+                        <h3>Pot with a plant</h3>
+                    </template>-->
                     <template #img>
                         <img src="@/assets/id-card.jpg" alt="">
                     </template>
@@ -228,14 +228,14 @@
                 </p>
                 <br />
                 <!-- <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีเสียชีวิต</strong></label>
-             <br />
-            <p>
-                 1. ใบมรณบัตรของผู้ประสบภัยที่เสียชีวิต<br />
-                 2. สำเนาทะเบียนบ้านของผู้เสียชีวิต<br />
-                 3. สำเนาบัตรประจำตัวประชาชนของทายาทโดยธรรม<br />
-                 4. สำเนาบันทึกประจำวันของพนักงานสอบสวน
-             </p>
-             <br />-->
+                 <br />
+                <p>
+                     1. ใบมรณบัตรของผู้ประสบภัยที่เสียชีวิต<br />
+                     2. สำเนาทะเบียนบ้านของผู้เสียชีวิต<br />
+                     3. สำเนาบัตรประจำตัวประชาชนของทายาทโดยธรรม<br />
+                     4. สำเนาบันทึกประจำวันของพนักงานสอบสวน
+                 </p>
+                 <br />-->
             </div>
         </vs-dialog>
 
@@ -272,7 +272,7 @@
         },
         methods: {
             getJwtToken() {
-                var urlJwt = '/api/jwt'
+                var urlJwt = this.$store.state.envUrl + '/api/jwt'
                 axios.post(urlJwt, {
                     Name: 'Nior',
                     Email: 'peeran@rvp.co.th'
@@ -285,7 +285,7 @@
                 })
             },
             checkRegister() {
-                var url = '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
+                var url = this.$store.state.envUrl + '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
                 var tokenJwt = this.$store.state.jwtToken.token
                 var apiConfig = {
                     headers: {
@@ -300,7 +300,7 @@
                         /*this.userApi = response.data;*/
                         this.registered = response.data;
 
-                        
+
                         if (this.registered == false) {
 
                             this.$swal({
@@ -348,7 +348,7 @@
                             /*this.$router.push({ name: 'Accident' })*/
                             liff.openWindow({
                                 url: location.origin + '/Ocr',
-                                external:true
+                                external: true
                             });
                         }
                     })
@@ -356,37 +356,41 @@
             }
 
         },
-         async created() {
-           
-            //--Publish--
-            await liff.init({
-                liffId: '1656611867-ylXVO2D8',
+        async created() {
+            if (process.env.NODE_ENV == "production") {
+                //--Publish--
+                await liff.init({
+                    liffId: '1656611867-ylXVO2D8',
 
-                /*withLoginOnExternalBrowser: false,*/
-            }).then(() => {
-                if (liff.isLoggedIn()) {
-                    liff.getProfile().then(profile => {
-                        this.$store.state.userTokenLine = profile.userId
-                        this.getJwtToken()//ตรวจสอบการลงทะเบียน
+                    /*withLoginOnExternalBrowser: false,*/
+                }).then(() => {
+                    if (liff.isLoggedIn()) {
+                        liff.getProfile().then(profile => {
+                            this.$store.state.userTokenLine = profile.userId
+                            this.getJwtToken()//ตรวจสอบการลงทะเบียน
 
-                        /*alert(this.$store.state.userTokenLine);*/
-                    }).catch(err => alert(err));
-                } else {
-                    liff.login();
-                }
+                            /*alert(this.$store.state.userTokenLine);*/
+                        }).catch(err => alert(err));
+                    } else {
+                        liff.login();
+                    }
 
-                //const getContext = liff.getContext();
-                //this.$store.state.userTokenLine = getContext.userId
-                //alert(getContext.userTokenLine);
+                    //const getContext = liff.getContext();
+                    //this.$store.state.userTokenLine = getContext.userId
+                    //alert(getContext.userTokenLine);
 
-            }).catch(err => {
-                alert(err);
-                throw err
-            });
+                }).catch(err => {
+                    alert(err);
+                    throw err
+                });
+            } else if (process.env.NODE_ENV == "development") {
+                //--LocalHost--
+                this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069a4ba";
+                this.getJwtToken()//ตรวจสอบการลงทะเบียน
+            }
 
-            ////--LocalHost--
-            //this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069a4ba";
-            //this.getJwtToken()//ตรวจสอบการลงทะเบียน
+
+
 
         },
 

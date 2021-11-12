@@ -35,6 +35,11 @@
 
         },
         created() {
+            if (process.env.NODE_ENV == "production") {
+                this.$store.state.envUrl = "https://ts2digitalclaim.rvp.co.th"
+            } else if (process.env.NODE_ENV == "development") {
+                this.$store.state.envUrl = "http://localhost:50598"
+            }
             
 
             //liff.getProfile().then(profile => {

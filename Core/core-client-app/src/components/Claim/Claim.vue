@@ -50,19 +50,36 @@
                                 <div class="d-block text-left">
                                     <div class="mb-2">
                                         <label class="px-2">จังหวัด</label>
-                                        <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
+                                        <!--<select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
                                             <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
                                                 {{ category.changwatname }}
                                             </option>
-                                        </select>
+                                        </select>-->
+                                        <v-select class="v-select-claim style-chooser"
+                                                  :clearable="false"
+                                                  label="changwatname"
+                                                  value="changwatshortname"
+                                                  :options="changwats"
+                                                  v-model="selectChangwat"
+                                                  @input="onChangwatChange">
+
+                                        </v-select>
                                     </div>
                                     <div class="mb-2" v-show="divHospitalModal">
                                         <label class="px-2">โรงพยาบาล</label>
-                                        <select name="item" id="item" v-model="mockSaysoHospital">
+                                        <!--<select name="item" id="item" v-model="mockSaysoHospital">
                                             <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
                                                 {{ item.HOSPITALNAME  }}
                                             </option>
-                                        </select>
+                                        </select>-->
+                                        <v-select class="v-select-claim style-chooser"
+                                                  :clearable="false"
+                                                  label="HOSPITALNAME"
+                                                  value="HOSPITALNAME"
+                                                  :options="filteredItems"
+                                                  v-model="mockSaysoHospital">
+
+                                        </v-select>
                                     </div>
                                 </div>
                             </div>
@@ -177,19 +194,39 @@
                                     <div class="d-block text-left">
                                         <div class="mb-2">
                                             <label class="px-2">จังหวัด</label>
-                                            <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
+                                            <v-select class="v-select-claim style-chooser" 
+                                                      :clearable="false" 
+                                                      label="changwatname" 
+                                                      value="changwatshortname" 
+                                                      :options="changwats"
+                                                      v-model="selectChangwat" 
+                                                      
+                                                      @input="onChangwatChange">
+
+                                            </v-select>
+
+                                            <!--<select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
                                                 <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
                                                     {{ category.changwatname }}
                                                 </option>
-                                            </select>
+                                            </select>-->
                                         </div>
                                         <div class="mb-2" v-show="divHospitalModal">
+
                                             <label class="px-2">โรงพยาบาล</label>
-                                            <select name="item" id="item" v-model="mockHospital">
+                                            <!--<select name="item" id="item" v-model="mockHospital">
                                                 <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
                                                     {{ item.HOSPITALNAME  }}
                                                 </option>
-                                            </select>
+                                            </select>-->
+                                            <v-select class="v-select-claim style-chooser"
+                                                      :clearable="false"
+                                                      label="HOSPITALNAME"
+                                                      value="HOSPITALNAME"
+                                                      :options="filteredItems"
+                                                      v-model="mockHospital">
+
+                                            </v-select>
                                         </div>
                                     </div>
                                 </div>
@@ -1240,7 +1277,7 @@
             },
             getBankNames() {
                 console.log('getBankNames');
-                var url = '/api/Master/Bank';
+                var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
                         //this.$store.state.bankStateData = response.data;
@@ -1255,7 +1292,7 @@
             },
             getLastDocumentReceive() {
                 console.log('getHospitalNames');
-                var url = '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
+                var url = this.$store.state.envUrl + '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
                 axios.get(url)
                     .then((response) => {
                         this.lastDocumentReceive = response.data[0]
@@ -1282,7 +1319,7 @@
             },
             getHospitalNames() {
                 console.log('getHospitalNames');
-                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                var url = this.$store.state.envUrl + "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;
@@ -1294,7 +1331,7 @@
             },
             getChangwatNames() {
                 console.log('getChangwatNames');
-                var url = '/api/Master/Changwat';
+                var url = this.$store.state.envUrl + '/api/Master/Changwat';
                 axios.get(url)
                     .then((response) => {
                         this.changwats = response.data;
@@ -1306,7 +1343,7 @@
             },
             getWoundeds() {
                 console.log('getWoundeds');
-                var url = '/api/Master/Wounded';
+                var url = this.$store.state.envUrl + '/api/Master/Wounded';
                 axios.get(url)
                     .then((response) => {
                         this.wounded = response.data.woundedList;
@@ -1319,7 +1356,7 @@
             },
             getAccidentCar() {
                 console.log('getAccidentCar');
-                var url = '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
+                var url = this.$store.state.envUrl + '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
                 axios.get(url)
                     .then((response) => {
                         this.accidentCarData = response.data;
@@ -1332,7 +1369,7 @@
             getAccidentVictim() {
                 console.log('getAccidentVictim');
                 var mockIdcard = this.userData.idcardNo /*'3149900145384'*/;
-                var url = '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
+                var url = this.$store.state.envUrl + '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
                 axios.get(url)
                     .then((response) => {
                         this.accidentVictimData = response.data;
@@ -1344,7 +1381,7 @@
                     });
             },
             getFileFromECM() {
-                var url = '/api/Approval/DownloadFromECM'
+                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
                     SystemId: '03',
                     TemplateId: '09',
@@ -1453,12 +1490,14 @@
             //},
             onChangwatChange() {
                 this.divHospitalModal = true;
+                console.log("ch change : ", this.selectChangwat)
             },
             onOrganChange() {
                 this.divWoundedModal = true;
             },
             submitModalHospital(index) {
-                this.bills[index].selectHospital = this.mockHospital
+
+                this.bills[index].selectHospital = this.mockHospital.HOSPITALNAME
                 this.modalHospital = false
                 this.selectChangwat = 0;
                 this.mockHospital = 0;
@@ -1472,7 +1511,8 @@
                 this.divWoundedModal = false;
             },
             submitModalSaysoHospital() {
-                this.saysoHospital = this.mockSaysoHospital
+                console.log('testsub')
+                this.saysoHospital = this.mockSaysoHospital.HOSPITALNAME
                 this.modalSaysoHospital = false
                 this.selectChangwat = 0;
                 this.mockSaysoHospital = 0;
@@ -1556,7 +1596,7 @@
         computed: {
             filteredItems: function () {
                 return this.hospitals.filter(function (el) {
-                    return el.CHANGWATSHORTNAME === this.selectChangwat;
+                    return el.CHANGWATSHORTNAME === this.selectChangwat.changwatshortname;
                 }, this);
             },
             filteredWoundedItems: function () {
@@ -1569,9 +1609,15 @@
 </script>
 
 <style>
+    .v-select-claim > .vs__dropdown-toggle {
+        height: 36px;
+    }
+    .v-select-claim{
+        height:36px
+    }
     .invalid-feedback {
-        margin-left:5px;
-        margin-bottom:5px;
+        margin-left: 5px;
+        margin-bottom: 5px;
     }
     .div-center-image {
         text-align: -webkit-center;

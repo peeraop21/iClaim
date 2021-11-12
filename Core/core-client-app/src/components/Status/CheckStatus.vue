@@ -188,7 +188,7 @@
         methods: {
 
             getIclaimApproval() {
-                var url = '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
+                var url = this.$store.state.envUrl + '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
 
                 axios.get(url)
                     .then((response) => {
@@ -256,7 +256,7 @@
             getPDF(appNo) {
 
                 /*var url = '/api/genpdf/GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel);*/
-                var url = '/api/genpdf';
+                var url = this.$store.state.envUrl + '/api/genpdf';
                 const body = {
                     AccNo: this.$route.params.id,
                     VictimNo: this.accData.victimNo,

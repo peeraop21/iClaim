@@ -126,7 +126,7 @@
             //    });
             //},
             getJwtToken() {
-                var urlJwt = '/api/jwt'
+                var urlJwt = this.$store.state.envUrl + '/api/jwt'
                 axios.post(urlJwt, {
                     Name: 'Nior',
                     Email: 'peeran@rvp.co.th'
@@ -139,7 +139,7 @@
                 })
             },
             getAccidents() {
-                var url = '/api/accident/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
+                var url = this.$store.state.envUrl + '/api/accident/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
                 var tokenJwt = this.$store.state.jwtToken.token
                 var apiConfig = {
                     headers: {
@@ -160,7 +160,7 @@
                     });
             },
             getUser() {
-                var url = '/api/user/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
+                var url = this.$store.state.envUrl + '/api/user/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
                 var tokenJwt = this.$store.state.jwtToken.token
                 var apiConfig = {
                     headers: {

@@ -70,6 +70,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PREFIX]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[TUMBOL]",
          "ObjectType": 0
       },

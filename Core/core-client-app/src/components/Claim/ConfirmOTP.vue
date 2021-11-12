@@ -259,7 +259,7 @@
                     for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
                         this.$store.state.inputApprovalData.BillsData[i].money = this.$store.state.inputApprovalData.BillsData[i].money.toString()
                     }
-                    axios.post("/api/Approval/UpdateApproval", JSON.stringify(this.$store.state.inputApprovalData), {
+                    axios.post(this.$store.state.envUrl +"/api/Approval/UpdateApproval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -298,7 +298,7 @@
                         this.$store.state.inputApprovalData.BillsData[i].billFileShow = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
                     }
                     console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
-                    axios.post("/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
+                    axios.post(this.$store.state.envUrl +"/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json'
                         }

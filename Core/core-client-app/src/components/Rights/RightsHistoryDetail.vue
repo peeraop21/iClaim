@@ -318,7 +318,7 @@
         methods: {
             getInvoicedtDetail() {
                 console.log('getInvoicedtDetail');
-                var url = '/api/Approval/Invoicedt/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/Approval/Invoicedt/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo);
                 axios.get(url)
                     .then((response) => {
                         this.invdtData = response.data;
