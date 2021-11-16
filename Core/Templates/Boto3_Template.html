@@ -171,13 +171,17 @@
             color: #FF8C00;
         }
         .text-gen-pdf {
+            font-size:20px;
             font-weight: bold;
+            position: absolute;
+        }
+        .test-inline-pdf {
             position: absolute;
         }
     </style>
     <title></title>
 </head>
-<body style="font-family:Browallia New;font-size: 21px; justify-content:center" align="center">
+<body style="font-family:BrowalliaUPC;font-size: 21px; justify-content:center" align="center">
     <div class="bg">
         <div class="boto3-padding">
             <p align="right" style="font-size: 23px; ">แบบ บต.3</p>
@@ -275,10 +279,10 @@
                     <br />
                     &ensp; กรมธรรม์คุ้มครองผู้ประสบภัยจากรถ เลขที่...............................................เครื่องหมายเลขที่.................................................
                     <div class="text-gen-pdf" style="top: 508px; left: 41%;">
-                        {AccCar.FoundChassisNo}
+                        {AccCar.FoundPolicyNo}
                     </div>
                     <div class="text-gen-pdf" style="top: 508px; left: 69%;">
-                        {AccCar.FoundPolicyNo}
+                        {AccCar.FoundChassisNo}
                     </div>
                     <br />
                     &ensp; มีลักษณะเกิดเหตุ &ensp; ( ) รถคันเดียว ไม่มีคู่กรณี
@@ -306,6 +310,12 @@
                     &ensp; ผู้ประสบภัยจากรถคันเอาประกันภัยเป็น &ensp; ( ) ผู้ขับขี่ &emsp; ( ) ผู้โดยสารรถคันเอาประกันภัย &emsp; ( ) บุคคลภายนอก
                     <br />
                     &ensp; ลักษณะการบาดเจ็บ...................................................................เข้ารับการรักษาเป็นผู้ป่วยเมื่อวันที่.....................................
+                    <div class="text-gen-pdf" style="top: 800px; left: 27%;">
+                        {AccVictim.DetailBroken}
+                    </div>
+                    <div class="text-gen-pdf" style="top: 800px; left: 73%;">
+                        {AccVictim.TakenDate}
+                    </div>
                     <br />
                     &ensp; ประเภท &ensp; ( ) ผู้ป่วยนอก &emsp;&emsp; ( ) ผู้ป่วยใน
                     <br />
@@ -315,6 +325,7 @@
                         <tr>
                             <td style="text-align:left">&emsp;&emsp; ( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล</td>
                             <td style="text-align:right"> จำนวน...............................บาท</td>
+
                         </tr>
                         <tr>
                             <td style="text-align:left">&emsp;&emsp; ( ) กรณีสูญเสียอวัยวะ</td>
@@ -329,6 +340,9 @@
                             <td style="text-align:right"> จำนวน...............................บาท</td>
                         </tr>
                     </table>
+                    <div class="text-gen-pdf" style="top: 880px; left: 73%;">
+                        {ApprovalData.CureMoney}
+                    </div>
                 </div>
             </div>
         </div>
@@ -380,6 +394,12 @@
                 &emsp;&emsp;&ensp;ลงชื่อ...................................................................ผู้ยื่นคำร้องขอ
                 <br />
                 (...................................................................)
+                <div class="text-gen-pdf" style="top: 1782px; left: 35%; width: 300px;">
+                    {ApprovalData.OtpSign}
+                </div>
+                <div class="text-gen-pdf" style="top: 1810px; left: 35%; width: 300px;">
+                    {AccVictim.Name}
+                </div>
             </p>
             <p style="font-weight: bold; margin-top: 30px;">หลักฐานประกอบคำร้องขอรับค่าเสียหายเบื้องต้น</p>
             <p style="font-weight: bold; margin-top: 30px;" align="left">&nbsp;ความเสียหายต่อร่างกาย (กรณีบาดเจ็บ)</p>
@@ -451,6 +471,27 @@
                     </td>
                 </tr>
             </table>
+            <div class="text-gen-pdf" style="top: 2007px; left: 20%; width: 165px;">
+                {ApprovalData.IdInvhd}
+            </div>
+            <div class="text-gen-pdf" style="top: 2007px; left: 35%; width: 165px;">
+                {ApprovalData.InvCount}
+            </div>
+            <div class="text-gen-pdf" style="top: 2059px; left: 16%; width: 165px;">
+                {ApprovalData.RecordDay}
+            </div>
+            <div class="text-gen-pdf" style="top: 2059px; left: 27%; width: 165px;">
+                {ApprovalData.RecordMonth}
+            </div>
+            <div class="text-gen-pdf" style="top: 2059px; left: 38%; width: 165px;">
+                {ApprovalData.RecordYear}
+            </div>
+            <div class="text-gen-pdf" style="top: 2085px; left: 23%; width: 165px;">
+                {ApprovalData.CureMoney}
+            </div>
+            <div class="text-gen-pdf" style="top: 2111px; left: 18%; width: 300px;">
+                {ApprovalData.TextCureMoney}
+            </div>
             <br />
             <div class="boto3-note mt-2">
                 <table style="width:100%;">

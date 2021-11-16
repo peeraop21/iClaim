@@ -106,7 +106,7 @@ namespace Core.Controllers
                 var htmlTemplate = await reader.ReadToEndAsync();
                 htmlTemplate = htmlTemplate.Replace("{AccNo}", (string.IsNullOrEmpty(acc.AccNo)) ? "-" : acc.AccNo);
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Name}", (string.IsNullOrEmpty(accVictim.Fname)) ? "-" : accVictim.Prefix + accVictim.Fname + " " + accVictim.Lname);
-                htmlTemplate = htmlTemplate.Replace("( ) ผู้ประสบภัย", "(X) ผู้ประสบภัย");
+                htmlTemplate = htmlTemplate.Replace("( ) ผู้ประสบภัย", "(&#10004;) ผู้ประสบภัย");
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Age}", (string.IsNullOrEmpty(accVictim.Age.ToString())) ? "-" : accVictim.Age.ToString());
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.HomeNo}", (string.IsNullOrEmpty(accVictim.HomeId)) ? "-" : accVictim.HomeId);
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Moo}", (string.IsNullOrEmpty(accVictim.Moo)) ? "-" : accVictim.Moo);
@@ -125,26 +125,41 @@ namespace Core.Controllers
                 {
                     htmlTemplate = htmlTemplate.Replace("{Acc.DateTime}", acc.DateAccString + " เวลา " + acc.TimeAcc + " น.");
                 }
-                htmlTemplate = htmlTemplate.Replace("{Acc.Place}", acc.AccPlace);
+                htmlTemplate = htmlTemplate.Replace("{Acc.Place}", acc.AccPlace + " จ." + acc.AccProv);
                 htmlTemplate = htmlTemplate.Replace("{AccCar.FoundCarLicense}", (string.IsNullOrEmpty(accCar.FoundCarLicense)) ? "-" : accCar.FoundCarLicense);
                 htmlTemplate = htmlTemplate.Replace("{AccCar.FoundChassisNo}", (string.IsNullOrEmpty(accCar.FoundChassisNo)) ? "-" : accCar.FoundChassisNo);
                 htmlTemplate = htmlTemplate.Replace("{AccCar.FoundPolicyNo}", (string.IsNullOrEmpty(accCar.FoundPolicyNo)) ? "-" : accCar.FoundPolicyNo);
-                htmlTemplate = htmlTemplate.Replace("( ) รถคันเดียว ไม่มีคู่กรณี", "(X) รถคันเดียว ไม่มีคู่กรณี");
+                htmlTemplate = htmlTemplate.Replace("( ) รถคันเดียว ไม่มีคู่กรณี", "(&#10004;) รถคันเดียว ไม่มีคู่กรณี");
                 if (accVictim.VictimIs == "ผขป")
                 {
-                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ขับขี่", "(X) ผู้ขับขี่");
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ขับขี่", "(&#10004;) ผู้ขับขี่");
                 }else if (accVictim.VictimIs == "ผสป")
                 {
-                    htmlTemplate = htmlTemplate.Replace("( ) ผู้โดยสารรถคันเอาประกันภัย", "(X) ผู้โดยสารรถคันเอาประกันภัย");
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้โดยสารรถคันเอาประกันภัย", "(&#10004;) ผู้โดยสารรถคันเอาประกันภัย");
                 }
                 if (accVictim.VictimType == "IPD")
                 {
-                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ป่วยใน", "(X) ผู้ป่วยใน");
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ป่วยใน", "(&#10004;) ผู้ป่วยใน");
                 }else
                 {
-                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ป่วยนอก", "(X) ผู้ป่วยนอก");
+                    htmlTemplate = htmlTemplate.Replace("( ) ผู้ป่วยนอก", "(&#10004;) ผู้ป่วยนอก");
                 }
-                
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.DetailBroken}", (string.IsNullOrEmpty(accVictim.DetailBroken)) ? "-" : accVictim.DetailBroken);
+                htmlTemplate = htmlTemplate.Replace("{AccVictim.TakenDate}",  "-");
+                htmlTemplate = htmlTemplate.Replace("( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล", (string.IsNullOrEmpty(approvalData.CureMoney.ToString())) ? "( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล" : "(&#10004;) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล");
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.CureMoney}", approvalData.CureMoney.ToString() );
+
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.OtpSign}", "ยื่นคำร้องผ่านระบบ iClaim ด้วย SMS OTP(ref: " + approvalData.OtpSign + ")");
+
+                htmlTemplate = htmlTemplate.Replace("( ) ใบเสร็จรับเงิน", (string.IsNullOrEmpty(approvalData.CureMoney.ToString())) ? "( ) ใบเสร็จรับเงิน" : "(&#10004;) ใบเสร็จรับเงิน");
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.IdInvhd}", approvalData.IdInvhd.ToString());
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.InvCount}", approvalData.InvCount.ToString());
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.RecordDay}", approvalData.RecordDay);
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.RecordMonth}", approvalData.RecordMonth);
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.RecordYear}", approvalData.RecordYear);
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.TextCureMoney}", approvalData.TextCureMoney);
+
+                htmlTemplate = htmlTemplate.Replace("( ) บัตรประจำตัวผู้ประสบภัย", "(&#10004;) บัตรประจำตัวผู้ประสบภัย");
 
 
 

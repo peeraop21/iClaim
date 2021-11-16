@@ -58,12 +58,12 @@ namespace Core.Controllers
         public async Task<IActionResult> PostAsync([FromBody] ApprovalViewModel model)
         {
 
-            var resultMapHosApproval = _mapper.Map<IclaimApproval>(model);
+            var resultMapIclaimApproval = _mapper.Map<IclaimApproval>(model);
             var resultMapBank = _mapper.Map<InputBankViewModel>(model.BankData);
             var resultMapVictim = _mapper.Map<VictimtViewModel>(model.VictimData);
             var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
 
-            var result = await approvalService.AddAsync(resultMapHosApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
+            var result = await approvalService.AddAsync(resultMapIclaimApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
             ECMViewModel ecmModel = new ECMViewModel();
             
             for (int i = 0; i < model.BillsData.Count; i++)

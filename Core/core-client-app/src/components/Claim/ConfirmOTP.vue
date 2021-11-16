@@ -316,6 +316,7 @@
                             this.$store.state.inputApprovalData.BillsData = null
                             this.$store.state.inputApprovalData.BankData = null
                             this.$store.state.inputApprovalData.VictimData = null
+                            this.$store.state.inputApprovalData.RefCodeOtp = null
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -348,6 +349,7 @@
                 }).then((response) => {
                     this.countDownTimer()
                     this.dataOTP = response.data.result
+                    this.$store.state.inputApprovalData.RefCodeOtp = this.dataOTP.ref_code
                     console.log(this.dataOTP);
 
                 }).catch((error) => {

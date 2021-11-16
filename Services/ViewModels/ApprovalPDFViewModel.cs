@@ -6,8 +6,14 @@ namespace Services.ViewModels
 {
     public class ApprovalPDFViewModel
     {
-        public double SumReqMoney { get; set; }
-        public string ReqDate { get; set; }
-        public string TimeDate { get; set; }
+        public double CureMoney { get; set; }
+        public string TextCureMoney { get; set; }
+        public string IdInvhd { get; set; }
+        public int InvCount { get; set; }
+        public string RecordDay { get; set; }
+        public string RecordMonth { get; set; }
+        public string RecordYear { get; set; }
+        public string OtpSign { get; set; }
+
     }
 }

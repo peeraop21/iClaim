@@ -53,7 +53,7 @@ namespace Services
            
             var accHosList = await rvpOfficeContext.HosAccident
                 .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo })
-                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace , s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc}).ToListAsync();
+                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc}).ToListAsync();
 
             var accViewModelList = new List<AccidentViewModel>();
             
@@ -89,6 +89,7 @@ namespace Services
                 accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.TimeAcc.Replace(".",":") + " น.";
                 accVwModel.AccNature = acc.AccNature;
                 accVwModel.PlaceAcc = acc.AccPlace;
+                accVwModel.ProvAcc = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == acc.AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
                 accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
                 accVwModel.Channel = "HOSPITAL";                
                 accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CureRights");
@@ -146,25 +147,26 @@ namespace Services
                                 ChangwatShort = hs.Province,
                                 ChangwatName = hschi.Changwatname,
                                 VictimIs = hs.VicTimIs,
-                                VictimType = hs.VictimType
+                                VictimType = hs.VictimType,
+                                DetailBroken = hs.DetailBroken
                             }).FirstOrDefaultAsync();
                 var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard).FirstOrDefaultAsync();                
-                var address = await (from t in rvpOfficeContext.Tumbol
-                                 join a in rvpOfficeContext.Amphur on new { key1 = t.Amphurid, key2 = t.Provinceid } equals new { key1 = a.Amphurid, key2 = a.Provinceid } into result1
-                                 from ta in result1.DefaultIfEmpty()
-                                 join ch in rvpOfficeContext.Changwat on  t.Changwatshortname equals ch.Changwatshortname into result2
-                                 from tch in result2.DefaultIfEmpty()                                
-                                 where (t.Tumbolid == kyc.HomeTumbolId && t.Amphurid == kyc.HomeCityId && t.Provinceid == kyc.HomeProvinceId)
-                                 select new
-                                 {                                    
-                                     Zipcode = t.Zipcode,
-                                     TumbolId = t.Tumbolid,
-                                     TumbolName = t.Tumbolname,
-                                     AmphurId = ta.Amphurid,
-                                     AmphurName = ta.Amphurname,
-                                     ChangwatShort = tch.Changwatshortname,
-                                     ChangwatName = tch.Changwatname
-                                 }).FirstOrDefaultAsync();
+                //var address = await (from t in rvpOfficeContext.Tumbol
+                //                 join a in rvpOfficeContext.Amphur on new { key1 = t.Amphurid, key2 = t.Provinceid } equals new { key1 = a.Amphurid, key2 = a.Provinceid } into result1
+                //                 from ta in result1.DefaultIfEmpty()
+                //                 join ch in rvpOfficeContext.Changwat on  t.Changwatshortname equals ch.Changwatshortname into result2
+                //                 from tch in result2.DefaultIfEmpty()                                
+                //                 where (t.Tumbolid == kyc.HomeTumbolId && t.Amphurid == kyc.HomeCityId && t.Provinceid == kyc.HomeProvinceId)
+                //                 select new
+                //                 {                                    
+                //                     Zipcode = t.Zipcode,
+                //                     TumbolId = t.Tumbolid,
+                //                     TumbolName = t.Tumbolname,
+                //                     AmphurId = ta.Amphurid,
+                //                     AmphurName = ta.Amphurname,
+                //                     ChangwatShort = tch.Changwatshortname,
+                //                     ChangwatName = tch.Changwatname
+                //                 }).FirstOrDefaultAsync();
 
                 if (accVic == null)
                 {
@@ -178,30 +180,34 @@ namespace Services
                 vicVwModel.Age = accVic.Age;
                 vicVwModel.Sex = accVic.Sex;
                 vicVwModel.TelNo = kyc.MobileNo;
-                vicVwModel.HomeId = kyc.HomeHouseNo;
-                vicVwModel.Moo = kyc.HomeHmo;
-                vicVwModel.Soi = kyc.HomeSoi;
-                vicVwModel.Road = kyc.HomeRoad;
-                vicVwModel.Tumbol = address.TumbolId;
-                vicVwModel.TumbolName = address.TumbolName;
-                vicVwModel.District = address.AmphurId;
-                vicVwModel.DistrictName = address.AmphurName;
-                vicVwModel.Province = address.ChangwatShort;
-                vicVwModel.ProvinceName = address.ChangwatName;
-                vicVwModel.Zipcode = address.Zipcode;
+
+                vicVwModel.HomeId = accVic.HomeId;
+                vicVwModel.Moo = accVic.Moo;
+                vicVwModel.Soi = accVic.Soi;
+                vicVwModel.Road = accVic.Road;
+                vicVwModel.Tumbol = accVic.TumbolId;
+                vicVwModel.TumbolName = accVic.TumbolName;
+                vicVwModel.District = accVic.AmphurId;
+                vicVwModel.DistrictName = accVic.AmphurName;
+                vicVwModel.Province = accVic.ChangwatShort;
+                vicVwModel.ProvinceName = accVic.ChangwatName;
+                vicVwModel.Zipcode = accVic.Zipcode;
                 vicVwModel.AccHomeId = accVic.HomeId;
-                vicVwModel.AccMoo = accVic.Moo;
-                vicVwModel.AccSoi = accVic.Soi;
-                vicVwModel.AccRoad = accVic.Road;
-                vicVwModel.AccTumbol = accVic.TumbolId;
-                vicVwModel.AccTumbolName = accVic.TumbolName;
-                vicVwModel.AccDistrict = accVic.AmphurId;
-                vicVwModel.AccDistrictName = accVic.AmphurName;
-                vicVwModel.AccProvince = accVic.ChangwatShort;
-                vicVwModel.AccProvinceName = accVic.ChangwatName;
-                vicVwModel.AccZipcode = accVic.Zipcode;
+
+                //vicVwModel.AccMoo = accVic.Moo;
+                //vicVwModel.AccSoi = accVic.Soi;
+                //vicVwModel.AccRoad = accVic.Road;
+                //vicVwModel.AccTumbol = accVic.TumbolId;
+                //vicVwModel.AccTumbolName = accVic.TumbolName;
+                //vicVwModel.AccDistrict = accVic.AmphurId;
+                //vicVwModel.AccDistrictName = accVic.AmphurName;
+                //vicVwModel.AccProvince = accVic.ChangwatShort;
+                //vicVwModel.AccProvinceName = accVic.ChangwatName;
+                //vicVwModel.AccZipcode = accVic.Zipcode;
+
                 vicVwModel.VictimIs = accVic.VictimIs;
                 vicVwModel.VictimType = accVic.VictimType;
+                vicVwModel.DetailBroken = accVic.DetailBroken;
 
 
 
@@ -242,12 +248,13 @@ namespace Services
         public async Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo)
         {
             var result = new AccidentPDFViewModel();
-            var query = await rvpOfficeContext.HosAccident.Where(w => w.AccNo == accNo).Select(s => new {s.AccNo, s.DateAcc, s.TimeAcc, s.AccPlace }).FirstOrDefaultAsync();
+            var query = await rvpOfficeContext.HosAccident.Where(w => w.AccNo == accNo).Select(s => new {s.AccNo, s.DateAcc, s.TimeAcc, s.AccPlace, s.AccProv }).FirstOrDefaultAsync();
             result.AccNo = query.AccNo;
             result.DateAccString = query.DateAcc.Value.Date.ToString("dd-MM-yyyy");
             result.DateAcc = query.DateAcc;
             result.TimeAcc = query.TimeAcc;
             result.AccPlace = query.AccPlace;
+            result.AccProv = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == query.AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
             return result;
         }
 

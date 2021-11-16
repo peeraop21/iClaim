@@ -16,5 +16,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public string InvoiceStatus { get; set; }
         public string SumStatus { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public string BbCommentTypeId { get; set; }
     }
 }

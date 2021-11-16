@@ -642,11 +642,11 @@
                         <hr class="mt-0">
                     </div>
                     <p class="mb-0">ลักษณะเกิดเหตุ</p>
-                    <div class="mt-0" v-if="accData.accNature!=''">
+                    <div class="mt-0" v-if="accData.accNature != null">
                         <p class="label-text">{{accData.accNature}}</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="mt-0" v-else-if="accData.accNature===''">
+                    <div class="mt-0" v-else-if="accData.accNature === null">
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
@@ -659,7 +659,16 @@
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
-                    <div class="row">
+                    <p class="mb-0">จังหวัดที่เกิดเหตุ</p>
+                    <div class="mt-0" v-if="accData.provAcc != null">
+                        <p class="label-text">{{accData.provAcc}}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="accData.provAcc === null">
+                        <p class="label-text">-</p>
+                        <hr class="mt-0">
+                    </div>
+                    <!--<div class="row">
                         <div class="col-4">
                             <p class="mb-0">บ้านเลขที่</p>
                             <div class="mt-0" v-if="accidentVictimData.accHomeId != null">
@@ -741,7 +750,7 @@
                                 <hr class="mt-0">
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                     <div class="mt-0" v-if="accidentCarData.foundCarLicense != ''">
@@ -1319,7 +1328,7 @@
             },
             getHospitalNames() {
                 console.log('getHospitalNames');
-                var url = this.$store.state.envUrl + "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;

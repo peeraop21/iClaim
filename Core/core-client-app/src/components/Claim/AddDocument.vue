@@ -1,5 +1,12 @@
 <template>
     <div class="container" align="center">
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"
+                 :is-full-page="true">
+
+        </loading>
         <h2 id="header2" class="mb-4">กรอกข้อมูล/แนบเอกสารเพิ่มเติม</h2>
         <div align="left">
             <p style="font-weight: bold">
@@ -247,21 +254,21 @@
                             </v-date-picker>
                         </div>
                         <!--<b-form-datepicker v-model="input.out_hospital_date"
-                        selected-variant="primary"
-                        label-selected=""
-                        label-no-date-selected=""
-                        :close-button="true"
-                        :label-help="null"
-                        label-close-button="ปิด"
-                        :today-button="true"
-                        label-today-button="เลือกวันปัจจุบัน"
-                        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-                        size="sm"
-                        class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>-->
+                    selected-variant="primary"
+                    label-selected=""
+                    label-no-date-selected=""
+                    :close-button="true"
+                    :label-help="null"
+                    label-close-button="ปิด"
+                    :today-button="true"
+                    label-today-button="เลือกวันปัจจุบัน"
+                    :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+                    size="sm"
+                    class="mt-0 mb-2 " locale="th" placeholder=""></b-form-datepicker>-->
                     </div>
 
                     <br>
-                    
+
 
                 </div>
             </div>
@@ -308,8 +315,8 @@
         </div>
 
         <div v-if="accountDoc">
-            
-            
+
+
             <div class="box-container">
                 <div align="left">
                     <label>หน้าบัญชีธนาคารรับเงิน</label>
@@ -328,7 +335,7 @@
                     <div class="mt-2 mb-2" v-if="!inputBank.isEditBankImage" align="center">
                         <div class="div-center-image">
                             <div class="divImage">
-                                <img class="img-show" :src="bankFileDisplay.base64"/>
+                                <img class="img-show" :src="bankFileDisplay.base64" />
                                 <br />
                                 <label></label>
                             </div>
@@ -352,21 +359,21 @@
                 <b-form-input class="mt-0 mb-2 mb-4" v-model="inputBank.accountNumber" placeholder=""></b-form-input>
                 <!--<div v-if="haslastDocumentReceive">
 
-    <p class="mb-0 px-2">ชื่อธนาคาร</p>
-    <div class="mb-2">-->
+            <p class="mb-0 px-2">ชื่อธนาคาร</p>
+            <div class="mb-2">-->
                 <!--<b-form-input id="defaultSelectBank" class="mt-0 mb-2" v-model="displayBankName" :disabled="haslastDocumentReceive"></b-form-input>-->
                 <!--<select id="defaultSelectBank" v-model="lastDocumentReceive.accountBankName" style="font-size: 13px;">
-                <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
-                    {{ bankName.name }}
-                </option>
-            </select>
-        </div>
-        <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
-        <b-form-input id="defaultInputAccountName" class="mt-0 mb-2" v-model="lastDocumentReceive.accountName"></b-form-input>
-        <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
-        <b-form-input id="defaultInputAccountNumber" class="mt-0 mb-2 mb-4" v-model="lastDocumentReceive.accountNumber"></b-form-input>
+                        <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                            {{ bankName.name }}
+                        </option>
+                    </select>
+                </div>
+                <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
+                <b-form-input id="defaultInputAccountName" class="mt-0 mb-2" v-model="lastDocumentReceive.accountName"></b-form-input>
+                <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
+                <b-form-input id="defaultInputAccountNumber" class="mt-0 mb-2 mb-4" v-model="lastDocumentReceive.accountNumber"></b-form-input>
 
-    </div>-->
+            </div>-->
 
                 <br>
             </div>
@@ -385,8 +392,16 @@
     import axios from 'axios'
     import * as moment from "moment/moment";
     //Your Javascript lives within the Script Tag
+
+    // Import loading-overlay
+    import Loading from 'vue-loading-overlay';
+    import 'vue-loading-overlay/dist/vue-loading.css';
+
     export default {
         name: "AddDocument",
+        components: {
+            Loading
+        },
         data() {
             return {
                 attrs: [
@@ -474,6 +489,7 @@
                 doc2: false,
                 doc3: false,
                 accountDoc: false,
+                isLoading: true,
 
 
             };
@@ -581,9 +597,11 @@
                                     this.inputBank.accountNumber = response.data.accountNumber
                                     this.inputBank.isEditBankImage = false
                                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
+                                    this.isLoading = false;
                                     return true;
                                 }
                             }
+                            
                         }
                     })
                     .catch(function (error) {
@@ -605,7 +623,7 @@
             },
             getHospitalNames() {
                 console.log('getHospitalNames');
-                var url = this.$store.state.envUrl + "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;

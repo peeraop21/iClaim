@@ -45,5 +45,6 @@ namespace Services.ViewModels
         public string TelNo { get; set; }
         public string VictimIs { get; set; }
         public string VictimType { get; set; }
+        public string DetailBroken { get; set; }
     }
 }

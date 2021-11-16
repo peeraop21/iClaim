@@ -93,6 +93,8 @@ namespace Services
             dataIcliamApproval.CureMoney = iclaimApproval.SumReqMoney;
             dataIcliamApproval.InsertDate = DateTime.Now;
             dataIcliamApproval.LastUpdate = DateTime.Now;
+            dataIcliamApproval.LineId = userLineId;
+            dataIcliamApproval.RefCodeOtp = iclaimApproval.RefCodeOtp;
             await digitalclaimContext.IclaimApproval.AddAsync(dataIcliamApproval);
 
             //var runNo = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == iclaimApproval.AccNo && w.VictimNo == (short)iclaimApproval.VictimNo && w.Appno == (short)dataIcliamApproval.IclaimAppNo).Select(s => s.RunNo).OrderByDescending(o => o).FirstOrDefaultAsync();
@@ -115,6 +117,7 @@ namespace Services
             dataBankAccount.AccountNo = inputBank.accountNumber;
             dataBankAccount.AccountName = inputBank.accountName;
             dataBankAccount.BankId = inputBank.bankId;
+            dataBankAccount.RecordBy = userLineId;
             await digitalclaimContext.IclaimBankAccount.AddAsync(dataBankAccount);
 
             var dataIclaimApprovalStatusState = new IclaimApprovalState();
@@ -156,7 +159,7 @@ namespace Services
                 dataInvoicehd.Suminv = invoicehd[i].Suminv;
                 dataInvoicehd.VictimType = invoicehd[i].VictimType;
                 dataInvoicehd.Hosid = invoicehd[i].Hosid;
-                dataInvoicehd.RecordBy = "LineID";
+
                 await rvpofficeContext.Invoicehd.AddAsync(dataInvoicehd);
 
                 var dataInvStatus = new IclaimInvoiceStatus();
@@ -167,7 +170,7 @@ namespace Services
                 dataInvStatus.Status = 1;
                 dataInvStatus.InsertDate = DateTime.Now;
                 dataInvStatus.LastUpdateDate = DateTime.Now;
-                dataInvStatus.RecordBy = "LineID";
+                dataInvStatus.RecordBy = userLineId;
                 dataInvStatus.ReqMoney = invoicehd[i].Suminv;
                 await digitalclaimContext.IclaimInvoiceStatus.AddAsync(dataInvStatus);
 
@@ -180,7 +183,7 @@ namespace Services
                 dataInvStatusState.OldStatus = null;
                 dataInvStatusState.NewStatus = 1;
                 dataInvStatusState.InsertDate = DateTime.Now;
-                dataInvStatusState.RecordBy = "LineID";
+                dataInvStatusState.RecordBy = userLineId;
                 await digitalclaimContext.IclaimInvoiceStatusState.AddAsync(dataInvStatusState);
 
             }
@@ -904,22 +907,22 @@ namespace Services
                                     ChangwatName = hschi.Changwatname,
                                 }).FirstOrDefaultAsync();
             var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard).FirstOrDefaultAsync();
-            var address = await (from t in rvpofficeContext.Tumbol
-                                 join a in rvpofficeContext.Amphur on new { key1 = t.Amphurid, key2 = t.Provinceid } equals new { key1 = a.Amphurid, key2 = a.Provinceid } into result1
-                                 from ta in result1.DefaultIfEmpty()
-                                 join ch in rvpofficeContext.Changwat on t.Changwatshortname equals ch.Changwatshortname into result2
-                                 from tch in result2.DefaultIfEmpty()
-                                 where (t.Tumbolid == kyc.HomeTumbolId && t.Amphurid == kyc.HomeCityId && t.Provinceid == kyc.HomeProvinceId)
-                                 select new
-                                 {
-                                     Zipcode = t.Zipcode,
-                                     TumbolId = t.Tumbolid,
-                                     TumbolName = t.Tumbolname,
-                                     AmphurId = ta.Amphurid,
-                                     AmphurName = ta.Amphurname,
-                                     ChangwatShort = tch.Changwatshortname,
-                                     ChangwatName = tch.Changwatname
-                                 }).FirstOrDefaultAsync();
+            //var address = await (from t in rvpofficeContext.Tumbol
+            //                     join a in rvpofficeContext.Amphur on new { key1 = t.Amphurid, key2 = t.Provinceid } equals new { key1 = a.Amphurid, key2 = a.Provinceid } into result1
+            //                     from ta in result1.DefaultIfEmpty()
+            //                     join ch in rvpofficeContext.Changwat on t.Changwatshortname equals ch.Changwatshortname into result2
+            //                     from tch in result2.DefaultIfEmpty()
+            //                     where (t.Tumbolid == kyc.HomeTumbolId && t.Amphurid == kyc.HomeCityId && t.Provinceid == kyc.HomeProvinceId)
+            //                     select new
+            //                     {
+            //                         Zipcode = t.Zipcode,
+            //                         TumbolId = t.Tumbolid,
+            //                         TumbolName = t.Tumbolname,
+            //                         AmphurId = ta.Amphurid,
+            //                         AmphurName = ta.Amphurname,
+            //                         ChangwatShort = tch.Changwatshortname,
+            //                         ChangwatName = tch.Changwatname
+            //                     }).FirstOrDefaultAsync();
             if (accVic == null) return null;
             victimViewModel.IdCardNo = kyc.IdcardNo;
             victimViewModel.Fname = kyc.Fname;
@@ -928,28 +931,30 @@ namespace Services
             victimViewModel.Age = accVic.Age;
             victimViewModel.Sex = accVic.Sex;
             victimViewModel.TelNo = kyc.MobileNo;
-            victimViewModel.HomeId = kyc.HomeHouseNo;
-            victimViewModel.Moo = kyc.HomeHmo;
-            victimViewModel.Soi = kyc.HomeSoi;
-            victimViewModel.Road = kyc.HomeRoad;
-            victimViewModel.Tumbol = address.TumbolId;
-            victimViewModel.TumbolName = address.TumbolName;
-            victimViewModel.District = address.AmphurId;
-            victimViewModel.DistrictName = address.AmphurName;
-            victimViewModel.Province = address.ChangwatShort;
-            victimViewModel.ProvinceName = address.ChangwatName;
-            victimViewModel.Zipcode = address.Zipcode;
-            victimViewModel.AccHomeId = accVic.HomeId;
-            victimViewModel.AccMoo = accVic.Moo;
-            victimViewModel.AccSoi = accVic.Soi;
-            victimViewModel.AccRoad = accVic.Road;
-            victimViewModel.AccTumbol = accVic.TumbolId;
-            victimViewModel.AccTumbolName = accVic.TumbolName;
-            victimViewModel.AccDistrict = accVic.AmphurId;
-            victimViewModel.AccDistrictName = accVic.AmphurName;
-            victimViewModel.AccProvince = accVic.ChangwatShort;
-            victimViewModel.AccProvinceName = accVic.ChangwatName;
-            victimViewModel.AccZipcode = accVic.Zipcode;
+
+            victimViewModel.HomeId = accVic.HomeId;
+            victimViewModel.Moo = accVic.Moo;
+            victimViewModel.Soi = accVic.Soi;
+            victimViewModel.Road = accVic.Road;
+            victimViewModel.Tumbol = accVic.TumbolId;
+            victimViewModel.TumbolName = accVic.TumbolName;
+            victimViewModel.District = accVic.AmphurId;
+            victimViewModel.DistrictName = accVic.AmphurName;
+            victimViewModel.Province = accVic.ChangwatShort;
+            victimViewModel.ProvinceName = accVic.ChangwatName;
+            victimViewModel.Zipcode = accVic.Zipcode;
+
+            //victimViewModel.AccHomeId = accVic.HomeId;
+            //victimViewModel.AccMoo = accVic.Moo;
+            //victimViewModel.AccSoi = accVic.Soi;
+            //victimViewModel.AccRoad = accVic.Road;
+            //victimViewModel.AccTumbol = accVic.TumbolId;
+            //victimViewModel.AccTumbolName = accVic.TumbolName;
+            //victimViewModel.AccDistrict = accVic.AmphurId;
+            //victimViewModel.AccDistrictName = accVic.AmphurName;
+            //victimViewModel.AccProvince = accVic.ChangwatShort;
+            //victimViewModel.AccProvinceName = accVic.ChangwatName;
+            //victimViewModel.AccZipcode = accVic.Zipcode;
 
             //ข้อมูลรถ
             var car = await rvpofficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
@@ -978,12 +983,152 @@ namespace Services
 
         public async  Task<ApprovalPDFViewModel> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo)
         {
-            var query = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.InsertDate }).FirstOrDefaultAsync();
+            //var query = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.InsertDate }).FirstOrDefaultAsync();
+            var iclaimIdInvhd = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => s.IdInvhd).ToListAsync();
+            var invhd = await rvpofficeContext.Invoicehd.Where(w => w.IdInvhd == iclaimIdInvhd[0]).Select(s => new { s.AppNo, s.RecordDate }).FirstOrDefaultAsync();
+            var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == invhd.AppNo).FirstOrDefaultAsync();
+            var iclaimApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.RefCodeOtp }).FirstOrDefaultAsync();
+
             ApprovalPDFViewModel approvalPDF = new ApprovalPDFViewModel();
-            approvalPDF.SumReqMoney = (double)query.SumReqMoney;
-            approvalPDF.ReqDate = query.InsertDate.Value.ToString("dd/MM/yyyy");
-            approvalPDF.TimeDate = query.InsertDate.Value.ToString("HH:mm");
+            if (query == null)
+            {
+                approvalPDF.CureMoney = (double)iclaimApp.SumReqMoney;
+                approvalPDF.TextCureMoney = ThaiBahtText(iclaimApp.SumReqMoney.ToString());
+                approvalPDF.IdInvhd = string.Join(", ", iclaimIdInvhd);
+                approvalPDF.InvCount = iclaimIdInvhd.Count;
+                approvalPDF.RecordDay = invhd.RecordDate.Value.ToString("dd");
+                approvalPDF.RecordMonth = await GetMonthName(invhd.RecordDate.Value.ToString("MM"));
+                approvalPDF.RecordYear = (int.Parse(invhd.RecordDate.Value.ToString("yyyy")) + 543).ToString();
+                approvalPDF.OtpSign = iclaimApp.RefCodeOtp;
+                return approvalPDF;
+            }
+            approvalPDF.IdInvhd = string.Join(", ", iclaimIdInvhd);
+            approvalPDF.InvCount = iclaimIdInvhd.Count;
+            approvalPDF.CureMoney = (double)query.CureMoney;
+            approvalPDF.TextCureMoney = ThaiBahtText(query.CureMoney.ToString());
+            approvalPDF.RecordDay = invhd.RecordDate.Value.ToString("dd");
+            approvalPDF.RecordMonth = await GetMonthName(invhd.RecordDate.Value.ToString("MM"));
+            approvalPDF.RecordYear = (int.Parse(invhd.RecordDate.Value.ToString("yyyy")) + 543).ToString();
+            approvalPDF.OtpSign = iclaimApp.RefCodeOtp;
+            //approvalPDF.ReqDate = query.InsertDate.Value.ToString("dd/MM/yyyy");
+            //approvalPDF.TimeDate = query.InsertDate.Value.ToString("HH:mm");
             return approvalPDF;
+        }
+
+        private async Task<string> GetMonthName(string monthNo)
+        {
+            if (monthNo == "01") return "มกราคม";
+            else if (monthNo == "02") return "กุมภาพันธ์";
+            else if (monthNo == "03") return "มีนาคาม";
+            else if (monthNo == "04") return "เมษายน";
+            else if (monthNo == "05") return "พฤษภาคม";
+            else if (monthNo == "06") return "มิถุนายน";
+            else if (monthNo == "07") return "กรกฎาคม";
+            else if (monthNo == "08") return "สิงหาคม";
+            else if (monthNo == "09") return "กันยายน";
+            else if (monthNo == "10") return "ตุลาคม";
+            else if (monthNo == "11") return "พฤศจิกายน";
+            else if (monthNo == "12") return "ธันวาคม";
+
+            return null;
+        }
+
+        private string ThaiBahtText(string strNumber, bool IsTrillion = false)
+        {
+            string BahtText = "";
+            string strTrillion = "";
+            string[] strThaiNumber = { "ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า", "สิบ" };
+            string[] strThaiPos = { "", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน" };
+
+            decimal decNumber = 0;
+            decimal.TryParse(strNumber, out decNumber);
+
+            if (decNumber == 0)
+            {
+                return "ศูนย์บาทถ้วน";
+            }
+
+            strNumber = decNumber.ToString("0.00");
+            string strInteger = strNumber.Split('.')[0];
+            string strSatang = strNumber.Split('.')[1];
+
+            if (strInteger.Length > 13)
+                throw new Exception("รองรับตัวเลขได้เพียง ล้านล้าน เท่านั้น!");
+
+            bool _IsTrillion = strInteger.Length > 7;
+            if (_IsTrillion)
+            {
+                strTrillion = strInteger.Substring(0, strInteger.Length - 6);
+                BahtText = ThaiBahtText(strTrillion, _IsTrillion);
+                strInteger = strInteger.Substring(strTrillion.Length);
+            }
+
+            int strLength = strInteger.Length;
+            for (int i = 0; i < strInteger.Length; i++)
+            {
+                string number = strInteger.Substring(i, 1);
+                if (number != "0")
+                {
+                    if (i == strLength - 1 && number == "1" && strLength != 1)
+                    {
+                        BahtText += "เอ็ด";
+                    }
+                    else if (i == strLength - 2 && number == "2" && strLength != 1)
+                    {
+                        BahtText += "ยี่";
+                    }
+                    else if (i != strLength - 2 || number != "1")
+                    {
+                        BahtText += strThaiNumber[int.Parse(number)];
+                    }
+
+                    BahtText += strThaiPos[(strLength - i) - 1];
+                }
+            }
+
+            if (IsTrillion)
+            {
+                return BahtText + "ล้าน";
+            }
+
+            if (strInteger != "0")
+            {
+                BahtText += "บาท";
+            }
+
+            if (strSatang == "00")
+            {
+                BahtText += "ถ้วน";
+            }
+            else
+            {
+                strLength = strSatang.Length;
+                for (int i = 0; i < strSatang.Length; i++)
+                {
+                    string number = strSatang.Substring(i, 1);
+                    if (number != "0")
+                    {
+                        if (i == strLength - 1 && number == "1" && strSatang[0].ToString() != "0")
+                        {
+                            BahtText += "เอ็ด";
+                        }
+                        else if (i == strLength - 2 && number == "2" && strSatang[0].ToString() != "0")
+                        {
+                            BahtText += "ยี่";
+                        }
+                        else if (i != strLength - 2 || number != "1")
+                        {
+                            BahtText += strThaiNumber[int.Parse(number)];
+                        }
+
+                        BahtText += strThaiPos[(strLength - i) - 1];
+                    }
+                }
+
+                BahtText += "สตางค์";
+            }
+
+            return BahtText;
         }
     }
 }

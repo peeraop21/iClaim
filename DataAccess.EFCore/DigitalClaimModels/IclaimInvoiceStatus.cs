@@ -18,5 +18,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public double? PayMoney { get; set; }
         public string InvDocComment { get; set; }
         public string InvConfirmMoneyComment { get; set; }
+        public string InvCommentTypeId { get; set; }
     }
 }

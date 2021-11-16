@@ -21,5 +21,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public double? CrippledMoney { get; set; }
         public string LineId { get; set; }
         public double? SumPayMoney { get; set; }
+        public string RefCodeOtp { get; set; }
     }
 }

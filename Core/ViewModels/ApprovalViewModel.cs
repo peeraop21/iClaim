@@ -16,6 +16,7 @@ namespace Core.ViewModels
         public List<BillViewModel> BillsData { get; set; }
         public BankViewModel BankData { get; set; }
         public VictimViewModel VictimData { get; set; }
+        public string RefCodeOtp { get; set; }
 
     }
 }

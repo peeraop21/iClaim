@@ -23,6 +23,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public virtual DbSet<IclaimCheckDocuments> IclaimCheckDocuments { get; set; }
         public virtual DbSet<IclaimInvoiceStatus> IclaimInvoiceStatus { get; set; }
         public virtual DbSet<IclaimInvoiceStatusState> IclaimInvoiceStatusState { get; set; }
+        public virtual DbSet<IclaimMasterTypes> IclaimMasterTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,6 +58,11 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
+
+                entity.Property(e => e.RefCodeOtp)
+                    .HasColumnName("RefCodeOTP")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<IclaimApprovalState>(entity =>
@@ -131,6 +137,11 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.BbCommentTypeId)
+                    .HasColumnName("bbCommentTypeId")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.BookbankComment)
                     .HasMaxLength(500)
                     .IsUnicode(false);
@@ -175,6 +186,11 @@ namespace DataAccess.EFCore.DigitalClaimModels
 
                 entity.Property(e => e.InsertDate).HasColumnType("datetime");
 
+                entity.Property(e => e.InvCommentTypeId)
+                    .HasColumnName("invCommentTypeId")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.InvConfirmMoneyComment)
                     .HasMaxLength(200)
                     .IsUnicode(false);
@@ -212,6 +228,29 @@ namespace DataAccess.EFCore.DigitalClaimModels
                 entity.Property(e => e.RecordBy)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<IclaimMasterTypes>(entity =>
+            {
+                entity.HasKey(e => e.TypeId)
+                    .HasName("PK_MasterTypes");
+
+                entity.ToTable("IClaimMasterTypes");
+
+                entity.Property(e => e.TypeId)
+                    .HasComment("รหัสประเภท")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Description).HasMaxLength(500);
+
+                entity.Property(e => e.IsActive).HasComment("0: ไม่ใช้งาน, 1: ใช้งานอยู่");
+
+                entity.Property(e => e.ParentTypeId).HasComment("");
+
+                entity.Property(e => e.TypeName)
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .HasComment("ชื่อประเภท");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -16,6 +16,6 @@ namespace Services.ViewModels
         public string DateAccString { get; set; }
         public string TimeAcc { get; set; }
         public string AccPlace { get; set; }
-        
+        public string AccProv { get; set; }
     }
 }
