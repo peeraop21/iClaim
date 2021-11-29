@@ -39,7 +39,7 @@
                                                        flat>
                                                 PDF
                                             </vs-button>
-                                            <router-link :to="{ name: 'ClaimDetail', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">
+                                            <router-link :to="{ name: 'ApprovalDetail', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">
                                                 <vs-button circle
                                                            icon
                                                            primary
@@ -70,7 +70,7 @@
                                     <br />
                                 </div>
                                 <div style="text-align: center">
-                                    <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'AddDocument', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
+                                    <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'ApprovalEdit', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
                                     <router-link class="btn-checked" v-if="iclaimApp.status == 4" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
                                     <router-link class="btn-checked" v-if="iclaimApp.status == 9" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
                                 </div>

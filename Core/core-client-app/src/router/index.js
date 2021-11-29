@@ -5,15 +5,15 @@ import Accident from "@/components/Accident/Index.vue";
 import Rights from "@/components/Rights/Index.vue";
 import RightsHistory from "@/components/Rights/RightsHistory.vue";
 import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
-import Claim from "@/components/Claim/Claim.vue";
-import ConfirmOTP from "@/components/Claim/ConfirmOTP.vue";
-import CheckStatus from "@/components/Status/CheckStatus.vue";
-import ClaimDetail from "@/components/Status/ClaimDetail.vue";
-import ConfirmMoney from "@/components/Status/ConfirmMoney.vue";
+import ApprovalCreate from "@/components/Approval/Create.vue";
+import ConfirmOTP from "@/components/Approval/ConfirmOTP.vue";
+import Approvals from "@/components/Approval/Index.vue";
+import ApprovalDetail from "@/components/Approval/Detail.vue";
+import ConfirmMoney from "@/components/Approval/ConfirmMoney.vue";
 import Ocr from "@/components/Ocr/Index.vue";
 import Rating from "@/components/Rating/Index.vue";
-import AddDocument from "@/components/Claim/AddDocument.vue";
-import DownloadPDF from "@/components/Claim/DownloadPDF.vue";
+import ApprovalEdit from "@/components/Approval/Edit.vue";
+import DownloadPDF from "@/components/Approval/DownloadPDF.vue";
 
 Vue.use(VueRouter)
 
@@ -45,9 +45,9 @@ const routes = [
         
     },
     {
-        path: "/Claim/:id/:type",
-        name: "Claim",
-        component: Claim,
+        path: "/ApprovalCreate/:id/:type",
+        name: "ApprovalCreate",
+        component: ApprovalCreate,
     },
     {
         path: "/ConfirmOTP/:id",
@@ -55,14 +55,14 @@ const routes = [
         component: ConfirmOTP,
     },
     {
-        path: "/CheckStatus/:id",
-        name: "CheckStatus",
-        component: CheckStatus,
+        path: "/Approvals/:id",
+        name: "Approvals",
+        component: Approvals,
     },
     {
-        path: "/ClaimDetail",
-        name: "ClaimDetail",
-        component: ClaimDetail,
+        path: "/ApprovalDetail",
+        name: "ApprovalDetail",
+        component: ApprovalDetail,
     },
     {
         path: "/ConfirmMoney",
@@ -80,9 +80,9 @@ const routes = [
         component: Rating,
     },
     {
-        path: "/AddDocument/:id",
-        name: "AddDocument",
-        component: AddDocument,
+        path: "/ApprovalEdit/:id",
+        name: "ApprovalEdit",
+        component: ApprovalEdit,
         props: true
     },
     {

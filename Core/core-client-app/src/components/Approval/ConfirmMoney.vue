@@ -250,7 +250,7 @@
                     confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                     confirmButtonColor: '#5c2e91',
                     willClose: () => {
-                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                     }
                 })
             },
@@ -461,7 +461,7 @@
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                     } else if (result.isDenied) {
                         this.$router.push({ name: 'Accident' })
                     }
@@ -485,7 +485,7 @@
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                     } else if (result.isDenied) {
                         this.$router.push({ name: 'Accident' })
                     }

@@ -37,22 +37,22 @@
                     this.$router.push({ name: 'Rights' })
                 } else if (routeName == "RightsHistoryDetail") {
                     this.$router.push({ name: 'RightsHistory', params: { id: this.$route.params.id, typerights: this.$route.params.typerights }  })
-                } else if (routeName == "Claim") {
+                } else if (routeName == "ApprovalCreate") {
                     this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {
-                    this.$router.push({ name: 'Claim', params: { id: this.$route.params.id }})
-                } else if (routeName == "CheckStatus") {
+                    this.$router.push({ name: 'ApprovalCreate', params: { id: this.$route.params.id }})
+                } else if (routeName == "Approvals") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "ConfirmMoney") {
-                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
-                } else if (routeName == "ClaimDetail") {
-                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
+                    this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
+                } else if (routeName == "ApprovalDetail") {
+                    this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
                 } else if (routeName == "Ocr") {
                     liff.closeWindow()
                 } else if (routeName == "Rating") {
-                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
-                } else if (routeName == "AddDocument") {
-                    this.$router.push({ name: 'CheckStatus', params: { id: this.$route.params.id } })
+                    this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
+                } else if (routeName == "ApprovalEdit") {
+                    this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
                 }
             },
 

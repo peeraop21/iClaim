@@ -32,7 +32,7 @@
                             <br>
 
                             <router-link v-if="accData.cureRightsBalance != 30000" class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 1}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData.stringAccNo, type: 1}}">เลือก</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'ApprovalCreate', params: { id: accData.stringAccNo, type: 1}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>
@@ -60,7 +60,7 @@
                             <br>
 
                             <router-link v-if="accData.crippledRightsBalance != 35000" class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData.stringAccNo, type: 2}}">เลือก</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'ApprovalCreate', params: { id: accData.stringAccNo, type: 2}}">เลือก</router-link>
                         </div>
                     </div>
                     <br>

@@ -1027,7 +1027,7 @@
                             console.log(this.$store.state.inputApprovalData)
                             console.log(result)
                             if (result.isConfirmed) {
-                                this.$router.push({ name: 'ConfirmOTP', params: { from: "AddDocument" } })
+                                this.$router.push({ name: 'ConfirmOTP', params: { from: "Edit" } })
                             }
                             //} else if (result.isDenied) {
 
@@ -1085,7 +1085,7 @@
                     confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                     confirmButtonColor: '#5c2e91',
                     willClose: () => {
-                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                     }
                 })
             },

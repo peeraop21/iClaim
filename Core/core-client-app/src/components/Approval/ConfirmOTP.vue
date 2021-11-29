@@ -255,7 +255,7 @@
                 console.log(body);
             },
             postData() {
-                if (this.$route.params.from == "AddDocument") {
+                if (this.$route.params.from == "Edit") {
                     for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
                         this.$store.state.inputApprovalData.BillsData[i].money = this.$store.state.inputApprovalData.BillsData[i].money.toString()
                     }
@@ -276,7 +276,7 @@
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-                                    this.$router.push({ name: 'CheckStatus', params: { id: this.$store.state.inputApprovalData.AccNo.replace('/', '-') } })
+                                    this.$router.push({ name: 'Approvals', params: { id: this.$store.state.inputApprovalData.AccNo.replace('/', '-') } })
                                 }
                             })
                             this.$store.state.inputApprovalData.AccNo = null
@@ -453,7 +453,7 @@
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-                        this.$router.push({ name: 'CheckStatus', params: { id: this.accData.stringAccNo } })
+                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                     } else if (result.isDenied) {
                         this.$router.push({ name: 'Accident' })
                     }

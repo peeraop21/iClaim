@@ -83,7 +83,7 @@
                                 <div style="text-align: center">
                                     <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
                                     <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
-                                    <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'CheckStatus', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
+                                    <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'Approvals', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
                                 </div>
                             </div>
                         </div>
