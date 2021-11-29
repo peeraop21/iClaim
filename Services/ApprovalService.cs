@@ -34,6 +34,7 @@ namespace Services
         Task<object> GetHistoryInvoicedt(string accNo, int victimNo, int appNo);
         Task<ApprovalDetailViewModel> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard);
         Task<ApprovalPDFViewModel> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo);
+        Task<CheckDuplicateInvoiceViewModel[]> CheckDuplicateInvoice(CheckDuplicateInvoiceViewModel[] invoicehds);
     }
 
 
@@ -88,6 +89,7 @@ namespace Services
             dataIcliamApproval.AccNo = iclaimApproval.AccNo;
             dataIcliamApproval.VictimNo = iclaimApproval.VictimNo;
             dataIcliamApproval.ReqNo = lastAppNo + 1;
+            dataIcliamApproval.BranchId = iclaimApproval.BranchId.Trim();
             dataIcliamApproval.Status = 1;
             dataIcliamApproval.SumReqMoney = iclaimApproval.SumReqMoney;
             dataIcliamApproval.CureMoney = iclaimApproval.SumReqMoney;
@@ -762,8 +764,9 @@ namespace Services
             var idInvhdList = new List<long>();
             if (status == 0)
             {
-                idInvhdList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => s.IdInvhd).ToListAsync();
-                var query = await rvpofficeContext.Invoicehd.Where(w => idInvhdList.Contains(w.IdInvhd)).ToListAsync();
+                var invStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo)
+                    .Select(s => new { s.IdInvhd, s.ReqMoney }).ToListAsync();
+                var query = await rvpofficeContext.Invoicehd.Where(w => invStatusList.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
 
                 List<InvoicehdViewModel> invList = new List<InvoicehdViewModel>();
                 for (int i = 0; i < query.Count(); i++)
@@ -776,7 +779,7 @@ namespace Services
                     inv.Hosid = query[i].Hosid;
                     inv.BookNo = query[i].BookNo;
                     inv.ReceiptNo = query[i].ReceiptNo;
-                    inv.Suminv = query[i].Suminv;
+                    inv.Suminv = invStatusList.Where(w => w.IdInvhd == query[i].IdInvhd).Select(s => s.ReqMoney).FirstOrDefault();
                     inv.Takentime = query[i].Takentime;
                     inv.Dispensetime = query[i].Dispensetime;
                     inv.WoundedName = await rvpofficeContext.Mcwounded.Where(w => w.WoundedId == Convert.ToInt16(query[i].Mainconsider)).Select(s => s.WoundedName).FirstOrDefaultAsync();
@@ -790,9 +793,10 @@ namespace Services
                 }
                 return invList;
             }
-            else {
-                idInvhdList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.Status == status).Select(s => s.IdInvhd).ToListAsync();
-                var query = await rvpofficeContext.Invoicehd.Where(w => idInvhdList.Contains(w.IdInvhd)).ToListAsync();
+            else if(status == 2)
+            {
+                var invStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.Status == status).Select(s => new { s.IdInvhd, s.InvCommentTypeId }).ToListAsync();
+                var query = await rvpofficeContext.Invoicehd.Where(w => invStatusList.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
 
                 List<InvoicehdViewModel> invNotPassList = new List<InvoicehdViewModel>();
                 for (int i = 0; i < query.Count(); i++)
@@ -812,14 +816,15 @@ namespace Services
                     invNotPass.Takentime = query[i].Takentime;
                     invNotPass.Dispensedate = query[i].Dispensedate;
                     invNotPass.Dispensetime = query[i].Dispensetime;
+                    invNotPass.InvNotPassTypeId = invStatusList.Where(w => w.IdInvhd == query[i].IdInvhd).Select(s => s.InvCommentTypeId).FirstOrDefault();
                     //invNotPass.InvoiceStatus = qurey[i].invoiceStatus.ToString();
                     invNotPassList.Add(invNotPass);
                 }
                 return invNotPassList;
             }
 
-            
 
+            return null;
            
         }
 
@@ -1129,6 +1134,40 @@ namespace Services
             }
 
             return BahtText;
+        }
+
+        public async Task<CheckDuplicateInvoiceViewModel[]> CheckDuplicateInvoice(CheckDuplicateInvoiceViewModel[] invoicehds)
+        {
+            if (invoicehds[0].ReqNo > 0)
+            {
+                foreach (var inv in invoicehds)
+                {
+                    var iClaimInvId = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.IdInvhd == inv.BillId).Select(s => s.IdInvhd).FirstOrDefaultAsync();
+                    var query = await rvpofficeContext.Invoicehd.Where(w => w.IdInvhd != iClaimInvId && w.BookNo == inv.BookNo && w.ReceiptNo == inv.ReceiptNo && w.Hosid == inv.HosId).FirstOrDefaultAsync();
+                    if (query != null)
+                    {
+                        inv.IsDuplicate = true;
+                    }
+                    else
+                    {
+                        inv.IsDuplicate = false;
+                    }
+
+                }
+            }
+            else
+            {
+                foreach (var inv in invoicehds)
+                {
+                    var query = await rvpofficeContext.Invoicehd.Where(w => w.BookNo == inv.BookNo && w.ReceiptNo == inv.ReceiptNo && w.Hosid == inv.HosId).FirstOrDefaultAsync();
+                    if (query != null)
+                    {
+                        inv.IsDuplicate = true;
+                    }
+                }
+            }
+                     
+            return invoicehds;
         }
     }
 }

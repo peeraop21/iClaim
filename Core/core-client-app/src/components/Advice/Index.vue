@@ -247,7 +247,7 @@
     // Import component
     import Loading from 'vue-loading-overlay';
     // Import stylesheet
-    import 'vue-loading-overlay/dist/vue-loading.css';
+
 
 
     export default {
@@ -316,7 +316,8 @@
                                 willClose: () => {
                                     /*this.$router.push({ name: 'Accident' })*/
                                     liff.openWindow({
-                                        url: location.origin + '/Ocr'
+                                        url: location.origin + '/Ocr' + '?openExternalBrowser=1',
+                                        external: true
                                     });
                                 }
                             })
@@ -330,29 +331,67 @@
                     });
             },
             checkRegisAgain() {
-                let hasRegisterd = this.$store.state.hasRegistered
-                if (hasRegisterd || this.registered) {
-                    this.$router.push({ name: 'Accident' })
-                } else {
-                    this.$swal({
-                        icon: 'info',
-                        text: 'ท่านยังไม่ได้ทำการยืนยันตัวตน โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
-                        title: 'ขออภัย',
-                        /*footer: '<a href="">Why do I have this issue?</a>'*/
-                        showCancelButton: false,
-                        showDenyButton: false,
+                //let hasRegisterd = this.$store.state.hasRegistered
+                //if (hasRegisterd || this.registered) {
+                //    this.$router.push({ name: 'Accident' })
+                //} else {
+                //    this.$swal({
+                //        icon: 'info',
+                //        text: 'ท่านยังไม่ได้ทำการยืนยันตัวตน โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
+                //        title: 'ขออภัย',
+                //        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                //        showCancelButton: false,
+                //        showDenyButton: false,
 
-                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                        confirmButtonColor: '#5c2e91',
-                        willClose: () => {
-                            /*this.$router.push({ name: 'Accident' })*/
-                            liff.openWindow({
-                                url: location.origin + '/Ocr',
-                                external: true
-                            });
+                //        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                //        confirmButtonColor: '#5c2e91',
+                //        willClose: () => {
+                //            /*this.$router.push({ name: 'Accident' })*/
+                //            liff.openWindow({
+                //                url: location.origin + '/Ocr' + '?openExternalBrowser=1',
+                //                external: true
+                //            });
+                //        }
+                //    })
+                //}
+                var url = this.$store.state.envUrl + '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
+                var tokenJwt = this.$store.state.jwtToken.token
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + tokenJwt
+                    }
+                }
+                axios.get(url, apiConfig)
+                    .then((response) => {
+                        setTimeout(() => {
+                            this.isLoading = false
+                        }, 1000)
+                        this.registered = response.data;
+                        if (this.registered == false) {
+                            this.$swal({
+                                icon: 'info',
+                                text: 'ท่านยังไม่ได้ทำการยืนยันตัวตน โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
+                                title: 'ขออภัย',
+                                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                showCancelButton: false,
+                                showDenyButton: false,
+
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {                                 
+                                    liff.openWindow({
+                                        url: location.origin + '/Ocr' + '?openExternalBrowser=1',
+                                        external: true
+                                    });
+                                }
+                            })
+                        } else {
+                            this.$router.push({ name: 'Accident' })
                         }
                     })
-                }
+                    .catch(function (error) {
+                        alert(error);
+                    });
             }
 
         },
@@ -361,8 +400,7 @@
                 //--Publish--
                 await liff.init({
                     liffId: '1656611867-ylXVO2D8',
-
-                    /*withLoginOnExternalBrowser: false,*/
+                    /*withLoginOnExternalBrowser: true,*/
                 }).then(() => {
                     if (liff.isLoggedIn()) {
                         liff.getProfile().then(profile => {
@@ -373,6 +411,12 @@
                         }).catch(err => alert(err));
                     } else {
                         liff.login();
+                        liff.getProfile().then(profile => {
+                            this.$store.state.userTokenLine = profile.userId
+                            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+
+                            /*alert(this.$store.state.userTokenLine);*/
+                        }).catch(err => alert(err));
                     }
 
                     //const getContext = liff.getContext();
@@ -385,7 +429,7 @@
                 });
             } else if (process.env.NODE_ENV == "development") {
                 //--LocalHost--
-                this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069a4ba";
+                this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069Mock";
                 this.getJwtToken()//ตรวจสอบการลงทะเบียน
             }
 

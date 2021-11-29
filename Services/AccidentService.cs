@@ -52,8 +52,10 @@ namespace Services
             //    .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.EaAccNo, s.victimNo, s.accJoinVictim.EaAccDate, s.accJoinVictim.EaAccPlace, s.accJoinVictim.EaAccNature, s.accJoinVictim.EaAccTime}).ToListAsync();
            
             var accHosList = await rvpOfficeContext.HosAccident
-                .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo })
-                .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc}).ToListAsync();
+                .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo , confirmed = vic.Confirmed})
+                .Where(w => w.victimIdCard == userIdCard && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y"))
+                .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId})
+                .ToListAsync();
 
             var accViewModelList = new List<AccidentViewModel>();
             
@@ -83,6 +85,7 @@ namespace Services
                 var accVwModel = new AccidentViewModel();
                 accVwModel.AccNo = acc.AccNo;
                 accVwModel.VictimNo = acc.victimNo;
+                accVwModel.BranchId = acc.BranchId;
                 accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo, acc.victimNo);
                 accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
                 accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;

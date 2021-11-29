@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.ViewModels;
@@ -16,15 +17,18 @@ namespace Core.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
+        private readonly IMapper _mapper;
         private readonly IUserService userService;
         private readonly IMasterService masterService;
+        private readonly IAttachmentService attachmentService;
 
 
-        public UserController(IUserService userService, IMasterService masterService)
+        public UserController(IMapper _mapper, IUserService userService, IMasterService masterService, IAttachmentService attachmentService)
         {
+            this._mapper = _mapper;
             this.userService = userService;
             this.masterService = masterService;
+            this.attachmentService = attachmentService;
         }
         
 
@@ -48,16 +52,28 @@ namespace Core.Controllers
         public async Task<IActionResult> PostAsync([FromBody] DirectPolicyKycViewModel model)
         {
             var kycno = await userService.GetLastKyc();
-            var genAddress = await masterService.GetIdAddress(model.HomeProvinceId, model.HomeCityId, model.HomeTumbolId);
-            model.HomeProvinceId = genAddress.ProvinceId;
-            model.HomeCityId = genAddress.DistrictId;
-            model.HomeTumbolId = genAddress.SubDistrictId;
-            model.HomeZipcode = genAddress.ZipCode;
-            model.DateofBirth =(model.StringDateofBirth.Length == 10) ? DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-d", CultureInfo.InvariantCulture);
+            //var genAddress = await masterService.GetIdAddress(model.HomeProvinceId, model.HomeCityId, model.HomeTumbolId);
+            //model.HomeProvinceId = genAddress.ProvinceId;
+            //model.HomeCityId = genAddress.DistrictId;
+            //model.HomeTumbolId = genAddress.SubDistrictId;
+            //model.HomeZipcode = genAddress.ZipCode;
+            model.DateofBirth = DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             model.Kycno = kycno + 1;
             model.IdcardNo = model.IdcardNo.Replace(" ", "");
             model.InsertDate = DateTime.Now;
             model.LastUpdateDate = DateTime.Now;
+
+            ECMViewModel ecmModel = new ECMViewModel();
+            ecmModel.SystemId = "02";
+            ecmModel.TemplateId = "03";
+            ecmModel.DocID = "04";
+            ecmModel.RefNo = model.LineId + "|" + model.IdcardNo;
+            ecmModel.FileName = model.IdcardNo + ".png";
+            ecmModel.Base64String = model.Base64IdCard;
+            var idCardEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+            var idCardResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+            idCardResultMapEdocDetail.Paths = idCardEcmRes.Path;
+            await attachmentService.SaveToEdocDetail(idCardResultMapEdocDetail);
             return Ok(await userService.AddAsync(model));
         }
     }

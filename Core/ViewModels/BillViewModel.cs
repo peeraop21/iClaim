@@ -6,6 +6,9 @@ namespace Core.ViewModels
     public class BillViewModel
     {
         public int billNo { get; set; }
+        public string accNo { get; set; }
+        public int victimNo { get; set; }
+        public int reqNo { get; set; }
         public string bill_no { get; set; }
         public string bookNo { get; set; }
         public string injuri { get; set; }

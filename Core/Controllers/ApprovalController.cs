@@ -216,5 +216,11 @@ namespace Core.Controllers
             return Ok(await approvalService.GetApprovalDetail(accNo.Replace("-", "/"), victimNo, reqNo, userIdCard));
         }
 
+        [HttpPost("CheckInvoiceUsing")]
+        public async Task<IActionResult> CheckInvoiceUsing([FromBody] List<BillViewModel> models)
+        {
+            var resultMapToInvoicehd = _mapper.Map<CheckDuplicateInvoiceViewModel[]>(models);                    
+            return Ok(await approvalService.CheckDuplicateInvoice(resultMapToInvoicehd));
+        }
     }
 }

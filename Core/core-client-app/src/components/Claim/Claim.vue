@@ -194,13 +194,12 @@
                                     <div class="d-block text-left">
                                         <div class="mb-2">
                                             <label class="px-2">จังหวัด</label>
-                                            <v-select class="v-select-claim style-chooser" 
-                                                      :clearable="false" 
-                                                      label="changwatname" 
-                                                      value="changwatshortname" 
+                                            <v-select class="v-select-claim style-chooser"
+                                                      :clearable="false"
+                                                      label="changwatname"
+                                                      value="changwatshortname"
                                                       :options="changwats"
-                                                      v-model="selectChangwat" 
-                                                      
+                                                      v-model="selectChangwat"
                                                       @input="onChangwatChange">
 
                                             </v-select>
@@ -294,12 +293,12 @@
                             <div class="row">
                                 <div class="col-6">
                                     <label class="px-2">ใบเสร็จเล่มที่</label>
-                                    <b-form-input class="mt-0 mb-2 form-control" v-model.trim="input.bookNo.$model" type="text" :class="{ 'is-invalid': input.bookNo.$error }" />
+                                    <b-form-input class="mt-0 mb-2 form-control" v-model.trim="input.bookNo.$model" type="number" :class="{ 'is-invalid': input.bookNo.$error }"/>
                                     <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
                                 </div>
                                 <div class="col-6">
                                     <label class="px-2">เลขที่ใบเสร็จ</label>
-                                    <b-form-input class="mt-0 mb-2 mb-0" v-model="input.bill_no.$model" type="text" :class="{ 'is-invalid': input.bill_no.$error }" />
+                                    <b-form-input class="mt-0 mb-2 mb-0" v-model="input.bill_no.$model" type="number" :class="{ 'is-invalid': input.bill_no.$error }" />
                                     <div v-if="submitted && !input.bill_no.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่ใบเสร็จ</div>
                                 </div>
                             </div>
@@ -339,7 +338,7 @@
                                     </template>
                                 </v-date-picker>
                             </div>
-                                                       
+
                             <div v-if="input.typePatient.$model === 'IPD'">
                                 <div class="row">
                                     <div class="col-8">
@@ -371,7 +370,7 @@
                                         </template>
                                     </v-date-picker>
                                 </div>
-                      
+
                             </div>
 
                             <br>
@@ -1045,7 +1044,6 @@
 
     // Import loading-overlay
     import Loading from 'vue-loading-overlay';
-    import 'vue-loading-overlay/dist/vue-loading.css';
 
     import { required } from "vuelidate/lib/validators";
     // Create component
@@ -1070,7 +1068,7 @@
                     {
                         key: 'today',
                         dot: true,
-                        dates: new Date(),                      
+                        dates: new Date(),
                     },
                 ],
                 dateModelConfig: {
@@ -1163,7 +1161,8 @@
                 displayBtnChangeAccountBank: "",
                 //--- loader
                 isLoading: true,
-                submitted: false
+                submitted: false,
+                duplicateInv: null,
 
 
             };
@@ -1183,7 +1182,7 @@
                             hospitalized_date: { required },
                             hospitalized_time: { required },
                             out_hospital_date: { required },
-                            out_hospital_time: { required } 
+                            out_hospital_time: { required }
 
                         }
                     },
@@ -1194,7 +1193,7 @@
                     },
                 }
 
-            } else {               
+            } else {
                 return {
                     bills: {
                         required,
@@ -1207,7 +1206,7 @@
                             money: { required },
                             hospitalized_date: { required },
                             hospitalized_time: { required },
-                            
+
 
                         }
                     },
@@ -1218,7 +1217,7 @@
                     },
                 }
             }
-            
+
 
         },
         //---Validate
@@ -1253,28 +1252,15 @@
                         this.inputBank.bankId = this.bankNames[i].bankCode
                     }
                 }
-                for (let j = 0; j < this.bills.length; j++) {
-                    for (let i = 0; i < this.hospitals.length; i++) {
-                        if (this.bills[j].selectHospital == this.hospitals[i].HOSPITALNAME) {
-                            this.bills[j].selectHospitalId = this.hospitals[i].HOSPITALID
-                        }
-                    }
-                }
-                console.log("orgen", this.organ.length)
-                for (let j = 0; j < this.bills.length; j++) {
-                    for (let i = 0; i < this.wounded.length; i++) {
-                        if (this.bills[j].injuri == this.wounded[i].wounded) {
-                            this.bills[j].injuriId = this.wounded[i].woundedId
-                        }
-                    }
-                }
+
 
 
                 this.active = true
 
                 this.$store.state.inputApprovalData.AccNo = this.accData.accNo
-                this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo                
                 this.$store.state.inputApprovalData.AppNo = this.accData.lastClaim.appNo
+                this.$store.state.inputApprovalData.BranchId = this.accData.branchId
                 this.$store.state.inputApprovalData.SumMoney = this.total_amount
                 this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
                 this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
@@ -1432,44 +1418,95 @@
                 console.log("add bill: ", this.bills[index])
                 this.bills[index].filename = this.bills[index].file[0].filename
                 this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()
-                
+
             },
-            OnChangePageOne() {
+            async OnChangePageOne() {
                 this.submitted = true;
 
                 // stop here if form is invalid
                 this.$v.bills.$touch();
                 if (this.$v.bills.$invalid) {
-                        return false;
+                    return false;
                 }
-                
-                
-
-
-                if (this.lastDocumentReceive != null) {
-                    console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
-                    for (let i = 0; i < this.bankNames.length; i++) {
-                        if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
-                            this.lastDocumentReceive.accountBankName = this.bankNames[i].name
-                            this.lastDocumentReceive.bankId = this.bankNames[i].bankCode
-                            console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
-                            this.submitted = false;
-                            return true;
+                for (let j = 0; j < this.bills.length; j++) {
+                    for (let i = 0; i < this.hospitals.length; i++) {
+                        if (this.bills[j].selectHospital == this.hospitals[i].HOSPITALNAME) {
+                            this.bills[j].selectHospitalId = this.hospitals[i].HOSPITALID
+                        }
+                    }
+                }
+                console.log("orgen", this.organ.length)
+                for (let j = 0; j < this.bills.length; j++) {
+                    for (let i = 0; i < this.wounded.length; i++) {
+                        if (this.bills[j].injuri == this.wounded[i].wounded) {
+                            this.bills[j].injuriId = this.wounded[i].woundedId
                         }
                     }
                 }
 
-                //for (let i = 0; i < this.bills.length; i++) {
-                //    this.bills[i].BillfileShow = this.bills[i].file.getFileEncodeDataURL()
-                //    this.bills[i].filename = this.bills[i].file.filename
-                //}
-                this.submitted = false;
-                return true;
+                var url = this.$store.state.envUrl + '/api/Approval/CheckInvoiceUsing'
+                let isDuplicate = false;
+                await axios.post(url, JSON.stringify(this.bills), {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then((response) => {
+                    var billIdDuplicate = [];
+                    this.duplicateInv = response.data
+                    console.log(this.duplicateInv)
+                    if (this.duplicateInv.length > 0) {
+                        for (let i = 0; i < this.duplicateInv.length; i++) {
+                            if (this.duplicateInv[i].isDuplicate == true) {
+                                isDuplicate = true;
+                                billIdDuplicate.push(this.duplicateInv[i].billId);
+                            }
+                        }
+                    }
+                    if (billIdDuplicate.length > 0) {
+                        this.$swal({
+                            icon: 'info',
+                            html: '<p align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>',
+                            title: 'แจ้งเตือน',
+                            /*footer: '<a href="">Why do I have this issue?</a>'*/
+                            showCancelButton: false,
+                            showDenyButton: false,
+
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+
+                            }
+                        })
+                        return false;
+                    }
+                    if (this.lastDocumentReceive != null) {
+                        console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
+                        for (let i = 0; i < this.bankNames.length; i++) {
+                            if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
+                                this.lastDocumentReceive.accountBankName = this.bankNames[i].name
+                                this.lastDocumentReceive.bankId = this.bankNames[i].bankCode
+                                console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
+                                //this.submitted = false;
+                                //return true;
+                            }
+                        }
+                        this.submitted = false;
+                        return true;
+                    }
+
+                }).catch(function (error) {
+                    alert(error);
+                });
+                if (isDuplicate) {
+                    return false;
+                } else {
+                    return true;
+                }
             },
             OnChangePageTwo() {
                 this.submitted = true;
 
-                
+
                 // stop here if form is invalid
                 if (!this.haslastDocumentReceive) {
                     this.$v.inputBank.$touch();
@@ -1477,11 +1514,11 @@
                         return false;
                     }
                 }
-                
+
 
 
                 if (this.lastDocumentReceive != null) {
-                    
+
                     console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
                     for (let i = 0; i < this.bankNames.length; i++) {
                         if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
@@ -1621,13 +1658,16 @@
     .v-select-claim > .vs__dropdown-toggle {
         height: 36px;
     }
-    .v-select-claim{
-        height:36px
+
+    .v-select-claim {
+        height: 36px
     }
+
     .invalid-feedback {
         margin-left: 5px;
         margin-bottom: 5px;
     }
+
     .div-center-image {
         text-align: -webkit-center;
     }
@@ -1793,6 +1833,10 @@
             box-shadow: 1px 2px var(--main-color);
             transform: translateX(1px);
             outline: none;
+        }
+
+        .mt-0.mb-2.form-control:disabled {
+            opacity: 0.6;
         }
 
     select {

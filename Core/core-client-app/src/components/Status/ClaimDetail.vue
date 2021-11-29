@@ -7,6 +7,11 @@
                  :is-full-page="true">
 
         </loading>
+        <vs-dialog width="550px" not-center v-model="modalBigImage">
+            <div class="con-content" align="center">
+                <img class="big-img-show" :src="srcBigImage" />
+            </div>
+        </vs-dialog>
         <h2 id="header2">รายละเอียดคำร้อง</h2>
         <div class="container">
             <div align="left" style="width: 100%;">
@@ -191,88 +196,88 @@
                     <hr class="mt-0">
                 </div>
                 <!--<div class="row">
-        <div class="col-4">
-            <p class="mb-0">บ้านเลขที่</p>
-            <div class="mt-0" v-if="approvalData.victim.accHomeId != null">
-                <p class="label-text">{{approvalData.victim.accHomeId}}</p>
-                <hr class="mt-0">
+            <div class="col-4">
+                <p class="mb-0">บ้านเลขที่</p>
+                <div class="mt-0" v-if="approvalData.victim.accHomeId != null">
+                    <p class="label-text">{{approvalData.victim.accHomeId}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accHomeId === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
             </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accHomeId === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
+            <div class="col-2">
+                <p class="mb-0">หมู่</p>
+                <div class="mt-0" v-if="approvalData.victim.accMoo != null">
+                    <p class="label-text">{{approvalData.victim.accMoo}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accMoo === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
             </div>
-        </div>
-        <div class="col-2">
-            <p class="mb-0">หมู่</p>
-            <div class="mt-0" v-if="approvalData.victim.accMoo != null">
-                <p class="label-text">{{approvalData.victim.accMoo}}</p>
-                <hr class="mt-0">
-            </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accMoo === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
-            </div>
-        </div>
-        <div class="col-6">
-            <p class="mb-0">ซอย</p>
-            <div class="mt-0" v-if="approvalData.victim.accSoi != null">
-                <p class="label-text">{{approvalData.victim.accSoi}}</p>
-                <hr class="mt-0">
-            </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accSoi === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <p class="mb-0">ถนน</p>
-            <div class="mt-0" v-if="approvalData.victim.accRoad != null">
-                <p class="label-text">{{approvalData.victim.accRoad}}</p>
-                <hr class="mt-0">
-            </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accRoad === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
+            <div class="col-6">
+                <p class="mb-0">ซอย</p>
+                <div class="mt-0" v-if="approvalData.victim.accSoi != null">
+                    <p class="label-text">{{approvalData.victim.accSoi}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accSoi === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
             </div>
         </div>
-        <div class="col-6">
-            <p class="mb-0">ตำบล/แขวง</p>
-            <div class="mt-0" v-if="approvalData.victim.accTumbolName != null">
-                <p class="label-text">{{approvalData.victim.accTumbolName}}</p>
-                <hr class="mt-0">
+        <div class="row">
+            <div class="col-6">
+                <p class="mb-0">ถนน</p>
+                <div class="mt-0" v-if="approvalData.victim.accRoad != null">
+                    <p class="label-text">{{approvalData.victim.accRoad}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accRoad === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
             </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accTumbolName === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">
-            <p class="mb-0">อำเภอ</p>
-            <div class="mt-0" v-if="approvalData.victim.accDistrictName != null">
-                <p class="label-text">{{approvalData.victim.accDistrictName}}</p>
-                <hr class="mt-0">
-            </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accDistrictName === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
-            </div>
-        </div>
-        <div class="col-6">
-            <p class="mb-0">จังหวัด</p>
-            <div class="mt-0" v-if="approvalData.victim.accProvinceName != null">
-                <p class="label-text">{{approvalData.victim.accProvinceName}}</p>
-                <hr class="mt-0">
-            </div>
-            <div class="mt-0" v-else-if="approvalData.victim.accProvinceName === null">
-                <p class="label-text">-</p>
-                <hr class="mt-0">
+            <div class="col-6">
+                <p class="mb-0">ตำบล/แขวง</p>
+                <div class="mt-0" v-if="approvalData.victim.accTumbolName != null">
+                    <p class="label-text">{{approvalData.victim.accTumbolName}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accTumbolName === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
             </div>
         </div>
-    </div>-->
+        <div class="row">
+            <div class="col-6">
+                <p class="mb-0">อำเภอ</p>
+                <div class="mt-0" v-if="approvalData.victim.accDistrictName != null">
+                    <p class="label-text">{{approvalData.victim.accDistrictName}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accDistrictName === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
+            </div>
+            <div class="col-6">
+                <p class="mb-0">จังหวัด</p>
+                <div class="mt-0" v-if="approvalData.victim.accProvinceName != null">
+                    <p class="label-text">{{approvalData.victim.accProvinceName}}</p>
+                    <hr class="mt-0">
+                </div>
+                <div class="mt-0" v-else-if="approvalData.victim.accProvinceName === null">
+                    <p class="label-text">-</p>
+                    <hr class="mt-0">
+                </div>
+            </div>
+        </div>-->
 
                 <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                 <div class="mt-0" v-if="approvalData.car.foundCarLicense != null">
@@ -303,7 +308,59 @@
                 </div>
 
             </div>
+            <!-- บัญชี -->
+            <div align="left" style="width: 100%;">
+                <ion-icon name="card-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 25px"></ion-icon>
+                <label align="left" class="title-advice-menu mb-1">ข้อมูลบัญชีรับเงิน</label>
+            </div>
+            <div class="box-container mb-3">
+                <div>
+                    <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
+                    <div align="center">
+                        <div class="div-center-image" @click="showBigImage(approvalData.bankAccount.base64Image)">
+                            <div class="divImage">
+                                <img class="img-show" :src="approvalData.bankAccount.base64Image" />
+                                <br />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p class="mb-0">ชื่อธนาคาร</p>
+                    <div class="mt-0" v-if="approvalData.bankAccount.accountBankName != null">
+                        <p class="label-text">{{ approvalData.bankAccount.accountBankName }}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="approvalData.bankAccount.accountBankName === null">
+                        <p class="label-text">-</p>
+                        <hr class="mt-0">
+                    </div>
+
+                    <p class="mb-0">ชื่อบัญชีธนาคาร</p>
+                    <div class="mt-0" v-if="approvalData.bankAccount.accountName != null">
+                        <p class="label-text">{{approvalData.bankAccount.accountName}}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="approvalData.bankAccount.accountName === null">
+                        <p class="label-text">-</p>
+                        <hr class="mt-0">
+                    </div>
+                    <p class="mb-0">เลขบัญชีธนาคาร</p>
+                    <div class="mt-0" v-if="approvalData.bankAccount.accountNumber != null">
+                        <p class="label-text">{{approvalData.bankAccount.accountNumber}}</p>
+                        <hr class="mt-0">
+                    </div>
+                    <div class="mt-0" v-else-if="approvalData.bankAccount.accountNumber === null">
+                        <p class="label-text">-</p>
+                        <hr class="mt-0">
+                    </div>
+                </div>
+
+
+
+
+            </div>
             <!-- เอกสาร -->
             <div align="left" style="width: 100%;">
                 <ion-icon name="reader-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 25px"></ion-icon>
@@ -312,7 +369,7 @@
             <div class="box-container mb-3">
                 <div class="card-bill" v-for="invhd in approvalData.invoicehds" :key="invhd.idinvhd">
                     <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                    <div class="div-center-image">
+                    <div class="div-center-image" @click="showBigImage(invhd.base64Image)">
                         <div class="divImage" v-if="invhd.base64Image != null" align="center">
                             <img class="img-show" :src="invhd.base64Image" />
                             <br />
@@ -432,59 +489,7 @@
                     <hr class="mt-0">
                 </div>
             </div>
-            <!-- บัญชี -->
-            <div align="left" style="width: 100%;">
-                <ion-icon name="card-outline" align="left" style="margin-bottom: -5px; padding-right: 5px; font-size: 25px"></ion-icon>
-                <label align="left" class="title-advice-menu mb-1">ข้อมูลบัญชีรับเงิน</label>
-            </div>
-            <div class="box-container mb-3">
-                <div>
-                    <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
-                    <div align="center">
-                        <div class="div-center-image">
-                            <div class="divImage">
-                                <img class="img-show" :src="approvalData.bankAccount.base64Image" />
-                                <br />
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <p class="mb-0">ชื่อธนาคาร</p>
-                    <div class="mt-0" v-if="approvalData.bankAccount.accountBankName != null">
-                        <p class="label-text">{{ approvalData.bankAccount.accountBankName }}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="approvalData.bankAccount.accountBankName === null">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
-
-                    <p class="mb-0">ชื่อบัญชีธนาคาร</p>
-                    <div class="mt-0" v-if="approvalData.bankAccount.accountName != null">
-                        <p class="label-text">{{approvalData.bankAccount.accountName}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="approvalData.bankAccount.accountName === null">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
-                    <p class="mb-0">เลขบัญชีธนาคาร</p>
-                    <div class="mt-0" v-if="approvalData.bankAccount.accountNumber != null">
-                        <p class="label-text">{{approvalData.bankAccount.accountNumber}}</p>
-                        <hr class="mt-0">
-                    </div>
-                    <div class="mt-0" v-else-if="approvalData.bankAccount.accountNumber === null">
-                        <p class="label-text">-</p>
-                        <hr class="mt-0">
-                    </div>
-                </div>
-
-
-
-
-            </div>
 
         </div>
     </div>
@@ -529,6 +534,8 @@
                     }
                 },
                 isLoading: true,
+                modalBigImage: false,
+                srcBigImage: null,
                 
 
 
@@ -572,6 +579,11 @@
                 });
 
             },
+            showBigImage(src) {
+                this.modalBigImage = true
+                this.srcBigImage = src
+
+            }
         },
         async mounted() {
             await this.getApprovalDetail();

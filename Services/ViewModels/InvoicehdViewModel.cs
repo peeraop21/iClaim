@@ -46,5 +46,6 @@ namespace Services.ViewModels
         public string StringTakendate { get; set; }
         public string StringDispensedate { get; set; }
         public string Base64Image { get; set; }
+        public string InvNotPassTypeId { get; set; }
     }
 }

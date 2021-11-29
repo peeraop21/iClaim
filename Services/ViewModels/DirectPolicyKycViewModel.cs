@@ -47,5 +47,8 @@ namespace Services.ViewModels
         public string LineId { get; set; }
         public string Status { get; set; }
         public string StringDateofBirth { get; set; }
+        public string Base64IdCard { get; set; }
+        public string Base64Face { get; set; }
+
     }
 }

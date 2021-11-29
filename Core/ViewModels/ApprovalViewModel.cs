@@ -10,6 +10,7 @@ namespace Core.ViewModels
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
         public int AppNo { get; set; }
+        public string BranchId { get; set; }
         public double? SumMoney { get; set; }
         public string ClaimNo { get; set; }
         public string UserIdLine { get; set; }

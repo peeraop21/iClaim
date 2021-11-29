@@ -17,7 +17,7 @@ import OtpInput from "@bachdgvn/vue-otp-input";
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
 import "vue-select/src/scss/vue-select.scss";
-
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 
 Vue.use(Vuesax, {

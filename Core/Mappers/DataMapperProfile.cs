@@ -15,6 +15,14 @@
                 .ForMember(m => m.CureMoney, opt => opt.MapFrom(src => src.SumMoney));
             CreateMap<BankViewModel, InputBankViewModel>();
             CreateMap<VictimViewModel, VictimtViewModel>();
+            CreateMap<BillViewModel, CheckDuplicateInvoiceViewModel>()
+                .ForMember(m => m.AccNo, opt => opt.MapFrom(src => src.accNo))
+                .ForMember(m => m.VictimNo, opt => opt.MapFrom(src => src.victimNo))
+                .ForMember(m => m.ReqNo, opt => opt.MapFrom(src => src.reqNo))
+                .ForMember(m => m.BillId, opt => opt.MapFrom(src => src.billNo))
+                .ForMember(m => m.BookNo, opt => opt.MapFrom(src => src.bookNo))
+                .ForMember(m => m.ReceiptNo, opt => opt.MapFrom(src => src.bill_no))
+                .ForMember(m => m.HosId, opt => opt.MapFrom(src => src.selectHospitalId));
             CreateMap<BillViewModel, Invoicehd>()
                 .ForMember(m => m.Takendate, opt => opt.MapFrom(src => DateTime.ParseExact(src.hospitalized_date, "yyyy-MM-dd", CultureInfo.InvariantCulture) ))
                 .ForMember(m => m.Takentime, opt => opt.MapFrom(src => src.hospitalized_time.Replace(":",".")))
