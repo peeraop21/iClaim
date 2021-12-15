@@ -149,7 +149,7 @@ namespace Core.Controllers
                 htmlTemplate = htmlTemplate.Replace("( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล", (string.IsNullOrEmpty(approvalData.CureMoney.ToString())) ? "( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล" : "(&#10004;) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล");
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.CureMoney}", approvalData.CureMoney.ToString() );
 
-                htmlTemplate = htmlTemplate.Replace("{ApprovalData.OtpSign}", "ยื่นคำร้องผ่านระบบ iClaim ด้วย SMS OTP(ref: " + approvalData.OtpSign + ")");
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.OtpSign}", "ยื่นผ่าน iClaim ด้วย SMS OTP (ref: " + approvalData.OtpSign + ")");
 
                 htmlTemplate = htmlTemplate.Replace("( ) ใบเสร็จรับเงิน", (string.IsNullOrEmpty(approvalData.CureMoney.ToString())) ? "( ) ใบเสร็จรับเงิน" : "(&#10004;) ใบเสร็จรับเงิน");
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.IdInvhd}", approvalData.IdInvhd.ToString());

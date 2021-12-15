@@ -11,11 +11,11 @@
         <div align="left">
             <p style="font-weight: bold">
                 <ion-icon name="newspaper-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> เลขที่รับแจ้ง:
-                <span class="p-main-color">{{ hosAppData.accNo }}</span> คำร้องที่:
-                <span class="p-main-color">{{ hosAppData.appNo }}</span>
+                <span class="p-main-color">{{ iclaimAppData.accNo }}</span> คำร้องที่:
+                <span class="p-main-color">{{ iclaimAppData.appNo }}</span>
                 <br>
                 <ion-icon name="calendar-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> วันที่ยื่นคำร้อง:
-                <span class="p-main-color">{{ hosAppData.stringRegDate }}</span>
+                <span class="p-main-color">{{ iclaimAppData.stringRegDate }}</span>
                 <br>
             </p>
         </div>
@@ -38,7 +38,7 @@
                 มีความจำนงค์ในการติดต่อ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เพื่อกระทำการ
                 <span class="p-main-color"> ยื่นคำร้องขอรับเงินเบิกค่าเสียหายเบื้องต้น</span>
             </p>
-            <p class="p-main-color">จำนวนเงิน {{hosAppData.sumMoney}} บาท</p>
+            <p class="p-main-color">จำนวนเงิน {{iclaimAppData.sumMoney}} บาท</p>
             <p>
                 จากกรมธรรม์ประกันภัยของบริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด กรณีการเกิดอุบัติเหตุของ
                 <br />
@@ -174,229 +174,247 @@
 
                 </div>
                 <button v-if="!displayBankAccount.isDisabledInputImageBookBank" class="btn-change-bank" @click="changeAccountBank">{{inputBank.displayBtnChangeBankImage}}</button>
-
-                <p class="mb-0 px-2">ชื่อธนาคาร</p>
-                <div class="mb-2">
-                    <select :disabled="displayBankAccount.isDisabledBankName" v-model="$v.inputBank.accountBankName.$model" style="font-size: 13px;" :class="{ 'is-invalid': $v.inputBank.accountBankName.$error }">
-                        <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
-                            {{ bankName.name }}
-                        </option>
-                    </select>
-                    <div v-if="submitted && !$v.inputBank.accountBankName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกบัญชีธนาคาร</div>
+                <div v-if="!displayBankAccount.isHideFormInput ">
+                    <p class="mb-0 px-2">
+                        ชื่อธนาคาร
+                        <span class="star-require">*</span>
+                    </p>
+                    <div class="mb-2">
+                        <select :disabled="displayBankAccount.isDisabledBankName" v-model="$v.inputBank.accountBankName.$model" style="font-size: 13px;" :class="{ 'is-invalid': $v.inputBank.accountBankName.$error }">
+                            <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                {{ bankName.name }}
+                            </option>
+                        </select>
+                        <div v-if="submitted && !$v.inputBank.accountBankName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกบัญชีธนาคาร</div>
+                    </div>
+                    <p class="mb-0 px-2">
+                        ชื่อบัญชีธนาคาร
+                        <span class="star-require">*</span>
+                    </p>
+                    <b-form-input :disabled="displayBankAccount.isDisabledAccountName" class="mt-0 mb-2" v-model="$v.inputBank.accountName.$model" :class="{ 'is-invalid': $v.inputBank.accountName.$error }"></b-form-input>
+                    <div v-if="submitted && !$v.inputBank.accountName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกชื่อบัญชีธนาคาร</div>
+                    <p class="mb-0 px-2">
+                        เลขบัญชีธนาคาร
+                        <span class="star-require">*</span>
+                    </p>
+                    <b-form-input :disabled="displayBankAccount.isDisabledAccountNumber" class="mt-0 mb-2" v-model="$v.inputBank.accountNumber.$model" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
+                    <div v-if="submitted && !$v.inputBank.accountNumber.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่บัญชี</div>
                 </div>
-                <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
-                <b-form-input :disabled="displayBankAccount.isDisabledAccountName" class="mt-0 mb-2" v-model="$v.inputBank.accountName.$model" :class="{ 'is-invalid': $v.inputBank.accountName.$error }"></b-form-input>
-                <div v-if="submitted && !$v.inputBank.accountName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกชื่อบัญชีธนาคาร</div>
-                <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
-                <b-form-input :disabled="displayBankAccount.isDisabledAccountNumber" class="mt-0 mb-2" v-model="$v.inputBank.accountNumber.$model" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
-                <div v-if="submitted && !$v.inputBank.accountNumber.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่บัญชี</div>
+
                 <br>
             </div>
         </div>
         <div v-if="invoiceDoc">
 
             <br />
-            <div class="box-container mt-2" v-for="(input, index) in $v.bills.$each.$iter" :key="index">
-                <div class="input wrapper flex items-center">
-                    <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาลที่ : {{calIndex(index)}}</p>
-                    <!--<input type="file" @change="onFileChange">-->
-                    <div v-if="!displayBills[index].isDisabledInputImageBill">
-                        <file-pond credits="null"
-                                   label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
-                                   v-bind:allow-multiple="false"
-                                   v-bind:allowFileEncode="true"
-                                   accepted-file-types="image/jpeg, image/png"
-                                   v-if="bills[index].isEditImage"
-                                   v-bind:files="bills[index].file"
-                                   v-model="bills[index].file"
-                                   v-on:addfile="onAddBillFile(index)" />
-                    </div>
-                    <div v-if="!displayBills[index].isDisabledImageBill">
-                        <div class="mt-2 mb-2" v-if="!bills[index].isEditImage" align="center">
-                            <div class="div-center-image" @click="showBigImage(bills[index].billFileShow)">
-                                <div class="divImage">
-                                    <img class="img-show" :src="bills[index].billFileShow" />
-                                    <br />
-                                    <label>{{bills[index].filename}}</label>
+            <div v-for="(input, index) in $v.bills.$each.$iter" :key="index">
+                <b-overlay :show="invOverlay[index].isShow" :id="'billOverlay' + index">
+                    <div class="box-container mt-2">
+                        <div class="input wrapper flex items-center">
+                            <div align="left">
+                                <label>ใบเสร็จรับเงินค่ารักษาพยาบาลที่ : {{calIndex(index)}}</label>
+                            </div>
+                            <div v-if="!displayBills[index].isDisabledInputImageBill">
+                                <file-pond credits="null"
+                                           label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
+                                           v-bind:allow-multiple="false"
+                                           v-bind:allowFileEncode="true"
+                                           accepted-file-types="image/jpeg, image/png"
+                                           v-if="bills[index].isEditImage"
+                                           v-bind:files="bills[index].file"
+                                           v-model="bills[index].file"
+                                           v-on:addfile="onAddBillFile(index)" />
+                            </div>
+                            <div v-if="!displayBills[index].isDisabledImageBill">
+                                <div class="mt-2 mb-2" v-if="!bills[index].isEditImage" align="center">
+                                    <div class="div-center-image" @click="showBigImage(bills[index].billFileShow)">
+                                        <div class="divImage">
+                                            <img class="img-show" :src="bills[index].billFileShow" />
+                                            <br />
+                                            <label>{{bills[index].filename}}</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <button v-if="!displayBills[index].isDisabledInputImageBill" class="btn-change-bank " @click="changeBillImage(index)">{{bills[index].displayBtnChangeBillImage}}</button>
-                    <vs-dialog width="550px" not-center v-model="modalHospital">
-                        <template #header>
-                            <h4 class="not-margin">
-                                เลือกโรงพยาบาล
-                            </h4>
-                        </template>
-                        <div class="con-content" align="left">
-                            <div class="d-block text-left">
-                                <div class="mb-2">
-                                    <label class="px-2">จังหวัด</label>
-                                    <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
-                                        <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
-                                            {{ category.changwatname }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="mb-2" v-show="divHospitalModal">
-                                    <label class="px-2">โรงพยาบาล</label>
-                                    <select name="item" id="item" v-model="mockHospital">
-                                        <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
-                                            {{ item.HOSPITALNAME  }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <template #footer>
-                            <div class="footer-dialog">
-                                <vs-button block @click="submitModalHospital(index)">
-                                    ยืนยัน
-                                </vs-button>
-
-                            </div>
-                        </template>
-                    </vs-dialog>
-                    <vs-dialog width="550px" not-center v-model="modalWounded">
-                        <template #header>
-                            <h4 class="not-margin">
-                                เลือกอาการบาดเจ็บ
-                            </h4>
-                        </template>
-                        <div class="con-content" align="left">
-                            <div class="d-block text-left">
-                                <div class="mb-2">
-                                    <label class="px-2">ประเภท</label>
-                                    <select name="category" id="category" v-model="selectOrgan" @change="onOrganChange">
-                                        <option v-for="(category, index) in organ" :value="category" :key="index" style="font-size: 12px; line-height: 0px">
-                                            {{ category }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="mb-2" v-show="divWoundedModal">
-                                    <label class="px-2">อาการบาดเจ็บ</label>
-                                    <select name="item" id="item" v-model="mockWounded">
-                                        <option v-for="(item, index) in filteredWoundedItems" :value="item.wounded" :key="index">
-                                            {{ item.wounded  }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <template #footer>
-                            <div class="footer-dialog">
-                                <vs-button block @click="submitModalWounded(index)">
-                                    ยืนยัน
-                                </vs-button>
-
-                            </div>
-                        </template>
-                    </vs-dialog>
-                    <div v-if="!displayBills[index].isHideFormInput">
-                        <label class="px-2">อาการบาดเจ็บ</label>
-                        <b-form-input :disabled="displayBills[index].isDisabledConsider" class="mt-0 mb-2" v-model="input.injuri.$model" placeholder="" type="text" @click="modalWounded=!modalWounded" :class="{ 'is-invalid': input.injuri.$error }"></b-form-input>
-                        <div v-if="submitted && !input.injuri.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกอาการบาดเจ็บ</div>
-                        <label class="px-2">ประเภทผู้ป่วย</label>
-                        <br />
-                        <div class="mt-1 mb-2" style="float: left;">
-                            <vs-radio :disabled="displayBills[index].isDisabledVictimType" v-model="input.typePatient.$model" val="IPD" style="float: left">
-                                ผู้ป่วยใน (นอนพักรักษาตัวในโรงพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป)
-                            </vs-radio>
-                            <vs-radio :disabled="displayBills[index].isDisabledVictimType" v-model="input.typePatient.$model" val="OPD" class="mt-1" style="float: left">
-                                ผู้ป่วยนอก (ไม่ได้นอนพักรักษาตัวในโรงพยาบาล)
-                            </vs-radio>
-
-                        </div>
-                        <label class="px-2">โรงพยาบาล</label>
-                        <b-form-input :disabled="displayBills[index].isDisabledHospital" class="mt-0 mb-2" v-model="input.selectHospital.$model" type="text" @click="modalHospital=!modalHospital" :class="{ 'is-invalid': input.selectHospital.$error }" />
-                        <div v-if="submitted && !input.selectHospital.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกโรงพยาบาล</div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label class="px-2">ใบเสร็จเล่มที่</label>
-                                <b-form-input :disabled="displayBills[index].isDisabledBookNo" class="mt-0 mb-2" v-model="input.bookNo.$model" type="text" placeholder="" :class="{ 'is-invalid': input.bookNo.$error }" />
-                                <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
-                            </div>
-                            <div class="col-6">
-                                <label class="px-2">เลขที่ใบเสร็จ</label>
-                                <b-form-input :disabled="displayBills[index].isDisabledReceiptNo" class="mt-0 mb-2" v-model="input.bill_no.$model" type="text" placeholder="" :class="{ 'is-invalid': input.bill_no.$error }" />
-                                <div v-if="submitted && !input.bill_no.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่ใบเสร็จ</div>
-                            </div>
-                        </div>
-                        <label class="px-2">จำนวนเงิน</label>
-                        <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="calMoney" :class="{ 'is-invalid': input.money.$error }" />
-                        <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
-                        <div class="row">
-                            <div class="col-8">
-                                <label class="px-2">วันที่เข้ารักษา</label>
-                            </div>
-                            <div class="col-4">
-                                <label class="px-2">เวลา</label>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <v-date-picker v-model="input.hospitalized_date.$model" class="flex-grow col-8" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
-                                <template v-slot="{ inputValue, inputEvents }">
-                                    <input :disabled="displayBills[index].isDisabledTakenDate" class=" mt-0 mb-2 form-control "
-                                           :value="inputValue"
-                                           v-on="inputEvents"
-                                           :class="{ 'is-invalid': input.hospitalized_date.$error }"
-                                           readonly />
-                                    <div v-if="submitted && !input.hospitalized_date.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกวันที่เข้ารักษา</div>
+                            <button v-if="!displayBills[index].isDisabledInputImageBill" class="btn-change-bank " @click="changeBillImage(index)">{{bills[index].displayBtnChangeBillImage}}</button>
+                            <vs-dialog width="550px" not-center v-model="modalHospital">
+                                <template #header>
+                                    <h4 class="not-margin">
+                                        เลือกโรงพยาบาล
+                                    </h4>
                                 </template>
-                            </v-date-picker>
-                            <v-date-picker v-model="input.hospitalized_time.$model" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig" :dayPopover="{}">
-                                <template v-slot="{ inputValue, inputEvents }">
-                                    <input :disabled="displayBills[index].isDisabledTakenTime" class=" mt-0 mb-2 form-control "
-                                           :value="inputValue"
-                                           v-on="inputEvents"
-                                           :class="{ 'is-invalid': input.hospitalized_time.$error }"
-                                           readonly />
-                                    <div v-if="submitted && !input.hospitalized_time.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกเวลาที่เข้ารักษา</div>
+                                <div class="con-content" align="left">
+                                    <div class="d-block text-left">
+                                        <div class="mb-2">
+                                            <label class="px-2">จังหวัด</label>
+                                            <select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
+                                                <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
+                                                    {{ category.changwatname }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2" v-show="divHospitalModal">
+                                            <label class="px-2">โรงพยาบาล</label>
+                                            <select name="item" id="item" v-model="mockHospital">
+                                                <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
+                                                    {{ item.HOSPITALNAME  }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template #footer>
+                                    <div class="footer-dialog">
+                                        <vs-button block @click="submitModalHospital(index)">
+                                            ยืนยัน
+                                        </vs-button>
+
+                                    </div>
                                 </template>
-                            </v-date-picker>
-                        </div>
-
-                        <div v-if="input.typePatient==='IPD'">
-                            <div class="row">
-                                <div class="col-8">
-                                    <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
+                            </vs-dialog>
+                            <vs-dialog width="550px" not-center v-model="modalWounded">
+                                <template #header>
+                                    <h4 class="not-margin">
+                                        เลือกอาการบาดเจ็บ
+                                    </h4>
+                                </template>
+                                <div class="con-content" align="left">
+                                    <div class="d-block text-left">
+                                        <div class="mb-2">
+                                            <label class="px-2">ประเภท</label>
+                                            <select name="category" id="category" v-model="selectOrgan" @change="onOrganChange">
+                                                <option v-for="(category, index) in organ" :value="category" :key="index" style="font-size: 12px; line-height: 0px">
+                                                    {{ category }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2" v-show="divWoundedModal">
+                                            <label class="px-2">อาการบาดเจ็บ</label>
+                                            <select name="item" id="item" v-model="mockWounded">
+                                                <option v-for="(item, index) in filteredWoundedItems" :value="item.wounded" :key="index">
+                                                    {{ item.wounded  }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-4">
-                                    <label class="px-2">เวลา</label>
+                                <template #footer>
+                                    <div class="footer-dialog">
+                                        <vs-button block @click="submitModalWounded(index)">
+                                            ยืนยัน
+                                        </vs-button>
+
+                                    </div>
+                                </template>
+                            </vs-dialog>
+                            <div v-if="!displayBills[index].isHideFormInput">
+                                <label class="px-2">อาการบาดเจ็บ<span class="star-require">*</span></label>
+                                <b-form-input :disabled="displayBills[index].isDisabledConsider" class="mt-0 mb-2" v-model="input.injuri.$model" placeholder="" type="text" @click="modalWounded=!modalWounded" :class="{ 'is-invalid': input.injuri.$error }"></b-form-input>
+                                <div v-if="submitted && !input.injuri.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกอาการบาดเจ็บ</div>
+                                <label class="px-2">ประเภทผู้ป่วย<span class="star-require">*</span></label>
+                                <br />
+                                <div class="mt-1 mb-2" style="float: left;">
+                                    <vs-radio :disabled="displayBills[index].isDisabledVictimType" v-model="input.typePatient.$model" val="IPD" style="float: left">
+                                        ผู้ป่วยใน (นอนพักรักษาตัวในโรงพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป)
+                                    </vs-radio>
+                                    <vs-radio :disabled="displayBills[index].isDisabledVictimType" v-model="input.typePatient.$model" val="OPD" class="mt-1" style="float: left">
+                                        ผู้ป่วยนอก (ไม่ได้นอนพักรักษาตัวในโรงพยาบาล)
+                                    </vs-radio>
+
+                                </div>
+                                <label class="px-2">โรงพยาบาล<span class="star-require">*</span></label>
+                                <b-form-input :disabled="displayBills[index].isDisabledHospital" class="mt-0 mb-2" v-model="input.selectHospital.$model" type="text" @click="modalHospital=!modalHospital" :class="{ 'is-invalid': input.selectHospital.$error }" />
+                                <div v-if="submitted && !input.selectHospital.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกโรงพยาบาล</div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="px-2">ใบเสร็จเล่มที่<span class="star-require">*</span></label>
+                                        <b-form-input :disabled="displayBills[index].isDisabledBookNo" class="mt-0 mb-2" v-model="input.bookNo.$model" type="text" placeholder="" :class="{ 'is-invalid': input.bookNo.$error }" />
+                                        <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="px-2">เลขที่ใบเสร็จ<span class="star-require">*</span></label>
+                                        <b-form-input :disabled="displayBills[index].isDisabledReceiptNo" class="mt-0 mb-2" v-model="input.bill_no.$model" type="text" placeholder="" :class="{ 'is-invalid': input.bill_no.$error }" />
+                                        <div v-if="submitted && !input.bill_no.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่ใบเสร็จ</div>
+                                    </div>
+                                </div>
+                                <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
+                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="calMoney" :class="{ 'is-invalid': input.money.$error }" />
+                                <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <label class="px-2">วันที่เข้ารักษา<span class="star-require">*</span></label>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="px-2">เวลา<span class="star-require">*</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <v-date-picker v-model="input.hospitalized_date.$model" class="flex-grow col-8" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
+                                        <template v-slot="{ inputValue, inputEvents }">
+                                            <input :disabled="displayBills[index].isDisabledTakenDate" class=" mt-0 mb-2 form-control "
+                                                   :value="inputValue"
+                                                   v-on="inputEvents"
+                                                   :class="{ 'is-invalid': input.hospitalized_date.$error }"
+                                                   readonly />
+                                            <div v-if="submitted && !input.hospitalized_date.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกวันที่เข้ารักษา</div>
+                                        </template>
+                                    </v-date-picker>
+                                    <v-date-picker v-model="input.hospitalized_time.$model" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig" :dayPopover="{}">
+                                        <template v-slot="{ inputValue, inputEvents }">
+                                            <input :disabled="displayBills[index].isDisabledTakenTime" class=" mt-0 mb-2 form-control "
+                                                   :value="inputValue"
+                                                   v-on="inputEvents"
+                                                   :class="{ 'is-invalid': input.hospitalized_time.$error }"
+                                                   readonly />
+                                            <div v-if="submitted && !input.hospitalized_time.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกเวลาที่เข้ารักษา</div>
+                                        </template>
+                                    </v-date-picker>
+                                </div>
+
+                                <div v-if="input.typePatient==='IPD'">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="px-2">เวลา</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <v-date-picker v-model="input.out_hospital_date.$model" class="flex-grow col-8" locale="th" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
+                                            <template v-slot="{ inputValue, inputEvents }">
+                                                <input :disabled="displayBills[index].isDisabledDispenseDate" class=" mt-0 mb-2 form-control "
+                                                       :value="inputValue"
+                                                       v-on="inputEvents"
+                                                       :class="{ 'is-invalid': input.out_hospital_date.$error }"
+                                                       readonly />
+                                                <div v-if="submitted && !input.out_hospital_time.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกวันที่ที่ออกจากโรงพยาบาล</div>
+                                            </template>
+                                        </v-date-picker>
+                                        <v-date-picker v-model="input.out_hospital_time.$model" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig">
+                                            <template v-slot="{ inputValue, inputEvents }">
+                                                <input :disabled="displayBills[index].isDisabledDispenseTime" class=" mt-0 mb-2 form-control "
+                                                       :value="inputValue"
+                                                       v-on="inputEvents"
+                                                       :class="{ 'is-invalid': input.out_hospital_time.$error }"
+                                                       readonly />
+                                                <div v-if="submitted && !input.out_hospital_time.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกเวลาที่ออกจากโรงพยาบาล</div>
+                                            </template>
+                                        </v-date-picker>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <v-date-picker v-model="input.out_hospital_date.$model" class="flex-grow col-8" locale="th" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
-                                    <template v-slot="{ inputValue, inputEvents }">
-                                        <input :disabled="displayBills[index].isDisabledDispenseDate" class=" mt-0 mb-2 form-control "
-                                               :value="inputValue"
-                                               v-on="inputEvents"
-                                               :class="{ 'is-invalid': input.out_hospital_date.$error }"
-                                               readonly />
-                                        <div v-if="submitted && !input.out_hospital_time.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกวันที่ที่ออกจากโรงพยาบาล</div>
-                                    </template>
-                                </v-date-picker>
-                                <v-date-picker v-model="input.out_hospital_time.$model" class="flex-grow col-4" locale="th" mode="time" is24hr :model-config="timeModelConfig">
-                                    <template v-slot="{ inputValue, inputEvents }">
-                                        <input :disabled="displayBills[index].isDisabledDispenseTime" class=" mt-0 mb-2 form-control "
-                                               :value="inputValue"
-                                               v-on="inputEvents"
-                                               :class="{ 'is-invalid': input.out_hospital_time.$error }"
-                                               readonly />
-                                        <div v-if="submitted && !input.out_hospital_time.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกเวลาที่ออกจากโรงพยาบาล</div>
-                                    </template>
-                                </v-date-picker>
-                            </div>
-
+                            <br>
                         </div>
                     </div>
-                    <br>
-
-
-                </div>
+                    <template #overlay>
+                        <div class="text-center">
+                            <p id="cancel-label">ใบเสร็จนี้ถูกยกเลิกจากการเบิกครั้งนี้แล้ว</p>
+                        </div>
+                    </template>
+                </b-overlay>
             </div>
             <br>
             <p class="p_right">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
@@ -424,7 +442,8 @@
     export default {
         name: "AddDocument",
         components: {
-            Loading
+            Loading,
+
         },
         data() {
             return {
@@ -457,6 +476,7 @@
                     billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: ""
                     , out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: ""
                     , file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
+                    , isCancel: false
                 }],
                 total_amount: 0,
                 // --BookBank
@@ -502,14 +522,14 @@
                 //----Get Wounded
                 documentCheck: [],
                 // HosApp
-                hosAppData: this.$store.getters.hosAppGetter(this.$route.params.id, this.$route.params.appNo),
+                iclaimAppData: this.$store.getters.hosAppGetter(this.$route.params.id, this.$route.params.appNo),
                 // Document Checkbox
                 invoiceDoc: false,
                 doc2: false,
                 doc3: false,
                 accountDoc: false,
                 isLoading: true,
-                displayBankAccount: { isDisabledInputImageBookBank: true, isDisabledImageBookBank: true, isDisabledBankName: true, isDisabledAccountName: true, isDisabledAccountNumber: true },
+                displayBankAccount: { isDisabledInputImageBookBank: true, isDisabledImageBookBank: true, isDisabledBankName: true, isDisabledAccountName: true, isDisabledAccountNumber: true, isHideFormInput: true },
                 displayBills: [{
                     isDisabledInputImageBill: true, isDisabledImageBill: true, isDisabledConsider: true, isDisabledVictimType: true, isDisabledHospital: true,
                     isDisabledBookNo: true, isDisabledReceiptNo: true, isDisabledMoney: true, isDisabledTakenDate: true, isDisabledTakenTime: true,
@@ -519,7 +539,8 @@
                 modalBigImage: false,
                 srcBigImage: null,
                 invNotPassDescList: [],
-                bookbankNotPassDescList: []
+                bookbankNotPassDescList: [],
+                invOverlay: [{isShow:false}]
 
 
             };
@@ -585,10 +606,11 @@
                 console.log("ChangeBank")
                 if (!this.inputBank.isEditBankImage) {
                     console.log("ChangeBank1", this.inputBank)
-
+                    this.displayBankAccount.isHideFormInput = false
                     this.inputBank.isEditBankImage = true
                     this.inputBank.displayBtnChangeBankImage = "ใช้รูปบัญชีเดิม"
                 } else {
+                    this.displayBankAccount.isHideFormInput = true
                     this.inputBank.isEditBankImage = false
                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
                 }
@@ -625,6 +647,7 @@
                             this.bills[i].selectHospitalId = this.hospitals[j].HOSPITALID;
                         }
                     }
+
                     for (let j = 0; j < this.wounded.length; j++) {
                         if (this.wounded[j].woundedId == parseInt(this.invoicehd[i].mainconsider)) {
                             console.log("mainconsi ", parseInt(this.invoicehd[i].mainconsider))
@@ -721,8 +744,14 @@
                     .then((response) => {
                         this.invoicehd = response.data;
                         console.log("invoicehd: ", response.data);
-                        if (response.data.length > 1) {
-                            this.addField(null, this.bills);
+                        if (response.data.length > 0) {
+                            for (let i = 0; i < (this.invoicehd.length - 1); i++) {
+                                this.addField(null, this.bills);
+                                this.invOverlay.push({
+                                    isShow: false
+                                });
+                                
+                            }
                         }
                         this.loadInvoicehd();
                         this.calMoney();
@@ -849,15 +878,19 @@
                                         this.displayBankAccount.isDisabledBankName = false
                                         this.displayBankAccount.isDisabledAccountName = false
                                         this.displayBankAccount.isDisabledAccountNumber = false
+                                        this.displayBankAccount.isHideFormInput = true
                                     } else if (bookbankNotPassTypeId[i] == "203") {
                                         this.displayBankAccount.isDisabledImageBookBank = false
                                         this.displayBankAccount.isDisabledBankName = false
+                                        this.displayBankAccount.isHideFormInput = false
                                     } else if (bookbankNotPassTypeId[i] == "204") {
                                         this.displayBankAccount.isDisabledImageBookBank = false
                                         this.displayBankAccount.isDisabledAccountName = false
+                                        this.displayBankAccount.isHideFormInput = false
                                     } else if (bookbankNotPassTypeId[i] == "205") {
                                         this.displayBankAccount.isDisabledImageBookBank = false
                                         this.displayBankAccount.isDisabledAccountNumber = false
+                                        this.displayBankAccount.isHideFormInput = false
                                     }
                                 }
                             }
@@ -928,12 +961,16 @@
             //    console.log(this.$refs.pond.getFiles());
             //},
             onChangwatChange() {
-
                 this.divHospitalModal = true;
 
             },
             submitModalHospital(index) {
                 this.bills[index].selectHospital = this.mockHospital
+                for (let i = 0; i < this.hospitals.length; i++) {
+                    if (this.bills[index].selectHospital == this.hospitals[i].HOSPITALNAME) {
+                        this.bills[index].selectHospitalId = this.hospitals[i].HOSPITALID
+                    }
+                }
                 this.modalHospital = false
                 this.selectChangwat = 0;
                 this.mockHospital = 0;
@@ -948,7 +985,6 @@
             },
             submit() {
                 this.submitted = true;
-
                 // stop here if form is invalid
                 this.$v.$touch();
                 if (this.$v.$invalid) {
@@ -956,7 +992,7 @@
                 }
                 console.log("ss   ", JSON.stringify(this.bills))
                 for (let i = 0; i < this.bills.length; i++) {
-                    this.bills[i].accNo = this.hosAppData.accNo
+                    this.bills[i].accNo = this.iclaimAppData.accNo
                     this.bills[i].victimNo = this.accData.victimNo
                     this.bills[i].reqNo = this.$route.params.appNo
                     this.bills[i].money = this.bills[i].money.toString()
@@ -976,26 +1012,83 @@
                         for (let i = 0; i < this.duplicateInv.length; i++) {
                             if (this.duplicateInv[i].isDuplicate == true) {
                                 isDuplicate = true;
-                                billIdDuplicate.push(i + 1);
+                                billIdDuplicate.push({
+                                    idInvhd: this.duplicateInv[i].billId, bill_no: (i + 1)
+                                });
                             }
                         }
                     }
                     if (billIdDuplicate.length > 0) {
                         this.isLoading = false;
-                        this.$swal({
-                            icon: 'info',
-                            html: '<p align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>',
-                            title: 'แจ้งเตือน',
-                            /*footer: '<a href="">Why do I have this issue?</a>'*/
-                            showCancelButton: false,
-                            showDenyButton: false,
+                        var htmlMessage = '<p style="margin-bottom:10px" align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate.map(m => m.bill_no) + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>'
+                        htmlMessage += '<p style="color:red;margin-bottom:5px" align="left">&emsp;&emsp;*หมายเหตุ หากท่านต้องการยกเลิกใบเสร็จในการเบิกคำร้องนี้ กรุณาติ๊กเลือกใบเสร็จแล้วกดปุ่ม <label style="color:var(--main-color)">"ยกเลิกใบเสร็จ"</label> </p>'
+                        for (let i = 0; i < billIdDuplicate.length; i++) {
+                            htmlMessage += '<div class="form-check px-5"><input id="swal-check' + (i + 1) + '" class="form-check-input" type="checkbox" value="" ><label class="form-check-label" for="swal-check' + (i + 1) +'">ยกเลิกใบเสร็จที่ : ' + billIdDuplicate[i].bill_no + '</label></div>'
+                        }
 
-                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        this.$swal({
+                            icon: 'warning',
+                            html: htmlMessage,
+                            title: 'คำเตือน',
+                            showCancelButton: false,
+                            showDenyButton: true,
+                            denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            denyButtonColor: '#dad5e9',
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิกใบเสร็จ",
                             confirmButtonColor: '#5c2e91',
                             willClose: () => {
 
                             }
-                        })
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                for (let i = 0; i < billIdDuplicate.length; i++) {
+                                    if (document.getElementById('swal-check' + (i + 1)).checked) {
+                                        let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
+                                        this.bills[index].isCancel = true
+                                        this.invOverlay[index].isShow = true
+                                    }
+                                }
+                                var billCansel = this.bills.filter(w => w.isCancel).length
+                                console.log("billCanselOn", billCansel)
+                                if (billCansel == this.iclaimAppData.iclaimInvCount) {
+                                    console.log("billCansel", billCansel)
+                                    this.$swal({
+                                        icon: 'warning',
+                                        html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount +' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
+                                        title: 'คำเตือน',
+                                        showCancelButton: false,
+                                        showDenyButton: true,
+                                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                                        denyButtonColor: '#dad5e9',
+                                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                                        confirmButtonColor: '#5c2e91',
+                                        willClose: () => {
+
+                                        }
+                                    }).then((result) => {
+                                        this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                                        this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                                        this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
+                                        this.$store.state.inputApprovalData.SumMoney = null
+                                        this.$store.state.inputApprovalData.ClaimNo = null
+                                        this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
+                                        this.$store.state.inputApprovalData.Injury = null
+                                        this.$store.state.inputApprovalData.BillsData = null
+                                        this.$store.state.inputApprovalData.BankData = null
+                                        this.$store.state.inputApprovalData.VictimData = null
+                                        if (result.isConfirmed) {
+                                            this.$router.push({ name: 'ConfirmOTP', params: { from: "CanselApproval" } })
+                                        } else {
+                                            for (let i = 0; i < billIdDuplicate.length; i++) {                                         
+                                                    let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
+                                                    this.bills[index].isCancel = false
+                                                    this.invOverlay[index].isShow = false                                            
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
                         return false;
                     } else {
                         this.isLoading = false;
@@ -1063,7 +1156,8 @@
                 fieldType.push({
                     billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "",
                     out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",
-                    file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
+                    file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ",
+                    isCancel: false
                 });
                 this.calMoney()
                 console.log("fieldType: ", fieldType)
@@ -1094,20 +1188,19 @@
                 this.srcBigImage = src
             },
             calIndex(index) {
-
                 return parseInt(index) + 1;
-            }
+            },
+
         },
-        async mounted() {
+        async created() {
             await this.getHospitalNames();
             await this.getDocumentCheck();
-
-
+            
 
             this.selectChangwat = 0;
             this.selectHospital = 0;
-            console.log('accData', this.accData);
-            console.log('hosData', this.hosAppData);
+            console.log('testOverlay', this.invOverlay);
+            console.log('hosData', this.iclaimAppData);
         },
 
         computed: {

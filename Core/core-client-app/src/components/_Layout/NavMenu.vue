@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div>
         <b-navbar class="navbar-digital-cliam justify-content-between mb-4" style="">
             <div align="left" style="width: 100%;">
@@ -40,7 +40,28 @@
                 } else if (routeName == "ApprovalCreate") {
                     this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {
-                    this.$router.push({ name: 'ApprovalCreate', params: { id: this.$route.params.id }})
+                    this.$swal({
+                        icon: 'warning',
+                        text: 'ท่านต้องการจะยกเลิกการส่งคำร้องหรือไม่?',
+                        title: 'คำเตือน',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: true,
+                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ไม่",
+                        denyButtonColor: '#dad5e9',
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ใช่",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            
+                        }
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            this.$router.push({ name: 'Rights' })
+                        }
+                    });
+                    
+                    /*this.$router.push({ name: 'ApprovalCreate', params: { id: this.$route.params.id }})*/
                 } else if (routeName == "Approvals") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "ConfirmMoney") {

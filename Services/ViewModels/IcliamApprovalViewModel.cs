@@ -41,5 +41,6 @@ namespace Services.ViewModels
         public string StringAccNo { get; set; }
         public string AppStatusName { get; set; }
         public List<ApprovalStatusViewModel> AppStatus { get; set; }
+        public int IclaimInvCount { get; set; }
     }
 }

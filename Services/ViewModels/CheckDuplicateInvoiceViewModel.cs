@@ -14,5 +14,6 @@ namespace Services.ViewModels
         public string ReceiptNo { get; set; }
         public string HosId { get; set; }
         public bool IsDuplicate { get; set; }
+        public bool IsCansel { get; set; }
     }
 }

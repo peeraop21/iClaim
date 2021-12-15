@@ -16,68 +16,75 @@
                     </div>
                 </div>-->
                 <section>
-                    <div v-if="isHasIclaimApprovalData == true" style="height: 90%; width: 100%;">
+                    <div v-if="isHasIclaimApprovalData == true" style="height: 95%; width: 100%;">
                         <div class="accordion" v-for="iclaimApp in iclaimApprovalData" :key="iclaimApp.appNo">
-                            <div class="accordion-item" :id="'list' + iclaimApp.appNo">
-                                <a class="accordion-link" :href="'#list' + iclaimApp.appNo">
-                                    <div>
-                                        <p style="margin-bottom: 10px">
-                                            <ion-icon name="newspaper-outline"></ion-icon>คำร้องที่: {{ iclaimApp.appNo }}
-                                            <br>
-                                            <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ iclaimApp.stringRegDate }} น.
-                                            <br>
-                                            <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{iclaimApp.appStatusName}}
-                                        </p>
-                                    </div>
-                                    <div align="right" style="margin-top: -10px;">
-                                        <div style="margin-top:-5px">
-                                            <!--<a v-on:click="getPDF(iclaimApp.appNo)">PDF</a>-->
-                                            <vs-button v-if="iclaimApp.status >= 5"
-                                                       v-on:click="externalPagePDF(iclaimApp.appNo)"
-                                                       icon
-                                                       primary
-                                                       flat>
-                                                PDF
-                                            </vs-button>
-                                            <router-link :to="{ name: 'ApprovalDetail', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">
-                                                <vs-button circle
+                            <b-overlay :show="iclaimApp.status == 0">
+                                <div class="accordion-item" :id="'list' + iclaimApp.appNo">
+                                    <a class="accordion-link" :href="'#list' + iclaimApp.appNo">
+                                        <div>
+                                            <p style="margin-bottom: 10px">
+                                                <ion-icon name="newspaper-outline"></ion-icon>คำร้องที่: {{ iclaimApp.appNo }}
+                                                <br>
+                                                <ion-icon name="calendar-outline"></ion-icon>วันที่ยื่นคำร้อง: {{ iclaimApp.stringRegDate }} น.
+                                                <br>
+                                                <ion-icon name="options-outline"></ion-icon>สถานะคำร้อง: {{iclaimApp.appStatusName}}
+                                            </p>
+                                        </div>
+                                        <div align="right" style="margin-top: -10px;">
+                                            <div style="margin-top:-5px">
+                                                <!--<a v-on:click="getPDF(iclaimApp.appNo)">PDF</a>-->
+                                                <vs-button v-if="iclaimApp.status >= 5"
+                                                           v-on:click="externalPagePDF(iclaimApp.appNo)"
                                                            icon
                                                            primary
                                                            flat>
-                                                    <ion-icon name="information" style="margin: -2px -7px -2px 0px; font-size: 17px"></ion-icon>
+                                                    PDF
                                                 </vs-button>
-                                            </router-link>
+                                                <router-link :to="{ name: 'ApprovalDetail', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">
+                                                    <vs-button circle
+                                                               icon
+                                                               primary
+                                                               flat>
+                                                        <ion-icon name="information" style="margin: -2px -7px -2px 0px; font-size: 17px"></ion-icon>
+                                                    </vs-button>
+                                                </router-link>
+                                            </div>
+                                            <ion-icon name="chevron-down-outline" class="icon ion-md-add" style="margin-right: 6px; margin-top: 10px"></ion-icon>
                                         </div>
-                                        <ion-icon name="chevron-down-outline" class="icon ion-md-add" style="margin-right: 6px; margin-top: 10px"></ion-icon>
+                                    </a>
+                                    <div class="answer" style="padding-left:30px;">
+
+                                        <p class="p-custom custom-p-status">สถานะ </p>
+
+                                        <ul id="progress" v-for="status in iclaimApp.appStatus" :key="status.statusId">
+                                            <li class="li-custom " :id="'liLbl' + status.statusId">
+                                                <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -12px; margin-top: -1px;">{{status.statusDate}}</p>
+                                                <p v-if="status.statusTime != null" class="p-custom divider-p" style="font-size: 10px; position: absolute; left: -1px; margin-top: 7px; ">{{status.statusTime}}</p>
+                                                <div class="node " v-bind:class="{green:status.active, grey:!status.active}"></div>
+                                                <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
+                                            </li>
+                                            <li v-if="status.statusId < iclaimApp.appStatus.length + iclaimApp.appStatus.length" class="li-custom " :id="'verticalLine' + status.statusId">
+                                                <div class="divider grey"></div>
+                                            </li>
+
+                                        </ul>
+                                        <br />
                                     </div>
-                                </a>
-                                <div class="answer" style="padding-left:30px;">
-                                    
-                                    <p class="p-custom custom-p-status">สถานะ </p>
+                                    <div style="text-align: center">
+                                        <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'ApprovalEdit', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
+                                        <router-link class="btn-checked" v-if="iclaimApp.status == 4" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                        <router-link class="btn-checked" v-if="iclaimApp.status == 9" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
+                                    </div>
+                                    <div style="text-align: center">
 
-                                    <ul id="progress" v-for="status in iclaimApp.appStatus" :key="status.statusId">
-                                        <li class="li-custom " :id="'liLbl' + status.statusId">
-                                            <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -12px; margin-top: -1px;">{{status.statusDate}}</p>
-                                            <p v-if="status.statusTime != null" class="p-custom divider-p" style="font-size: 10px; position: absolute; left: -1px; margin-top: 7px; ">{{status.statusTime}}</p>
-                                            <div class="node " v-bind:class="{green:status.active, grey:!status.active}"></div>
-                                            <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
-                                        </li>
-                                        <li v-if="status.statusId < iclaimApp.appStatus.length + iclaimApp.appStatus.length" class="li-custom " :id="'verticalLine' + status.statusId">
-                                            <div class="divider grey"></div>
-                                        </li>
-
-                                    </ul>
-                                    <br />
+                                    </div>
                                 </div>
-                                <div style="text-align: center">
-                                    <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'ApprovalEdit', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
-                                    <router-link class="btn-checked" v-if="iclaimApp.status == 4" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
-                                    <router-link class="btn-checked" v-if="iclaimApp.status == 9" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
-                                </div>
-                                <div style="text-align: center">
-                                    
-                                </div>
-                            </div>
+                                <template #overlay>
+                                    <div class="text-center">
+                                        <p id="cancel-label" style="color:indianred; font-size:18px">คำร้องนี้ถูกยกเลิกแล้ว</p>
+                                    </div>
+                                </template>
+                            </b-overlay>
                         </div>
                     </div>
                     <p v-if="isHasIclaimApprovalData == false" class="notData">- ไม่มีคำร้อง -</p>

@@ -124,7 +124,7 @@
                         </div>
                     </div>
                     <div v-if="acceptClaim && acceptData" class="mb-4 mt-2" align="center">
-                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.stringAccNo}}">ยืนยันส่งคำร้อง</router-link>
+                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.stringAccNo, from: 'Create'}}">ยืนยันส่งคำร้อง</router-link>
                     </div>
                 </div>
             </div>
@@ -926,12 +926,12 @@
                     <div v-if="!haslastDocumentReceive">
                         <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
-                        <div v-if="bankFileDisplay" align="center">
+                        <div align="center">
                             <div class="div-center-image">
                                 <div class="divImage">
-                                    <img class="img-show" :src="bankFileDisplay.base64" />
+                                    <img class="img-show" :src="inputBank.bankBase64String" />
                                     <br />
-                                    <label>{{bankFileDisplay.filename}}</label>
+                                    <label>{{inputBank.bankFilename}}</label>
                                 </div>
                             </div>
 
@@ -969,7 +969,7 @@
                     <div v-if="haslastDocumentReceive">
                         <p class="mb-0">หน้าสมุดบัญชีธนาคาร</p>
 
-                        <div v-if="bankFileDisplay" align="center">
+                        <div align="center">
                             <div class="div-center-image">
                                 <div class="divImage">
                                     <img class="img-show" :src="bankFileDisplay.base64" />
@@ -1051,7 +1051,7 @@
 
 
     /*import { required, minLength } from 'vuelidate/lib/validators';*/
-
+    
     //Your Javascript lives within the Script Tag
     export default {
         name: "Claim",
@@ -1388,7 +1388,7 @@
                         'Content-Type': 'application/json'
                     }
                 }).then((response) => {
-                    this.lastDocumentReceive.bankBase64String = response.data;
+                    this.lastDocumentReceive.bankBase64String = 'data:image/png;base64,' + response.data;
                     this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
                     this.isLoading = false
                 }).catch(function (error) {
@@ -1409,16 +1409,15 @@
             onAddBankAccountFile: function (error, file) {
                 console.log(file)
                 this.bankFileDisplay.file = file
-                this.bankFileDisplay.filename = file.filename
-                this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
-                this.inputBank.bankBase64String = file.getFileEncodeBase64String()
+                //this.bankFileDisplay.filename = file.filename
+                //this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
+                this.inputBank.bankBase64String = file.getFileEncodeDataURL()
                 this.inputBank.bankFilename = file.filename
             },
             onAddBillFile: function (index) {
                 console.log("add bill: ", this.bills[index])
                 this.bills[index].filename = this.bills[index].file[0].filename
-                this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()
-
+                this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()            
             },
             async OnChangePageOne() {
                 this.submitted = true;
@@ -1464,7 +1463,7 @@
                     }
                     if (billIdDuplicate.length > 0) {
                         this.$swal({
-                            icon: 'info',
+                            icon: 'warning',
                             html: '<p align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>',
                             title: 'แจ้งเตือน',
                             /*footer: '<a href="">Why do I have this issue?</a>'*/

@@ -1,6 +1,12 @@
 <template>
     <div class="container" align="center">
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"
+                 :is-full-page="true">
 
+        </loading>
         <h2 id="header2" class="">ยืนยันการส่งคำร้อง</h2>
         <div id="app" class="container mt-5">
             <p>
@@ -9,12 +15,12 @@
             <div class="row">
                 <div class="col-7 mb-5">
                     <!--<div class="card card-tel">
-                        <div class="position-icon mt-2">
-                            <ion-icon name="call-outline"></ion-icon>
-                            <label class="lbl-tel">xxx-xxx-9898</label>
-                        </div>
-                    </div>-->
-                    <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" v-model="mockTel" :maxlength="10" disabled/>
+                    <div class="position-icon mt-2">
+                        <ion-icon name="call-outline"></ion-icon>
+                        <label class="lbl-tel">xxx-xxx-9898</label>
+                    </div>
+                </div>-->
+                    <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" v-model="mockTel" :maxlength="10" disabled />
                 </div>
                 <div class="col-5 mb-5">
                     <button class="btn-request-otp" type="button" @click="requestOTP" v-bind:disabled="disableBtnReqOTP">ขอรหัส OTP</button>
@@ -42,18 +48,18 @@
                         <!--<button @click="handleClearInput()">Clear Input</button>-->
                     </div>
                     <!--<div class="vue-otp-2">
-                        <div v-for="(v,i) in otpLength * 2 - 1" :key="i/2">
-                            <input v-if="i%2 === 0"
-                                   :ref="'input' + (i/2)"
-                                   @keyup="handleInput($event, i/2)"
-                                   v-model="otp[i/2]"
-                                   minlength="1"
-                                   maxlength="1"
-                                   @focus="handleFocus($event, i/2)" />
+                    <div v-for="(v,i) in otpLength * 2 - 1" :key="i/2">
+                        <input v-if="i%2 === 0"
+                               :ref="'input' + (i/2)"
+                               @keyup="handleInput($event, i/2)"
+                               v-model="otp[i/2]"
+                               minlength="1"
+                               maxlength="1"
+                               @focus="handleFocus($event, i/2)" />
 
-                            <span v-if="i%2 !== 0 && true">{{character}}</span>
-                        </div>
-                    </div>-->
+                        <span v-if="i%2 !== 0 && true">{{character}}</span>
+                    </div>
+                </div>-->
                 </div>
             </div>
             <div class="row">
@@ -73,7 +79,7 @@
                 <br>
                 <!--<button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>-->
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
-                <button class="btn-confirm-money" type="button" @click="postData" >TestPostData</button>
+                <button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>
             </div>
         </div>
     </div>
@@ -201,8 +207,13 @@
 <script>
     import axios from 'axios'
     import qs from 'qs'
+    import watermark from 'watermarkjs'
+    import Loading from 'vue-loading-overlay';
 
     export default {
+        components: {
+            Loading
+        },
         data() {
             return {
                 msg: 'ยืนยันการส่งคำร้อง',
@@ -213,7 +224,8 @@
                 verifyResultOTP: { status: "" },
                 countDown: 60,
                 disableBtnReqOTP: false,
-                mockTel: ""
+                mockTel: "",
+                isLoading: true,
             }
         },
         methods: {
@@ -230,36 +242,13 @@
 
                 }
             },
-            uploadFileToECM() {
-                const body = {
-                    SystemId: "02",
-                    TemplateId: "03",
-                    DocID: "01",
-                    refNo: this.$store.state.userTokenLine + "|" + this.$store.state.inputApprovalData.AccNo + "|" + this.$store.state.inputApprovalData.VictimNo + "|" + this.$store.state.inputApprovalData.AppNo,
-                    FileName: "",
-                    Base64String:""
-                };
-                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
-                    body.FileName = this.$store.state.inputApprovalData.BillsData[i].filename
-                    body.Base64String = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
-                    axios.post("http://172.41.1.77/api/api/webscan/upload64", JSON.stringify(body), {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    }).then((response) => {
-                        console.log(response);
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
-                console.log(body);
-            },
+           
             postData() {
                 if (this.$route.params.from == "Edit") {
                     for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
                         this.$store.state.inputApprovalData.BillsData[i].money = this.$store.state.inputApprovalData.BillsData[i].money.toString()
                     }
-                    axios.post(this.$store.state.envUrl +"/api/Approval/UpdateApproval", JSON.stringify(this.$store.state.inputApprovalData), {
+                    axios.post(this.$store.state.envUrl + "/api/Approval/UpdateApproval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -276,29 +265,18 @@
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-                                    this.$router.push({ name: 'Approvals', params: { id: this.$store.state.inputApprovalData.AccNo.replace('/', '-') } })
+                                    this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                                 }
                             })
-                            this.$store.state.inputApprovalData.AccNo = null
-                            this.$store.state.inputApprovalData.VictimNo = null
-                            this.$store.state.inputApprovalData.AppNo = null
-                            this.$store.state.inputApprovalData.SumMoney = null
-                            this.$store.state.inputApprovalData.ClaimNo = null
-                            this.$store.state.inputApprovalData.Injury = null
-                            this.$store.state.inputApprovalData.BillsData = null
-                            this.$store.state.inputApprovalData.BankData = null
-                            this.$store.state.inputApprovalData.VictimData = null
+                            this.resetData();
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
 
-                } else {
-                    for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
-                        this.$store.state.inputApprovalData.BillsData[i].billFileShow = this.$store.state.inputApprovalData.BillsData[i].file[0].getFileEncodeBase64String()
-                    }
-                    console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
-                    axios.post(this.$store.state.envUrl +"/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
+                }
+                else if (this.$route.params.from == "CanselApproval") {                   
+                    axios.post(this.$store.state.envUrl + "/api/Approval/CanselApproval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -306,23 +284,57 @@
                         .then((response) => {
                             console.log(response);
                             this.$swal.close();
-                            this.showSwal()
-                            this.$store.state.inputApprovalData.AccNo = null
-                            this.$store.state.inputApprovalData.VictimNo = null
-                            this.$store.state.inputApprovalData.AppNo = null
-                            this.$store.state.inputApprovalData.SumMoney = null
-                            this.$store.state.inputApprovalData.ClaimNo = null
-                            this.$store.state.inputApprovalData.Injury = null
-                            this.$store.state.inputApprovalData.BillsData = null
-                            this.$store.state.inputApprovalData.BankData = null
-                            this.$store.state.inputApprovalData.VictimData = null
-                            this.$store.state.inputApprovalData.RefCodeOtp = null
+                            this.$swal({
+                                icon: 'success',
+                                //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
+                                title: 'ยกเลิกคำร้องเรียบร้อยแล้ว',
+                                showCancelButton: false,
+                                showDenyButton: false,
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+                                    this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
+                                }
+                            })
+                            this.resetData();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+                else if (this.$route.params.from == "Create") {
+
+                    console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
+                    axios.post(this.$store.state.envUrl + "/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then((response) => {
+                            console.log(response);
+                            this.$swal.close();
+                            this.resetData();
+                            this.showSwal();
+                            
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
                 }
                 
+                
+            },
+            resetData() {
+                this.$store.state.inputApprovalData.AccNo = null
+                this.$store.state.inputApprovalData.VictimNo = null
+                this.$store.state.inputApprovalData.AppNo = null
+                this.$store.state.inputApprovalData.SumMoney = null
+                this.$store.state.inputApprovalData.ClaimNo = null
+                this.$store.state.inputApprovalData.Injury = null
+                this.$store.state.inputApprovalData.BillsData = null
+                this.$store.state.inputApprovalData.BankData = null
+                this.$store.state.inputApprovalData.VictimData = null
+                this.$store.state.inputApprovalData.RefCodeOtp = null
             },
 
             requestOTP() {
@@ -455,7 +467,7 @@
                     if (result.isConfirmed) {
                         this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                     } else if (result.isDenied) {
-                        this.$router.push({ name: 'Accident' })
+                        this.$router.push('/Accident')
                     }
                 });
             },
@@ -469,11 +481,155 @@
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
+            stampWatermarksFromCreate() {
+                //Stamp ลายน้ำ
+                var options1 = {
+                    init(img) {
+                        img.crossOrigin = 'anonymous';
+                    }
+                };
+                var textBankRotate = function (target) {
+                    console.log("Target: ", target)
+                    var context = target.getContext('2d');
+                    var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                    var x = (target.width / 2);
+                    var y = (target.height / 2);
+                    var fontSize = (target.width + target.height) * (3.5 / 100)
+                    context.save();
+                    context.translate(x, y);
+
+                    if (target.width > target.height) {
+                        context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                    } else {
+                        context.rotate(-Math.atan(target.height / target.width));
+                    }
+                    context.globalAlpha = 0.3;
+                    context.fillStyle = 'red';
+                    context.font = fontSize + 'px Kanit';
+                    context.textAlign = 'center';
+                    if (target.width > target.height) {
+                        context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                    } else {
+                        context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                    }
+
+                    context.restore();
+
+                    var text1 = 'บริษัทกลางฯเท่านั้น';
+                    context.translate(x, y);
+                    if (target.width > target.height) {
+                        context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                    } else {
+                        context.rotate(-Math.atan(target.height / target.width));
+                    }
+                    context.globalAlpha = 0.3;
+                    context.fillStyle = 'red';
+                    context.font = fontSize + 'px Kanit';
+                    context.textAlign = 'center';
+                    if (target.width > target.height) {
+                        context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                    } else {
+                        context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                    }
+
+                    return target;
+                };
+                var resultAddWatermarkToBankImage = "";
+                watermark([this.$store.state.inputApprovalData.BankData.bankBase64String], options1)
+                    .image(textBankRotate)
+                    .then((imgBank) => {
+                        resultAddWatermarkToBankImage = imgBank.src;
+                        resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg);base64,/, "");
+                        this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
+                        console.log("TestBank: ", this.$store.state.inputApprovalData.BankData.bankBase64String)
+                    }).catch(function (error) {
+                        alert(error);
+                    });
+                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                    var options = {
+                        init(img) {
+                            img.crossOrigin = 'anonymous';
+                        }
+                    };
+                    var textRotate = function (target) {
+                        console.log("Target: ", target)
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
+
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+
+                        return target;
+                    };
+                    var resultAddWatermark = "";
+                    watermark([this.$store.state.inputApprovalData.BillsData[i].billFileShow], options)
+                        .image(textRotate)
+                        .then((imgBill) => {
+                            resultAddWatermark = imgBill.src;
+                            resultAddWatermark = resultAddWatermark.replace(/^data:image\/(png|jpg);base64,/, "");
+                            this.$store.state.inputApprovalData.BillsData[i].billFileShow = resultAddWatermark
+                            console.log("Test: ", this.$store.state.inputApprovalData.BillsData[i].billFileShow)
+                        }).catch(function (error) {
+                            alert(error);
+                        });                   
+                }
+                this.isLoading = false
+            }
 
 
         },
         mounted() {
+            
+        },
+        created() {
             console.log('load = ', this.$store.state.inputApprovalData)
+            if (this.$route.params.from == "Create") {
+                this.isLoading = true
+                this.stampWatermarksFromCreate()
+                console.log("Stamp Success")
+            } else if (this.$route.params.from == "Edit"){
+                this.isLoading = false
+            } else if (this.$route.params.from == "CanselApproval"){
+                this.isLoading = false
+            }
         }
 
     }

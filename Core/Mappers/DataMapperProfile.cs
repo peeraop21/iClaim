@@ -22,7 +22,8 @@
                 .ForMember(m => m.BillId, opt => opt.MapFrom(src => src.billNo))
                 .ForMember(m => m.BookNo, opt => opt.MapFrom(src => src.bookNo))
                 .ForMember(m => m.ReceiptNo, opt => opt.MapFrom(src => src.bill_no))
-                .ForMember(m => m.HosId, opt => opt.MapFrom(src => src.selectHospitalId));
+                .ForMember(m => m.HosId, opt => opt.MapFrom(src => src.selectHospitalId))
+                .ForMember(m => m.IsCansel, opt => opt.MapFrom(src => src.isCancel));
             CreateMap<BillViewModel, Invoicehd>()
                 .ForMember(m => m.Takendate, opt => opt.MapFrom(src => DateTime.ParseExact(src.hospitalized_date, "yyyy-MM-dd", CultureInfo.InvariantCulture) ))
                 .ForMember(m => m.Takentime, opt => opt.MapFrom(src => src.hospitalized_time.Replace(":",".")))

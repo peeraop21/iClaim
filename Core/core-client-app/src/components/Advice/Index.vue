@@ -386,7 +386,7 @@
                                 }
                             })
                         } else {
-                            this.$router.push({ name: 'Accident' })
+                            this.$router.push('/Accident')
                         }
                     })
                     .catch(function (error) {

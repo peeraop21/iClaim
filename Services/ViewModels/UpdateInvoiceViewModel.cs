@@ -28,5 +28,6 @@ namespace Services.ViewModels
         public string filename { get; set; }
         public string editBillImage { get; set; }
         public bool isEditImage { get; set; }
+        public bool isCancel { get; set; }
     }
 }

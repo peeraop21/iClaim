@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <file-pond credits="null"
                                    label-idle="รูปบัตรประจำตัวประชาชน"
                                    capture="user"
@@ -44,7 +44,7 @@
                                    v-bind:files="idCardFile"
                                    v-on:addfile="onAddidCardFile" />
                     </div>
-                    <!--<div class="col-6">
+                    <div class="col-6">
                         <file-pond credits="null"
                                    label-idle="รูปถ่ายหน้าเซลฟี"
                                    v-bind:allow-multiple="false"
@@ -52,7 +52,7 @@
                                    accepted-file-types="image/jpeg, image/png"
                                    v-bind:files="faceFile"
                                    v-on:addfile="onAddfaceFile" />
-                    </div>-->
+                    </div>
                 </div>
 
             </div>
@@ -142,7 +142,7 @@
 
 <script>
 
-    import * as moment from "moment/moment";
+    //import * as moment from "moment/moment";
     import liff from '@line/liff'
 
     import axios from 'axios'
@@ -331,54 +331,68 @@
             onAddidCardFile: async function (error, file) {
                 this.isLoading = true;
                 this.input.base64IdCard = file.getFileEncodeBase64String()
+                //this.input.base64IdCard = file.getFileEncodeDataURL()
+                console.log("IdCardBase64: ", this.input.base64IdCard)
                 this.isOverlay = false;
                 //this.idCardTest.file = file
-                //this.idCardTest.filename = file.getFileEncodeDataURL()
+                
 
                 //this.ImageData.IdCardBase64 = this.idCardTest.base64;
 
-                //console.log(file);
-                //this.$swal({
-                //    title: 'กำลังอ่านข้อมูล',
-                //    html: 'ขณะนี้ระบบกำลังอ่านข้อมูลบัตรประจำตัวประชาชน',
-                //    timerProgressBar: true,
-                //    didOpen: () => {
-                //        this.$swal.showLoading()
+                this.isLoading = false;
 
-                //    },
-                //    willClose: () => {
 
+                //var url = 'https://ml.appman.co.th/v1/thailand-id-card/front'
+                //var bodyFormData = new FormData();
+                //bodyFormData.append('Username', 'rvp.user0001');
+                //bodyFormData.append('Password', 'Rvp@2021')
+                //bodyFormData.append('image', file.file);
+
+                //axios.post(url, bodyFormData, {
+                //    headers: {
+                //        'Content-Type': 'multipart/form-data',
+                //        'x-api-key': 'uEj0XAy4y69YPgK6IPTFnaVZn7ZsYaum9gJBWowg'
                 //    }
-                //})
-                var url = 'https://ml.appman.co.th/v1/thailand-id-card/front'
-                var bodyFormData = new FormData();
-                bodyFormData.append('Username', 'rvp.user0001');
-                bodyFormData.append('Password', 'Rvp@2021')
-                bodyFormData.append('image', file.file);
+                //}).then((response) => {
+                //    this.resultOCR = response.data.result;
+                //    console.log("Result: ", this.resultOCR)
+                //    if (this.resultOCR != "") {
+                //        this.input.idCardNo = this.resultOCR.id_number.replaceAll(" ", "");
+                //        this.input.prefix = this.resultOCR.title_th;
+                //        this.input.firstname = this.resultOCR.first_name_th;
+                //        this.input.lastname = this.resultOCR.last_name_th;
+                //        this.input.dateBirth = moment(this.formatResultOcrDate(this.resultOCR.date_of_birth_en)).format("YYYY-MM-DD");
+                //        this.input.base64IdCard = file.getFileEncodeBase64String();
+                //        this.isLoading = false;
+                //    }
+                //}).catch(function (error) {
+                //    console.log(error);
+                //});
+            },
+            onAddfaceFile: async function (error, file) {
+                this.isLoading = true;
+                this.input.base64Face = file.getFileEncodeBase64String()
+                //this.input.base64Face = file.getFileEncodeDataURL()
 
-                axios.post(url, bodyFormData, {
+                console.log("FaceBase64: ", this.input.base64Face)
+                const body = {
+                    faceImage: this.input.base64Face,
+                    identityImage: this.input.base64IdCard,
+
+                };
+                var url = 'https://ml.appman.co.th/mw/e-kyc'
+                axios.post(url, body, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        'Content-Type': 'application/json',
                         'x-api-key': 'uEj0XAy4y69YPgK6IPTFnaVZn7ZsYaum9gJBWowg'
                     }
                 }).then((response) => {
-                    this.resultOCR = response.data.result;
-                    console.log("Result: ", this.resultOCR)
-                    if (this.resultOCR != "") {
-                        this.input.idCardNo = this.resultOCR.id_number.replaceAll(" ", "");
-                        this.input.prefix = this.resultOCR.title_th;
-                        this.input.firstname = this.resultOCR.first_name_th;
-                        this.input.lastname = this.resultOCR.last_name_th;
-                        this.input.dateBirth = moment(this.formatResultOcrDate(this.resultOCR.date_of_birth_en)).format("YYYY-MM-DD");
-                        this.input.base64IdCard = file.getFileEncodeBase64String();
-                        this.isLoading = false;
-                    }
+                    
+                    console.log("เทียบ: ", response)
+                    this.isLoading = false;
                 }).catch(function (error) {
                     console.log(error);
                 });
-            },
-            onAddfaceFile: async function (error, file) {
-                console.log(file)
 
             },
             getPrefixes() {

@@ -122,7 +122,7 @@ namespace Core.Controllers
         [HttpGet("UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}")]
         public async Task<IActionResult> UpdateStatus(string accNo, int victimNo, int appNo, string status)
         {
-            return Ok(await approvalService.UpdateApprovalStatusAsync(accNo.Replace('-', '/'), victimNo, appNo, status));
+            return Ok(await approvalService.UpdateApprovalStatusAsync(accNo.Replace('-', '/'), victimNo, appNo, status, false));
         }
 
         [HttpGet("LastDocumentReceive/{accNo}/{victimNo}")]
@@ -160,17 +160,16 @@ namespace Core.Controllers
         {
             var resultMapBank = _mapper.Map<UpdateBankViewModel>(model.BankData);
             var resultMapToInvoicehd = _mapper.Map<UpdateInvoiceViewModel[]>(model.BillsData);
-            var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, resultMapBank, resultMapToInvoicehd);
+            var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);
             ECMViewModel ecmModel = new ECMViewModel();
             
             for (int i = 0; i < model.BillsData.Count; i++)
             {
-                if (resultMapToInvoicehd[i].isEditImage)
+                if (resultMapToInvoicehd[i].isEditImage && !resultMapToInvoicehd[i].isCancel)
                 {
                     ecmModel.SystemId = "02";
                     ecmModel.TemplateId = "03";
-                    ecmModel.DocID = "01";
-                    
+                    ecmModel.DocID = "01";                   
                     ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo  /*+ "|" + model.AppNo*/;
                     ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename;
                     ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage;
@@ -196,6 +195,12 @@ namespace Core.Controllers
             }
             
             return Ok();
+        }
+
+        [HttpPost("CanselApproval")]
+        public async Task<IActionResult> CanselApproval([FromBody] ApprovalViewModel model)
+        {         
+            return Ok(await approvalService.CanselApprovalAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine));
         }
 
         [HttpGet("Invoicedt/{accNo}/{victimNo}/{appNo}")]
