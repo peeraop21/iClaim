@@ -3,7 +3,7 @@
         <b-navbar class="navbar-digital-cliam justify-content-between mb-4" style="">
             <div align="left" style="width: 100%;">
                 <ion-icon name="chevron-back-outline" align="left" style=" margin-bottom: -4px; padding-right: 20px; font-size: 23px; color: white;" @click="onClickBackBtn"></ion-icon>
-                <label align="left" class="b-navbar-brand mt-1">Digital Claim</label>
+                <label align="left" class="b-navbar-brand mt-1">iClaim</label>
             </div>
             <!--<router-link to="/"><ion-icon name="chevron-back-outline" style="font-size: 23px; color: white; margin-top: 10px;"></ion-icon></router-link>
             <p class="b-navbar-brand mt-3">Digital Claim</p>-->

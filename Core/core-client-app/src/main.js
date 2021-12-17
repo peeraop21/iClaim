@@ -18,6 +18,8 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
 import "vue-select/src/scss/vue-select.scss";
 import 'vue-loading-overlay/dist/vue-loading.css';
+import VueMask from 'v-mask';
+
 
 
 Vue.use(Vuesax, {
@@ -48,6 +50,7 @@ Vue.use(VueFormWizard)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(Vuelidate)
+Vue.use(VueMask)
 Vue.config.productionTip = false
 /*Vue.prototype.$testOverlay = false*/
 

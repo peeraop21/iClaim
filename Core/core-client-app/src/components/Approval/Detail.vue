@@ -194,91 +194,7 @@
                 <div class="mt-0" v-else-if="accData.provAcc === null">
                     <p class="label-text">-</p>
                     <hr class="mt-0">
-                </div>
-                <!--<div class="row">
-            <div class="col-4">
-                <p class="mb-0">บ้านเลขที่</p>
-                <div class="mt-0" v-if="approvalData.victim.accHomeId != null">
-                    <p class="label-text">{{approvalData.victim.accHomeId}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accHomeId === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-            <div class="col-2">
-                <p class="mb-0">หมู่</p>
-                <div class="mt-0" v-if="approvalData.victim.accMoo != null">
-                    <p class="label-text">{{approvalData.victim.accMoo}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accMoo === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-            <div class="col-6">
-                <p class="mb-0">ซอย</p>
-                <div class="mt-0" v-if="approvalData.victim.accSoi != null">
-                    <p class="label-text">{{approvalData.victim.accSoi}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accSoi === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <p class="mb-0">ถนน</p>
-                <div class="mt-0" v-if="approvalData.victim.accRoad != null">
-                    <p class="label-text">{{approvalData.victim.accRoad}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accRoad === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-            <div class="col-6">
-                <p class="mb-0">ตำบล/แขวง</p>
-                <div class="mt-0" v-if="approvalData.victim.accTumbolName != null">
-                    <p class="label-text">{{approvalData.victim.accTumbolName}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accTumbolName === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <p class="mb-0">อำเภอ</p>
-                <div class="mt-0" v-if="approvalData.victim.accDistrictName != null">
-                    <p class="label-text">{{approvalData.victim.accDistrictName}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accDistrictName === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-            <div class="col-6">
-                <p class="mb-0">จังหวัด</p>
-                <div class="mt-0" v-if="approvalData.victim.accProvinceName != null">
-                    <p class="label-text">{{approvalData.victim.accProvinceName}}</p>
-                    <hr class="mt-0">
-                </div>
-                <div class="mt-0" v-else-if="approvalData.victim.accProvinceName === null">
-                    <p class="label-text">-</p>
-                    <hr class="mt-0">
-                </div>
-            </div>
-        </div>-->
-
+                </div>              
                 <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                 <div class="mt-0" v-if="approvalData.car.foundCarLicense != null">
                     <p class="label-text">{{approvalData.car.foundCarLicense}}</p>
@@ -496,6 +412,7 @@
 </template>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     // Import loading-overlay
     import Loading from 'vue-loading-overlay';
@@ -503,6 +420,7 @@
 
     export default {
         name: "ClaimDetail",
+        mixins: [mixin],
         components: {
             Loading
         },
@@ -545,7 +463,12 @@
             getApprovalDetail() {
                 console.log('getApprovalDetail');
                 var url = this.$store.state.envUrl + '/api/Approval/ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo).replace('{userIdCard}', this.userData.idcardNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.approvalData = response.data;
                         this.getBankFileFromECM();
@@ -555,8 +478,11 @@
                         }
                         
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) =>  {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getApprovalDetail()
+                        }
                     });
             },
             getBankFileFromECM() {
@@ -569,7 +495,8 @@
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
                     this.approvalData.bankAccount.base64Image = 'data:image/png;base64,' + response.data;

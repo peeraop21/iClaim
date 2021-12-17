@@ -176,7 +176,7 @@
                             <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
-                                       ref="pond"
+                                       ref="pondBill"
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
@@ -293,7 +293,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <label class="px-2">ใบเสร็จเล่มที่</label>
-                                    <b-form-input class="mt-0 mb-2 form-control" v-model.trim="input.bookNo.$model" type="number" :class="{ 'is-invalid': input.bookNo.$error }"/>
+                                    <b-form-input class="mt-0 mb-2 form-control" v-model.trim="input.bookNo.$model" type="number" :class="{ 'is-invalid': input.bookNo.$error }" />
                                     <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
                                 </div>
                                 <div class="col-6">
@@ -415,7 +415,7 @@
                         <div class="form-group ">
 
                             <file-pond name="bankFile"
-                                       ref="pond"
+                                       ref="pondBank"
                                        credits="null"
                                        label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
                                        v-bind:allow-multiple="false"
@@ -446,14 +446,14 @@
                         <div class="mb-4" v-if="!haslastDocumentReceive">
 
                             <p class="mb-0 px-2">ชื่อธนาคาร</p>
-                            <div class="mb-2">
-                                <select v-model.trim="$v.inputBank.accountBankName.$model" style="font-size: 13px;" :class="{ 'is-invalid': $v.inputBank.accountBankName.$error }">
-                                    <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
-                                        {{ bankName.name }}
-                                    </option>
-                                </select>
-                                <div v-if="submitted && !$v.inputBank.accountBankName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกบัญชีธนาคาร</div>
-                            </div>
+
+                            <select class="mb-2" v-model.trim="$v.inputBank.accountBankName.$model" style="font-size: 13px; height:33px" :class="{ 'is-invalid': $v.inputBank.accountBankName.$error }">
+                                <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
+                                    {{ bankName.name }}
+                                </option>
+                            </select>
+                            <div v-if="submitted && !$v.inputBank.accountBankName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณาเลือกบัญชีธนาคาร</div>
+
                             <p class="mb-0 px-2">ชื่อบัญชีธนาคาร</p>
                             <b-form-input class="mt-0 mb-2" v-model.trim="$v.inputBank.accountName.$model" :class="{ 'is-invalid': $v.inputBank.accountName.$error }" readonly></b-form-input>
                             <div v-if="submitted && !$v.inputBank.accountName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกชื่อบัญชีธนาคาร</div>
@@ -466,7 +466,7 @@
                             <p class="mb-0 px-2">ชื่อธนาคาร</p>
                             <div class="mb-2">
                                 <!--<b-form-input id="defaultSelectBank" class="mt-0 mb-2" v-model="displayBankName" :disabled="haslastDocumentReceive"></b-form-input>-->
-                                <select id="defaultSelectBank" v-model="lastDocumentReceive.accountBankName" style="font-size: 13px;" :disabled="haslastDocumentReceive">
+                                <select id="defaultSelectBank" v-model="lastDocumentReceive.accountBankName" style="font-size: 13px; height: 33px" :disabled="haslastDocumentReceive">
                                     <option v-for="bankName in bankNames" :value="bankName.name" v-bind:key="bankName.bank" style="font-size: 12px; line-height: 0px">
                                         {{ bankName.name }}
                                     </option>
@@ -1023,6 +1023,7 @@
 </template>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import { FormWizard, TabContent } from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
@@ -1051,7 +1052,7 @@
 
 
     /*import { required, minLength } from 'vuelidate/lib/validators';*/
-    
+
     //Your Javascript lives within the Script Tag
     export default {
         name: "Claim",
@@ -1061,7 +1062,7 @@
             FilePond,
             Loading
         },
-
+        mixins: [mixin],
         data() {
             return {
                 attrs: [
@@ -1080,50 +1081,32 @@
                     mask: 'HH:mm',
                 },
                 date: new Date(),
-                inputDataAll: [],
                 // ---Bill
-                patientType: '',
                 bills: [{ billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "", file: null, billFileShow: "", filename: "" }],
                 total_amount: 0,
                 // --BookBank
-                displayBankName: "",
                 inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '', bankBase64String: '', bankFilename: '' },
-                bank: '',
-                phoneNumbers: [{ phone: "" }],
+                /*bank: '',*/
                 image: '',
-                preview: null,
                 // ---Preview
                 acceptClaim: false,
                 acceptData: false,
-                selected: 'first',
-                options: [
-                    { text: ' ไม่เคย', value: 'first' },
-                    { text: ' เคย', value: 'second' },
-                ],
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 formType: this.$route.params.type,
                 // bankData: this.$store.state.bankStateData,
                 idCardFile: null,
-                billsFile: null,
                 bankFile: null,
-                idCardFileDisplay: { file: null, filename: "", base64: "" },
                 bankFileDisplay: { file: null, filename: "", base64: "" },
                 diaryFile: null,
                 diaryFileDisplay: { file: null, filename: "", base64: "" },
                 // ----Dialog
                 active: false,
-                dialogHospital: false,
                 // Radio in Dialog
                 picked: 1,
-                typePatient: 0,
                 //----Get Bank Name
                 bankNames: [],
-                selectBank: {
-                    bankName: ''
-                },
                 //----Get Last Document Receive
-                base64FromECM: null,
                 lastDocumentReceive: [],
                 haslastDocumentReceive: false,
                 isBtnChangAccountBankShow: false,
@@ -1142,7 +1125,6 @@
                 organ: [],
                 mockWounded: '',
                 modalWounded: false,
-                selectWounded: '',
                 selectOrgan: '',
                 divWoundedModal: false,
                 //----Get AccidentCar
@@ -1205,8 +1187,7 @@
                             bill_no: { required },
                             money: { required },
                             hospitalized_date: { required },
-                            hospitalized_time: { required },
-
+                            hospitalized_time: { required }
 
                         }
                     },
@@ -1258,7 +1239,7 @@
                 this.active = true
 
                 this.$store.state.inputApprovalData.AccNo = this.accData.accNo
-                this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo                
+                this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
                 this.$store.state.inputApprovalData.AppNo = this.accData.lastClaim.appNo
                 this.$store.state.inputApprovalData.BranchId = this.accData.branchId
                 this.$store.state.inputApprovalData.SumMoney = this.total_amount
@@ -1288,7 +1269,12 @@
             getLastDocumentReceive() {
                 console.log('getHospitalNames');
                 var url = this.$store.state.envUrl + '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.lastDocumentReceive = response.data[0]
 
@@ -1308,8 +1294,11 @@
                         console.log('last documenttttt: ', response.data.length);
                         console.log('last document: ', response.data[0]);
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getLastDocumentReceive()
+                        }
                     });
             },
             getHospitalNames() {
@@ -1352,27 +1341,43 @@
             getAccidentCar() {
                 console.log('getAccidentCar');
                 var url = this.$store.state.envUrl + '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.accidentCarData = response.data;
                         console.log(this.accidentCarData);
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getAccidentCar()
+                        }
                     });
             },
             getAccidentVictim() {
                 console.log('getAccidentVictim');
                 var mockIdcard = this.userData.idcardNo /*'3149900145384'*/;
                 var url = this.$store.state.envUrl + '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.accidentVictimData = response.data;
                         this.inputBank.accountName = this.accidentVictimData.fname + " " + this.accidentVictimData.lname
                         console.log(this.accidentVictimData);
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getAccidentVictim()
+                        }
                     });
             },
             getFileFromECM() {
@@ -1385,7 +1390,8 @@
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
                     this.lastDocumentReceive.bankBase64String = 'data:image/png;base64,' + response.data;
@@ -1395,11 +1401,6 @@
                     console.log(error);
                 });
 
-            },
-            onAddIdCardFile: function (error, file) {
-                this.idCardFileDisplay.file = file
-                this.idCardFileDisplay.filename = file.filename
-                this.idCardFileDisplay.base64 = file.getFileEncodeDataURL()
             },
             onAddDiaryFile: function (error, file) {
                 this.diaryFileDisplay.file = file
@@ -1417,7 +1418,7 @@
             onAddBillFile: function (index) {
                 console.log("add bill: ", this.bills[index])
                 this.bills[index].filename = this.bills[index].file[0].filename
-                this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()            
+                this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()
             },
             async OnChangePageOne() {
                 this.submitted = true;
@@ -1427,27 +1428,46 @@
                 if (this.$v.bills.$invalid) {
                     return false;
                 }
+                for (let i = 0; i < this.bills.length; i++) {
+                    if (this.bills[i].billFileShow == "" || this.bills[i].billFileShow == null) {
+                        this.$swal({
+                            icon: 'warning',
+                            text: 'กรุณาอัพโหลดรูปภาพใบเสร็จค่ารักษาให้ครบถ้วน',
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+
+                            }
+                        })
+                        return false;
+                    }
+                }
+
                 for (let j = 0; j < this.bills.length; j++) {
                     for (let i = 0; i < this.hospitals.length; i++) {
                         if (this.bills[j].selectHospital == this.hospitals[i].HOSPITALNAME) {
                             this.bills[j].selectHospitalId = this.hospitals[i].HOSPITALID
                         }
                     }
-                }
-                console.log("orgen", this.organ.length)
-                for (let j = 0; j < this.bills.length; j++) {
                     for (let i = 0; i < this.wounded.length; i++) {
                         if (this.bills[j].injuri == this.wounded[i].wounded) {
                             this.bills[j].injuriId = this.wounded[i].woundedId
                         }
                     }
                 }
+                //console.log("orgen", this.organ.length)
+                //for (let j = 0; j < this.bills.length; j++) {
+
+                //}
 
                 var url = this.$store.state.envUrl + '/api/Approval/CheckInvoiceUsing'
                 let isDuplicate = false;
                 await axios.post(url, JSON.stringify(this.bills), {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
                     var billIdDuplicate = [];
@@ -1493,8 +1513,11 @@
                         return true;
                     }
 
-                }).catch(function (error) {
-                    alert(error);
+                }).catch((error) => {
+                    if (error.toString().includes("401")) {
+                        this.getJwtToken()
+                        this.OnChangePageOne()
+                    }
                 });
                 if (isDuplicate) {
                     return false;
@@ -1512,8 +1535,22 @@
                     if (this.$v.inputBank.$invalid) {
                         return false;
                     }
-                }
+                    if (this.inputBank.bankBase64String == "" || this.inputBank.bankBase64String == null) {
+                        this.$swal({
+                            icon: 'warning',
+                            text: 'กรุณาอัพโหลดรูปภาพบัญชีธนาคาร',
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
 
+                            }
+                        })
+                        return false;
+                    }
+                }
+                
 
 
                 if (this.lastDocumentReceive != null) {
@@ -1581,44 +1618,12 @@
             removeField(index, fieldType) {
                 //type.splice(index, 1);
                 fieldType.splice(index, 1);
-                console.log(this.bills[index].file[0].id);
+
                 /*this.$refs.pond.removeFile(this.bills[index].file[0].id);*/
                 this.calMoney()
                 console.log(this.bills)
             },
-            //onFileChange(event) {
-            //    var files = event.target.files || event.dataTransfer.files;
-            //    if (!files.length)
-            //        return;
-            //    console.log(files[0]);
-            //},
-            //createImage(file) {
-            //    var Image = new Image();
-            //    var reader = new FileReader();
-            //    var vm = this;
 
-            //    reader.onload = (e) => {
-            //        vm.image = e.target.result;
-            //    };
-            //    reader.readAsDataURL(file);
-            //},
-            //removeImage: function () {
-            //    this.image = '';
-            //},
-            // --- BookBank
-            //previewImage: function (event) {
-            //    var input = event.target;
-            //    if (input.files) {
-            //        var reader = new FileReader();
-            //        reader.onload = (e) => {
-            //            this.preview = e.target.result;
-            //            console.log(this.preview)
-            //        }
-            //        this.image = input.files[0];
-            //        reader.readAsDataURL(input.files[0]);
-            //    }
-            //},
-            //---Alert
             onComplete: function () {
                 alert("Thank you for your response! We will contact you soon.");
             },

@@ -290,6 +290,7 @@
 </style>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
 
     // Import loading-overlay
@@ -298,6 +299,7 @@
 
     export default {
         name: 'RightsHistorydetail',
+        mixins: [mixin],
         components: {
             Loading
         },
@@ -319,15 +321,23 @@
             getInvoicedtDetail() {
                 console.log('getInvoicedtDetail');
                 var url = this.$store.state.envUrl + '/api/Approval/Invoicedt/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig )
                     .then((response) => {
                         this.invdtData = response.data;
                         
                         console.log("invDetail: ", this.invdtData);
                         this.isLoading = false
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getInvoicedtDetail()
+                        }
                     });
             },
         },

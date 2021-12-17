@@ -146,6 +146,7 @@
 </template>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     //import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
 
@@ -155,6 +156,7 @@
 
     export default {
         name: 'RightsHistory',
+        mixins: [mixin],
         components: {
             Loading
         },
@@ -174,15 +176,23 @@
             getApprovals() {
                 console.log('getApproval');
                 var url = this.$store.state.envUrl + '/api/Approval/{accNo}/{victimNo}/{rightsType}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{rightsType}', this.$route.params.typerights);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.$store.state.claimStateData = response.data;
                         this.approval = this.$store.state.claimStateData;
                         console.log("claimData", this.approval);
                         this.isLoading = false
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getApprovals()
+                        }
                     });
             },
             calRightsUsed() {

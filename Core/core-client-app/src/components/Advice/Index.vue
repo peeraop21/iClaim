@@ -242,6 +242,7 @@
     </div>
 </template>
 <script>
+    
     import liff from '@line/liff'
     import axios from 'axios'
     // Import component
@@ -400,9 +401,10 @@
                 //--Publish--
                 await liff.init({
                     liffId: '1656611867-ylXVO2D8',
-                    /*withLoginOnExternalBrowser: true,*/
+                    withLoginOnExternalBrowser: true,
                 }).then(() => {
                     if (liff.isLoggedIn()) {
+                        
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
@@ -410,7 +412,9 @@
                             /*alert(this.$store.state.userTokenLine);*/
                         }).catch(err => alert(err));
                     } else {
+                        
                         liff.login();
+
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน

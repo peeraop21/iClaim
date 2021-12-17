@@ -13,8 +13,6 @@
 
     import NavMenu from './components/_Layout/NavMenu.vue'
 
-
-
     export default {
         components: {
             NavMenu

@@ -48,15 +48,19 @@ namespace Core.Controllers
             return Ok(await userService.CheckRegister(userToken));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] DirectPolicyKycViewModel model)
-        {
+        {           
+
             var kycno = await userService.GetLastKyc();
             //var genAddress = await masterService.GetIdAddress(model.HomeProvinceId, model.HomeCityId, model.HomeTumbolId);
             //model.HomeProvinceId = genAddress.ProvinceId;
             //model.HomeCityId = genAddress.DistrictId;
             //model.HomeTumbolId = genAddress.SubDistrictId;
             //model.HomeZipcode = genAddress.ZipCode;
+            model.IdcardNo = model.IdcardNo.Replace("-", "");
+            model.MobileNo = model.MobileNo.Replace("-", "");
             model.DateofBirth = DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             model.Kycno = kycno + 1;
             model.IdcardNo = model.IdcardNo.Replace(" ", "");

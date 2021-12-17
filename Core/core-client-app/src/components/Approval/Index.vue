@@ -173,10 +173,12 @@
     }
 </style>
 <script>
+    import mixin from '../../mixin/index.js'
     import liff from '@line/liff'
     import axios from 'axios'
     export default {
         name: 'Accident',
+        mixins: [mixin],
         data() {
             return {
                 
@@ -196,8 +198,12 @@
 
             getIclaimApproval() {
                 var url = this.$store.state.envUrl + '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
-
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         /*this.userApi = response.data;*/
                         this.$store.state.hosAppStateData = response.data;
@@ -249,8 +255,13 @@
                             this.isHasIclaimApprovalData = true
                         }
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {                                             
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getIclaimApproval()
+                            console.log("jwtNew: ", this.$store.state.jwtToken.token )
+                        }
+                        
                     });
 
             },
@@ -320,8 +331,9 @@
 
             }
         },
-        async created() {
+        async created() {           
             await this.getIclaimApproval();
+            
         },
         //async mounted() {
             

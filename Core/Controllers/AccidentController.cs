@@ -32,13 +32,14 @@ namespace Core.Controllers
             return Ok(await accidentService.GetAccident(userToken));
         }
 
-
+        [Authorize]
         [HttpGet("Car/{accNo}/{channel}")]
         public async Task<IActionResult> GetAccidentCar(string accNo, string channel)
         {
             return Ok(await accidentService.GetAccidentCar(accNo.Replace("-","/"), channel));
         }
 
+        [Authorize]
         [HttpGet("Victim/{accNo}/{ch}/{userIdCard}")]
         public async Task<IActionResult> GetAccidentVictim(string accNo, string ch, string userIdCard)
         {

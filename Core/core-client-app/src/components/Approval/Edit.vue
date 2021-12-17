@@ -430,6 +430,7 @@
 </template>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import * as moment from "moment/moment";
     //Your Javascript lives within the Script Tag
@@ -441,6 +442,7 @@
 
     export default {
         name: "AddDocument",
+        mixins: [mixin],
         components: {
             Loading,
 
@@ -740,7 +742,12 @@
             getInvoicehd() {
                 console.log('getInvoicehd');
                 var url = this.$store.state.envUrl + '/api/approval/Invoicehd/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.invoicehd = response.data;
                         console.log("invoicehd: ", response.data);
@@ -758,14 +765,22 @@
                         this.getChangwatNames();
 
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getInvoicehd()
+                        }
                     });
             },
             getDocumentReceive() {
                 console.log('getDocumentReceive');
                 var url = this.$store.state.envUrl + '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.getBankFileFromECM()
                         if (response.data != null) {
@@ -848,7 +863,12 @@
             getDocumentCheck() {
                 console.log('getDocumentCheck');
                 var url = this.$store.state.envUrl + '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.documentCheck = response.data;
                         console.log("docchk: ", this.documentCheck)
@@ -900,8 +920,11 @@
                         }
 
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getDocumentCheck()
+                        }
                     });
             },
             getBillFileFromECM(idInvhd) {
@@ -914,7 +937,8 @@
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
                     for (let i = 0; i < this.invoicehd.length; i++) {
@@ -937,7 +961,8 @@
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
                     this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;

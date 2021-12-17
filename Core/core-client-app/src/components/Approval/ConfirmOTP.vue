@@ -14,12 +14,6 @@
             </p>
             <div class="row">
                 <div class="col-7 mb-5">
-                    <!--<div class="card card-tel">
-                    <div class="position-icon mt-2">
-                        <ion-icon name="call-outline"></ion-icon>
-                        <label class="lbl-tel">xxx-xxx-9898</label>
-                    </div>
-                </div>-->
                     <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" v-model="mockTel" :maxlength="10" disabled />
                 </div>
                 <div class="col-5 mb-5">
@@ -45,21 +39,7 @@
                                      @on-change="handleOnChange"
                                      @on-complete="handleOnComplete" />
 
-                        <!--<button @click="handleClearInput()">Clear Input</button>-->
                     </div>
-                    <!--<div class="vue-otp-2">
-                    <div v-for="(v,i) in otpLength * 2 - 1" :key="i/2">
-                        <input v-if="i%2 === 0"
-                               :ref="'input' + (i/2)"
-                               @keyup="handleInput($event, i/2)"
-                               v-model="otp[i/2]"
-                               minlength="1"
-                               maxlength="1"
-                               @focus="handleFocus($event, i/2)" />
-
-                        <span v-if="i%2 !== 0 && true">{{character}}</span>
-                    </div>
-                </div>-->
                 </div>
             </div>
             <div class="row">
@@ -75,9 +55,7 @@
                 </div>
             </div>
             <div>
-                <!--<button class="btn-confirm-money" type="button" @click="postData" ref="postBtn" hidden>test post data</button>-->
                 <br>
-                <!--<button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>-->
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
                 <button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>
             </div>
@@ -205,12 +183,14 @@
 </style>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import qs from 'qs'
     import watermark from 'watermarkjs'
     import Loading from 'vue-loading-overlay';
 
     export default {
+        mixins: [mixin],
         components: {
             Loading
         },
@@ -250,76 +230,79 @@
                     }
                     axios.post(this.$store.state.envUrl + "/api/Approval/UpdateApproval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    })
-                        .then((response) => {
-                            console.log(response);
-                            this.$swal.close();
-                            this.$swal({
-                                icon: 'success',
-                                //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
-                                title: 'ส่งเอกสารเพิ่มเติมแล้ว',
-                                showCancelButton: false,
-                                showDenyButton: false,
-                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                                confirmButtonColor: '#5c2e91',
-                                willClose: () => {
-                                    this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
-                                }
-                            })
-                            this.resetData();
+                    }).then((response) => {
+                        console.log(response);
+                        this.$swal.close();
+                        this.$swal({
+                            icon: 'success',
+                            //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
+                            title: 'ส่งเอกสารเพิ่มเติมแล้ว',
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+                                this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
+                            }
                         })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-
+                        this.resetData();
+                    }).catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.postData()
+                        }
+                    });                       
                 }
                 else if (this.$route.params.from == "CanselApproval") {                   
                     axios.post(this.$store.state.envUrl + "/api/Approval/CanselApproval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    })
-                        .then((response) => {
-                            console.log(response);
-                            this.$swal.close();
-                            this.$swal({
-                                icon: 'success',
-                                //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
-                                title: 'ยกเลิกคำร้องเรียบร้อยแล้ว',
-                                showCancelButton: false,
-                                showDenyButton: false,
-                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                                confirmButtonColor: '#5c2e91',
-                                willClose: () => {
-                                    this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
-                                }
-                            })
-                            this.resetData();
+                    }).then((response) => {
+                        console.log(response);
+                        this.$swal.close();
+                        this.$swal({
+                            icon: 'success',
+                            //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
+                            title: 'ยกเลิกคำร้องเรียบร้อยแล้ว',
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+                                this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
+                            }
                         })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                        this.resetData();
+                    }).catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.postData()
+                        }
+                    });
+                                              
                 }
                 else if (this.$route.params.from == "Create") {
-
-                    console.log("send", JSON.stringify(this.$store.state.inputApprovalData))
                     axios.post(this.$store.state.envUrl + "/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    })
-                        .then((response) => {
-                            console.log(response);
-                            this.$swal.close();
-                            this.resetData();
-                            this.showSwal();
-                            
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                    }).then((response) => {
+                        console.log(response);
+                        this.$swal.close();
+                        this.resetData();
+                        this.showSwal();
+                    }).catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.postData()
+                        }
+                    });                                             
                 }
                 
                 
@@ -355,7 +338,6 @@
                 console.log(qs.stringify(body))
                 axios.post(url, qs.stringify(body), {
                     headers: {
-                        // Overwrite Axios's automatically set Content-Type
                         'Content-Type': 'application/x-www-form-urlencoded',
                     }
                 }).then((response) => {

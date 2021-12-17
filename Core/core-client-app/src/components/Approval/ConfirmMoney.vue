@@ -189,6 +189,7 @@
 </style>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import qs from 'qs'
     //Your Javascript lives within the Script Tag
@@ -198,6 +199,7 @@
 
     export default {
         name: "ConfirmMoney",
+        mixins: [mixin],
         components: {            
             Loading
         },
@@ -281,7 +283,12 @@
             getDataConfirmMoney() {
                 console.log('getDataConfirmMoney');
                 var url = this.$store.state.envUrl + '/api/Approval/DataConfirmMoney/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         this.confirmMoneyData = response.data;
                         if (this.confirmMoneyData != null) {
@@ -299,8 +306,11 @@
                         this.isLoading = false;
                         console.log("confirmData: ",this.confirmMoneyData)
                     })
-                    .catch(function (error) {
-                        alert(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.getDataConfirmMoney()
+                        }
                     });
             },
             countDownTimer() {
@@ -318,7 +328,12 @@
             },
             postData() {
                 var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
-                axios.get(url)
+                var apiConfig = {
+                    headers: {
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                    }
+                }
+                axios.get(url, apiConfig)
                     .then((response) => {
                         console.log(response);
                         if (response.data == "Success") {
@@ -331,8 +346,11 @@
                         
                         
                     })
-                    .catch(function (error) {
-                        console.log(error);
+                    .catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.postData()
+                        }
                     });
             },
             requestOTP() {

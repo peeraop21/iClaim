@@ -10,10 +10,6 @@
             <div align="center">
                 <h2 id="header2">ข้อมูลการรับแจ้งเหตุ</h2>
                 <br>
-                <!-- <div class="txt"  >
-                    <p>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</p>
-                    <p>เลขประจำตัวประชาชน: {{userData.idcardNo}}</p>
-                </div> -->
                 <div class="tab-user">
                     <div class="row">
                         <div class="col-3 px-0">
@@ -35,7 +31,6 @@
                 <section>
                     <div style="height: 98%; width: 100%;">
                         <div class="accordion" v-for="accident in accData" v-bind:key="accident.stringAccNo">
-                            <!--v-for="accident in accidents" :key="accident.id"-->
                             <div class="accordion-item" :id="'list' + accident.stringAccNo">
                                 <a class="accordion-link" :href="'#list' + accident.stringAccNo">
                                     <div>
@@ -58,8 +53,7 @@
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
-                                <div class="answer">
-                                    
+                                <div class="answer">                                  
                                     <p>
                                         ทะเบียนรถ:
                                         <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
@@ -72,16 +66,9 @@
                                         <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>
 
                                         <br />
-                                        <!--สิทธิ์คงเหลือค่าสูญเสียอวัยวะ / ทุพพลภาพ:
-        <label v-for="(rights, index) in accident.rights" :key="`rights-${index}`">
-            {{ rights.claim.sumCrippledMoney }}
-        </label>
-        บาท-->
                                     </p>
-
                                 </div>
                                 <div style="text-align: center">
-                                    <!--<button class="btn-select" @click="sendData">ใช้สิทธิ์</button>-->
                                     <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
                                     <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'Approvals', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
                                 </div>
@@ -109,7 +96,6 @@
         },
         data() {
             return {
-                /*userToken: "U08881937e4faf1dc4a04522d138bmock",*/
                 userData: [],
                 accData: [],
                 rights_amount: 0,
@@ -119,12 +105,7 @@
 
 
         methods: {
-            //senddata() {
-            //    this.$router.push({
-            //        name: "claim",
-            //        query: { accdata: this.accidentsapi }
-            //    });
-            //},
+
             getJwtToken() {
                 var urlJwt = this.$store.state.envUrl + '/api/jwt'
                 axios.post(urlJwt, {
@@ -148,8 +129,6 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
-                        
-                        /*this.accidentsApi = response.data;*/
                         this.$store.state.accStateData = response.data;
                         this.accData = this.$store.state.accStateData
                         console.log('accdata', this.$store.state.accStateData);
@@ -169,7 +148,6 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
-                        /*this.userApi = response.data;*/
                         if (response.data == null) {
                             this.$router.push({ name: 'Advice' })
                         }
@@ -184,16 +162,7 @@
             
             
         },
-        /*computed: {
-            total: function () {
-                let sum = 0;
-                for (let l = 0; l < this.accData.length; l++) {
-                    for (let i = 0; i < this.accData[l].rights.length; i++) {
-                        sum = sum + parseInt(this.accData[l].rights[i].apTotal)
-                    }
-                } return sum;
-            }
-        },*/
+
         async mounted() {
             /*this.$store.state.userTokenLine = "FrameMock"*/
             await this.getJwtToken();
