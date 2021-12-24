@@ -32,6 +32,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-6">
                         <file-pond credits="null"
@@ -44,6 +45,10 @@
                                    v-bind:files="idCardFile"
                                    v-on:addfile="onAddidCardFile"
                                    v-on:removefile="onRemoveIdCardFile"
+                                   allowFileSizeValidation="true"
+                                   maxFileSize="5MB"
+                                   labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                   labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"
                                    ref="pondIdCard" />
                     </div>
                     <div class="col-6">
@@ -56,6 +61,10 @@
                                        v-bind:files="faceFile"
                                        v-on:addfile="onAddfaceFile"
                                        v-on:removefile="onRemoveFaceFile"
+                                       allowFileSizeValidation="true"
+                                       maxFileSize="5MB"
+                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"
                                        ref="pondFace" />
                             <template #overlay>
                                 <div class="text-center">
@@ -84,7 +93,7 @@
                         </div>
                         <div class="col-6" style="padding-left:5px">
                             <label class="form-label-ocr">รหัสหลังบัตร<span class="star-require">*</span></label>
-                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="$v.input.idcardLaserCode.$model" :class="{ 'is-invalid': $v.input.idcardLaserCode.$error }" :maxlength="20"></b-form-input>
+                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="$v.input.idcardLaserCode.$model" :class="{ 'is-invalid': $v.input.idcardLaserCode.$error }" v-mask="'AA#-#######-##'" :maxlength="20"></b-form-input>
                             <div v-if="submitted && !$v.input.idcardLaserCode.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกรหัสหลังบัตรประชาชน</div>
                         </div>
                     </div>
@@ -171,13 +180,15 @@
     import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
     import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
     import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+    import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+
 
     import Loading from 'vue-loading-overlay';
 
     import { required } from "vuelidate/lib/validators";
 
     // Create component
-    const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode);
+    const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode, FilePondPluginFileValidateSize);
 
 
     //Your Javascript lives within the Script Tag
@@ -204,7 +215,7 @@
                 date: new Date(),
                 idCardFile: null,
                 faceFile: null,
-                input: { idCardNo: null, idcardLaserCode: null, prefix: null, firstname: null, lastname: null, dateBirth: null, telNo: null, base64IdCard: null, base64Face: null },
+                input: { idCardNo: null, idcardLaserCode: null, prefix: null, firstname: null, lastname: null, dateBirth: null, telNo: null, base64IdCard: null, base64Face: null, dataUrlIdCard: null, dataUrlFace: null },
                 resultOCR: {},
                 acceptData: false,
                 prefixes: null,
@@ -266,8 +277,6 @@
                 return date_en;
             },
             submit: async function () {
-                
-                this.input.idCardNo = "1-2299-00820-64-5"
 
                 console.log(this.input)
                 if (this.input.base64IdCard == null) {
@@ -300,10 +309,11 @@
                     return false;
                 }
                 this.isLoading = true;
-                await this.postUserData()
+                await this.storeUserData()
             },
-            postUserData() {
-
+            storeUserData() {
+                
+                
                 let body = {
                     idcardNo: this.input.idCardNo,
                     idcardLaserCode: this.input.idcardLaserCode,
@@ -313,71 +323,96 @@
                     stringDateofBirth: this.input.dateBirth,
                     mobileNo: this.input.telNo,
                     lineId: this.$store.state.userTokenLine,
-                    base64IdCard: this.input.base64IdCard
+                    base64IdCard: this.input.dataUrlIdCard,
+                    base64Face: this.input.dataUrlFace,
                 };
                 console.log(body)
-                axios.post(this.$store.state.envUrl + "/api/User", JSON.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
+                this.$swal({
+                    icon: 'question',
+                    text: 'ท่านยืนยันที่จะลงทะเบียนหรือไม่?',
+                    /*title: 'แจ้งเตือน',*/
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                    confirmButtonColor: '#5c2e91',
+                    willClose: () => {
+
                     }
-                }).then((response) => {
+                }).then((result) => {
+                    this.$store.state.inputUserData = body
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'ConfirmOTP', params: { id: "Register", from: "CreateUser" } })
+                    }
+                    //} else if (result.isDenied) {
+
+                    //}
+                });
+            },
+
+            onRemoveIdCardFile: function () {
+                this.input.base64IdCard = null
+                this.input.dataUrlIdCard = null
+                console.log("IdCardBase64: ", this.input.telNo)
+            },
+            onAddidCardFile: async function (error, file) {
+                this.isLoading = true;
+                this.input.base64IdCard = file.getFileEncodeBase64String()
+                if (error != null) {
                     this.isLoading = false;
                     this.$swal({
-                        icon: 'success',
-                        text: 'ระบบได้ทำการบันทึกข้อมูลการยืนยันตัวตนของท่านเรียบร้อยแล้ว',
-                        title: 'ยืนยันตัวตนสำเร็จ',
-                        /*footer: '<a href="">Why do I have this issue?</a>'*/
-                        showCancelButton: false,
-                        showDenyButton: false,
-                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
-                        confirmButtonColor: '#5c2e91',
-                        willClose: () => {
-                            this.$store.state.hasRegistered = true;
-                            /*this.$router.push({ name: 'Accident' })*/
-                            liff.closeWindow()
-                        }
-                    })
-
-                    console.log(response.data)
-                }).catch((error) => {
-                    if (error.toString().includes("401")) {
-                        this.getJwtToken()
-                    }
-                    this.$swal({
                         icon: 'error',
-                        text: 'บันทึกข้อมูลไม่สำเร็จกรุณาลองใหม่อีกครั้ง',
-                        title: 'ผิดพลาด',
+                        text: error.sub,
+                        title: error.main,
                         /*footer: '<a href="">Why do I have this issue?</a>'*/
                         showCancelButton: false,
                         showDenyButton: false,
 
                         confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                         confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            this.$refs.pondIdCard.removeFiles()                           
+                        }
                     })
-                });
+                } else {
+                    if (file) {
+                        var fileDataUrl = file.getFileEncodeDataURL()
+                        var imgRes = new Image();
+                        imgRes.src = fileDataUrl
+                        var img = document.createElement("img");
+                        img.onload = () => {
+                            var canvas = document.createElement("canvas");
+                            var MAX_WIDTH = 720;
+                            var MAX_HEIGHT = 720;
+                            var width = img.width;
+                            var height = img.height;
 
-
-            },
-
-            onRemoveIdCardFile: function () {
-                this.input.base64IdCard = null
-                console.log("IdCardBase64: ", this.input.telNo)
-            },
-            onAddidCardFile: async function (error, file) {
-                this.isLoading = true;
-                this.input.base64IdCard = file.getFileEncodeBase64String()
-                //this.input.base64IdCard = file.getFileEncodeDataURL()
-                console.log("IdCardBase64: ", this.input.base64IdCard)
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            this.input.dataUrlIdCard = canvas.toDataURL(file.file.type);
+                            console.log("idCardUrl:", this.input.dataUrlIdCard)
+                        }
+                        img.src = fileDataUrl
+                    }
+                }
                 
-                //this.idCardTest.file = file
-
-
-                //this.ImageData.IdCardBase64 = this.idCardTest.base64;
-
                 
-
-
+                
                 var url = 'https://ml.appman.co.th/v1/thailand-id-card/front'
                 var bodyFormData = new FormData();
                 bodyFormData.append('Username', 'rvp.user0001');
@@ -400,6 +435,7 @@
                             this.input.lastname = this.resultOCR.last_name_th;
                             this.input.dateBirth = moment(this.formatResultOcrDate(this.resultOCR.date_of_birth_en)).format("YYYY-MM-DD");
                             this.input.base64IdCard = file.getFileEncodeBase64String();
+                           
                             this.isLoading = false;
                             this.isOverlay = false;
                         }
@@ -432,7 +468,7 @@
                             }
                         })
                     }
-                    
+
                 }).catch((error) => {
                     this.isLoading = false;
                     this.$swal({
@@ -452,69 +488,123 @@
             },
             onRemoveFaceFile: function () {
                 this.input.base64Face = null
+                this.input.dataUrlFace = null
                 console.log("FaceBase64: ", this.input.base64Face)
             },
             onAddfaceFile: async function (error, file) {
                 this.isLoading = true;
                 this.input.base64Face = file.getFileEncodeBase64String()
-                //this.input.base64Face = file.getFileEncodeDataURL()
-
-                console.log("FaceBase64: ", this.input.base64Face)
-                const body = {
-                    faceImage: this.input.base64Face,
-                    identityImage: this.input.base64IdCard,
-
-                };
-                var url = 'https://ml.appman.co.th/mw/e-kyc'
-                axios.post(url, body, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': 'uEj0XAy4y69YPgK6IPTFnaVZn7ZsYaum9gJBWowg'
-                    }
-                }).then((response) => {
-                   
-                    var result = response.data;
-                    let resultCompare = (result.compare.result[0].similarity * 100).toFixed(2);
-                    this.isLoading = false;
-                    if (resultCompare < 75) {
-                        this.$swal({
-                            icon: 'error',
-                            text: 'รูปถ่ายใบหน้าไม่ใช่คนเดียวกับบัตรประจำตัวประชาชนกรุณาลองใหม่อีกครั้ง',
-                            title: 'ผิดพลาด',
-                            /*footer: '<a href="">Why do I have this issue?</a>'*/
-                            showCancelButton: false,
-                            showDenyButton: false,
-
-                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                            confirmButtonColor: '#5c2e91',
-                            willClose: () => {
-                                this.$refs.pondFace.removeFiles()
-                            }
-                        })
-                    }
-                    console.log("เทียบ: ", resultCompare)
-                    
-                }).catch((error) => {
+                if (error != null) {
                     this.isLoading = false;
                     this.$swal({
                         icon: 'error',
-                        text: 'เนื่องจากอัพโหลดไม่สำเร็จ หรือไม่ใช่รูปถ่ายใบหน้า กรุณาลองใหม่',
-                        title: 'ผิดพลาด',
+                        text: error.sub,
+                        title: error.main,
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
                         showCancelButton: false,
                         showDenyButton: false,
                         confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                         confirmButtonColor: '#5c2e91',
                         willClose: () => {
                             this.$refs.pondFace.removeFiles()
+                            return;
                         }
                     })
-                    console.log(error);
-                });
+                } else {
+                    if (file) {
+                        var fileDataUrl = file.getFileEncodeDataURL()
+                        var imgRes = new Image();
+                        imgRes.src = fileDataUrl
+                        var img = document.createElement("img");
+                        img.onload = () => {
+                            var canvas = document.createElement("canvas");
+                            var MAX_WIDTH = 720;
+                            var MAX_HEIGHT = 720;
+                            var width = img.width;
+                            var height = img.height;
 
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            this.input.dataUrlFace = canvas.toDataURL(file.file.type);
+                            console.log("faceUrl:", this.input.dataUrlFace)
+
+                            const body = {
+                                faceImage: this.input.dataUrlFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+                                identityImage: this.input.dataUrlIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
+
+                            };
+
+                            var url = 'https://ml.appman.co.th/mw/e-kyc'
+                            axios.post(url, body, {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-api-key': 'uEj0XAy4y69YPgK6IPTFnaVZn7ZsYaum9gJBWowg'
+                                }
+                            }).then((response) => {
+
+                                var result = response.data;
+                                let resultCompare = (result.compare.result[0].similarity * 100).toFixed(2);
+
+                                this.isLoading = false;
+                                if (resultCompare < 70) {
+                                    this.$swal({
+                                        icon: 'error',
+                                        text: 'รูปถ่ายใบหน้าไม่ใช่คนเดียวกับบัตรประจำตัวประชาชนกรุณาลองใหม่อีกครั้ง',
+                                        title: 'ผิดพลาด',
+                                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                        showCancelButton: false,
+                                        showDenyButton: false,
+
+                                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                        confirmButtonColor: '#5c2e91',
+                                        willClose: () => {
+                                            this.$refs.pondFace.removeFiles()
+                                        }
+                                    })
+                                }
+                                console.log("เทียบ: ", resultCompare)
+
+                            }).catch((error) => {
+                                this.isLoading = false;
+                                this.$swal({
+                                    icon: 'error',
+                                    text: 'เนื่องจากอัพโหลดไม่สำเร็จ หรือไม่ใช่รูปถ่ายใบหน้า กรุณาลองใหม่',
+                                    title: 'ผิดพลาด',
+                                    showCancelButton: false,
+                                    showDenyButton: false,
+                                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                    confirmButtonColor: '#5c2e91',
+                                    willClose: () => {
+                                        this.$refs.pondFace.removeFiles()
+                                    }
+                                })
+                                console.log(error);
+                            });
+
+                        }
+                        img.src = fileDataUrl
+                    }
+                }
+                
+                
+                
                
 
-
             },
+           
             getPrefixes() {
                 var url = this.$store.state.envUrl + '/api/Master/Prefix';
                 axios.get(url)
@@ -559,7 +649,7 @@
                 this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069Mock";
             }
             this.getPrefixes()
-            
+
         }
     };
 </script>

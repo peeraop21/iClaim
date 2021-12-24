@@ -61,23 +61,37 @@ namespace Core.Controllers
             //model.HomeZipcode = genAddress.ZipCode;
             model.IdcardNo = model.IdcardNo.Replace("-", "");
             model.MobileNo = model.MobileNo.Replace("-", "");
+            model.IdcardLaserCode = model.IdcardLaserCode.Replace("-", "");
             model.DateofBirth = DateTime.ParseExact(model.StringDateofBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             model.Kycno = kycno + 1;
             model.IdcardNo = model.IdcardNo.Replace(" ", "");
             model.InsertDate = DateTime.Now;
             model.LastUpdateDate = DateTime.Now;
 
-            ECMViewModel ecmModel = new ECMViewModel();
-            ecmModel.SystemId = "02";
-            ecmModel.TemplateId = "03";
-            ecmModel.DocID = "04";
-            ecmModel.RefNo = model.LineId + "|" + model.IdcardNo;
-            ecmModel.FileName = model.IdcardNo + ".png";
-            ecmModel.Base64String = model.Base64IdCard;
-            var idCardEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-            var idCardResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+            ECMViewModel idCardEcmModel = new ECMViewModel();
+            idCardEcmModel.SystemId = "02";
+            idCardEcmModel.TemplateId = "03";
+            idCardEcmModel.DocID = "04";
+            idCardEcmModel.RefNo = model.LineId + "|" + model.IdcardNo;
+            idCardEcmModel.FileName = model.Kycno + "IdCard" + model.IdcardNo + ".png";
+            idCardEcmModel.Base64String = model.Base64IdCard;
+            var idCardEcmRes = await attachmentService.UploadFileToECM(idCardEcmModel);
+            var idCardResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(idCardEcmModel);
             idCardResultMapEdocDetail.Paths = idCardEcmRes.Path;
             await attachmentService.SaveToEdocDetail(idCardResultMapEdocDetail);
+
+            ECMViewModel faceEcmModel = new ECMViewModel();
+            faceEcmModel.SystemId = "02";
+            faceEcmModel.TemplateId = "03";
+            faceEcmModel.DocID = "05";
+            faceEcmModel.RefNo = model.LineId + "|" + model.IdcardNo;
+            faceEcmModel.FileName = model.Kycno + "Face" + model.IdcardNo + ".png";
+            faceEcmModel.Base64String = model.Base64Face;
+            var faceEcmRes = await attachmentService.UploadFileToECM(faceEcmModel);
+            var faceResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(faceEcmModel);
+            faceResultMapEdocDetail.Paths = faceEcmRes.Path;
+            await attachmentService.SaveToEdocDetail(faceResultMapEdocDetail);
+
             return Ok(await userService.AddAsync(model));
         }
     }

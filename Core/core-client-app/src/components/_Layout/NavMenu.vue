@@ -41,9 +41,9 @@
                     this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {
                     this.$swal({
-                        icon: 'warning',
+                        icon: 'question',
                         text: 'ท่านต้องการจะยกเลิกการส่งคำร้องหรือไม่?',
-                        title: 'คำเตือน',
+                        /*title: 'คำเตือน',*/
                         /*footer: '<a href="">Why do I have this issue?</a>'*/
                         showCancelButton: false,
                         showDenyButton: true,

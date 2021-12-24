@@ -1,10 +1,6 @@
-﻿using DataAccess.EFCore.iPolicyModels;
-using DataAccess.EFCore.AccidentModels;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Services.ViewModels
 {
@@ -49,6 +45,7 @@ namespace Services.ViewModels
         public string StringDateofBirth { get; set; }
         public string Base64IdCard { get; set; }
         public string Base64Face { get; set; }
+        public string RefCodeOtp { get; set; }
 
     }
 }

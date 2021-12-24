@@ -7,14 +7,14 @@
                  :is-full-page="true">
 
         </loading>
-        <h2 id="header2" class="">ยืนยันการส่งคำร้อง</h2>
+        <h2 id="header2" class="">ยืนยันการ{{fromText}}</h2>
         <div id="app" class="container mt-5">
             <p>
-                กรุณากดขอรหัส OTP เพื่อรับรหัสยืนยันการส่งคำร้อง
+                กรุณากดขอรหัส OTP เพื่อรับรหัสยืนยันการ{{fromText}}
             </p>
             <div class="row">
                 <div class="col-7 mb-5">
-                    <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" v-model="mockTel" :maxlength="10" disabled />
+                    <b-form-input class="mb-3" type="text" :placeholder="displayMaskTelNo" v-model="mockTel" :maxlength="10" disabled />
                 </div>
                 <div class="col-5 mb-5">
                     <button class="btn-request-otp" type="button" @click="requestOTP" v-bind:disabled="disableBtnReqOTP">ขอรหัส OTP</button>
@@ -56,7 +56,7 @@
             </div>
             <div>
                 <br>
-                <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการส่งคำร้อง</button>
+                <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการ{{fromText}}</button>
                 <button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>
             </div>
         </div>
@@ -183,6 +183,7 @@
 </style>
 
 <script>
+    import liff from '@line/liff'
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import qs from 'qs'
@@ -196,9 +197,9 @@
         },
         data() {
             return {
-                msg: 'ยืนยันการส่งคำร้อง',
-                accData: this.$store.getters.accGetter(this.$route.params.id),
-                userData: this.$store.state.userStateData,
+                msg: 'ยืนยันการส่งคำร้อง',               
+                accData: null,
+                userData: null,
                 dataOTP: { token: "", ref_code: "" },
                 inputOTP: "",
                 verifyResultOTP: { status: "" },
@@ -206,6 +207,9 @@
                 disableBtnReqOTP: false,
                 mockTel: "",
                 isLoading: true,
+                fromText: "",
+                displayMaskTelNo: "",
+
             }
         },
         methods: {
@@ -222,7 +226,7 @@
 
                 }
             },
-           
+
             postData() {
                 if (this.$route.params.from == "Edit") {
                     for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
@@ -254,9 +258,9 @@
                             this.getJwtToken()
                             this.postData()
                         }
-                    });                       
+                    });
                 }
-                else if (this.$route.params.from == "CanselApproval") {                   
+                else if (this.$route.params.from == "CanselApproval") {
                     axios.post(this.$store.state.envUrl + "/api/Approval/CanselApproval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json',
@@ -284,7 +288,7 @@
                             this.postData()
                         }
                     });
-                                              
+
                 }
                 else if (this.$route.params.from == "Create") {
                     axios.post(this.$store.state.envUrl + "/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
@@ -302,10 +306,54 @@
                             this.getJwtToken()
                             this.postData()
                         }
-                    });                                             
+                    });
                 }
-                
-                
+                else if (this.$route.params.from == "CreateUser") {
+
+                    axios.post(this.$store.state.envUrl + "/api/User", JSON.stringify(this.$store.state.inputUserData), {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
+                        }
+                    }).then((response) => {
+                        this.isLoading = false;
+                        this.$swal({
+                            icon: 'success',
+                            text: 'ระบบได้ทำการบันทึกข้อมูลการยืนยันตัวตนของท่านเรียบร้อยแล้ว',
+                            title: 'ยืนยันตัวตนสำเร็จ',
+                            /*footer: '<a href="">Why do I have this issue?</a>'*/
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+                                this.$store.state.hasRegistered = true;
+                                /*this.$router.push({ name: 'Accident' })*/
+                                liff.closeWindow()
+                            }
+                        })
+
+                        console.log(response.data)
+                    }).catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.postData()
+                        }
+                        this.$swal({
+                            icon: 'error',
+                            text: 'บันทึกข้อมูลไม่สำเร็จกรุณาลองใหม่อีกครั้ง',
+                            title: 'ผิดพลาด',
+                            /*footer: '<a href="">Why do I have this issue?</a>'*/
+                            showCancelButton: false,
+                            showDenyButton: false,
+
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                        })
+                    });
+                }
+
+
             },
             resetData() {
                 this.$store.state.inputApprovalData.AccNo = null
@@ -321,10 +369,11 @@
             },
 
             requestOTP() {
+                this.isLoading = true
                 //ตัวจริง
                 const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
                 const body = {
-                    TelNo: this.userData.mobileNo
+                    TelNo: (this.$route.params.from == "CreateUser") ? this.$store.state.inputUserData.mobileNo.replaceAll("-","") : this.userData.mobileNo
                 };
                 //var tel = "";
 
@@ -344,7 +393,9 @@
                     this.countDownTimer()
                     this.dataOTP = response.data.result
                     this.$store.state.inputApprovalData.RefCodeOtp = this.dataOTP.ref_code
+                    this.$store.state.inputUserData.refCodeOtp = this.dataOTP.ref_code
                     console.log(this.dataOTP);
+                    this.isLoading = false
 
                 }).catch((error) => {
                     this.$swal({
@@ -419,7 +470,7 @@
                         })
                     } else if (this.verifyResultOTP.status == "true") {
                         this.postData()
-                        
+
 
 
                     }
@@ -522,12 +573,13 @@
                     .image(textBankRotate)
                     .then((imgBank) => {
                         resultAddWatermarkToBankImage = imgBank.src;
-                        resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg);base64,/, "");
+                        resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
                         this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
                         console.log("TestBank: ", this.$store.state.inputApprovalData.BankData.bankBase64String)
                     }).catch(function (error) {
                         alert(error);
                     });
+
                 for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
                     var options = {
                         init(img) {
@@ -586,31 +638,317 @@
                         .image(textRotate)
                         .then((imgBill) => {
                             resultAddWatermark = imgBill.src;
-                            resultAddWatermark = resultAddWatermark.replace(/^data:image\/(png|jpg);base64,/, "");
+                            resultAddWatermark = resultAddWatermark.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
                             this.$store.state.inputApprovalData.BillsData[i].billFileShow = resultAddWatermark
                             console.log("Test: ", this.$store.state.inputApprovalData.BillsData[i].billFileShow)
                         }).catch(function (error) {
                             alert(error);
-                        });                   
+                        });
                 }
                 this.isLoading = false
-            }
+            },
+            stampWatermarksFromEditApproval() {
+                //Stamp ลายน้ำ
+                if (this.$store.state.inputApprovalData.BankData.isEditBankImage) {
+                    var options1 = {
+                        init(img) {
+                            img.crossOrigin = 'anonymous';
+                        }
+                    };
+                    var textBankRotate = function (target) {
+                        console.log("Target: ", target)
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
 
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+
+                        return target;
+                    };
+                    var resultAddWatermarkToBankImage = "";
+                    watermark([this.$store.state.inputApprovalData.BankData.bankBase64String], options1)
+                        .image(textBankRotate)
+                        .then((imgBank) => {
+                            resultAddWatermarkToBankImage = imgBank.src;
+                            resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                            this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
+                            console.log("TestBank: ", this.$store.state.inputApprovalData.BankData.bankBase64String)
+                        }).catch(function (error) {
+                            alert(error);
+                        });
+                }
+                
+
+
+                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                    if (this.$store.state.inputApprovalData.BillsData[i].isEditImage) {
+                        var options = {
+                            init(img) {
+                                img.crossOrigin = 'anonymous';
+                            }
+                        };
+                                            
+                        watermark([this.$store.state.inputApprovalData.BillsData[i].editBillImage], options)
+                            .dataUrl(function (target) {
+                                console.log("Target: ", target)
+                                var context = target.getContext('2d');
+                                var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                                var x = (target.width / 2);
+                                var y = (target.height / 2);
+                                var fontSize = (target.width + target.height) * (3.5 / 100)
+                                context.save();
+                                context.translate(x, y);
+
+                                if (target.width > target.height) {
+                                    context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                                } else {
+                                    context.rotate(-Math.atan(target.height / target.width));
+                                }
+                                context.globalAlpha = 0.3;
+                                context.fillStyle = 'red';
+                                context.font = fontSize + 'px Kanit';
+                                context.textAlign = 'center';
+                                if (target.width > target.height) {
+                                    context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                                } else {
+                                    context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                                }
+
+                                context.restore();
+
+                                var text1 = 'บริษัทกลางฯเท่านั้น';
+                                context.translate(x, y);
+                                if (target.width > target.height) {
+                                    context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                                } else {
+                                    context.rotate(-Math.atan(target.height / target.width));
+                                }
+                                context.globalAlpha = 0.3;
+                                context.fillStyle = 'red';
+                                context.font = fontSize + 'px Kanit';
+                                context.textAlign = 'center';
+                                if (target.width > target.height) {
+                                    context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                                } else {
+                                    context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                                }
+
+                                return target;
+                            })
+                            .then((imgBill) => {
+                                this.$store.state.inputApprovalData.BillsData[i].editBillImage = imgBill.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                                console.log("Test: ", this.$store.state.inputApprovalData.BillsData[i].editBillImage)
+                            }).catch(function (error) {
+                                alert(error);
+                            });
+                    }
+                    
+                }
+                
+            },
+            stampWatermarksIdCardImage(imgDataUrl) {
+                //Stamp ลายน้ำ
+                var idCardOptions = {
+                    init(img) {
+                        img.crossOrigin = 'anonymous';
+                    }
+                };               
+                /*var resultAddWatermarkToIdCardImage = "";*/
+                watermark([imgDataUrl], idCardOptions)
+                    .dataUrl(function (target) {
+                        console.log("Target: ", target)
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';                       
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
+
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+                      
+                        return target;
+                    })
+                    .then((imgIdCard) => {
+                        this.$store.state.inputUserData.base64IdCard = imgIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                        console.log("addidCard: ", this.$store.state.inputUserData.base64IdCard)
+                        
+                    }).catch(function (error) {
+                        alert(error);
+                    });                                               
+            },
+            stampWatermarksFaceImage(imgDataUrl) {
+                var faceOptions = {
+                    init(img) {
+                        img.crossOrigin = 'anonymous';
+                    }
+                };               
+                watermark([imgDataUrl], faceOptions)
+                    .dataUrl(function (target) {
+                        console.log("Target: ", target)
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
+
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+
+                        return target;
+                    })
+                    .then((imgFace) => {
+                        this.$store.state.inputUserData.base64Face = imgFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                        console.log("addFace: ", this.$store.state.inputUserData.base64Face)
+                    }).catch(function (error) {
+                        alert(error);
+                    });
+                this.isLoading = false
+               
+                
+            }
 
         },
         mounted() {
-            
+
         },
         created() {
-            console.log('load = ', this.$store.state.inputApprovalData)
+            if (this.$route.params.id != "Register") {
+                this.accData = this.$store.getters.accGetter(this.$route.params.id)
+                this.userData = this.$store.state.userStateData
+            }
+            
+
+            console.log('load = ', this.$store.state.inputUserData)
             if (this.$route.params.from == "Create") {
-                this.isLoading = true
+                this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
+                this.fromText = "ส่งคำร้อง"
                 this.stampWatermarksFromCreate()
                 console.log("Stamp Success")
-            } else if (this.$route.params.from == "Edit"){
+            } else if (this.$route.params.from == "Edit") {
+                this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
+                this.fromText = "ส่งเอกสารเพิ่มเติม"
+                this.stampWatermarksFromEditApproval()
                 this.isLoading = false
-            } else if (this.$route.params.from == "CanselApproval"){
+            } else if (this.$route.params.from == "CanselApproval") {
+                this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
+                this.fromText = "ยกเลิกคำร้อง"
                 this.isLoading = false
+            } else if (this.$route.params.from == "CreateUser") {               
+                var telText = this.$store.state.inputUserData.mobileNo
+                this.displayMaskTelNo = "xxx-xxx-" + telText.substr(telText.length - 4)
+                this.fromText = "ลงทะเบียน"
+                this.isLoading = true
+                this.stampWatermarksIdCardImage(this.$store.state.inputUserData.base64IdCard)              
+                this.stampWatermarksFaceImage(this.$store.state.inputUserData.base64Face)
+                this.isLoading = false
+
+
             }
         }
 

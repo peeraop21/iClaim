@@ -149,13 +149,17 @@
                 <div class="form-group ">
                     <div v-if="!displayBankAccount.isDisabledInputImageBookBank">
                         <file-pond name="bankFile"
-                                   ref="pond"
+                                   ref="pondBankEdit"
                                    credits="null"
                                    label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร1"
                                    v-bind:allow-multiple="false"
                                    accepted-file-types="image/jpeg, image/png"
                                    v-on:addfile="onAddBankAccountFile"
-                                   v-if="inputBank.isEditBankImage" />
+                                   v-if="inputBank.isEditBankImage"
+                                   allowFileSizeValidation="true"
+                                       maxFileSize="5MB"
+                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"/>
                     </div>
 
 
@@ -216,6 +220,7 @@
                             </div>
                             <div v-if="!displayBills[index].isDisabledInputImageBill">
                                 <file-pond credits="null"
+                                           ref="pondBillEdit" 
                                            label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                            v-bind:allow-multiple="false"
                                            v-bind:allowFileEncode="true"
@@ -223,7 +228,13 @@
                                            v-if="bills[index].isEditImage"
                                            v-bind:files="bills[index].file"
                                            v-model="bills[index].file"
-                                           v-on:addfile="onAddBillFile(index)" />
+                                           v-on:addfile="onAddBillFile(index)"
+                                           v-on:error="onError"
+                                       allowFileSizeValidation="true"
+                                       maxFileSize="5MB"
+                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"
+                                           />
                             </div>
                             <div v-if="!displayBills[index].isDisabledImageBill">
                                 <div class="mt-2 mb-2" v-if="!bills[index].isEditImage" align="center">
@@ -433,7 +444,21 @@
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import * as moment from "moment/moment";
+
+    import 'vue-form-wizard/dist/vue-form-wizard.min.css'
+    import vueFilePond from 'vue-filepond';    
+    import 'filepond/dist/filepond.min.css'// Import FilePond styles
+    // Import FilePond plugins
+    // Please note that you need to install these plugins separately
+    // Import image preview plugin styles
+    import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
     //Your Javascript lives within the Script Tag
+    import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+    import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+    import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+    import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+
+    const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode, FilePondPluginFileValidateSize);
 
     // Import loading-overlay
     import Loading from 'vue-loading-overlay';
@@ -445,7 +470,7 @@
         mixins: [mixin],
         components: {
             Loading,
-
+            FilePond
         },
         data() {
             return {
@@ -972,15 +997,127 @@
 
             },
             onAddBankAccountFile: function (error, file) {
+                this.isLoading = true;
                 this.bankFileDisplay.file = file
-                this.inputBank.bankBase64String = file.getFileEncodeBase64String()
-                this.inputBank.bankFilename = file.filename
+                
+                if (error != null) {
+                    this.isLoading = false;
+                    this.$swal({
+                        icon: 'error',
+                        text: error.sub,
+                        title: error.main,
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            this.$refs.pondBankEdit.removeFiles()
+                            return;
+                        }
+                    })
+                } else {
+                    this.inputBank.bankFilename = file.filename
+                    if (file) {// Resize Image
+                        var fileDataUrl = file.getFileEncodeDataURL()
+                        var imgRes = new Image();
+                        imgRes.src = fileDataUrl
+                        var img = document.createElement("img");
+                        img.onload = () => {
+                            var canvas = document.createElement("canvas");
+                            var MAX_WIDTH = 720;
+                            var MAX_HEIGHT = 720;
+                            var width = img.width;
+                            var height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            this.inputBank.bankBase64String = canvas.toDataURL(file.file.type);
+                            this.isLoading = false;
+
+                        }
+                        img.src = fileDataUrl
+                    }
+                }
+                
 
             },
+            onError: function (error, file) {
+                console.log('error', error)
+                console.log('data', file)
+                this.isLoading = true;
+                if (error != null) {
+                    this.isLoading = false;
+                    this.$swal({
+                        icon: 'error',
+                        text: error.sub,
+                        title: error.main,
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            for (let i = 0; i < this.$refs.pondBillEdit.length; i++) {
+                                this.$refs.pondBillEdit[i].removeFile(file.id)
+                            }
+                            console.log(this.$refs.pondBillEdit)
+
+                        }
+                    })
+                }
+            },
             onAddBillFile: function (index) {
-                this.bills[index].filename = this.bills[index].file[0].filename
-                this.bills[index].editBillImage = this.bills[index].file[0].getFileEncodeBase64String()
-                console.log("add bill: ", this.bills[index])
+                this.isLoading = true;
+                if (this.bills[index].file[0].fileSize < 5000000) {
+                    this.bills[index].filename = this.bills[index].file[0].filename
+                    if (this.bills[index].file[0]) {// Resize Image
+                        var fileDataUrl = this.bills[index].file[0].getFileEncodeDataURL()
+                        var imgRes = new Image();
+                        imgRes.src = fileDataUrl
+                        var img = document.createElement("img");
+                        img.onload = () => {
+                            var canvas = document.createElement("canvas");
+                            var MAX_WIDTH = 720;
+                            var MAX_HEIGHT = 720;
+                            var width = img.width;
+                            var height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            this.bills[index].editBillImage = canvas.toDataURL(this.bills[index].file[0].file.type);                                                      
+                            this.isLoading = false;
+
+                        }
+                        img.src = fileDataUrl
+                    }
+                }
             },
             //getIt: function () {
             //    console.log(this.$refs.pond.getFiles());
@@ -1118,9 +1255,9 @@
                     } else {
                         this.isLoading = false;
                         this.$swal({
-                            icon: 'info',
+                            icon: 'question',
                             text: 'ท่านยืนยันที่จะส่งเอกสารเพิ่มเติมหรือไม่?',
-                            title: 'แจ้งเตือน',
+                            /*title: 'แจ้งเตือน',*/
                             /*footer: '<a href="">Why do I have this issue?</a>'*/
                             showCancelButton: false,
                             showDenyButton: true,

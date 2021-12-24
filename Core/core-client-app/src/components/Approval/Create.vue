@@ -176,14 +176,19 @@
                             <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
-                                       ref="pondBill"
+                                       ref="pondBill"                                         
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="bills[index].file"
                                        v-model="bills[index].file"
-                                       v-on:addfile="onAddBillFile(index)" />
+                                       v-on:addfile="onAddBillFile(index)"
+                                       v-on:error="onError"
+                                       allowFileSizeValidation="true"
+                                       maxFileSize="5MB"
+                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
                                 <template #header>
                                     <h4 class="not-margin">
@@ -212,7 +217,10 @@
                                         </div>
                                         <div class="mb-2" v-show="divHospitalModal">
 
-                                            <label class="px-2">โรงพยาบาล</label>
+                                            <label class="px-2">โร
+งพยาบาล
+                                            </label>
+                                            โร
                                             <!--<select name="item" id="item" v-model="mockHospital">
                                                 <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
                                                     {{ item.HOSPITALNAME  }}
@@ -304,7 +312,7 @@
                             </div>
 
                             <label class="px-2">จำนวนเงิน</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="calMoney" :class="{ 'is-invalid': input.money.$error }" />
+                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @input="calMoney" @change="rmLeadingZero(index)" :class="{ 'is-invalid': input.money.$error }" />
                             <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                             <div class="row">
                                 <div class="col-8">
@@ -423,7 +431,11 @@
                                        v-bind:files="bankFile"
                                        v-model="bankFile"
                                        v-on:addfile="onAddBankAccountFile"
-                                       v-if="!haslastDocumentReceive" />
+                                       v-if="!haslastDocumentReceive"
+                                       allowFileSizeValidation="true"
+                                       maxFileSize="5MB"
+                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
                             <!--<file-pond name="bankFile"
                                        ref="pond"
                                        credits="null"
@@ -458,7 +470,7 @@
                             <b-form-input class="mt-0 mb-2" v-model.trim="$v.inputBank.accountName.$model" :class="{ 'is-invalid': $v.inputBank.accountName.$error }" readonly></b-form-input>
                             <div v-if="submitted && !$v.inputBank.accountName.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกชื่อบัญชีธนาคาร</div>
                             <p class="mb-0 px-2">เลขบัญชีธนาคาร</p>
-                            <b-form-input class="mt-0 mb-2" v-model.trim="$v.inputBank.accountNumber.$model" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
+                            <b-form-input class="mt-0 mb-2" v-model.trim="$v.inputBank.accountNumber.$model" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }" v-mask="'###-#-#####-###'" :maxlength="15"></b-form-input>
                             <div v-if="submitted && !$v.inputBank.accountNumber.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่บัญชี</div>
                         </div>
                         <div class="mb-4" v-if="haslastDocumentReceive">
@@ -1042,13 +1054,14 @@
     import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
     import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
     import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+    import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 
     // Import loading-overlay
     import Loading from 'vue-loading-overlay';
 
     import { required } from "vuelidate/lib/validators";
     // Create component
-    const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode);
+    const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode, FilePondPluginFileValidateSize);
 
 
     /*import { required, minLength } from 'vuelidate/lib/validators';*/
@@ -1408,17 +1421,128 @@
                 this.diaryFileDisplay.base64 = file.getFileEncodeDataURL()
             },
             onAddBankAccountFile: function (error, file) {
-                console.log(file)
-                this.bankFileDisplay.file = file
-                //this.bankFileDisplay.filename = file.filename
-                //this.bankFileDisplay.base64 = file.getFileEncodeDataURL()
-                this.inputBank.bankBase64String = file.getFileEncodeDataURL()
-                this.inputBank.bankFilename = file.filename
+                this.isLoading = true;
+                if (error != null) {
+                    this.isLoading = false;
+                    this.$swal({
+                        icon: 'error',
+                        text: error.sub,
+                        title: error.main,
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            this.$refs.pondBank.removeFiles()
+                        }
+                    })
+                } else {
+                    this.bankFileDisplay.file = file
+                    this.inputBank.bankFilename = file.filename
+                    if (file) {// Resize Image
+                        var fileDataUrl = file.getFileEncodeDataURL()
+                        var imgRes = new Image();
+                        imgRes.src = fileDataUrl
+                        var img = document.createElement("img");
+                        img.onload = () => {
+                            var canvas = document.createElement("canvas");
+                            var MAX_WIDTH = 720;
+                            var MAX_HEIGHT = 720;
+                            var width = img.width;
+                            var height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            this.inputBank.bankBase64String = canvas.toDataURL(file.file.type);
+                            console.log("BankDataUrl: ", this.inputBank.bankBase64String)
+                            this.isLoading = false;
+
+                        }
+                        img.src = fileDataUrl
+                    }
+                }
+
+               
+            },
+            onError: function (error, file) {
+                console.log('error', error)
+                console.log('data', file)
+                this.isLoading = true;
+                if (error != null) {
+                    this.isLoading = false;
+                    this.$swal({
+                        icon: 'error',
+                        text: error.sub,
+                        title: error.main,
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                            for (let i = 0; i < this.$refs.pondBill.length; i++) {
+                                this.$refs.pondBill[i].removeFile(file.id)
+                            }
+                            console.log(this.$refs.pondBill)
+                            
+                        }
+                    })
+                }
             },
             onAddBillFile: function (index) {
-                console.log("add bill: ", this.bills[index])
-                this.bills[index].filename = this.bills[index].file[0].filename
-                this.bills[index].billFileShow = this.bills[index].file[0].getFileEncodeDataURL()
+                if (this.bills[index].file[0].fileSize < 5000000) {
+                    this.bills[index].filename = this.bills[index].file[0].filename
+                    if (this.bills[index].file[0]) {// Resize Image
+                        var fileDataUrl = this.bills[index].file[0].getFileEncodeDataURL()
+                        var imgRes = new Image();
+                        imgRes.src = fileDataUrl
+                        var img = document.createElement("img");
+                        img.onload = () => {
+                            var canvas = document.createElement("canvas");
+                            var MAX_WIDTH = 720;
+                            var MAX_HEIGHT = 720;
+                            var width = img.width;
+                            var height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            this.bills[index].billFileShow = canvas.toDataURL(this.bills[index].file[0].file.type);
+                            console.log("billData url: ", this.bills[index].billFileShow)
+                            this.isLoading = false;
+
+                        }
+                        img.src = fileDataUrl
+                    }
+                } 
+                
+                
             },
             async OnChangePageOne() {
                 this.submitted = true;
@@ -1550,7 +1674,7 @@
                         return false;
                     }
                 }
-                
+
 
 
                 if (this.lastDocumentReceive != null) {
@@ -1608,6 +1732,10 @@
                 }
                 this.total_amount = sum
 
+            },
+            rmLeadingZero(index) {
+                this.bills[index].money = parseInt(this.bills[index].money)
+                this.bills[index].money = this.bills[index].money.toString()
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1
