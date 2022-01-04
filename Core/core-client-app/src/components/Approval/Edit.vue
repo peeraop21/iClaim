@@ -630,9 +630,7 @@
 
             },
             changeAccountBank() {
-                console.log("ChangeBank")
                 if (!this.inputBank.isEditBankImage) {
-                    console.log("ChangeBank1", this.inputBank)
                     this.displayBankAccount.isHideFormInput = false
                     this.inputBank.isEditBankImage = true
                     this.inputBank.displayBtnChangeBankImage = "ใช้รูปบัญชีเดิม"
@@ -677,13 +675,10 @@
 
                     for (let j = 0; j < this.wounded.length; j++) {
                         if (this.wounded[j].woundedId == parseInt(this.invoicehd[i].mainconsider)) {
-                            console.log("mainconsi ", parseInt(this.invoicehd[i].mainconsider))
                             this.bills[i].injuri = this.wounded[j].wounded
                             this.bills[i].injuriId = this.wounded[j].woundedId;
                         }
                     }
-
-                    console.log(this.bills[i].billFileShow)
                     this.bills[i].billNo = this.invoicehd[i].idInvhd;
                     this.bills[i].money = this.invoicehd[i].suminv;
                     this.bills[i].bookNo = this.invoicehd[i].bookNo;
@@ -759,13 +754,10 @@
                         }
 
                     }
-                    console.log("sss: ", this.displayBills)
-                    console.log("bbb: ", this.invNotPassDescList)
 
                 }
             },
             getInvoicehd() {
-                console.log('getInvoicehd');
                 var url = this.$store.state.envUrl + '/api/approval/Invoicehd/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
@@ -775,7 +767,6 @@
                 axios.get(url, apiConfig)
                     .then((response) => {
                         this.invoicehd = response.data;
-                        console.log("invoicehd: ", response.data);
                         if (response.data.length > 0) {
                             for (let i = 0; i < (this.invoicehd.length - 1); i++) {
                                 this.addField(null, this.bills);
@@ -798,7 +789,6 @@
                     });
             },
             getDocumentReceive() {
-                console.log('getDocumentReceive');
                 var url = this.$store.state.envUrl + '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
@@ -829,12 +819,10 @@
                     });
             },
             getBankNames() {
-                console.log('getBankNames');
                 var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
                         this.bankNames = response.data;
-                        console.log(response.data);
                         this.getDocumentReceive();
                     })
                     .catch(function (error) {
@@ -842,12 +830,10 @@
                     });
             },
             getHospitalNames() {
-                console.log('getHospitalNames');
                 var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;
-                        console.log(this.hospitals);
                         this.getWoundeds();
 
                     })
@@ -856,12 +842,10 @@
                     });
             },
             getChangwatNames() {
-                console.log('getChangwatNames');
                 var url = this.$store.state.envUrl + '/api/Master/Changwat';
                 axios.get(url)
                     .then((response) => {
                         this.changwats = response.data;
-                        console.log(response.data);
                         this.getBankNames();
 
                     })
@@ -870,14 +854,11 @@
                     });
             },
             getWoundeds() {
-                console.log('getWoundeds');
                 var url = this.$store.state.envUrl + '/api/Master/Wounded';
                 axios.get(url)
                     .then((response) => {
                         this.wounded = response.data.woundedList;
                         this.organ = response.data.organ
-                        console.log(response.data);
-
                         this.getInvoicehd();
 
                     })
@@ -886,7 +867,6 @@
                     });
             },
             getDocumentCheck() {
-                console.log('getDocumentCheck');
                 var url = this.$store.state.envUrl + '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
@@ -896,7 +876,6 @@
                 axios.get(url, apiConfig)
                     .then((response) => {
                         this.documentCheck = response.data;
-                        console.log("docchk: ", this.documentCheck)
                         if (this.documentCheck != null) {
                             if (this.documentCheck.bookbankStatus == "N") {
                                 this.accountDoc = true;
@@ -972,7 +951,7 @@
                         }
                     }
                 }).catch(function (error) {
-                    console.log(error);
+                    alert(error);
                 });
 
             },
@@ -992,7 +971,7 @@
                 }).then((response) => {
                     this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
                 }).catch(function (error) {
-                    console.log(error);
+                    alert(error);
                 });
 
             },
@@ -1056,8 +1035,6 @@
 
             },
             onError: function (error, file) {
-                console.log('error', error)
-                console.log('data', file)
                 this.isLoading = true;
                 if (error != null) {
                     this.isLoading = false;
@@ -1074,7 +1051,6 @@
                             for (let i = 0; i < this.$refs.pondBillEdit.length; i++) {
                                 this.$refs.pondBillEdit[i].removeFile(file.id)
                             }
-                            console.log(this.$refs.pondBillEdit)
 
                         }
                     })
@@ -1119,9 +1095,7 @@
                     }
                 }
             },
-            //getIt: function () {
-            //    console.log(this.$refs.pond.getFiles());
-            //},
+
             onChangwatChange() {
                 this.divHospitalModal = true;
 
@@ -1152,7 +1126,6 @@
                 if (this.$v.$invalid) {
                     return false;
                 }
-                console.log("ss   ", JSON.stringify(this.bills))
                 for (let i = 0; i < this.bills.length; i++) {
                     this.bills[i].accNo = this.iclaimAppData.accNo
                     this.bills[i].victimNo = this.accData.victimNo
@@ -1170,7 +1143,6 @@
                 }).then((response) => {
                     var billIdDuplicate = [];
                     this.duplicateInv = response.data
-                    console.log(this.duplicateInv)
                     if (this.duplicateInv.length > 0) {
                         for (let i = 0; i < this.duplicateInv.length; i++) {
                             if (this.duplicateInv[i].isDuplicate == true) {
@@ -1212,9 +1184,7 @@
                                     }
                                 }
                                 var billCansel = this.bills.filter(w => w.isCancel).length
-                                console.log("billCanselOn", billCansel)
                                 if (billCansel == this.iclaimAppData.iclaimInvCount) {
-                                    console.log("billCansel", billCansel)
                                     this.$swal({
                                         icon: 'warning',
                                         html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount +' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
@@ -1280,8 +1250,6 @@
                             this.$store.state.inputApprovalData.BillsData = this.bills
                             this.$store.state.inputApprovalData.BankData = this.inputBank
                             this.$store.state.inputApprovalData.VictimData = null
-                            console.log(this.$store.state.inputApprovalData)
-                            console.log(result)
                             if (result.isConfirmed) {
                                 this.$router.push({ name: 'ConfirmOTP', params: { from: "Edit" } })
                             }
@@ -1326,13 +1294,11 @@
                     isCancel: false
                 });
                 this.calMoney()
-                console.log("fieldType: ", fieldType)
             },
             removeField(index, fieldType) {
                 //type.splice(index, 1);
                 fieldType.splice(index, 1);
                 this.calMoney()
-                console.log(this.bills)
             },
 
             showSwal() {
@@ -1362,11 +1328,8 @@
             await this.getHospitalNames();
             await this.getDocumentCheck();
             
-
             this.selectChangwat = 0;
             this.selectHospital = 0;
-            console.log('testOverlay', this.invOverlay);
-            console.log('hosData', this.iclaimAppData);
         },
 
         computed: {

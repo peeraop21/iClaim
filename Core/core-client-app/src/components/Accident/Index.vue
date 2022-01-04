@@ -131,7 +131,6 @@
                     .then((response) => {
                         this.$store.state.accStateData = response.data;
                         this.accData = this.$store.state.accStateData
-                        console.log('accdata', this.$store.state.accStateData);
                         this.isLoading = false
                     })
                     .catch(function (error) {
@@ -153,7 +152,6 @@
                         }
                         this.$store.state.userStateData = response.data;                       
                         this.userData = this.$store.state.userStateData;
-                        console.log('userdata', this.$store.state.userStateData);
                     })
                     .catch(function (error) {
                         alert(error);

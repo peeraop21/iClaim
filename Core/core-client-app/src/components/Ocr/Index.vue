@@ -277,8 +277,6 @@
                 return date_en;
             },
             submit: async function () {
-
-                console.log(this.input)
                 if (this.input.base64IdCard == null) {
                     this.$swal({
                         icon: 'warning',
@@ -326,7 +324,6 @@
                     base64IdCard: this.input.dataUrlIdCard,
                     base64Face: this.input.dataUrlFace,
                 };
-                console.log(body)
                 this.$swal({
                     icon: 'question',
                     text: 'ท่านยืนยันที่จะลงทะเบียนหรือไม่?',
@@ -355,7 +352,6 @@
             onRemoveIdCardFile: function () {
                 this.input.base64IdCard = null
                 this.input.dataUrlIdCard = null
-                console.log("IdCardBase64: ", this.input.telNo)
             },
             onAddidCardFile: async function (error, file) {
                 this.isLoading = true;
@@ -405,7 +401,6 @@
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             this.input.dataUrlIdCard = canvas.toDataURL(file.file.type);
-                            console.log("idCardUrl:", this.input.dataUrlIdCard)
                         }
                         img.src = fileDataUrl
                     }
@@ -426,7 +421,6 @@
                     }
                 }).then((response) => {
                     this.resultOCR = response.data.result;
-                    console.log("Result: ", response)
                     if (response.status == 200) {
                         if (this.resultOCR != "") {
                             this.input.idCardNo = this.resultOCR.id_number.replaceAll(" ", "-");
@@ -483,13 +477,11 @@
                             this.$refs.pondIdCard.removeFiles()
                         }
                     })
-                    console.log(error);
                 });
             },
             onRemoveFaceFile: function () {
                 this.input.base64Face = null
                 this.input.dataUrlFace = null
-                console.log("FaceBase64: ", this.input.base64Face)
             },
             onAddfaceFile: async function (error, file) {
                 this.isLoading = true;
@@ -539,8 +531,6 @@
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             this.input.dataUrlFace = canvas.toDataURL(file.file.type);
-                            console.log("faceUrl:", this.input.dataUrlFace)
-
                             const body = {
                                 faceImage: this.input.dataUrlFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
                                 identityImage: this.input.dataUrlIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
@@ -575,8 +565,6 @@
                                         }
                                     })
                                 }
-                                console.log("เทียบ: ", resultCompare)
-
                             }).catch((error) => {
                                 this.isLoading = false;
                                 this.$swal({
@@ -591,20 +579,13 @@
                                         this.$refs.pondFace.removeFiles()
                                     }
                                 })
-                                console.log(error);
                             });
 
                         }
                         img.src = fileDataUrl
                     }
                 }
-
-
-
-
-
             },
-
             getPrefixes() {
                 var url = this.$store.state.envUrl + '/api/Master/Prefix';
                 axios.get(url)
@@ -616,17 +597,10 @@
                         alert(error);
                     });
             },
-
-
-        },
-        mounted() {
-
-
         },
         async created() {
             if (process.env.NODE_ENV == "production") {
                 //--Publish--
-
                 await liff.init({
                     liffId: '1655252355-n08QYdAA'
                 }).then(() => {

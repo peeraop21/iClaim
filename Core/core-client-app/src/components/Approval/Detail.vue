@@ -194,7 +194,7 @@
                 <div class="mt-0" v-else-if="accData.provAcc === null">
                     <p class="label-text">-</p>
                     <hr class="mt-0">
-                </div>              
+                </div>
                 <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                 <div class="mt-0" v-if="approvalData.car.foundCarLicense != null">
                     <p class="label-text">{{approvalData.car.foundCarLicense}}</p>
@@ -414,7 +414,6 @@
 <script>
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
-    // Import loading-overlay
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
 
@@ -427,7 +426,7 @@
         data() {
             return {
                 bank: null,
-                total_amount:null,
+                total_amount: null,
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 //----Get ApprovalData
@@ -447,21 +446,20 @@
                         accountName: null,
                         accountNumber: null,
                         bankId: null,
-                        base64Image:null
+                        base64Image: null
 
                     }
                 },
                 isLoading: true,
                 modalBigImage: false,
                 srcBigImage: null,
-                
+
 
 
             }
         },
         methods: {
             getApprovalDetail() {
-                console.log('getApprovalDetail');
                 var url = this.$store.state.envUrl + '/api/Approval/ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo).replace('{userIdCard}', this.userData.idcardNo);
                 var apiConfig = {
                     headers: {
@@ -472,13 +470,12 @@
                     .then((response) => {
                         this.approvalData = response.data;
                         this.getBankFileFromECM();
-                        console.log(response.data);
                         for (let i = 0; i < this.approvalData.invoicehds.length; i++) {
                             this.approvalData.invoicehds[i].base64Image = 'data:image/png;base64,' + this.approvalData.invoicehds[i].base64Image
                         }
-                        
+
                     })
-                    .catch((error) =>  {
+                    .catch((error) => {
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.getApprovalDetail()
@@ -491,7 +488,7 @@
                     SystemId: '03',
                     TemplateId: '09',
                     DocumentId: '01',
-                    RefId: this.$route.params.appNo  + '|' + this.accData.accNo + '|' + this.accData.victimNo,
+                    RefId: this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
                 };
                 axios.post(url, JSON.stringify(body), {
                     headers: {
@@ -501,8 +498,7 @@
                 }).then((response) => {
                     this.approvalData.bankAccount.base64Image = 'data:image/png;base64,' + response.data;
                     this.isLoading = false;
-                }).catch(function (error) {
-                    console.log(error);
+                }).catch(function () {
                 });
 
             },
@@ -514,15 +510,14 @@
         },
         async mounted() {
             await this.getApprovalDetail();
-            
+
 
         },
     }
 </script>
 <style>
-  .label-text{
-        margin-bottom:0px;
-
-        color:gray;
+    .label-text {
+        margin-bottom: 0px;
+        color: gray;
     }
 </style>

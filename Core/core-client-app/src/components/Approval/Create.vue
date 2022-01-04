@@ -130,7 +130,7 @@
             </div>
         </vs-dialog>
         <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="storeInputData">
-            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="OnChangePageOne">                
+            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="OnChangePageOne">
                 <div class="" v-if="formType == 1">
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
@@ -1221,25 +1221,18 @@
                 this.$store.state.inputApprovalData.BillsData = this.bills
                 this.$store.state.inputApprovalData.BankData = (this.haslastDocumentReceive) ? this.lastDocumentReceive : this.inputBank
                 this.$store.state.inputApprovalData.VictimData = this.accidentVictimData
-                console.log("stored", this.$store.state.inputApprovalData);
             },
             getBankNames() {
-                console.log('getBankNames');
                 var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
-                        //this.$store.state.bankStateData = response.data;
-                        //this.bankData = this.$store.state.bankStateData
-                        //console.log(this.$store.state.bankStateData);
                         this.bankNames = response.data;
-                        console.log(response.data);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
             getLastDocumentReceive() {
-                console.log('getHospitalNames');
                 var url = this.$store.state.envUrl + '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
                 var apiConfig = {
                     headers: {
@@ -1262,9 +1255,6 @@
                             this.haslastDocumentReceive = true;
                             this.getFileFromECM()
                         }
-
-                        console.log('last documenttttt: ', response.data.length);
-                        console.log('last document: ', response.data[0]);
                     })
                     .catch((error) => {
                         if (error.toString().includes("401")) {
@@ -1274,44 +1264,37 @@
                     });
             },
             getHospitalNames() {
-                console.log('getHospitalNames');
                 var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;
-                        console.log(this.hospitals);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
             getChangwatNames() {
-                console.log('getChangwatNames');
                 var url = this.$store.state.envUrl + '/api/Master/Changwat';
                 axios.get(url)
                     .then((response) => {
                         this.changwats = response.data;
-                        console.log(response.data);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
             getWoundeds() {
-                console.log('getWoundeds');
                 var url = this.$store.state.envUrl + '/api/Master/Wounded';
                 axios.get(url)
                     .then((response) => {
                         this.wounded = response.data.woundedList;
                         this.organ = response.data.organ
-                        console.log(response.data);
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
             getAccidentCar() {
-                console.log('getAccidentCar');
                 var url = this.$store.state.envUrl + '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
                 var apiConfig = {
                     headers: {
@@ -1321,7 +1304,6 @@
                 axios.get(url, apiConfig)
                     .then((response) => {
                         this.accidentCarData = response.data;
-                        console.log(this.accidentCarData);
                     })
                     .catch((error) => {
                         if (error.toString().includes("401")) {
@@ -1331,7 +1313,6 @@
                     });
             },
             getAccidentVictim() {
-                console.log('getAccidentVictim');
                 var mockIdcard = this.userData.idcardNo /*'3149900145384'*/;
                 var url = this.$store.state.envUrl + '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
                 var apiConfig = {
@@ -1343,7 +1324,6 @@
                     .then((response) => {
                         this.accidentVictimData = response.data;
                         this.inputBank.accountName = this.accidentVictimData.fname + " " + this.accidentVictimData.lname
-                        console.log(this.accidentVictimData);
                     })
                     .catch((error) => {
                         if (error.toString().includes("401")) {
@@ -1369,8 +1349,7 @@
                     this.lastDocumentReceive.bankBase64String = 'data:image/png;base64,' + response.data;
                     this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
                     this.isLoading = false
-                }).catch(function (error) {
-                    console.log(error);
+                }).catch(function () {
                 });
 
             },
@@ -1427,7 +1406,6 @@
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             this.inputBank.bankBase64String = canvas.toDataURL(file.file.type);
-                            console.log("BankDataUrl: ", this.inputBank.bankBase64String)
                             this.isLoading = false;
 
                         }
@@ -1438,8 +1416,6 @@
 
             },
             onError: function (error, file) {
-                console.log('error', error)
-                console.log('data', file)
                 this.isLoading = true;
                 if (error != null) {
                     this.isLoading = false;
@@ -1456,7 +1432,6 @@
                             for (let i = 0; i < this.$refs.pondBill.length; i++) {
                                 this.$refs.pondBill[i].removeFile(file.id)
                             }
-                            console.log(this.$refs.pondBill)
 
                         }
                     })
@@ -1493,7 +1468,6 @@
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             this.bills[index].billFileShow = canvas.toDataURL(this.bills[index].file[0].file.type);
-                            console.log("billData url: ", this.bills[index].billFileShow)
                             this.isLoading = false;
 
                         }
@@ -1540,11 +1514,6 @@
                         }
                     }
                 }
-                //console.log("orgen", this.organ.length)
-                //for (let j = 0; j < this.bills.length; j++) {
-
-                //}
-
                 var url = this.$store.state.envUrl + '/api/Approval/CheckInvoiceUsing'
                 let isDuplicate = false;
                 await axios.post(url, JSON.stringify(this.bills), {
@@ -1555,7 +1524,6 @@
                 }).then((response) => {
                     var billIdDuplicate = [];
                     this.duplicateInv = response.data
-                    console.log(this.duplicateInv)
                     if (this.duplicateInv.length > 0) {
                         for (let i = 0; i < this.duplicateInv.length; i++) {
                             if (this.duplicateInv[i].isDuplicate == true) {
@@ -1582,14 +1550,11 @@
                         return false;
                     }
                     if (this.lastDocumentReceive != null) {
-                        console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
                         for (let i = 0; i < this.bankNames.length; i++) {
                             if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
                                 this.lastDocumentReceive.accountBankName = this.bankNames[i].name
                                 this.lastDocumentReceive.bankId = this.bankNames[i].bankCode
-                                console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
-                                //this.submitted = false;
-                                //return true;
+
                             }
                         }
                         this.submitted = false;
@@ -1610,9 +1575,6 @@
             },
             OnChangePageTwo() {
                 this.submitted = true;
-
-
-                // stop here if form is invalid
                 if (!this.haslastDocumentReceive) {
                     this.$v.inputBank.$touch();
                     if (this.$v.inputBank.$invalid) {
@@ -1638,11 +1600,9 @@
 
                 if (this.lastDocumentReceive != null) {
 
-                    console.log('start page two  : ', this.lastDocumentReceive.accountBankName)
                     for (let i = 0; i < this.bankNames.length; i++) {
                         if (this.lastDocumentReceive.accountBankName == this.bankNames[i].bankCode) {
                             this.lastDocumentReceive.accountBankName = this.bankNames[i].name
-                            console.log('before page two  : ', this.lastDocumentReceive.accountBankName)
                             return true;
                         }
                     }
@@ -1650,12 +1610,9 @@
 
                 return true;
             },
-            //getIt: function () {
-            //    console.log(this.$refs.pond.getFiles());
-            //},
+
             onChangwatChange() {
                 this.divHospitalModal = true;
-                console.log("ch change : ", this.selectChangwat)
             },
             onOrganChange() {
                 this.divWoundedModal = true;
@@ -1676,7 +1633,6 @@
                 this.divWoundedModal = false;
             },
             submitModalSaysoHospital() {
-                console.log('testsub')
                 this.saysoHospital = this.mockSaysoHospital.HOSPITALNAME
                 this.modalSaysoHospital = false
                 this.selectChangwat = 0;
@@ -1700,15 +1656,10 @@
                 var index = this.bills.length + 1
                 fieldType.push({ billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "", file: null, billFileShow: "", filename: "" });
                 this.calMoney()
-                console.log(this.bills)
             },
             removeField(index, fieldType) {
-                //type.splice(index, 1);
                 fieldType.splice(index, 1);
-
-                /*this.$refs.pond.removeFile(this.bills[index].file[0].id);*/
                 this.calMoney()
-                console.log(this.bills)
             },
 
             onComplete: function () {

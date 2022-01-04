@@ -3,18 +3,6 @@
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ประวัติ/สถานะคำร้อง</h2>
-
-                <!--<div class="wrap-collabsible">
-                    <input id="collapsible" class="toggle" type="checkbox">
-                    <label for="collapsible" class="lbl-toggle">More Info</label>
-                    <div class="collapsible-content">
-                        <div class="content-inner">
-                            <p>
-                                QUnit is by calling one of the object that are embedded in JavaScript, and faster JavaScript program could also used with its elegant, well documented, and functional programming using JS, HTML pages Modernizr is a popular browsers without plug-ins. Test-Driven Development.
-                            </p>
-                        </div>
-                    </div>
-                </div>-->
                 <section>
                     <div v-if="isHasIclaimApprovalData == true" style="height: 95%; width: 100%;">
                         <div class="accordion" v-for="iclaimApp in iclaimApprovalData" :key="iclaimApp.appNo">
@@ -32,7 +20,6 @@
                                         </div>
                                         <div align="right" style="margin-top: -10px;">
                                             <div style="margin-top:-5px">
-                                                <!--<a v-on:click="getPDF(iclaimApp.appNo)">PDF</a>-->
                                                 <vs-button v-if="iclaimApp.status >= 5"
                                                            v-on:click="externalPagePDF(iclaimApp.appNo)"
                                                            icon
@@ -235,10 +222,8 @@
                                 icon: 'info',
                                 html: htmlMessage,
                                 title: 'แจ้งเตือน',
-                                /*footer: '<a href="">Why do I have this issue?</a>'*/
                                 showCancelButton: false,
                                 showDenyButton: false,
-
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
@@ -246,9 +231,6 @@
                                 }
                             })
                         }
-                        
-                        console.log("hosApp: ", this.iclaimApprovalData.length);
-                        console.log("hosApp: ", this.iclaimApprovalData);
                         if (this.iclaimApprovalData.length == 0) {
                             this.isHasIclaimApprovalData = false
                         } else if (this.iclaimApprovalData.length > 0) {
@@ -259,7 +241,6 @@
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.getIclaimApproval()
-                            console.log("jwtNew: ", this.$store.state.jwtToken.token )
                         }
                         
                     });
@@ -271,74 +252,10 @@
                     
                 });
             },
-            getPDF(appNo) {
-
-                /*var url = '/api/genpdf/GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{channel}', this.accData.channel);*/
-                var url = this.$store.state.envUrl + '/api/genpdf';
-                const body = {
-                    AccNo: this.$route.params.id,
-                    VictimNo: this.accData.victimNo,
-                    AppNo: appNo,
-                    Channel: this.accData.channel
-                };
-                this.$swal({
-                    title: 'กำลังโหลด',
-                    html: 'ขณะนี้ระบบกำลังโหลดเอกสาร คำร้องขอรับค่าเสียหายเบื้องต้น',
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        this.$swal.showLoading()
-
-                    },
-                    willClose: () => {
-
-                    }
-                })
-                axios.post(url, JSON.stringify(body), {
-                    responseType: 'arraybuffer',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                    .then((response) => {
-                        console.log(response)
-                        let blob = new Blob([response.data], { type: 'application/pdf' }),
-                            url = window.URL.createObjectURL(blob)
-                        this.$swal.close();
-                        //this.$router.push(url)
-                        //window.location.href = url;
-                        console.log(url)
-                        /*window.open(url)*/
-                        liff.openWindow({
-                            url: 'https://www.youtube.com/?openExternalBrowser=1'
-                        });
-                        
-                        /*window.open("data:application/pdf," + encodeURI(response.data));*/
-                        //const blob = new Blob([response.data]);
-                        //const objectUrl = URL.createObjectURL(blob);
-                        //this.pdfsrc = objectUrl;
-                        //console.log(this.pdfsrc)
-
-                        //var link = document.createElement('a');
-                        //link.href = window.URL.createObjectURL(blob);
-                        //var fileName = "PT3";
-                        //link.download = fileName;
-                        //link.click();
-                        //this.$swal.close();
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-
-            }
         },
         async created() {           
             await this.getIclaimApproval();
             
         },
-        //async mounted() {
-            
-
-        //}
-
     }
 </script>

@@ -238,7 +238,6 @@
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
                     }).then((response) => {
-                        console.log(response);
                         this.isLoading = false
                         this.$swal({
                             icon: 'success',
@@ -269,7 +268,6 @@
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
                     }).then((response) => {
-                        console.log(response);
                         this.isLoading = false;
                         this.$swal({
                             icon: 'success',
@@ -301,10 +299,8 @@
                             'Content-Type': 'application/json',
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }).then((response) => {
-                        console.log(response);
+                    }).then(() => {
                         this.isLoading = false;
-                       
                         this.resetData();
                         this.showSwal();
                     }).catch((error) => {
@@ -323,32 +319,28 @@
                             'Content-Type': 'application/json',
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }).then((response) => {
+                    }).then(() => {
                         this.isLoading = false;
                         this.$swal({
                             icon: 'success',
                             text: 'ระบบได้ทำการบันทึกข้อมูลการยืนยันตัวตนของท่านเรียบร้อยแล้ว',
                             title: 'ยืนยันตัวตนสำเร็จ',
-                            /*footer: '<a href="">Why do I have this issue?</a>'*/
                             showCancelButton: false,
                             showDenyButton: false,
                             confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
                             confirmButtonColor: '#5c2e91',
                             willClose: () => {
                                 this.$store.state.hasRegistered = true;
-                                /*this.$router.push({ name: 'Accident' })*/
                                 liff.closeWindow()
                             }
                         })
 
-                        console.log(response.data)
                     }).catch((error) => {
                         this.isLoading = false;
                         this.$swal({
                             icon: 'error',
                             text: 'บันทึกข้อมูลไม่สำเร็จกรุณาลองใหม่อีกครั้ง',
                             title: 'ผิดพลาด',
-                            /*footer: '<a href="">Why do I have this issue?</a>'*/
                             showCancelButton: false,
                             showDenyButton: false,
 
@@ -388,16 +380,6 @@
                 const body = {
                     TelNo: (this.$route.params.from == "CreateUser") ? this.$store.state.inputUserData.mobileNo.replaceAll("-","") : this.userData.mobileNo
                 };
-                //var tel = "";
-
-
-                //ตัวเทส
-                //const url = "https://smsotp.rvpeservice.com/OTP/RequestOTP";
-                //const body = {
-                //    ProjectName: "OTP_DigitalClaim",
-                //    TelNo: this.mockTel
-                //};
-                console.log(qs.stringify(body))
                 axios.post(url, qs.stringify(body), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -407,10 +389,9 @@
                     this.dataOTP = response.data.result
                     this.$store.state.inputApprovalData.RefCodeOtp = this.dataOTP.ref_code
                     this.$store.state.inputUserData.refCodeOtp = this.dataOTP.ref_code
-                    console.log(this.dataOTP);
                     this.isLoading = false
 
-                }).catch((error) => {
+                }).catch(() => {
                     this.isLoading  =  false
                     this.$swal({
                         icon: 'error',
@@ -422,7 +403,6 @@
                         denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                         denyButtonColor: '#dad5e9'
                     });
-                    console.log(error);
                 });
             },
 
@@ -451,25 +431,12 @@
                     'otp_code': this.inputOTP,
                     'ref_code': this.dataOTP.ref_code
                 };
-
-
-                //ตัวเทส
-                //const url = "https://smsotp.rvpeservice.com/OTP/VerifyOTP";
-                //const body = {
-                //    'ProjectName': "OTP_DigitalClaim",
-                //    'token': this.dataOTP.token,
-                //    'otp_code': this.inputOTP,
-                //    'ref_code': this.dataOTP.ref_code
-                //};
-
-                console.log(qs.stringify(body))
                 axios.post(url, qs.stringify(body), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then((response) => {
                     this.verifyResultOTP = response.data
-                    console.log(this.verifyResultOTP.status);
                     if (this.verifyResultOTP.status == "false") {
                         this.$swal.close();
                         this.$swal({
@@ -490,9 +457,8 @@
 
 
                     }
-                }).catch(function (error) {
+                }).catch(function () {
                     this.isLoading = false
-                    console.log(error);
                 });
 
             },
@@ -502,7 +468,6 @@
                     icon: 'success',
                     text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
                     title: 'ส่งคำร้องเรียบร้อยแล้ว',
-                    /*footer: '<a href="">Why do I have this issue?</a>'*/
                     showCancelButton: false,
                     showDenyButton: true,
                     denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
@@ -538,7 +503,6 @@
                     }
                 };
                 var textBankRotate = function (target) {
-                    console.log("Target: ", target)
                     var context = target.getContext('2d');
                     var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                     var x = (target.width / 2);
@@ -591,7 +555,6 @@
                         resultAddWatermarkToBankImage = imgBank.src;
                         resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
                         this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
-                        console.log("TestBank: ", this.$store.state.inputApprovalData.BankData.bankBase64String)
                     }).catch(function (error) {
                         alert(error);
                     });
@@ -603,7 +566,6 @@
                         }
                     };
                     var textRotate = function (target) {
-                        console.log("Target: ", target)
                         var context = target.getContext('2d');
                         var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                         var x = (target.width / 2);
@@ -656,7 +618,6 @@
                             resultAddWatermark = imgBill.src;
                             resultAddWatermark = resultAddWatermark.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
                             this.$store.state.inputApprovalData.BillsData[i].billFileShow = resultAddWatermark
-                            console.log("Test: ", this.$store.state.inputApprovalData.BillsData[i].billFileShow)
                         }).catch(function (error) {
                             alert(error);
                         });
@@ -672,7 +633,6 @@
                         }
                     };
                     var textBankRotate = function (target) {
-                        console.log("Target: ", target)
                         var context = target.getContext('2d');
                         var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                         var x = (target.width / 2);
@@ -725,7 +685,6 @@
                             resultAddWatermarkToBankImage = imgBank.src;
                             resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
                             this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
-                            console.log("TestBank: ", this.$store.state.inputApprovalData.BankData.bankBase64String)
                         }).catch(function (error) {
                             alert(error);
                         });
@@ -791,7 +750,6 @@
                             })
                             .then((imgBill) => {
                                 this.$store.state.inputApprovalData.BillsData[i].editBillImage = imgBill.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-                                console.log("Test: ", this.$store.state.inputApprovalData.BillsData[i].editBillImage)
                             }).catch(function (error) {
                                 alert(error);
                             });
@@ -810,7 +768,6 @@
                 /*var resultAddWatermarkToIdCardImage = "";*/
                 watermark([imgDataUrl], idCardOptions)
                     .dataUrl(function (target) {
-                        console.log("Target: ", target)
                         var context = target.getContext('2d');
                         var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';                       
                         var x = (target.width / 2);
@@ -857,9 +814,7 @@
                         return target;
                     })
                     .then((imgIdCard) => {
-                        this.$store.state.inputUserData.base64IdCard = imgIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-                        console.log("addidCard: ", this.$store.state.inputUserData.base64IdCard)
-                        
+                        this.$store.state.inputUserData.base64IdCard = imgIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");                        
                     }).catch(function (error) {
                         alert(error);
                     });                                               
@@ -939,13 +894,10 @@
                 this.userData = this.$store.state.userStateData
             }
             
-
-            console.log('load = ', this.$store.state.inputUserData)
             if (this.$route.params.from == "Create") {
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งคำร้อง"
                 this.stampWatermarksFromCreate()
-                console.log("Stamp Success")
             } else if (this.$route.params.from == "Edit") {
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งเอกสารเพิ่มเติม"

@@ -39,39 +39,6 @@
                 this.$store.state.envUrl = "http://localhost:50598"
             }
             
-
-            //liff.getProfile().then(profile => {
-            //    const getProfile = profile.userId;
-            //    alert(getProfile);
-            //});
-
-            //await liff.init({
-            //    liffId: '1656525617-BqQZ3o1z',
-
-            //    /*withLoginOnExternalBrowser: false,*/
-            //}).then(() => {
-            //    if (liff.isLoggedIn()) {
-            //        liff.getProfile().then(profile => {
-            //            this.$store.state.userTokenLine = profile.userId
-            //            this.show = false
-            //            alert(profile.displayName);
-            //        }).catch(err => alert(err));
-            //    } else {
-            //        liff.login();
-            //    }
-
-            //    //const getContext = liff.getContext();
-            //    //this.$store.state.userTokenLine = getContext.userId
-            //    //alert(getContext.userTokenLine);
-
-            //}).catch(err => {
-            //    alert(err);
-            //    throw err
-            //});
-
-
-            /*this.$store.state.userTokenLine = "Uf3f96dd0506eec532162b377d7c0nioro";*/
-
         }
 
 

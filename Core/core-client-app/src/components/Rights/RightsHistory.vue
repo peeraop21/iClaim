@@ -17,8 +17,6 @@
                             <img src="@/assets/notify.png" width="75">
                         </div>
                         <div class="col-9 text-start px-1">
-                            <!--<span>ชื่อ-สกุล: {{userData.prefix}}{{userData.fname}} {{userData.lname}}</span><br />
-                            <span>เลขประจำตัวประชาชน: {{userData.idcardNo}}</span><br />-->
                             <span>เลขที่รับแจ้ง: <span style="color: var(--main-color)">{{accData.accNo}}</span></span>
                             <br />
                             <span>ทะเบียนรถที่เกิดเหตุ : <span v-for="(car, index) in accData.car" :key="`car-${index}`" style="color: var(--main-color)">{{car}} </span></span>
@@ -56,10 +54,6 @@
                         <br>
                     </div>
                     <div v-for="approvals in approval" :key="approvals.pt4">
-                        <!--<div v-if="!approvals.claim.accNo">
-                        </div>
-                        <div v-else-if="approvals.claim.crippledMoney > 0 && approvals.claim.cureMoney == 0">
-                        </div>-->
                         <div>
                             <section>
                                 <div style="height: 100%; width: 100%;">
@@ -99,45 +93,7 @@
                         <label>ประวัติการใช้สิทธิ์กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
                         <br>
                     </div>
-                    <!--<div v-for="approvals in approval" :key="approvals.pt4">
-                        <div v-if="approvals.subPt4 === 'pt4' || !approvals.claim.crippledMoney || approvals.claim.crippledMoney === 0 || !approvals.claim.accNo">
-                        </div>
-                        <div v-else-if="approvals.claim.crippledMoney > 0 ">
-                            <section>
-                                <div style="height: 100%; width: 100%;">
-                                    <div class="accordion">
-                                        <div class="accordion-item" :id="'list' + approvals.pt4">
-                                            <a class="accordion-link" :href="'#list' + approvals.pt4">
-                                                <div>
-                                                    <p>
-                                                        <ion-icon name="document-text-outline"></ion-icon>{{ approvals.pt4 }}
-                                                        <br>
-                                                        <ion-icon name="card-outline"></ion-icon>จำนวนเงิน: {{ approvals.apTotal }} บาท
-                                                    </p>
-                                                </div>
-                                                <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
-                                            </a>
-                                            <div class="answer">
-                                                <p v-if="approvals.apStatus==='A'">สถานะการจ่ายเงิน: อนุมัติ</p>
-                                                <p v-else-if="approvals.apStatus==='P'">สถานะการจ่ายเงิน: จ่ายแล้ว</p>
-                                                <p v-else>สถานะการจ่ายเงิน: -</p>
-                                                <p style="margin-top: -25px;">
-                                                    วันที่ใช้สิทธิ์: {{ approvals.stringApRegdate }}
-                                                </p>
-                                                <p style="margin-top: -25px;">โรงพยาบาลที่รักษา:</p>
-                                            </div>
-                                            <div style="text-align: center">
-                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, typerights: 2, pt: approvals.stringPt4, typept: approvals.subPt4 }}">ดูเพิ่มเติม</router-link>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                        <div v-else>
-                        </div>
-                    </div>-->
+                    
                 </div>
             </div>
         </div>
@@ -174,7 +130,6 @@
         },
         methods: {
             getApprovals() {
-                console.log('getApproval');
                 var url = this.$store.state.envUrl + '/api/Approval/{accNo}/{victimNo}/{rightsType}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{rightsType}', this.$route.params.typerights);
                 var apiConfig = {
                     headers: {
@@ -185,7 +140,6 @@
                     .then((response) => {
                         this.$store.state.claimStateData = response.data;
                         this.approval = this.$store.state.claimStateData;
-                        console.log("claimData", this.approval);
                         this.isLoading = false
                     })
                     .catch((error) => {
@@ -208,7 +162,6 @@
         mounted() {
             this.calRightsUsed();
             this.getApprovals();
-            console.log("AccData", this.accData);
         }
 
     }

@@ -61,12 +61,6 @@
                             
                             โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
                         </div>
-                        <!--<div v-else-if="total_amount===null">
-                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด
-                            <span class="p-main-color">เป็นจำนวนเงิน - บาท</span>
-                            โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
-                        </div>-->
-                        
                     </div>
                     <div class="text-start mt-4 mb-4">
                         <div>
@@ -130,8 +124,6 @@
                                              :is-input-num="true"
                                              @on-change="handleOnChange"
                                              @on-complete="handleOnComplete" />
-
-                                <!--<button @click="handleClearInput()">Clear Input</button>-->
                             </div>
                         </div>
                     </div>
@@ -143,10 +135,9 @@
                             <p class=" black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:{{countDown}} น.</p>
                         </div>
                     </div>
-                    <div>
+                    <div v-if="inputOTP.length > 5">
                         <br>
                         <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
-                        <!--<button @click="postData">TestPostData</button>-->
                     </div>
                 </div>
             </div>
@@ -192,8 +183,6 @@
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import qs from 'qs'
-    //Your Javascript lives within the Script Tag
-    // Import loading-overlay
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
 
@@ -257,23 +246,21 @@
                 })
             },
             handleOnComplete(value) {
-                console.log('OTP completed: ', value);
                 this.inputOTP = value
             },
             handleOnChange(value) {
-                console.log('OTP changed: ', value);
+                
+                this.inputOTP = value
             },
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
             
             getBankNames() {
-                console.log('getBankNames');
                 var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
                     .then((response) => {
                         this.bankNames = response.data;
-                        console.log(response.data);
                         this.getDataConfirmMoney();
                     })
                     .catch(function (error) {
@@ -281,7 +268,6 @@
                     });
             },
             getDataConfirmMoney() {
-                console.log('getDataConfirmMoney');
                 var url = this.$store.state.envUrl + '/api/Approval/DataConfirmMoney/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
@@ -304,7 +290,6 @@
                             this.confirmMoneyData.invoiceList[i].base64Image = 'data:image/png;base64,' + this.confirmMoneyData.invoiceList[i].base64Image
                         }
                         this.isLoading = false;
-                        console.log("confirmData: ",this.confirmMoneyData)
                     })
                     .catch((error) => {
                         if (error.toString().includes("401")) {
@@ -335,7 +320,6 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
-                        console.log(response);
                         if (response.data == "Success") {
                             this.$swal.close();
                             this.showSwalSuccess();
@@ -354,31 +338,17 @@
                     });
             },
             requestOTP() {
-                //ตัวจริง
                 const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
                 const body = {
                     TelNo: this.userData.mobileNo
                 };
-                //var tel = "";
-
-
-                //ตัวเทส
-                //const url = "https://smsotp.rvpeservice.com/OTP/RequestOTP";
-                //const body = {
-                //    ProjectName: "OTP_DigitalClaim",
-                //    TelNo: this.userData.mobileNo
-                //};
-                console.log(qs.stringify(body))
                 axios.post(url, qs.stringify(body), {
                     headers: {
-                        // Overwrite Axios's automatically set Content-Type
                         'Content-Type': 'application/x-www-form-urlencoded',
                     }
                 }).then((response) => {
                     this.countDownTimer()
                     this.dataOTP = response.data.result
-                    console.log(this.dataOTP);
-
                 }).catch((error) => {
                     this.$swal({
                         icon: 'error',
@@ -390,7 +360,6 @@
                         denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                         denyButtonColor: '#dad5e9'
                     });
-                    console.log(error);
                 });
             },
 
@@ -429,14 +398,12 @@
                 //    'ref_code': this.dataOTP.ref_code
                 //};
 
-                console.log("dataotp",qs.stringify(body))
                 axios.post(url, qs.stringify(body), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then((response) => {
                     this.verifyResultOTP = response.data
-                    console.log(this.verifyResultOTP.status);
                     if (this.verifyResultOTP.status == "false") {
                         this.$swal.close();
                         this.$swal({
@@ -456,8 +423,8 @@
 
 
                     }
-                }).catch(function (error) {
-                    console.log(error);
+                }).catch((error) => {
+                    alert(error)
                 });
 
             },
@@ -466,7 +433,6 @@
                     icon: 'error',
                     text: 'เนื่องจากสถานะคำร้องของท่านไม่ได้อยู่ระหว่างการยืนยันจำนวนเงิน',
                     title: 'ไม่สามารถยืนยันจำนวนเงินได้',
-                    /*footer: '<a href="">Why do I have this issue?</a>'*/
                     showCancelButton: false,
                     showDenyButton: true,
                     denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
@@ -490,7 +456,6 @@
                     icon: 'success',
                     text: 'บริษัทจะแจ้งวันที่โอนเงินให้ท่านทราบอีกครั้ง',
                     title: 'ยืนยันจำนวนเงินเรียบร้อย',
-                    /*footer: '<a href="">Why do I have this issue?</a>'*/
                     showCancelButton: false,
                     showDenyButton: true,
                     denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
@@ -511,10 +476,6 @@
             },
         },
         async created() {
-            //await console.log('accData', this.accData);
-            //console.log("hosApp: ", this.hosData);
-            //await this.getAccidentCar();
-            //await this.getAccidentVictim();
             await this.getBankNames();
         }
         

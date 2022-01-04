@@ -146,16 +146,8 @@
 
             }
         },
-        methods: {
-            
-             
-
+        methods: {                        
         },
-        mounted() {
-            console.log(this.$route.params.id)
-            console.log(this.accData)
-            
-        }
     }
 </script>
 
