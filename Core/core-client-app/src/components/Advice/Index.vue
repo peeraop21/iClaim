@@ -400,33 +400,29 @@
             if (process.env.NODE_ENV == "production") {
                 //--Publish--
                 await liff.init({
-                    liffId: '1656611867-ylXVO2D8',
-                    withLoginOnExternalBrowser: true,
+                    liffId: '1655252355-n08QYdAA',
+                    
                 }).then(() => {
                     if (liff.isLoggedIn()) {
                         
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
-
-                            /*alert(this.$store.state.userTokenLine);*/
+                            alert(this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
+                        
+                       
                     } else {
                         
-                        liff.login();
-
+                        liff.login();                       
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
-
-                            /*alert(this.$store.state.userTokenLine);*/
+                            alert(this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
+                        
+                        
                     }
-
-                    //const getContext = liff.getContext();
-                    //this.$store.state.userTokenLine = getContext.userId
-                    //alert(getContext.userTokenLine);
-
                 }).catch(err => {
                     alert(err);
                     throw err

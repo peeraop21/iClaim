@@ -54,10 +54,10 @@
                     </p>
                 </div>
             </div>
-            <div>
+            <div v-if="inputOTP.length > 5">
                 <br>
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการ{{fromText}}</button>
-                <button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>
+                <!--<button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>-->
             </div>
         </div>
     </div>
@@ -239,7 +239,7 @@
                         }
                     }).then((response) => {
                         console.log(response);
-                        this.$swal.close();
+                        this.isLoading = false
                         this.$swal({
                             icon: 'success',
                             //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
@@ -254,9 +254,11 @@
                         })
                         this.resetData();
                     }).catch((error) => {
+                        this.isLoading = false;
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.postData()
+                            
                         }
                     });
                 }
@@ -268,7 +270,7 @@
                         }
                     }).then((response) => {
                         console.log(response);
-                        this.$swal.close();
+                        this.isLoading = false;
                         this.$swal({
                             icon: 'success',
                             //text: 'ท่านสามารถติดตามผลดำเนินการได้ที่เมนูติดตามสถานะ',
@@ -283,14 +285,17 @@
                         })
                         this.resetData();
                     }).catch((error) => {
+                        this.isLoading = false;
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.postData()
+                            
                         }
                     });
 
                 }
                 else if (this.$route.params.from == "Create") {
+                    
                     axios.post(this.$store.state.envUrl + "/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json',
@@ -298,13 +303,16 @@
                         }
                     }).then((response) => {
                         console.log(response);
-                        this.$swal.close();
+                        this.isLoading = false;
+                       
                         this.resetData();
                         this.showSwal();
                     }).catch((error) => {
+                        this.isLoading = false;
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.postData()
+                            
                         }
                     });
                 }
@@ -335,10 +343,7 @@
 
                         console.log(response.data)
                     }).catch((error) => {
-                        if (error.toString().includes("401")) {
-                            this.getJwtToken()
-                            this.postData()
-                        }
+                        this.isLoading = false;
                         this.$swal({
                             icon: 'error',
                             text: 'บันทึกข้อมูลไม่สำเร็จกรุณาลองใหม่อีกครั้ง',
@@ -349,7 +354,15 @@
 
                             confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                             confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+                                if (error.toString().includes("401")) {
+                                    this.getJwtToken()
+
+                                }
+                            }
                         })
+                        
+                        
                     });
                 }
 
@@ -398,6 +411,7 @@
                     this.isLoading = false
 
                 }).catch((error) => {
+                    this.isLoading  =  false
                     this.$swal({
                         icon: 'error',
                         text: 'กรุณากดปุ่มขอรหัสยืนยัน OTP อีกครัง',
@@ -413,18 +427,19 @@
             },
 
             submit: async function () {
-                this.$swal({
-                    title: 'กำลังตรวจสอบ',
-                    html: 'ขณะนี้ระบบกำลังตรวจสอบรหัสยืนยัน OTP',
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        this.$swal.showLoading()
+                //this.$swal({
+                //    title: 'กำลังตรวจสอบ',
+                //    html: 'ขณะนี้ระบบกำลังตรวจสอบรหัสยืนยัน OTP',
+                //    timerProgressBar: true,
+                //    didOpen: () => {
+                //        this.$swal.showLoading()
 
-                    },
-                    willClose: () => {
+                //    },
+                //    willClose: () => {
 
-                    }
-                })
+                //    }
+                //})
+                this.isLoading = true
                 await this.verifyOTP()
 
             },
@@ -468,6 +483,7 @@
                             denyButtonColor: '#dad5e9',
 
                         })
+                        this.isLoading = false
                     } else if (this.verifyResultOTP.status == "true") {
                         this.postData()
 
@@ -475,6 +491,7 @@
 
                     }
                 }).catch(function (error) {
+                    this.isLoading = false
                     console.log(error);
                 });
 
@@ -504,12 +521,11 @@
                     }
                 });
             },
-            handleOnComplete(value) {
-                console.log('OTP completed: ', value);
+            handleOnComplete(value) {                
                 this.inputOTP = value
             },
             handleOnChange(value) {
-                console.log('OTP changed: ', value);
+                this.inputOTP = value
             },
             handleClearInput() {
                 this.$refs.otpInput.clearInput();

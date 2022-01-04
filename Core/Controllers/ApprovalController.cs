@@ -58,7 +58,7 @@ namespace Core.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] ApprovalViewModel model)
         {
-
+            model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
             var resultMapIclaimApproval = _mapper.Map<IclaimApproval>(model);
             var resultMapBank = _mapper.Map<InputBankViewModel>(model.BankData);
             var resultMapVictim = _mapper.Map<VictimtViewModel>(model.VictimData);

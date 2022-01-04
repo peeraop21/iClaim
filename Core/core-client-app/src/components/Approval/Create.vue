@@ -130,42 +130,7 @@
             </div>
         </vs-dialog>
         <form-wizard title="" subtitle="" color="#5c2e91" step-size="xs" style="margin-top: -35px;" next-button-text="ดำเนินการต่อ" back-button-text="ย้อนกลับ" finish-button-text="ส่งคำร้อง" @on-complete="storeInputData">
-            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="OnChangePageOne">
-
-                <div class="" v-if="formType == 2">
-                    <div align="left">
-                        <label>เอกสารประกอบคำร้องกรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
-                    </div>
-
-                    <div class="box-container">
-                        <p class="mb-0">ใบรับรองแพทย์</p>
-                        <div>
-                            <file-pond name="idCardFile"
-                                       ref="pond"
-                                       label-idle="กดที่นี่เพื่ออัพโหลดใบรับรองแพทย์"
-                                       credits="null"
-                                       v-bind:allow-multiple="false"
-                                       v-bind:allowFileEncode="true"
-                                       accepted-file-types="image/jpeg, image/png"
-                                       v-bind:files="idCardFile"
-                                       v-on:addfile="onAddIdCardFile" />
-                        </div>
-                        <p class="mb-0">สำเนาบันทึกประจำวันของพนักงานสอบสวน</p>
-                        <div>
-                            <file-pond name="diaryFile"
-                                       ref="pond"
-                                       label-idle="กดที่นี่เพื่ออัพโหลดสำเนาบันทึกประจำวัน"
-                                       credits="null"
-                                       v-bind:allow-multiple="false"
-                                       v-bind:allowFileEncode="true"
-                                       accepted-file-types="image/jpeg, image/png"
-                                       v-bind:files="diaryFile"
-                                       v-on:addfile="onAddDiaryFile" />
-                        </div>
-                    </div>
-                    <br>
-                    <!--<p class="p_right" style="font-size: 15px; font-weight: bold;">รวมจำนวนเงิน: {{ total_amount }} บาท</p>-->
-                </div>
+            <tab-content title="สร้างคำร้อง" icon="ti ti-pencil-alt" :before-change="OnChangePageOne">                
                 <div class="" v-if="formType == 1">
                     <div align="left">
                         <label>เอกสารประกอบคำร้องกรณีเบิกค่ารักษาพยาบาลเบื้องต้น</label>
@@ -176,7 +141,7 @@
                             <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
-                                       ref="pondBill"                                         
+                                       ref="pondBill"
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
@@ -217,15 +182,9 @@
                                         </div>
                                         <div class="mb-2" v-show="divHospitalModal">
 
-                                            <label class="px-2">โร
-งพยาบาล
+                                            <label class="px-2">
+                                                โรงพยาบาล
                                             </label>
-                                            โร
-                                            <!--<select name="item" id="item" v-model="mockHospital">
-                                                <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
-                                                    {{ item.HOSPITALNAME  }}
-                                                </option>
-                                            </select>-->
                                             <v-select class="v-select-claim style-chooser"
                                                       :clearable="false"
                                                       label="HOSPITALNAME"
@@ -1476,7 +1435,7 @@
                     }
                 }
 
-               
+
             },
             onError: function (error, file) {
                 console.log('error', error)
@@ -1498,7 +1457,7 @@
                                 this.$refs.pondBill[i].removeFile(file.id)
                             }
                             console.log(this.$refs.pondBill)
-                            
+
                         }
                     })
                 }
@@ -1540,9 +1499,9 @@
                         }
                         img.src = fileDataUrl
                     }
-                } 
-                
-                
+                }
+
+
             },
             async OnChangePageOne() {
                 this.submitted = true;

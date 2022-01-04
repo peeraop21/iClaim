@@ -146,7 +146,7 @@
                     <div>
                         <br>
                         <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
-                        <button @click="postData">TestPostData</button>
+                        <!--<button @click="postData">TestPostData</button>-->
                     </div>
                 </div>
             </div>

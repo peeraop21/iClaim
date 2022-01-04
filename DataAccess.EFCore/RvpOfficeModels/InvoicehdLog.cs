@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.EFCore.RvpOfficeModels
 {
-    public partial class Invoicehd
+    public partial class InvoicehdLog
     {
         public long IdInvhd { get; set; }
         public string AccNo { get; set; }
@@ -34,6 +34,11 @@ namespace DataAccess.EFCore.RvpOfficeModels
         public string InputBy { get; set; }
         public string RecordBy { get; set; }
         public DateTime? RecordDate { get; set; }
+        public string UserUpdate { get; set; }
+        public string BranchUpdate { get; set; }
+        public DateTime? InsertDate { get; set; }
+        public string Ip { get; set; }
+        public string RecordComment { get; set; }
         public string InvoiceType { get; set; }
         public short? IsApply { get; set; }
         public string BookNo { get; set; }

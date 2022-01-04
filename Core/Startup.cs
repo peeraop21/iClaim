@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DataAccess.EFCore.RvpSystemModels;
+using Microsoft.AspNetCore.Http;
 
 namespace Core
 {
@@ -51,7 +52,7 @@ namespace Core
 
 
             services.AddControllers();
-          
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAutoMapper(typeof(DataMapperProfile));
             services.AddAutoMapper(typeof(ServiceDataMapperProfile));
 
@@ -80,6 +81,7 @@ namespace Core
             services.AddScoped<IApprovalService, ApprovalService>();
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddScoped<IAttachmentService, AttachmentService>();
+            services.AddScoped<DigitalclaimContextProcedures>();
 
 
 

@@ -37,11 +37,10 @@
                     <div class="col-6">
                         <file-pond credits="null"
                                    label-idle="รูปบัตรประจำตัวประชาชน"
-                                   capture="user"
+                                   :capture-method="null"
                                    accept="image/*"
                                    v-bind:allow-multiple="false"
                                    v-bind:allowFileEncode="true"
-                                   accepted-file-types="image/jpeg, image/png"
                                    v-bind:files="idCardFile"
                                    v-on:addfile="onAddidCardFile"
                                    v-on:removefile="onRemoveIdCardFile"
@@ -57,7 +56,8 @@
                                        label-idle="รูปถ่ายหน้าเซลฟี"
                                        v-bind:allow-multiple="false"
                                        v-bind:allowFileEncode="true"
-                                       accepted-file-types="image/jpeg, image/png"
+                                       :capture-method="null"
+                                       accept="image/*"
                                        v-bind:files="faceFile"
                                        v-on:addfile="onAddfaceFile"
                                        v-on:removefile="onRemoveFaceFile"
@@ -312,8 +312,8 @@
                 await this.storeUserData()
             },
             storeUserData() {
-                
-                
+
+
                 let body = {
                     idcardNo: this.input.idCardNo,
                     idcardLaserCode: this.input.idcardLaserCode,
@@ -373,7 +373,7 @@
                         confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                         confirmButtonColor: '#5c2e91',
                         willClose: () => {
-                            this.$refs.pondIdCard.removeFiles()                           
+                            this.$refs.pondIdCard.removeFiles()
                         }
                     })
                 } else {
@@ -410,9 +410,9 @@
                         img.src = fileDataUrl
                     }
                 }
-                
-                
-                
+
+
+
                 var url = 'https://ml.appman.co.th/v1/thailand-id-card/front'
                 var bodyFormData = new FormData();
                 bodyFormData.append('Username', 'rvp.user0001');
@@ -435,7 +435,7 @@
                             this.input.lastname = this.resultOCR.last_name_th;
                             this.input.dateBirth = moment(this.formatResultOcrDate(this.resultOCR.date_of_birth_en)).format("YYYY-MM-DD");
                             this.input.base64IdCard = file.getFileEncodeBase64String();
-                           
+
                             this.isLoading = false;
                             this.isOverlay = false;
                         }
@@ -507,7 +507,7 @@
                         confirmButtonColor: '#5c2e91',
                         willClose: () => {
                             this.$refs.pondFace.removeFiles()
-                            return;
+
                         }
                     })
                 } else {
@@ -598,13 +598,13 @@
                         img.src = fileDataUrl
                     }
                 }
-                
-                
-                
-               
+
+
+
+
 
             },
-           
+
             getPrefixes() {
                 var url = this.$store.state.envUrl + '/api/Master/Prefix';
                 axios.get(url)
@@ -626,17 +626,20 @@
         async created() {
             if (process.env.NODE_ENV == "production") {
                 //--Publish--
+
                 await liff.init({
-                    liffId: '1656611867-ylXVO2D8',
+                    liffId: '1655252355-n08QYdAA'
                 }).then(() => {
                     if (liff.isLoggedIn()) {
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
+                            alert(this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
                     } else {
                         liff.login();
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
+                            alert("ed " + this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
                     }
 

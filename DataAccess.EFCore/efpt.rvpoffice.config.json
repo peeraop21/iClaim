@@ -58,6 +58,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[invoicehd_log]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[MCWounded]",
          "ObjectType": 0
       },
@@ -90,6 +94,7 @@
    "UseHandleBars": false,
    "UseInflector": false,
    "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
    "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,

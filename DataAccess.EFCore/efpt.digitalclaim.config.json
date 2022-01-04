@@ -30,6 +30,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[IClaimBankAccount_Log]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[IClaimCheckDocuments]",
          "ObjectType": 0
       },
@@ -38,12 +42,16 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[IClaimInvoiceStatusState]",
+         "Name": "[dbo].[IClaimInvoiceStatus_Log]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[IClaimMasterTypes]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[sp_InsertInvoiceHdLogFromIClaim]",
+         "ObjectType": 1
       }
    ],
    "UiHint": "T1DB18.DigitalClaim",
@@ -54,6 +62,7 @@
    "UseHandleBars": false,
    "UseInflector": false,
    "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
    "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,

@@ -1164,7 +1164,8 @@
                 this.isLoading = true;
                 axios.post(url, JSON.stringify(this.bills), {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
                     var billIdDuplicate = [];
@@ -1291,8 +1292,11 @@
                     }
 
 
-                }).catch(function (error) {
-                    alert(error);
+                }).catch((error) => {
+                    this.isLoading = false;
+                    if (error.toString().includes("401")) {
+                        this.getJwtToken()
+                    }
                 });
                 if (isDuplicate) {
                     return false;

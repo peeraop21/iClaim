@@ -12,6 +12,7 @@ using DataAccess.EFCore.ClaimDataModels;
 using LinqKit;
 using DataAccess.EFCore.RvpSystemModels;
 using DataAccess.EFCore.iPolicyModels;
+using Microsoft.AspNetCore.Http;
 
 namespace Services
 {
@@ -47,8 +48,10 @@ namespace Services
         private readonly IAttachmentService attachmentService;
         private readonly RvpSystemContext rvpSystemContext;
         private readonly IpolicyContext ipolicyContext;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly DigitalclaimContextProcedures storeProc;
 
-        public ApprovalService(DigitalclaimContext digitalclaimContext, RvpofficeContext rvpofficeContext, ClaimDataContext claimDataContext, IAttachmentService attachmentService, RvpSystemContext rvpSystemContext, IpolicyContext ipolicyContext)
+        public ApprovalService(DigitalclaimContext digitalclaimContext, RvpofficeContext rvpofficeContext, ClaimDataContext claimDataContext, IAttachmentService attachmentService, RvpSystemContext rvpSystemContext, IpolicyContext ipolicyContext, IHttpContextAccessor httpContextAccessor , DigitalclaimContextProcedures storeProc)
         {
             this.digitalclaimContext = digitalclaimContext;
             this.rvpofficeContext = rvpofficeContext;
@@ -56,6 +59,8 @@ namespace Services
             this.attachmentService = attachmentService;
             this.rvpSystemContext = rvpSystemContext;
             this.ipolicyContext = ipolicyContext;
+            this.httpContextAccessor = httpContextAccessor;
+            this.storeProc = storeProc;
 
 
         }
@@ -115,7 +120,6 @@ namespace Services
             dataBankAccount.AccNo = iclaimApproval.AccNo;
             dataBankAccount.VictimNo = (short)iclaimApproval.VictimNo;
             dataBankAccount.ReqNo = (short)(lastAppNo + 1);
-            dataBankAccount.RunNo = 1;
             dataBankAccount.AccountNo = inputBank.accountNumber;
             dataBankAccount.AccountName = inputBank.accountName;
             dataBankAccount.BankId = inputBank.bankId;
@@ -175,17 +179,17 @@ namespace Services
                 dataInvStatus.ReqMoney = invoicehd[i].Suminv;
                 await digitalclaimContext.IclaimInvoiceStatus.AddAsync(dataInvStatus);
 
-                var dataInvStatusState = new IclaimInvoiceStatusState();
-                dataInvStatusState.IdInvhd = idInvhd + i + 1;
-                dataInvStatusState.AccNo = iclaimApproval.AccNo;
-                dataInvStatusState.VictimNo = iclaimApproval.VictimNo;
-                dataInvStatusState.ReqNo = lastAppNo + 1;
-                dataInvStatusState.StateNo = 1;
-                dataInvStatusState.OldStatus = null;
-                dataInvStatusState.NewStatus = 1;
-                dataInvStatusState.InsertDate = DateTime.Now;
-                dataInvStatusState.RecordBy = userLineId;
-                await digitalclaimContext.IclaimInvoiceStatusState.AddAsync(dataInvStatusState);
+                //var dataInvStatusState = new IclaimInvoiceStatusState();
+                //dataInvStatusState.IdInvhd = idInvhd + i + 1;
+                //dataInvStatusState.AccNo = iclaimApproval.AccNo;
+                //dataInvStatusState.VictimNo = iclaimApproval.VictimNo;
+                //dataInvStatusState.ReqNo = lastAppNo + 1;
+                //dataInvStatusState.StateNo = 1;
+                //dataInvStatusState.OldStatus = null;
+                //dataInvStatusState.NewStatus = 1;
+                //dataInvStatusState.InsertDate = DateTime.Now;
+                //dataInvStatusState.RecordBy = userLineId;
+                //await digitalclaimContext.IclaimInvoiceStatusState.AddAsync(dataInvStatusState);
 
             }
 
@@ -196,7 +200,21 @@ namespace Services
         }
         public async Task<string> UpdateAsync(string accNo, int victimNo, int reqNo, string userIdLine, UpdateBankViewModel bankModel, UpdateInvoiceViewModel[] invModel)
         {
+            var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var iclaimBankAccount = await digitalclaimContext.IclaimBankAccount.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).FirstOrDefaultAsync();
+            var maxRunNoBankAccountLog = await digitalclaimContext.IclaimBankAccountLog.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => s.RunNo).OrderByDescending(o => o).FirstOrDefaultAsync();
+            var iclaimBankAccountLog = new IclaimBankAccountLog();
+            iclaimBankAccountLog.AccNo = iclaimBankAccount.AccNo;
+            iclaimBankAccountLog.VictimNo = iclaimBankAccount.VictimNo;
+            iclaimBankAccountLog.ReqNo = iclaimBankAccount.ReqNo;
+            iclaimBankAccountLog.RunNo = maxRunNoBankAccountLog + 1;
+            iclaimBankAccountLog.AccountNo = iclaimBankAccount.AccountNo;
+            iclaimBankAccountLog.AccountName = iclaimBankAccount.AccountName;
+            iclaimBankAccountLog.BankId = iclaimBankAccount.BankId;
+            iclaimBankAccountLog.InsertDate = DateTime.Now;
+            iclaimBankAccountLog.Ip = ip;
+            await digitalclaimContext.IclaimBankAccountLog.AddAsync(iclaimBankAccountLog); // เก็บ log บัญชีธนาคาร
+
             iclaimBankAccount.AccountName = bankModel.accountName;
             iclaimBankAccount.AccountNo = bankModel.accountNumber;
             iclaimBankAccount.BankId = bankModel.bankId;
@@ -206,6 +224,10 @@ namespace Services
             for (int i = 0; i < invModel.Length; i++)
             {
                 var invhd = await rvpofficeContext.Invoicehd.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.IdInvhd == invModel[i].billNo).FirstOrDefaultAsync();
+                await storeProc.sp_InsertInvoiceHdLogFromIClaimAsync(invhd.IdInvhd, invhd.AccNo, invhd.VictimNo, userIdLine, ip);               
+
+
+
                 invhd.Hosid = invModel[i].selectHospitalId;
                 invhd.Takendate = DateTime.ParseExact(invModel[i].hospitalized_date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 invhd.Takentime = invModel[i].hospitalized_time.Replace(":", ".");
@@ -220,44 +242,52 @@ namespace Services
                 invhd.VictimType = invModel[i].typePatient;
 
                 var iclaimInvStatus = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.IdInvhd == invModel[i].billNo).FirstOrDefaultAsync();
-                var iclaimInvStatusState = new IclaimInvoiceStatusState();
+                var iclaimInvoiceStatusLog = new IclaimInvoiceStatusLog();
                 if (invModel[i].isCancel)
-                {
+                {                  
+                    iclaimInvoiceStatusLog.IdInvhd = invModel[i].billNo;
+                    iclaimInvoiceStatusLog.AccNo = accNo;
+                    iclaimInvoiceStatusLog.VictimNo = victimNo;
+                    iclaimInvoiceStatusLog.ReqNo = reqNo;
+                    iclaimInvoiceStatusLog.StateNo = lastInvStatusState.StateNo + 1;
+                    iclaimInvoiceStatusLog.OldStatus = lastInvStatusState.NewStatus;
+                    iclaimInvoiceStatusLog.NewStatus = 0;
+                    iclaimInvoiceStatusLog.InsertDate = DateTime.Now;
+                    iclaimInvoiceStatusLog.InvDocComment = iclaimInvStatus.InvDocComment;
+                    iclaimInvoiceStatusLog.RecordBy = userIdLine;
+                    iclaimInvoiceStatusLog.InvCommentTypeId = iclaimInvStatus.InvCommentTypeId;
+                    iclaimInvoiceStatusLog.Ip = ip;
+                    await digitalclaimContext.IclaimInvoiceStatusLog.AddAsync(iclaimInvoiceStatusLog);
+
                     isHasInvCancel = true;
                     iclaimInvStatus.Status = 0;
-                    iclaimInvStatus.LastUpdateDate = DateTime.Now;
+                    iclaimInvStatus.InvDocComment = null;
                     iclaimInvStatus.InvCommentTypeId = null;
-                    iclaimInvStatus.InvDocComment = "ยกเลิกใบเสร็จ";
-
-                    iclaimInvStatusState.IdInvhd = invModel[i].billNo;
-                    iclaimInvStatusState.AccNo = accNo;
-                    iclaimInvStatusState.VictimNo = victimNo;
-                    iclaimInvStatusState.ReqNo = reqNo;
-                    iclaimInvStatusState.StateNo = lastInvStatusState.StateNo + 1;
-                    iclaimInvStatusState.OldStatus = lastInvStatusState.NewStatus;
-                    iclaimInvStatusState.NewStatus = 0;
-                    iclaimInvStatusState.InsertDate = DateTime.Now;
-                    iclaimInvStatusState.InvDocComment = "ยกเลิกใบเสร็จ";
-                    iclaimInvStatusState.RecordBy = userIdLine;
+                    iclaimInvStatus.LastUpdateDate = DateTime.Now;
 
                 }
                 else
                 {
-                    iclaimInvStatus.Status = 1;
-                    iclaimInvStatus.LastUpdateDate = DateTime.Now;
-                    iclaimInvStatus.InvCommentTypeId = null;
+                    iclaimInvoiceStatusLog.IdInvhd = invModel[i].billNo;
+                    iclaimInvoiceStatusLog.AccNo = accNo;
+                    iclaimInvoiceStatusLog.VictimNo = victimNo;
+                    iclaimInvoiceStatusLog.ReqNo = reqNo;
+                    iclaimInvoiceStatusLog.StateNo = lastInvStatusState.StateNo + 1;
+                    iclaimInvoiceStatusLog.OldStatus = lastInvStatusState.NewStatus;
+                    iclaimInvoiceStatusLog.NewStatus = 1;
+                    iclaimInvoiceStatusLog.InsertDate = DateTime.Now;
+                    iclaimInvoiceStatusLog.InvDocComment = iclaimInvStatus.InvDocComment;
+                    iclaimInvoiceStatusLog.RecordBy = userIdLine;
+                    iclaimInvoiceStatusLog.InvCommentTypeId = iclaimInvStatus.InvCommentTypeId;
+                    iclaimInvoiceStatusLog.Ip  = ip;
+                    await digitalclaimContext.IclaimInvoiceStatusLog.AddAsync(iclaimInvoiceStatusLog);
 
-                    iclaimInvStatusState.IdInvhd = invModel[i].billNo;
-                    iclaimInvStatusState.AccNo = accNo;
-                    iclaimInvStatusState.VictimNo = victimNo;
-                    iclaimInvStatusState.ReqNo = reqNo;
-                    iclaimInvStatusState.StateNo = lastInvStatusState.StateNo + 1;
-                    iclaimInvStatusState.OldStatus = lastInvStatusState.NewStatus;
-                    iclaimInvStatusState.NewStatus = 1;
-                    iclaimInvStatusState.InsertDate = DateTime.Now;
-                    iclaimInvStatusState.RecordBy = userIdLine;
+                    iclaimInvStatus.Status = 1;
+                    iclaimInvStatus.InvDocComment = null;
+                    iclaimInvStatus.InvCommentTypeId = null;
+                    iclaimInvStatus.LastUpdateDate = DateTime.Now;
                 }
-                await digitalclaimContext.IclaimInvoiceStatusState.AddAsync(iclaimInvStatusState);
+                
             }
             await rvpofficeContext.SaveChangesAsync();
             await digitalclaimContext.SaveChangesAsync();
@@ -675,26 +705,28 @@ namespace Services
                 var invoiceStatus = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).ToListAsync();
                 for (int i = 0; i < invoiceStatus.Count; i++)
                 {
+                    var lastInvoiceStatusState = await digitalclaimContext.IclaimInvoiceStatusLog
+                        .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.IdInvhd == invoiceStatus[i].IdInvhd)
+                        .Select(s => new { s.StateNo, s.NewStatus }).OrderByDescending(o => o.StateNo).FirstOrDefaultAsync();
+                    var dataIclaimInvoiceStatusLog = new IclaimInvoiceStatusLog();
+                    dataIclaimInvoiceStatusLog.IdInvhd = invoiceStatus[i].IdInvhd;
+                    dataIclaimInvoiceStatusLog.AccNo = invoiceStatus[i].AccNo;
+                    dataIclaimInvoiceStatusLog.VictimNo = invoiceStatus[i].VictimNo;
+                    dataIclaimInvoiceStatusLog.ReqNo = invoiceStatus[i].ReqNo;
+                    dataIclaimInvoiceStatusLog.StateNo = lastInvoiceStatusState.StateNo + 1;
+                    dataIclaimInvoiceStatusLog.OldStatus = lastInvoiceStatusState.NewStatus;
+                    dataIclaimInvoiceStatusLog.NewStatus = 5;
+                    dataIclaimInvoiceStatusLog.InsertDate = DateTime.Now;
+                    dataIclaimInvoiceStatusLog.InvDocComment = invoiceStatus[i].InvDocComment;
+                    dataIclaimInvoiceStatusLog.RecordBy = invoiceStatus[i].RecordBy;
+                    dataIclaimInvoiceStatusLog.InvCommentTypeId = invoiceStatus[i].InvCommentTypeId;
+                    dataIclaimInvoiceStatusLog.Ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                    await digitalclaimContext.IclaimInvoiceStatusLog.AddAsync(dataIclaimInvoiceStatusLog);
+
                     invoiceStatus[i].Status = 5;
                     invoiceStatus[i].InvConfirmMoneyComment = null;
                     invoiceStatus[i].InvDocComment = null;
-                    invoiceStatus[i].LastUpdateDate = DateTime.Now;
-
-                    var lastInvoiceStatusState = await digitalclaimContext.IclaimInvoiceStatusState
-                        .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.IdInvhd == invoiceStatus[i].IdInvhd)
-                        .Select(s => new { s.StateNo, s.NewStatus }).OrderByDescending(o => o.StateNo).FirstOrDefaultAsync();
-                    var dataIclaimInvoiceStatusState = new IclaimInvoiceStatusState();
-                    dataIclaimInvoiceStatusState.IdInvhd = invoiceStatus[i].IdInvhd;
-                    dataIclaimInvoiceStatusState.AccNo = invoiceStatus[i].AccNo;
-                    dataIclaimInvoiceStatusState.VictimNo = invoiceStatus[i].VictimNo;
-                    dataIclaimInvoiceStatusState.ReqNo = invoiceStatus[i].ReqNo;
-                    dataIclaimInvoiceStatusState.StateNo = lastInvoiceStatusState.StateNo + 1;
-                    dataIclaimInvoiceStatusState.OldStatus = lastInvoiceStatusState.NewStatus;
-                    dataIclaimInvoiceStatusState.NewStatus = 5;
-                    dataIclaimInvoiceStatusState.InsertDate = DateTime.Now;
-                    dataIclaimInvoiceStatusState.InvDocComment = null;
-                    dataIclaimInvoiceStatusState.RecordBy = invoiceStatus[i].RecordBy;
-                    await digitalclaimContext.IclaimInvoiceStatusState.AddAsync(dataIclaimInvoiceStatusState);
+                    invoiceStatus[i].LastUpdateDate = DateTime.Now;                   
                 }
 
 
@@ -1161,29 +1193,31 @@ namespace Services
         {
             var iclaimApproval = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).FirstOrDefaultAsync();
             var iclaimInvStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo ).ToListAsync();
-            var lastInvoiceStatusState = await digitalclaimContext.IclaimInvoiceStatusState
+            var lastInvoiceStatusState = await digitalclaimContext.IclaimInvoiceStatusLog
                         .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo)
                         .Select(s => new { s.IdInvhd, s.StateNo, s.NewStatus }).ToListAsync();
             for (int i = 0; i < iclaimInvStatusList.Count(); i++)
             {
+                var dataIclaimInvoiceStatusLog = new IclaimInvoiceStatusLog();
+                dataIclaimInvoiceStatusLog.IdInvhd = iclaimInvStatusList[i].IdInvhd;
+                dataIclaimInvoiceStatusLog.AccNo = iclaimInvStatusList[i].AccNo;
+                dataIclaimInvoiceStatusLog.VictimNo = iclaimInvStatusList[i].VictimNo;
+                dataIclaimInvoiceStatusLog.ReqNo = iclaimInvStatusList[i].ReqNo;
+                dataIclaimInvoiceStatusLog.StateNo = lastInvoiceStatusState.Where(w => w.IdInvhd == iclaimInvStatusList[i].IdInvhd).Select(s => s.StateNo).OrderByDescending(o => o).FirstOrDefault() + 1;
+                dataIclaimInvoiceStatusLog.NewStatus = 0;
+                dataIclaimInvoiceStatusLog.InsertDate = DateTime.Now;
+                dataIclaimInvoiceStatusLog.InvDocComment = iclaimInvStatusList[i].InvDocComment;
+                dataIclaimInvoiceStatusLog.InvCommentTypeId = iclaimInvStatusList[i].InvCommentTypeId;
+                dataIclaimInvoiceStatusLog.RecordBy = userIdLine;
+                dataIclaimInvoiceStatusLog.OldStatus = lastInvoiceStatusState.Where(w => w.IdInvhd == iclaimInvStatusList[i].IdInvhd && w.StateNo == (dataIclaimInvoiceStatusLog.StateNo - 1)).Select(s => s.NewStatus).FirstOrDefault();
+                dataIclaimInvoiceStatusLog.Ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                await digitalclaimContext.IclaimInvoiceStatusLog.AddAsync(dataIclaimInvoiceStatusLog);
+
                 iclaimInvStatusList[i].Status = 0;
                 iclaimInvStatusList[i].InvCommentTypeId = null;
-                iclaimInvStatusList[i].InvDocComment = "ยกเลิกใบเสร็จ";
+                iclaimInvStatusList[i].InvDocComment = null;
                 iclaimInvStatusList[i].LastUpdateDate = DateTime.Now;
-               
-                var dataIclaimInvoiceStatusState = new IclaimInvoiceStatusState();
-                dataIclaimInvoiceStatusState.IdInvhd = iclaimInvStatusList[i].IdInvhd;
-                dataIclaimInvoiceStatusState.AccNo = iclaimInvStatusList[i].AccNo;
-                dataIclaimInvoiceStatusState.VictimNo = iclaimInvStatusList[i].VictimNo;
-                dataIclaimInvoiceStatusState.ReqNo = iclaimInvStatusList[i].ReqNo;
-                dataIclaimInvoiceStatusState.StateNo = lastInvoiceStatusState.Where(w => w.IdInvhd == iclaimInvStatusList[i].IdInvhd).Select(s => s.StateNo).OrderByDescending(o => o).FirstOrDefault() + 1;                
-                dataIclaimInvoiceStatusState.NewStatus = 0;
-                dataIclaimInvoiceStatusState.InsertDate = DateTime.Now;
-                dataIclaimInvoiceStatusState.InvDocComment = "ยกเลิกใบเสร็จ";
-                dataIclaimInvoiceStatusState.RecordBy = userIdLine;
-                dataIclaimInvoiceStatusState.OldStatus = lastInvoiceStatusState.Where(w => w.IdInvhd == iclaimInvStatusList[i].IdInvhd && w.StateNo == (dataIclaimInvoiceStatusState.StateNo - 1)).Select(s => s.NewStatus).FirstOrDefault();
-                await digitalclaimContext.IclaimInvoiceStatusState.AddAsync(dataIclaimInvoiceStatusState);
-
+                             
             }
             await digitalclaimContext.SaveChangesAsync();
             await UpdateApprovalStatusAsync(accNo, victimNo, reqNo, "CanselApproval", false);

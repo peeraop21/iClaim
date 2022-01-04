@@ -5,15 +5,17 @@ using System.Collections.Generic;
 
 namespace DataAccess.EFCore.DigitalClaimModels
 {
-    public partial class IclaimBankAccount
+    public partial class IclaimBankAccountLog
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
         public int ReqNo { get; set; }
+        public int RunNo { get; set; }
         public string AccountNo { get; set; }
         public string AccountName { get; set; }
         public string BankId { get; set; }
         public DateTime? InsertDate { get; set; }
         public string RecordBy { get; set; }
+        public string Ip { get; set; }
     }
 }

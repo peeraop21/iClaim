@@ -37,8 +37,8 @@
                     </div>
                     <br>
                 </div>
-                <div>
-                    <div class="tab-user px-3" align="left">
+                <div hidden> //Hold ไว้ก่อน
+                    <div class="tab-user px-3" align="left" >
                         <div class="row">
                             <div class="col-9">
                                 <label class="purple-title" style="font-weight: bold">กรณีเบิกค่าสูญเสียอวัยวะ/ทุพพลภาพ</label>
@@ -65,33 +65,7 @@
                     </div>
                     <br>
                 </div>
-                <!--<div>
-                    <div class="tab-user px-3" align="left">
-                        <div class="row">
-                            <div class="col-9">
-                                <label class="purple-title" style="font-weight: bold">กรณีเบิกค่าปลงศพ</label>
-                            </div>
-                            <div class="col-3" align="right" style="margin-top: -3px">
-                                <vs-button circle
-                                           icon
-                                           primary
-                                           flat
-                                           @click="Info2=!Info2">
-                                    <ion-icon name="information" style="margin: -5px; font-size: 17px"></ion-icon>
-                                </vs-button>
-                            </div>
-                        </div>
-                        <p style="line-height: 25px" class="mt-3">ผู้ประสบภัยที่เสียชีวิต บริษัทจะจ่ายค่าเสียหายเบื้องต้น จำนวน 35,000 บาทต่อหนึ่งคน</p>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
-                            <a style="margin-bottom: 7px;">คงเหลือ: 35,000 บาท</a>
-                            <br>
-
-                            <router-link class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'Claim', params: { id: accData.stringAccNo, type: 2}}">เลือก</router-link>
-                        </div>
-                    </div>
-                    <br>
-                </div>-->
+               
 
                 <!-- Info 1 -->
                 <vs-dialog width="550px" not-center v-model="Info1">
@@ -133,25 +107,7 @@
                         <p>ค่าชดเชยรายวัน หมายถึง ค่าชดเชยที่ผู้ป่วยเข้ารับการรักษาและต้องนอนพักรักษาตัวในสถานพยาบาลตั้งแต่ 6 ชั่วโมงขึ้นไป เช่น ป่วยหนักต้องแอดมิดนอนโรงพยาบาล การเข้าผ่าตัด ฯลฯ และให้รวมถึงการรับตัวไว้เป็นผู้ป่วยในแต่เสียชีวิตก่อน 6 ชั่วโมง</p>
                     </div>
                 </vs-dialog>
-                <!--<section>
-        <div class="container" style="height: 105%">
-            <div class="accordion"  v-for="rights_receive in rights_receives" :key="rights_receive.id">
-                <div class="accordion-item" :id="'list' + rights_receive.id">
-                    <a class="accordion-link" :href="'#list' + rights_receive.id">
-                        <p><ion-icon name="reorder-three-outline"></ion-icon>{{ rights_receive.medical_expenses }}</p>
-                        <ion-icon name="chevron-down-outline" class="icon ion-md-add" ></ion-icon>
-                    </a>
-                    <div class="answer">
-                        <p>ทะเบียนรถ: {{ rights_receive.detail }}</p>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; font-family: mitr">
-                        <a style="margin-bottom: 3px;">สิทธิ์คงเหลือ: {{ rights_receive.money }} บาท</a>
-                        <a class="btn-select" href="\Boto">{{ msg }}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>-->
+       
             </div>
     </div>
     <br>
