@@ -102,19 +102,19 @@ namespace Services
             dataIcliamApproval.LastUpdate = DateTime.Now;
             dataIcliamApproval.LineId = userLineId;
             dataIcliamApproval.RefCodeOtp = iclaimApproval.RefCodeOtp;
-            await digitalclaimContext.IclaimApproval.AddAsync(dataIcliamApproval);
-
-            //var runNo = await digitalclaimContext.HosDocumentReceive.Where(w => w.AccNo == iclaimApproval.AccNo && w.VictimNo == (short)iclaimApproval.VictimNo && w.Appno == (short)dataIcliamApproval.IclaimAppNo).Select(s => s.RunNo).OrderByDescending(o => o).FirstOrDefaultAsync();
-            //var dataHosDocumentReceive = new HosDocumentReceive();
-            //dataHosDocumentReceive.AccNo = iclaimApproval.AccNo;
-            //dataHosDocumentReceive.VictimNo = (short)iclaimApproval.VictimNo;
-            //dataHosDocumentReceive.Appno = (short)(lastAppNo+1);
-            //dataHosDocumentReceive.RunNo = (runNo == null || runNo  == 0) ? (short)1 : (short)(runNo + 1);
-            //dataHosDocumentReceive.PaymentType = "D";
-            //dataHosDocumentReceive.AccountNo = inputBank.accountNumber;
-            //dataHosDocumentReceive.AccountName = inputBank.accountName;
-            //dataHosDocumentReceive.BankId = inputBank.bankId;
-            //await digitalclaimContext.HosDocumentReceive.AddAsync(dataHosDocumentReceive);            
+            if (iclaimApproval.IsEverAuthorize == true)
+            {
+                dataIcliamApproval.IsEverAuthorize = iclaimApproval.IsEverAuthorize;
+                dataIcliamApproval.EverAuthorizeMoney = iclaimApproval.EverAuthorizeMoney;
+                dataIcliamApproval.EverAuthorizeHosId = iclaimApproval.EverAuthorizeHosId;
+            }
+            else if (iclaimApproval.IsEverAuthorize == false)
+            {
+                dataIcliamApproval.IsEverAuthorize = iclaimApproval.IsEverAuthorize;
+                dataIcliamApproval.EverAuthorizeMoney = null;
+                dataIcliamApproval.EverAuthorizeHosId = null;
+            }
+            await digitalclaimContext.IclaimApproval.AddAsync(dataIcliamApproval);  
 
             var dataBankAccount = new IclaimBankAccount();
             dataBankAccount.AccNo = iclaimApproval.AccNo;
@@ -564,7 +564,7 @@ namespace Services
                 vwIclaimAppList.Add(vwIclaimApp);
             }
 
-            return vwIclaimAppList;
+            return vwIclaimAppList.OrderByDescending(o => o.AppNo).ToList();
         }
 
         private async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int victimNo, int appNo)

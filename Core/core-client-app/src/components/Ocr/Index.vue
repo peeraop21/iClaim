@@ -336,7 +336,7 @@
                     confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
                     confirmButtonColor: '#5c2e91',
                     willClose: () => {
-
+                        this.isLoading = false;
                     }
                 }).then((result) => {
                     this.$store.state.inputUserData = body
@@ -463,7 +463,7 @@
                         })
                     }
 
-                }).catch((error) => {
+                }).catch(() => {
                     this.isLoading = false;
                     this.$swal({
                         icon: 'error',
@@ -565,7 +565,7 @@
                                         }
                                     })
                                 }
-                            }).catch((error) => {
+                            }).catch(() => {
                                 this.isLoading = false;
                                 this.$swal({
                                     icon: 'error',

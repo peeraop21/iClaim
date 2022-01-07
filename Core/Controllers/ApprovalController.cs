@@ -40,8 +40,8 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("HosApproval/{accNo}/{victimNo}")]
-        public async Task<IActionResult> GetHosApproval(string accNo, int victimNo)
+        [HttpGet("IclaimApproval/{accNo}/{victimNo}")]
+        public async Task<IActionResult> GetIclaimApproval(string accNo, int victimNo)
         {
             return Ok(await approvalService.GetIClaimApprovalAsync(accNo.Replace("-", "/"), victimNo));
         }

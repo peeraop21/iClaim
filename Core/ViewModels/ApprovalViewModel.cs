@@ -18,6 +18,10 @@ namespace Core.ViewModels
         public BankViewModel BankData { get; set; }
         public VictimViewModel VictimData { get; set; }
         public string RefCodeOtp { get; set; }
+        public bool? IsEverAuthorize { get; set; }
+        public double? EverAuthorizeMoney { get; set; }
+        public string EverAuthorizeHosId { get; set; }
+        
 
     }
 }

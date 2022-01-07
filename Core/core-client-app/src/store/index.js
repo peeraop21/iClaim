@@ -11,7 +11,7 @@ export default new Vuex.Store({
         hosAppStateData: [],
         userTokenLine:null,
         jwtToken: [],
-        inputApprovalData: { AccNo: null, VictimNo: null, AppNo: null, BranchId: null, SumMoney: null, ClaimNo: null, Injury: null, BillsData: null, BankData: null, VictimData: null, UserIdLine: null, RefCodeOtp: null },
+        inputApprovalData: { AccNo: null, VictimNo: null, AppNo: null, BranchId: null, SumMoney: null, ClaimNo: null, Injury: null, BillsData: null, BankData: null, VictimData: null, UserIdLine: null, RefCodeOtp: null, IsEverAuthorize: false, EverAuthorizeMoney: null, EverAuthorizeHosId:null},
         inputUserData: {
             idcardNo: null,
             idcardLaserCode: null,
@@ -41,11 +41,9 @@ export default new Vuex.Store({
             return state.accStateData.filter(w => w.stringAccNo === id)[0]
         },
         ptGetter: (state) => (id) => {
-            console.log("Getter", state.claimStateData)
             return state.claimStateData.filter(w => w.stringPt4 === id)[0]
         },
         hosAppGetter: (state) => (id,appNo) => {
-            console.log("HosGetter", state.hosAppStateData)
             return state.hosAppStateData.filter(w => w.stringAccNo === id && w.appNo === appNo)[0]
         },
         userGetter: (state) => (id) => {

@@ -237,7 +237,7 @@
                             'Content-Type': 'application/json',
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }).then((response) => {
+                    }).then(() => {
                         this.isLoading = false
                         this.$swal({
                             icon: 'success',
@@ -257,7 +257,7 @@
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.postData()
-                            
+
                         }
                     });
                 }
@@ -267,7 +267,7 @@
                             'Content-Type': 'application/json',
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }).then((response) => {
+                    }).then(() => {
                         this.isLoading = false;
                         this.$swal({
                             icon: 'success',
@@ -287,13 +287,13 @@
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.postData()
-                            
+
                         }
                     });
 
                 }
                 else if (this.$route.params.from == "Create") {
-                    
+                    console.log(this.$store.state.inputApprovalData)
                     axios.post(this.$store.state.envUrl + "/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json',
@@ -308,7 +308,7 @@
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.postData()
-                            
+
                         }
                     });
                 }
@@ -353,9 +353,41 @@
                                 }
                             }
                         })
-                        
-                        
+
+
                     });
+                } else if (this.$route.params.from == "ConfirmMoney") {
+                    
+                    var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.accNo).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}', this.$route.params.from)
+                    var apiConfig = {
+                        headers: {
+                            Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        }
+                    }
+                    axios.get(url, apiConfig)
+                        .then((response) => {
+                            this.isLoading = false;
+                            if (response.data == "Success") {                                
+                                this.$swal({
+                                    icon: 'success',
+                                    title: 'ยืนยันรับจำนวนเงินเรียบร้อยแล้ว',
+                                    showCancelButton: false,
+                                    showDenyButton: false,
+                                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                    confirmButtonColor: '#5c2e91',
+                                    willClose: () => {
+                                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
+                                    }
+                                })
+                            } 
+                        })
+                        .catch((error) => {
+                            this.isLoading = false;
+                            if (error.toString().includes("401")) {
+                                this.getJwtToken()
+                                this.postData()
+                            }
+                        });
                 }
 
 
@@ -907,16 +939,18 @@
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ยกเลิกคำร้อง"
                 this.isLoading = false
-            } else if (this.$route.params.from == "CreateUser") {               
+            } else if (this.$route.params.from == "CreateUser") {
                 var telText = this.$store.state.inputUserData.mobileNo
                 this.displayMaskTelNo = "xxx-xxx-" + telText.substr(telText.length - 4)
                 this.fromText = "ลงทะเบียน"
                 this.isLoading = true
-                this.stampWatermarksIdCardImage(this.$store.state.inputUserData.base64IdCard)              
+                this.stampWatermarksIdCardImage(this.$store.state.inputUserData.base64IdCard)
                 this.stampWatermarksFaceImage(this.$store.state.inputUserData.base64Face)
                 this.isLoading = false
-
-
+            } else if (this.$route.params.from == "ConfirmMoney") {
+                this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
+                this.fromText = "ยอมรับจำนวนเงิน"
+                this.isLoading = false
             }
         }
 

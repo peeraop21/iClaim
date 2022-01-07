@@ -25,15 +25,15 @@
                         2. ข้าพเจ้าหรือผู้ประสบภัย
                     </p>
                     <div style="margin-top: -10px;">
-                        <vs-radio color="var(--main-color)" v-model="picked" val="1" class="mb-1" style="float: left">
+                        <vs-radio color="var(--main-color)" v-model="isEverAuthorize" val="0" class="mb-1" style="float: left">
                             ไม่เคย&emsp;&emsp;
                         </vs-radio>
-                        <vs-radio color="#7d33ff" v-model="picked" val="2" style="float: left">
+                        <vs-radio color="#7d33ff" v-model="isEverAuthorize" val="1" style="float: left">
                             เคย
                         </vs-radio>
                     </div>
                     <br />
-                    <div class="mt-0" v-if="picked==='2'">
+                    <div class="mt-0" v-if="isEverAuthorize==='1'">
                         <br />
                         <label>จำนวนเงิน</label>
                         <b-form-input class="mt-0 mb-2" v-model="saysoMoney" type="number" placeholder="" />
@@ -124,7 +124,7 @@
                         </div>
                     </div>
                     <div v-if="acceptClaim && acceptData" class="mb-4 mt-2" align="center">
-                        <router-link class="btn-next" :to="{ name: 'ConfirmOTP', params: { id: accData.stringAccNo, from: 'Create'}}">ยืนยันส่งคำร้อง</router-link>
+                        <button class="btn-confirm-money" type="button" @click="submitApproval" >ยืนยันส่งคำร้อง</button>
                     </div>
                 </div>
             </div>
@@ -638,89 +638,7 @@
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
-                    <!--<div class="row">
-                        <div class="col-4">
-                            <p class="mb-0">บ้านเลขที่</p>
-                            <div class="mt-0" v-if="accidentVictimData.accHomeId != null">
-                                <p class="label-text">{{accidentVictimData.accHomeId}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accHomeId === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <p class="mb-0">หมู่</p>
-                            <div class="mt-0" v-if="accidentVictimData.accMoo != null">
-                                <p class="label-text">{{accidentVictimData.accMoo}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accMoo === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <p class="mb-0">ซอยที่เกิดเหตุ</p>
-                            <div class="mt-0" v-if="accidentVictimData.accSoi != null">
-                                <p class="label-text">{{accidentVictimData.accSoi}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accSoi === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="mb-0">ถนนที่เกิดเหตุ</p>
-                            <div class="mt-0" v-if="accidentVictimData.accRoad != null">
-                                <p class="label-text">{{accidentVictimData.accRoad}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accRoad === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <p class="mb-0">ตำบล/แขวงที่เกิดเหตุ</p>
-                            <div class="mt-0" v-if="accidentVictimData.accTumbolName != null">
-                                <p class="label-text">{{accidentVictimData.accTumbolName}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accTumbolName === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="mb-0">อำเภอที่เกิดเหตุ</p>
-                            <div class="mt-0" v-if="accidentVictimData.accDistrictName != null">
-                                <p class="label-text">{{accidentVictimData.accDistrictName}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accDistrictName === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <p class="mb-0">จังหวัดที่เกิดเหตุ</p>
-                            <div class="mt-0" v-if="accidentVictimData.accProvinceName != null">
-                                <p class="label-text">{{accidentVictimData.accProvinceName}}</p>
-                                <hr class="mt-0">
-                            </div>
-                            <div class="mt-0" v-else-if="accidentVictimData.accProvinceName === null">
-                                <p class="label-text">-</p>
-                                <hr class="mt-0">
-                            </div>
-                        </div>
-                    </div>-->
+                    
 
                     <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                     <div class="mt-0" v-if="accidentCarData.foundCarLicense != ''">
@@ -843,15 +761,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!--<div class="row">
-                            <div class="col-6">
-
-                            </div>
-                            <div class="col-6">
-
-                            </div>
-                        </div>-->
                         <div class="row">
                             <div class="col-7">
                                 <p class="mb-0">เลขที่ใบเสร็จ</p>
@@ -979,13 +888,6 @@
                         </div>
                     </div>
 
-
-                    <!-- <div class="form-check">
-                    <input class="form-check-input" type="checkbox" v-model="acceptClaim">
-                    <p class="form-check-label" for="flexCheckDefault" style="text-align:start">
-                        ข้าพเจ้าตรวจสอบและยืนยันข้อมูลทุกอย่างเป็นความจริง
-                    </p>
-                    </div> -->
                 </div>
             </tab-content>
 
@@ -1075,7 +977,7 @@
                 // ----Dialog
                 active: false,
                 // Radio in Dialog
-                picked: 1,
+                isEverAuthorize: 0,
                 //----Get Bank Name
                 bankNames: [],
                 //----Get Last Document Receive
@@ -1173,22 +1075,20 @@
 
 
         },
-        //---Validate
-        //validations: {
-        //    selectHospital: {
-        //        required,
-        //        minLength: minLength(5)
-        //    }
-        //},
+      
         methods: {
-            //---Validate
-            /*status(validation) {
-                return {
-                    error: validation.$error,
-                    dirty: validation.$dirty
-                }
-            },*/
+            submitApproval() {
+                if (this.isEverAuthorize == "1") {
+                    this.$store.state.inputApprovalData.IsEverAuthorize = true
+                    this.$store.state.inputApprovalData.EverAuthorizeMoney = parseInt(this.saysoMoney)
 
+                } else {
+                    this.$store.state.inputApprovalData.IsEverAuthorize = false
+                    this.$store.state.inputApprovalData.EverAuthorizeMoney = null
+                    this.$store.state.inputApprovalData.EverAuthorizeHosId = null
+                }
+                this.$router.push({ name: 'ConfirmOTP', params: { id: this.accData.stringAccNo, from: 'Create' } })
+            },
             changeAccountBank() {
                 if (this.haslastDocumentReceive == false) {
                     this.haslastDocumentReceive = true
@@ -1205,7 +1105,8 @@
                         this.inputBank.bankId = this.bankNames[i].bankCode
                     }
                 }
-
+                
+                
 
 
                 this.active = true
@@ -1638,6 +1539,12 @@
                 this.selectChangwat = 0;
                 this.mockSaysoHospital = 0;
                 this.divHospitalModal = false;
+                for (let i = 0; i < this.hospitals.length; i++) {
+                    if (this.saysoHospital == this.hospitals[i].HOSPITALNAME) {
+                        this.$store.state.inputApprovalData.EverAuthorizeHosId = this.hospitals[i].HOSPITALID                    
+                    }
+                }
+                
             },
             calMoney() {
                 let sum = 0;

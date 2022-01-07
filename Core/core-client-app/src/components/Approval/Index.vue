@@ -184,7 +184,7 @@
         methods: {
 
             getIclaimApproval() {
-                var url = this.$store.state.envUrl + '/api/approval/HosApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
+                var url = this.$store.state.envUrl + '/api/approval/IclaimApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
                 var apiConfig = {
                     headers: {
                         Authorization: "Bearer " + this.$store.state.jwtToken.token

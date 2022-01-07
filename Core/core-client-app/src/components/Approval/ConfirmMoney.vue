@@ -81,7 +81,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-2" style="padding-right: 0px; width:13%;">
-                    <vs-checkbox v-model="acceptR" color="var(--main-color)">
+                    <vs-checkbox v-model="acceptR" color="var(--main-color)" @change="tik">
                         <template #icon>
                             <i class='ti ti-check'></i>
                         </template>
@@ -94,57 +94,12 @@
                 </div>
             </div>
             <div class="row" v-if="acceptR">
-                <div id="app" class="container ">
-                    <p class="mt-4">
-                        กรุณากดขอรหัส OTP เพื่อรับรหัสยืนยันจำนวนเงิน
-                    </p>
-                    <div class="row mb-4">
-                        <div class="col-7">
-                            <b-form-input class="mb-3" type="text" :placeholder="userData.mobileNo" disabled />
-                        </div>
-                        <div class="col-5">
-                            <button class="btn-request-otp" @click="requestOTP" v-bind:disabled="disableBtnReqOTP" type="button">ขอรหัส OTP</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p class="space-title mt-4">
-                                กรุณากรอกรหัส OTP ที่ส่งไปยัง SMS
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div style="display: flex; flex-direction: row; margin-left: 10px">
-                                <v-otp-input ref="otpInput"
-                                             input-classes="otp-input"
-                                             separator="-"
-                                             :num-inputs="6"
-                                             :should-auto-focus="true"
-                                             :is-input-num="true"
-                                             @on-change="handleOnChange"
-                                             @on-complete="handleOnComplete" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6  pt-2">
-                            <p class=" pink-title fw-bold text-start " @click="requestOTP" v-if="countDown == 60"><ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง</p>
-                        </div>
-                        <div class="col-6  pt-2">
-                            <p class=" black-title fw-bold text-start"><ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:{{countDown}} น.</p>
-                        </div>
-                    </div>
-                    <div v-if="inputOTP.length > 5">
-                        <br>
-                        <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
-                    </div>
-                </div>
+                <br>
+                <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
+                
             </div>
         </div>
-        <b-modal id="modal-1" title="BootstrapVue">
-            <p class="my-4">Hello from modal!</p>
-        </b-modal>
+        
     </div>
 </template>
 
@@ -182,7 +137,6 @@
 <script>
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
-    import qs from 'qs'
     import Loading from 'vue-loading-overlay';
     import 'vue-loading-overlay/dist/vue-loading.css';
 
@@ -205,7 +159,7 @@
                 hosData: this.$store.getters.hosAppGetter(this.$route.params.id, this.$route.params.appNo),
                 countDown: 60,
                 disableBtnReqOTP: false,
-                inputOTP: null,
+                inputOTP: "",
                 confirmMoneyData: {
                     reqNo: null, reqDate: null, reqTime: null, sumReqMoney: null, sumPayMoney: null,
                     car: {
@@ -231,6 +185,9 @@
             }
         },
         methods: {
+            tik() {
+                console.log(this.acceptR)
+            },
             showSwal() {
                 this.$swal({
                     icon: 'success',
@@ -311,6 +268,31 @@
 
                 }
             },
+            submit() {
+                this.$swal({
+                    icon: 'question',
+                    text: 'ท่านยืนยันจะรับจำนวนเงินในครั้งนี้หรือไม่?',
+                    /*title: 'แจ้งเตือน',*/
+                    /*footer: '<a href="">Why do I have this issue?</a>'*/
+                    showCancelButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                    denyButtonColor: '#dad5e9',
+                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                    confirmButtonColor: '#5c2e91',
+                    willClose: () => {
+
+                    }
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        this.$router.push({ name: 'ConfirmOTP', params: { from: "ConfirmMoney", accNo: this.$route.params.id, victimNo: this.accData.victimNo, appNo: this.$route.params.appNo} })
+                    }
+                    //} else if (result.isDenied) {
+
+                    //}
+                });
+            },
             postData() {
                 var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
                 var apiConfig = {
@@ -337,97 +319,9 @@
                         }
                     });
             },
-            requestOTP() {
-                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
-                const body = {
-                    TelNo: this.userData.mobileNo
-                };
-                axios.post(url, qs.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
-                }).then((response) => {
-                    this.countDownTimer()
-                    this.dataOTP = response.data.result
-                }).catch((error) => {
-                    this.$swal({
-                        icon: 'error',
-                        text: 'กรุณากดปุ่มขอรหัสยืนยัน OTP อีกครัง',
-                        title: 'ผิดพลาด',
-                        showCancelButton: false,
-                        showDenyButton: true,
-                        showConfirmButton: false,
-                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                        denyButtonColor: '#dad5e9'
-                    });
-                });
-            },
-
-            submit: async function () {
-                this.$swal({
-                    title: 'กำลังตรวจสอบ',
-                    html: 'ขณะนี้ระบบกำลังตรวจสอบรหัสยืนยัน OTP',
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        this.$swal.showLoading()
-
-                    },
-                    willClose: () => {
-
-                    }
-                })
-                await this.verifyOTP()
-
-            },
-            verifyOTP() {
-                //ตัวจริง
-                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/VerifyOTP";
-                const body = {
-                    'token': this.dataOTP.token,
-                    'otp_code': this.inputOTP,
-                    'ref_code': this.dataOTP.ref_code
-                };
-
-
-                //ตัวเทส
-                //const url = "https://smsotp.rvpeservice.com/OTP/VerifyOTP";
-                //const body = {
-                //    'ProjectName': "OTP_DigitalClaim",
-                //    'token': this.dataOTP.token,
-                //    'otp_code': this.inputOTP,
-                //    'ref_code': this.dataOTP.ref_code
-                //};
-
-                axios.post(url, qs.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }).then((response) => {
-                    this.verifyResultOTP = response.data
-                    if (this.verifyResultOTP.status == "false") {
-                        this.$swal.close();
-                        this.$swal({
-                            icon: 'error',
-                            text: 'รหัสยืนยัน OTP ไม่ถูกต้องกรุณาลองใหม่อีกครั้ง',
-                            title: 'ผิดพลาด',
-                            showCancelButton: false,
-                            showDenyButton: true,
-                            showConfirmButton: false,
-                            denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                            denyButtonColor: '#dad5e9',
-
-                        })
-                    } else if (this.verifyResultOTP.status == "true") {
-                        this.postData()
-
-
-
-                    }
-                }).catch((error) => {
-                    alert(error)
-                });
-
-            },
+           
+            
+            
             showSwalError() {
                 this.$swal({
                     icon: 'error',
