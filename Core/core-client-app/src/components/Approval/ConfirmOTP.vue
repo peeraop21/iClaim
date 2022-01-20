@@ -394,7 +394,7 @@
             pushMessageToUser(reqNo) {
                 const body = {
                     To: this.$store.state.userTokenLine,
-                    Messages: "ท่านได้ทำการส่งคำร้องเรียบร้อยแล้ว เลขรับแจ้ง: " + this.$store.state.inputApprovalData.AccNo + " | เลขที่คำร้อง: " + reqNo + " อยู่ระหว่างตรวจสอบเอกสาร",
+                    Messages: "ท่านได้ทำการส่งคำร้องเรียบร้อยแล้ว เลขรับแจ้ง: " + this.$store.state.inputApprovalData.AccNo + " | เลขที่คำร้อง: " + reqNo + " ขณะนี้คำร้องอยู่ระหว่างตรวจสอบเอกสาร",
                     Type: "Text"
                 };
                 axios.post(this.$store.state.envUrl + "/api/PushMessage", JSON.stringify(body), {
