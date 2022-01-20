@@ -93,7 +93,7 @@ namespace Core.Controllers
             bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
             await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
 
-            return Ok(new { status = "" });
+            return Ok(new { reqNo = result[0].IclaimAppNo });
         }
 
         [Authorize]

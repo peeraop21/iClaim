@@ -120,6 +120,10 @@ namespace Core
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
             app.UseAuthentication();           
             app.UseRouting();
             app.UseSpaStaticFiles();

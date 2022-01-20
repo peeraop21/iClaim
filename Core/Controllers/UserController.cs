@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.ViewModels;
@@ -21,14 +22,16 @@ namespace Core.Controllers
         private readonly IUserService userService;
         private readonly IMasterService masterService;
         private readonly IAttachmentService attachmentService;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
 
-        public UserController(IMapper _mapper, IUserService userService, IMasterService masterService, IAttachmentService attachmentService)
+        public UserController(IMapper _mapper, IUserService userService, IMasterService masterService, IAttachmentService attachmentService, IHttpContextAccessor httpContextAccessor)
         {
             this._mapper = _mapper;
             this.userService = userService;
             this.masterService = masterService;
             this.attachmentService = attachmentService;
+            this.httpContextAccessor = httpContextAccessor;
         }
         
 
@@ -51,8 +54,8 @@ namespace Core.Controllers
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] DirectPolicyKycViewModel model)
-        {           
-
+        {
+            var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var kycno = await userService.GetLastKyc();
             //var genAddress = await masterService.GetIdAddress(model.HomeProvinceId, model.HomeCityId, model.HomeTumbolId);
             //model.HomeProvinceId = genAddress.ProvinceId;
@@ -67,6 +70,9 @@ namespace Core.Controllers
             model.IdcardNo = model.IdcardNo.Replace(" ", "");
             model.InsertDate = DateTime.Now;
             model.LastUpdateDate = DateTime.Now;
+            model.Status = "Y";
+            model.LastUpdateIp = ip;
+
 
             ECMViewModel idCardEcmModel = new ECMViewModel();
             idCardEcmModel.SystemId = "02";

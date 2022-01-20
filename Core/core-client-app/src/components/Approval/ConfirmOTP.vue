@@ -299,10 +299,9 @@
                             'Content-Type': 'application/json',
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }).then(() => {
-                        this.isLoading = false;
-                        this.resetData();
-                        this.showSwal();
+                    }).then((response) => {
+                        
+                        this.pushMessageToUser(response.data.reqNo)
                     }).catch((error) => {
                         this.isLoading = false;
                         if (error.toString().includes("401")) {
@@ -392,6 +391,29 @@
 
 
             },
+            pushMessageToUser(reqNo) {
+                const body = {
+                    To: this.$store.state.userTokenLine,
+                    Messages: "ท่านได้ทำการส่งคำร้องเรียบร้อยแล้ว เลขรับแจ้ง: " + this.$store.state.inputApprovalData.AccNo + " | เลขที่คำร้อง: " + reqNo + " อยู่ระหว่างตรวจสอบเอกสาร",
+                    Type: "Text"
+                };
+                axios.post(this.$store.state.envUrl + "/api/PushMessage", JSON.stringify(body), {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(() => {
+                    this.isLoading = false;
+                    this.resetData();
+                    this.showSwal();
+
+                }).catch(() => {
+                    this.isLoading = false;
+                    this.resetData();
+                    this.showSwal();
+
+                });
+            },
+
             resetData() {
                 this.$store.state.inputApprovalData.AccNo = null
                 this.$store.state.inputApprovalData.VictimNo = null
@@ -489,8 +511,19 @@
 
 
                     }
-                }).catch(function () {
+                }).catch(() => {
                     this.isLoading = false
+                    this.$swal({
+                        icon: 'error',
+                        text: 'รหัสยืนยัน OTP ผิดพลาดกรุณากดขอรหัสใหม่ และกรอกใหม่อีกครั้ง',
+                        title: 'ผิดพลาด',
+                        showCancelButton: false,
+                        showDenyButton: true,
+                        showConfirmButton: false,
+                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        denyButtonColor: '#dad5e9',
+
+                    })
                 });
 
             },

@@ -606,14 +606,12 @@
                 }).then(() => {
                     if (liff.isLoggedIn()) {
                         liff.getProfile().then(profile => {
-                            this.$store.state.userTokenLine = profile.userId
-                            alert(this.$store.state.userTokenLine)
+                            this.$store.state.userTokenLine = profile.userId                           
                         }).catch(err => alert(err));
                     } else {
                         liff.login();
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
-                            alert("ed " + this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
                     }
 

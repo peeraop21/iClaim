@@ -408,7 +408,6 @@
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
-                            alert(this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
                         
                        
@@ -418,7 +417,6 @@
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
-                            alert(this.$store.state.userTokenLine)
                         }).catch(err => alert(err));
                         
                         
