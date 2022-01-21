@@ -81,6 +81,8 @@ namespace Core
             services.AddScoped<IApprovalService, ApprovalService>();
             services.AddTransient<IAttachmentService, AttachmentService>();
             services.AddScoped<IAttachmentService, AttachmentService>();
+            services.AddTransient<IWarmupService, WarmupService>();
+            services.AddScoped<IWarmupService, WarmupService>();
             services.AddScoped<DigitalclaimContextProcedures>();
 
 

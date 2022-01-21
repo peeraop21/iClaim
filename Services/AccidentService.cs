@@ -46,39 +46,13 @@ namespace Services
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
             var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync(); /*"3149900145384";*/
-         
-            //var accLineList = await rvpAccidentContext.TbAccidentMasterLine
-            //    .Join(rvpAccidentContext.TbAccidentMasterLineVictim, accVic => accVic.EaAccNo, vic => vic.EaAccno, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.EaVictimNo, victimIdCard = vic.EaIdCardVictim })
-            //    .Where(w => w.victimIdCard == userIdCard).Select(s => new { s.accJoinVictim.EaAccNo, s.victimNo, s.accJoinVictim.EaAccDate, s.accJoinVictim.EaAccPlace, s.accJoinVictim.EaAccNature, s.accJoinVictim.EaAccTime}).ToListAsync();
-           
             var accHosList = await rvpOfficeContext.HosAccident
                 .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo , confirmed = vic.Confirmed})
                 .Where(w => w.victimIdCard == userIdCard && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y"))
                 .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId})
                 .ToListAsync();
 
-            var accViewModelList = new List<AccidentViewModel>();
-            
-            
-            //foreach (var acc in accLineList)
-            //{
-
-            //    var accVwModel = new AccidentViewModel();
-            //    accVwModel.AccNo = acc.EaAccNo;
-            //    accVwModel.VictimNo = acc.victimNo;
-            //    accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.EaAccNo, acc.victimNo);
-            //    accVwModel.StringAccNo = acc.EaAccNo.ToString().Replace("/", "-");
-            //    accVwModel.AccDate = acc.EaAccDate ?? DateTime.Now;
-            //    accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.EaAccTime.Replace(".", ":") + " น.";
-            //    accVwModel.AccNature = acc.EaAccNature;
-            //    accVwModel.PlaceAcc = acc.EaAccPlace;
-            //    accVwModel.Car = await rvpAccidentContext.TbAccidentMasterLineCar.Where(w => w.EaAccNo == acc.EaAccNo).Select(s => s.EaCarLicense).ToListAsync();
-            //    accVwModel.Channel = "LINE";
-            //    accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CureRights");
-            //    accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.EaAccNo, acc.victimNo, "CrippledRights");
-            //    accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.EaAccNo).CountAsync();
-            //    accViewModelList.Add(accVwModel);
-            //}
+            var accViewModelList = new List<AccidentViewModel>();                    
             foreach (var acc in accHosList)
             {
                 
