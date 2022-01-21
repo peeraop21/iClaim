@@ -44,20 +44,20 @@
             </div>
             <div class="row">
                 <div class="col-6  pt-2">
-                    <p class=" pink-title fw-bold text-start " @click="requestOTP" v-if="countDown == 60">
+                    <p class=" pink-title fw-bold text-start " @click="requestOTP" v-if="countDown == 120">
                         <ion-icon name="reload-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>ขอรหัสอีกครั้ง
                     </p>
                 </div>
                 <div class="col-6  pt-2">
                     <p class=" black-title fw-bold text-start">
-                        <ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>00:{{countDown}} น.
+                        <ion-icon name="time-outline" style="margin-bottom: -5px; padding-right: 5px; font-size: 20px"></ion-icon>{{displayCountDown}} น.
                     </p>
                 </div>
             </div>
             <div v-if="inputOTP.length > 5">
                 <br>
                 <button class="btn-confirm-money" type="button" @click="submit">ยืนยันการ{{fromText}}</button>
-                <!--<button class="btn-confirm-money" type="button" @click="postData">TestPostData</button>-->
+                <!--<button class="btn-confirm-money" type="button" @click="countDownTimer">TestCountDown</button>-->
             </div>
         </div>
     </div>
@@ -197,13 +197,14 @@
         },
         data() {
             return {
-                msg: 'ยืนยันการส่งคำร้อง',               
+                msg: 'ยืนยันการส่งคำร้อง',
                 accData: null,
                 userData: null,
                 dataOTP: { token: "", ref_code: "" },
                 inputOTP: "",
                 verifyResultOTP: { status: "" },
-                countDown: 60,
+                countDown: 120,
+                displayCountDown: "02:00",
                 disableBtnReqOTP: false,
                 mockTel: "",
                 isLoading: true,
@@ -215,14 +216,33 @@
         methods: {
             countDownTimer() {
                 if (this.countDown > 0) {
-                    this.disableBtnReqOTP = true
-                    setTimeout(() => {
-                        this.countDown -= 1
-                        this.countDownTimer()
-                    }, 1000)
+                    if (this.countDown < 120 && this.countDown > 60) {
+                        this.disableBtnReqOTP = true
+                        setTimeout(() => {                            
+                            this.countDown -= 1
+                            this.displayCountDown = (this.countDown < 70 && this.countDown >= 60) ? "01:0" + (this.countDown - 60) : "01:" + (this.countDown - 60)
+                            this.countDownTimer()
+                        }, 1000)
+                    } else if (this.countDown <= 60) {
+                        this.disableBtnReqOTP = true
+                        setTimeout(() => {                        
+                            this.countDown -= 1
+                            this.displayCountDown = (this.countDown < 10 && this.countDown >= 0) ? "00:0" + (this.countDown) : "00:" + (this.countDown)
+                            this.countDownTimer()
+                        }, 1000)
+                    } else {
+                        this.disableBtnReqOTP = true
+                        setTimeout(() => {                          
+                            this.countDown -= 1
+                            this.displayCountDown = "01:" + (this.countDown - 60)
+                            this.countDownTimer()
+                        }, 1000)
+                    }
+
                 } else if (this.countDown <= 0) {
+                    this.displayCountDown = "02:00"
                     this.disableBtnReqOTP = false
-                    this.countDown = 60
+                    this.countDown = 120
 
                 }
             },
@@ -300,7 +320,7 @@
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
                     }).then((response) => {
-                        
+
                         this.pushMessageToUser(response.data.reqNo)
                     }).catch((error) => {
                         this.isLoading = false;
@@ -356,7 +376,7 @@
 
                     });
                 } else if (this.$route.params.from == "ConfirmMoney") {
-                    
+
                     var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.accNo).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}', this.$route.params.from)
                     var apiConfig = {
                         headers: {
@@ -366,7 +386,7 @@
                     axios.get(url, apiConfig)
                         .then((response) => {
                             this.isLoading = false;
-                            if (response.data == "Success") {                                
+                            if (response.data == "Success") {
                                 this.$swal({
                                     icon: 'success',
                                     title: 'ยืนยันรับจำนวนเงินเรียบร้อยแล้ว',
@@ -378,7 +398,7 @@
                                         this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
                                     }
                                 })
-                            } 
+                            }
                         })
                         .catch((error) => {
                             this.isLoading = false;
@@ -432,7 +452,7 @@
                 //ตัวจริง
                 const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
                 const body = {
-                    TelNo: (this.$route.params.from == "CreateUser") ? this.$store.state.inputUserData.mobileNo.replaceAll("-","") : this.userData.mobileNo
+                    TelNo: (this.$route.params.from == "CreateUser") ? this.$store.state.inputUserData.mobileNo.replaceAll("-", "") : this.userData.mobileNo
                 };
                 axios.post(url, qs.stringify(body), {
                     headers: {
@@ -446,7 +466,7 @@
                     this.isLoading = false
 
                 }).catch(() => {
-                    this.isLoading  =  false
+                    this.isLoading = false
                     this.$swal({
                         icon: 'error',
                         text: 'กรุณากดปุ่มขอรหัสยืนยัน OTP อีกครัง',
@@ -551,7 +571,7 @@
                     }
                 });
             },
-            handleOnComplete(value) {                
+            handleOnComplete(value) {
                 this.inputOTP = value
             },
             handleOnChange(value) {
@@ -754,7 +774,7 @@
                             alert(error);
                         });
                 }
-                
+
 
 
                 for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
@@ -764,7 +784,7 @@
                                 img.crossOrigin = 'anonymous';
                             }
                         };
-                                            
+
                         watermark([this.$store.state.inputApprovalData.BillsData[i].editBillImage], options)
                             .dataUrl(function (target) {
                                 console.log("Target: ", target)
@@ -819,9 +839,9 @@
                                 alert(error);
                             });
                     }
-                    
+
                 }
-                
+
             },
             stampWatermarksIdCardImage(imgDataUrl) {
                 //Stamp ลายน้ำ
@@ -829,12 +849,12 @@
                     init(img) {
                         img.crossOrigin = 'anonymous';
                     }
-                };               
+                };
                 /*var resultAddWatermarkToIdCardImage = "";*/
                 watermark([imgDataUrl], idCardOptions)
                     .dataUrl(function (target) {
                         var context = target.getContext('2d');
-                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';                       
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                         var x = (target.width / 2);
                         var y = (target.height / 2);
                         var fontSize = (target.width + target.height) * (3.5 / 100)
@@ -875,21 +895,21 @@
                         } else {
                             context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
                         }
-                      
+
                         return target;
                     })
                     .then((imgIdCard) => {
-                        this.$store.state.inputUserData.base64IdCard = imgIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");                        
+                        this.$store.state.inputUserData.base64IdCard = imgIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
                     }).catch(function (error) {
                         alert(error);
-                    });                                               
+                    });
             },
             stampWatermarksFaceImage(imgDataUrl) {
                 var faceOptions = {
                     init(img) {
                         img.crossOrigin = 'anonymous';
                     }
-                };               
+                };
                 watermark([imgDataUrl], faceOptions)
                     .dataUrl(function (target) {
                         console.log("Target: ", target)
@@ -945,8 +965,8 @@
                         alert(error);
                     });
                 this.isLoading = false
-               
-                
+
+
             }
 
         },
@@ -958,7 +978,7 @@
                 this.accData = this.$store.getters.accGetter(this.$route.params.id)
                 this.userData = this.$store.state.userStateData
             }
-            
+
             if (this.$route.params.from == "Create") {
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งคำร้อง"
