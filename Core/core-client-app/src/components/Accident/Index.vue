@@ -23,54 +23,93 @@
                     </div>
                 </div>
                 <div class="mb-4 mt-4">
-                    <router-link class="btn-next" to="">แจ้งเหตุใหม่</router-link>
+                    <router-link hidden class="btn-next" to="">แจ้งเหตุใหม่</router-link>
                 </div>
+
                 <div align="left" style="width: 100%;">
                     <label class="title-advice-menu">ประวัติการแจ้งอุบัติเหตุ</label>
                 </div>
+                <div class="row mt-2 mb-2">
+                    <div class="col-1">
+                        
+                    </div>
+                    <div class="col-10">
+                        <v-date-picker v-model="dateSearch" class="" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
+                            <template v-slot="{ inputValue, inputEvents }">
+                                <!--<input class=" mt-0 mb-2 form-control "
+                                       style="text-align:center"
+                                       :value="inputValue"
+                                       v-on="inputEvents"
+                                       placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
+                                       readonly />-->
+                                <b-input-group style="background-color: #e1deec; border-radius: 7px;">
+                                    <b-input-group-prepend >                                        
+                                        <b-button style=" border: none;" variant="outline-secondary" disabled><b-icon icon="search" /></b-button>                                     
+                                    </b-input-group-prepend>
+                                    <b-form-input style="text-align: center; background-color: #e1deec; border: none;"
+                                                  :value="inputValue"  
+                                                  v-on="inputEvents"
+                                                  placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
+                                                  readonly
+                                                  >
+                                    </b-form-input>
+                                    <b-input-group-append >
+                                        <b-button @click="clearDateSearch" style=" border: none;" variant="outline-secondary" ><b-icon icon="x" /></b-button>
+                                    </b-input-group-append>
+                                </b-input-group>
+                            </template>
+                        </v-date-picker>
+
+                    </div>
+                    <div class="col-1">                        
+                    </div>
+
+                </div>
                 <section>
                     <div style="height: 98%; width: 100%;">
-                        <div class="accordion" v-for="accident in accData" v-bind:key="accident.stringAccNo">
-                            <div class="accordion-item" :id="'list' + accident.stringAccNo">
-                                <a class="accordion-link" :href="'#list' + accident.stringAccNo">
-                                    <div>
+                        <div v-for="accident in accData" v-bind:key="accident.stringAccNo">
+                            <div v-if="accident.stringAccDate.startsWith(dateSearch) || dateSearch == null" class="accordion">
+                                <div class="accordion-item" :id="'list' + accident.stringAccNo">
+                                    <a class="accordion-link" :href="'#list' + accident.stringAccNo">
+                                        <div>
+                                            <p>
+                                                <label>
+                                                    <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
+                                                </label>
+                                                <br>
+                                                <label v-if="accident.lastClaim.claimNo">
+                                                    <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: {{ accident.lastClaim.claimNo }}
+                                                </label>
+                                                <label v-if="!accident.lastClaim.claimNo">
+                                                    <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: ยังไม่เปิดเคลม
+                                                </label>
+                                                <br>
+                                                <label>
+                                                    <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.stringAccDate }}
+                                                </label>
+                                            </p>
+                                        </div>
+                                        <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
+                                    </a>
+                                    <div class="answer">
                                         <p>
-                                            <label>
-                                                <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
-                                            </label>
-                                            <br>
-                                            <label v-if="accident.lastClaim.claimNo">
-                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: {{ accident.lastClaim.claimNo }}
-                                            </label>
-                                            <label v-if="!accident.lastClaim.claimNo">
-                                                <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: ยังไม่เปิดเคลม
-                                            </label>
-                                            <br>
-                                            <label>
-                                                <ion-icon name="calendar-outline"></ion-icon>วันที่เกิดเหตุ: {{ accident.stringAccDate }}
-                                            </label>
+                                            ทะเบียนรถ:
+                                            <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
+                                            <br />
+                                            <label v-if="accident.cureRightsBalance >= 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: {{ accident.cureRightsBalance }} บาท</label>
+                                            <label v-if="accident.cureRightsBalance < 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: 0 บาท</label>
+                                            <br />
+
+                                            <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
+                                            <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>
+
+                                            <br />
                                         </p>
                                     </div>
-                                    <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
-                                </a>
-                                <div class="answer">                                  
-                                    <p>
-                                        ทะเบียนรถ:
-                                        <label v-for="(car, index) in accident.car" :key="`car-${index}`">{{car}}&nbsp;</label>
-                                        <br />
-                                        <label v-if="accident.cureRightsBalance >= 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: {{ accident.cureRightsBalance }} บาท</label>
-                                        <label v-if="accident.cureRightsBalance < 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: 0 บาท</label>
-                                        <br />
-                                        
-                                        <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
-                                        <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>
-
-                                        <br />
-                                    </p>
-                                </div>
-                                <div style="text-align: center">
-                                    <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
-                                    <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'Approvals', params: { id: accident.stringAccNo}}">ติดตามสถานะ</router-link>
+                                    <div style="text-align: center">
+                                        <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
+                                        <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'Approvals', params: { id: accident.stringAccNo}}">ติดตามสถานะ<span v-if="accident.countNotify > 0" class="icon-count-notify">{{accident.countNotify}}</span></router-link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -96,6 +135,18 @@
         },
         data() {
             return {
+                attrs: [
+                    {
+                        key: 'today',
+                        dot: true,
+                        dates: new Date(),
+                    },
+                ],
+                dateModelConfig: {
+                    type: 'string',
+                    mask: 'DD/MM/YYYY',
+                },
+                dateSearch:null,
                 userData: [],
                 accData: [],
                 rights_amount: 0,
@@ -105,7 +156,9 @@
 
 
         methods: {
-
+            clearDateSearch() {
+                this.dateSearch = null
+            },
             getJwtToken() {
                 var urlJwt = this.$store.state.envUrl + '/api/jwt'
                 axios.post(urlJwt, {
@@ -170,6 +223,17 @@
 </script>
 
 <style>
+    .icon-count-notify {
+        display: inherit;
+        position: absolute;
+        color:white;
+        background-color: red;
+        border: 1px solid #000;
+        border-radius: 10px;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px;
+    }
     #header2 {
         font-size: 18px;
         font-weight: bold;

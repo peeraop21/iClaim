@@ -18,6 +18,7 @@ namespace Services.ViewModels
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
         public string StringAccDate { get; set; }
+        public string StringAccDateSearch { get; set; }
         public string AccNature { get; set; }
         public string PlaceAcc { get; set; }
         public string ProvAcc { get; set; }
@@ -27,6 +28,7 @@ namespace Services.ViewModels
         public double? CureRightsBalance { get; set; }
         public double? CrippledRightsBalance { get; set; }
         public int CountHosApp { get; set; }
+        public int CountNotify { get; set; }
 
         /*public string EaCarLicense { get; set; }
         public string EaPrefixVictim { get; set; }

@@ -45,36 +45,45 @@ namespace Services
 
         public async Task<List<AccidentViewModel>> GetAccident(string userToken)
         {
-            var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync(); /*"3149900145384";*/
-            var accHosList = await rvpOfficeContext.HosAccident
-                .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo , confirmed = vic.Confirmed})
-                .Where(w => w.victimIdCard == userIdCard && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y"))
-                .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId})
-                .ToListAsync();
-
-            var accViewModelList = new List<AccidentViewModel>();                    
-            foreach (var acc in accHosList)
+            if (!string.IsNullOrEmpty(userToken))
             {
-                
-                var accVwModel = new AccidentViewModel();
-                accVwModel.AccNo = acc.AccNo;
-                accVwModel.VictimNo = acc.victimNo;
-                accVwModel.BranchId = acc.BranchId;
-                accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo, acc.victimNo);
-                accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
-                accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
-                accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.TimeAcc.Replace(".",":") + " น.";
-                accVwModel.AccNature = acc.AccNature;
-                accVwModel.PlaceAcc = acc.AccPlace;
-                accVwModel.ProvAcc = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == acc.AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
-                accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
-                accVwModel.Channel = "HOSPITAL";                
-                accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CureRights");
-                accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CrippledRights");
-                accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo).CountAsync();
-                accViewModelList.Add(accVwModel);
+                var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync(); /*"3149900145384";*/
+                var accHosList = await rvpOfficeContext.HosAccident
+                    .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo, confirmed = vic.Confirmed })
+                    .Where(w => w.victimIdCard == userIdCard && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y"))
+                    .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId })
+                    .ToListAsync();
+
+                var accViewModelList = new List<AccidentViewModel>();
+                foreach (var acc in accHosList)
+                {
+                    var accVwModel = new AccidentViewModel();
+                    accVwModel.AccNo = acc.AccNo;
+                    accVwModel.VictimNo = acc.victimNo;
+                    accVwModel.BranchId = acc.BranchId;
+                    accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo, acc.victimNo);
+                    accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
+                    accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
+                    accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.TimeAcc.Replace(".", ":") + " น.";
+                    accVwModel.StringAccDateSearch = accVwModel.AccDate.ToString("dd/MM/yyyy");
+                    accVwModel.AccNature = acc.AccNature;
+                    accVwModel.PlaceAcc = acc.AccPlace;
+                    accVwModel.ProvAcc = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == acc.AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
+                    accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
+                    accVwModel.Channel = "HOSPITAL";
+                    accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CureRights");
+                    accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CrippledRights");
+                    accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo).CountAsync();
+                    accVwModel.CountNotify = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo && (w.Status == 2 || w.Status == 4)).CountAsync();
+                    accViewModelList.Add(accVwModel);
+                }
+                return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
             }
-            return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
+            else
+            {
+                return null;
+            }
+            
         }
 
         public async Task<VictimtViewModel> GetAccidentVictim(string accNo, string channal, string userIdCard, int victimNo)
