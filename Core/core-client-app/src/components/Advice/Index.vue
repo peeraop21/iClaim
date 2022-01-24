@@ -315,11 +315,14 @@
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-                                    /*this.$router.push({ name: 'Accident' })*/
-                                    liff.openWindow({
-                                        url: location.origin + '/Ocr' + '?openExternalBrowser=1',
-                                        external: true
-                                    });
+                                    if (liff.getOS() == "ios") {
+                                        this.$router.push('/Ocr')
+                                    } else {
+                                        liff.openWindow({
+                                            url: location.origin + '/Ocr' + '?openExternalBrowser=1',
+                                            external: true
+                                        });
+                                    }
                                 }
                             })
 
@@ -379,11 +382,17 @@
 
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
-                                willClose: () => {                                 
-                                    liff.openWindow({
-                                        url: location.origin + '/Ocr' + '?openExternalBrowser=1',
-                                        external: true
-                                    });
+                                willClose: () => {
+                                    
+                                    if (liff.getOS() == "ios") {
+                                        this.$router.push('/Ocr')
+                                    } else {
+                                        liff.openWindow({
+                                            url: location.origin + '/Ocr' + '?openExternalBrowser=1',
+                                            external: true
+                                        });
+                                    }
+                                    
                                 }
                             })
                         } else {

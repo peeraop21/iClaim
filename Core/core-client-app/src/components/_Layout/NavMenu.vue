@@ -69,7 +69,12 @@
                 } else if (routeName == "ApprovalDetail") {
                     this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
                 } else if (routeName == "Ocr") {
-                    liff.closeWindow()
+                    if (liff.getOS() == "ios") {
+                        this.$router.push({ name: 'Advice' })
+                    } else {
+                        liff.closeWindow()
+                    }
+                    
                 } else if (routeName == "Rating") {
                     this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
                 } else if (routeName == "ApprovalEdit") {

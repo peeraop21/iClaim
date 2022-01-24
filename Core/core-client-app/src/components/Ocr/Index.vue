@@ -599,26 +599,30 @@
             },
         },
         async created() {
+            
             if (process.env.NODE_ENV == "production") {
                 //--Publish--
-                await liff.init({
-                    liffId: '1655252355-n08QYdAA'
-                }).then(() => {
-                    if (liff.isLoggedIn()) {
-                        liff.getProfile().then(profile => {
-                            this.$store.state.userTokenLine = profile.userId                           
-                        }).catch(err => alert(err));
-                    } else {
-                        liff.login();
-                        liff.getProfile().then(profile => {
-                            this.$store.state.userTokenLine = profile.userId
-                        }).catch(err => alert(err));
-                    }
+                if (liff.getOS() == "android") {
+                    await liff.init({
+                        liffId: '1655252355-n08QYdAA'
+                    }).then(() => {
+                        if (liff.isLoggedIn()) {
+                            liff.getProfile().then(profile => {
+                                this.$store.state.userTokenLine = profile.userId
+                            }).catch(err => alert(err));
+                        } else {
+                            liff.login();
+                            liff.getProfile().then(profile => {
+                                this.$store.state.userTokenLine = profile.userId
+                            }).catch(err => alert(err));
+                        }
 
-                }).catch(err => {
-                    alert(err);
-                    throw err
-                });
+                    }).catch(err => {
+                        alert(err);
+                        throw err
+                    });
+                }
+                
             } else if (process.env.NODE_ENV == "development") {
                 //--LocalHost--
                 this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069Mock";

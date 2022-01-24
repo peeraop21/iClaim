@@ -190,6 +190,7 @@
     import watermark from 'watermarkjs'
     import Loading from 'vue-loading-overlay';
 
+
     export default {
         mixins: [mixin],
         components: {
@@ -349,8 +350,14 @@
                             confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
                             confirmButtonColor: '#5c2e91',
                             willClose: () => {
-                                this.$store.state.hasRegistered = true;
-                                liff.closeWindow()
+                                if (liff.getOS() == "ios") {
+                                    this.$store.state.hasRegistered = true;
+                                    this.$router.push('/Accident')
+                                } else {
+                                    this.$store.state.hasRegistered = true;
+                                    liff.closeWindow()
+                                }
+                                
                             }
                         })
 
