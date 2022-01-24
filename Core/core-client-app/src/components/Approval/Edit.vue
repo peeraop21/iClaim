@@ -201,7 +201,7 @@
                         เลขบัญชีธนาคาร
                         <span class="star-require">*</span>
                     </p>
-                    <b-form-input :disabled="displayBankAccount.isDisabledAccountNumber" class="mt-0 mb-2" v-model="$v.inputBank.accountNumber.$model" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
+                    <b-form-input :disabled="displayBankAccount.isDisabledAccountNumber" class="mt-0 mb-2" v-model="$v.inputBank.accountNumber.$model" type="tel"  v-mask="'###-#-#####-###'" :maxlength="15" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
                     <div v-if="submitted && !$v.inputBank.accountNumber.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่บัญชี</div>
                 </div>
 
@@ -340,17 +340,17 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <label class="px-2">ใบเสร็จเล่มที่<span class="star-require">*</span></label>
-                                        <b-form-input :disabled="displayBills[index].isDisabledBookNo" class="mt-0 mb-2" v-model="input.bookNo.$model" type="text" placeholder="" :class="{ 'is-invalid': input.bookNo.$error }" />
+                                        <b-form-input :disabled="displayBills[index].isDisabledBookNo" class="mt-0 mb-2" v-model="input.bookNo.$model" type="number" :maxlength="10" placeholder="" :class="{ 'is-invalid': input.bookNo.$error }" />
                                         <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
                                     </div>
                                     <div class="col-6">
                                         <label class="px-2">เลขที่ใบเสร็จ<span class="star-require">*</span></label>
-                                        <b-form-input :disabled="displayBills[index].isDisabledReceiptNo" class="mt-0 mb-2" v-model="input.bill_no.$model" type="text" placeholder="" :class="{ 'is-invalid': input.bill_no.$error }" />
+                                        <b-form-input :disabled="displayBills[index].isDisabledReceiptNo" class="mt-0 mb-2" v-model="input.bill_no.$model" type="number" :maxlength="10" placeholder="" :class="{ 'is-invalid': input.bill_no.$error }" />
                                         <div v-if="submitted && !input.bill_no.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่ใบเสร็จ</div>
                                     </div>
                                 </div>
                                 <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="calMoney" :class="{ 'is-invalid': input.money.$error }" />
+                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="tel"  v-mask="'##,###'" :maxlength="6" placeholder="" @change="calMoney" :class="{ 'is-invalid': input.money.$error }" />
                                 <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                                 <div class="row">
                                     <div class="col-8">
