@@ -350,7 +350,7 @@
                                     </div>
                                 </div>
                                 <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="tel"  v-mask="'##,###'" :maxlength="6" placeholder="" @change="calMoney" :class="{ 'is-invalid': input.money.$error }" />
+                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @input="calMoney" @change="rmLeadingZero(index)" min="1" max="35000" :class="{ 'is-invalid': input.money.$error }" />
                                 <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                                 <div class="row">
                                     <div class="col-8">
@@ -1276,14 +1276,19 @@
 
 
             },
+           
             calMoney() {
                 let sum = 0;
                 for (let i = 0; i < this.bills.length; i++) {
 
-                    sum = sum + parseInt(this.bills[i].money)
+                    sum = sum + parseFloat(this.bills[i].money)
                 }
-                this.total_amount = sum
+                this.total_amount = sum.toFixed(2)
 
+            },
+            rmLeadingZero(index) {
+                this.bills[index].money = parseFloat(this.bills[index].money)
+                this.bills[index].money = this.bills[index].money.toString()
             },
             addField(value, fieldType) {
                 var index = this.bills.length + 1

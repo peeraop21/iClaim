@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="mb-4 mt-4">
-                    <router-link hidden class="btn-next" to="">แจ้งเหตุใหม่</router-link>
+                    <button @click="testDOPAapi" hidden class="btn-next" to="">Test DOPA API</button>
                 </div>
 
                 <div align="left" style="width: 100%;">
@@ -156,6 +156,34 @@
 
 
         methods: {
+            testDOPAapi() {
+                var urlTest = this.$store.state.envUrl + '/api/DOPAtest'
+                axios.get(urlTest)
+                    .then((response) => {
+                        const body = {
+                            client_code: "A62",
+                            key_name: "A62_key.pub",
+                            request_time: response.data.time,
+                            signature: response.data.signature
+                        };
+                        console.log(JSON.stringify(body))
+
+                        axios.post("https://digitalgatewaytest.digital-access.com/api/auth/token", JSON.stringify(body), {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        }).then((response1) => {
+                            alert(response1.data)
+
+                        }).catch((error) => {
+                            alert(error)
+
+                        });
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
             clearDateSearch() {
                 this.dateSearch = null
             },

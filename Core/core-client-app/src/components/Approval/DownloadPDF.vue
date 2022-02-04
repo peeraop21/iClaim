@@ -53,12 +53,36 @@
                         let blob = new Blob([response.data], { type: 'application/pdf' }),
                             url = window.URL.createObjectURL(blob)
                         this.isLoading = false
-                        liff.openWindow({
-                            url: url
-                        });
-                        setTimeout(() => {
-                            liff.closeWindow();
-                        }, 3000)
+                        
+                        
+                        //liff.openWindow({
+                        //    url: url
+                        //});
+                        if (liff.getOS() == "ios") {
+                            const link = document.createElement('a')
+                            link.href = url
+                            link.download = 'บต3' + '|' + this.$route.params.accNo + '|' + this.$route.params.appNo + '.pdf'
+                            document.body.appendChild(link)
+                            link.click()
+                            window.URL.revokeObjectURL(url)
+                            setTimeout(() => {
+                                // For Firefox it is necessary to delay revoking the ObjectURL
+                                document.body.removeChild(link);
+                                window.URL.revokeObjectURL(url);
+                            }, 100)
+                            setTimeout(() => {
+                                liff.closeWindow();
+                            }, 3000)
+                        } else {
+                            window.open(url)
+                            setTimeout(() => {
+                                liff.closeWindow();
+                            }, 3000)
+                        }
+
+                       
+
+                       
                     })
                     .catch(function (error) {
                         alert(error);

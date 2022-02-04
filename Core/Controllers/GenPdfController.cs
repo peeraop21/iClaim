@@ -105,6 +105,10 @@ namespace Core.Controllers
             {
                 var htmlTemplate = await reader.ReadToEndAsync();
                 htmlTemplate = htmlTemplate.Replace("{AccNo}", (string.IsNullOrEmpty(acc.AccNo)) ? "-" : acc.AccNo);
+                if (approvalData.ClaimNo != null)
+                {
+                    htmlTemplate = htmlTemplate.Replace("{AccNo}", acc.AccNo + "(" + approvalData.ClaimNo + ")");
+                }             
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Name}", (string.IsNullOrEmpty(accVictim.Fname)) ? "-" : accVictim.Prefix + accVictim.Fname + " " + accVictim.Lname);
                 htmlTemplate = htmlTemplate.Replace("( ) ผู้ประสบภัย", "(&#10004;) ผู้ประสบภัย");
                 htmlTemplate = htmlTemplate.Replace("{AccVictim.Age}", (string.IsNullOrEmpty(accVictim.Age.ToString())) ? "-" : accVictim.Age.ToString());
@@ -149,11 +153,25 @@ namespace Core.Controllers
                 htmlTemplate = htmlTemplate.Replace("( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล", (string.IsNullOrEmpty(approvalData.CureMoney.ToString())) ? "( ) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล" : "(&#10004;) ค่ารักษาพยาบาลและค่าใช้จ่ายอันจำเป็นเกี่ยวกับการรักษาพยาบาล");
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.CureMoney}", approvalData.CureMoney.ToString() );
 
+                if (approvalData.IsEverAuthorize == true)
+                {
+                    htmlTemplate = htmlTemplate.Replace("( ) เคย", "(&#10004;) เคย");
+                    htmlTemplate = htmlTemplate.Replace("{ApprovalData.EverAuthorizeMoney}", (string.IsNullOrEmpty(approvalData.EverAuthorizeMoney.ToString())) ? "-" : approvalData.EverAuthorizeMoney.ToString());
+                    htmlTemplate = htmlTemplate.Replace("{ApprovalData.EverAuthorizeHosId}", (string.IsNullOrEmpty(approvalData.EverAuthorizeHosId.ToString())) ? "-" : approvalData.EverAuthorizeHosId.ToString());
+                }
+                else
+                {
+                    htmlTemplate = htmlTemplate.Replace("( ) ไม่เคย", "(&#10004;) ไม่เคย");
+                    htmlTemplate = htmlTemplate.Replace("{ApprovalData.EverAuthorizeMoney}", "");
+                    htmlTemplate = htmlTemplate.Replace("{ApprovalData.EverAuthorizeHosId}", "");
+                }
+
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.OtpSign}", "ยื่นผ่าน iClaim ด้วย SMS OTP (ref: " + approvalData.OtpSign + ")");
 
                 htmlTemplate = htmlTemplate.Replace("( ) ใบเสร็จรับเงิน", (string.IsNullOrEmpty(approvalData.CureMoney.ToString())) ? "( ) ใบเสร็จรับเงิน" : "(&#10004;) ใบเสร็จรับเงิน");
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.IdInvhd}", approvalData.IdInvhd.ToString());
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.InvCount}", approvalData.InvCount.ToString());
+                htmlTemplate = htmlTemplate.Replace("{ApprovalData.HosId}", approvalData.HosId.ToString());
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.RecordDay}", approvalData.RecordDay);
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.RecordMonth}", approvalData.RecordMonth);
                 htmlTemplate = htmlTemplate.Replace("{ApprovalData.RecordYear}", approvalData.RecordYear);

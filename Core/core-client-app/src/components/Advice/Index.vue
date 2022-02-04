@@ -134,7 +134,7 @@
             </template>
             <div class="con-content" align="left">
 
-                <label class="space-title"><strong class="purple-title">ค่าเสียหายเบื่องต้น</strong> ไม่ต้องรอผลพิสูจน์ว่าฝ่ายใดชนหรือฝ่ายใดเป็นฝ่ายถูกหรือผิด</label>
+                <label class="space-title"><strong class="purple-title">ค่าเสียหายเบื้องต้น</strong> ไม่ต้องรอผลพิสูจน์ว่าฝ่ายใดชนหรือฝ่ายใดเป็นฝ่ายถูกหรือผิด</label>
                 <br />
                 <strong>กรณีผู้ประสบภัยได้รับความเสียหายต่อร่างกาย</strong>
                 <p>
@@ -179,7 +179,7 @@
                 </h4>
             </template>
             <div class="con-content" align="left">
-                <p>1. ยืนยันตัวตนเพื่อขอใช้สิทธิ์ (ถ้าเคยยืนยันตัวตนแล้วจะข้ามขั้นตอนนีี้ไป)</p>
+                <p>1. ยืนยันตัวตนเพื่อขอใช้สิทธิ์ (ถ้าเคยยืนยันตัวตนแล้วจะข้ามขั้นตอนนี้ไป)</p>
                 <p>2. กดเลือกแจ้งเหตุใหม่ (ถ้ามีรายการแจ้งเหตุแล้ว ท่านสามารถเลือกที่ใช้สิทธิ์เพิ่มเติมได้)</p>
                 <p>3. เลือกประเภทการขอใช้สิทธิ์เบิกค่าเสียหายเบื้องต้น</p>
                 <ul style="margin-top: -15px;">
@@ -242,7 +242,7 @@
     </div>
 </template>
 <script>
-    
+
     import liff from '@line/liff'
     import axios from 'axios'
     // Import component
@@ -335,29 +335,7 @@
                     });
             },
             checkRegisAgain() {
-                //let hasRegisterd = this.$store.state.hasRegistered
-                //if (hasRegisterd || this.registered) {
-                //    this.$router.push({ name: 'Accident' })
-                //} else {
-                //    this.$swal({
-                //        icon: 'info',
-                //        text: 'ท่านยังไม่ได้ทำการยืนยันตัวตน โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
-                //        title: 'ขออภัย',
-                //        /*footer: '<a href="">Why do I have this issue?</a>'*/
-                //        showCancelButton: false,
-                //        showDenyButton: false,
 
-                //        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                //        confirmButtonColor: '#5c2e91',
-                //        willClose: () => {
-                //            /*this.$router.push({ name: 'Accident' })*/
-                //            liff.openWindow({
-                //                url: location.origin + '/Ocr' + '?openExternalBrowser=1',
-                //                external: true
-                //            });
-                //        }
-                //    })
-                //}
                 var url = this.$store.state.envUrl + '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
                 var tokenJwt = this.$store.state.jwtToken.token
                 var apiConfig = {
@@ -383,7 +361,7 @@
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-                                    
+
                                     if (liff.getOS() == "ios") {
                                         this.$router.push('/Ocr')
                                     } else {
@@ -392,7 +370,7 @@
                                             external: true
                                         });
                                     }
-                                    
+
                                 }
                             })
                         } else {
@@ -410,25 +388,22 @@
                 //--Publish--
                 await liff.init({
                     liffId: '1655252355-n08QYdAA',
-                    
                 }).then(() => {
                     if (liff.isLoggedIn()) {
-                        
+
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
                         }).catch(err => alert(err));
-                        
-                       
+
                     } else {
-                        
-                        liff.login();                       
+                        liff.login();
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
                         }).catch(err => alert(err));
-                        
-                        
+
+
                     }
                 }).catch(err => {
                     alert(err);
@@ -438,6 +413,8 @@
                 //--LocalHost--
                 this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069Mock";
                 this.getJwtToken()//ตรวจสอบการลงทะเบียน
+                
+
             }
 
 

@@ -50,7 +50,7 @@ namespace Services
                 var userIdCard = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.IdcardNo).FirstOrDefaultAsync(); /*"3149900145384";*/
                 var accHosList = await rvpOfficeContext.HosAccident
                     .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo, confirmed = vic.Confirmed })
-                    .Where(w => w.victimIdCard == userIdCard && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y"))
+                    .Where(w => w.victimIdCard == userIdCard && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinVictim.DateAcc, DateTime.Today.AddMonths(-6)) >= 0)
                     .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId })
                     .ToListAsync();
 

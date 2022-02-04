@@ -36,7 +36,7 @@ namespace Services
         public async Task<DirectPolicyKycViewModel> GetUser(string userToken)
         {
             var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).
-                Select(s => new { s.LineId, s.Prefix, s.Fname, s.Lname, s.IdcardNo, s.MobileNo, s.Kycno}).FirstOrDefaultAsync();
+                Select(s => new { s.LineId, s.Prefix, s.Fname, s.Lname, s.IdcardNo, s.MobileNo, s.Kycno}).OrderByDescending(o => o.Kycno).FirstOrDefaultAsync();
             if (query == null)
             {
                 return null;
@@ -56,7 +56,7 @@ namespace Services
 
         public async Task<bool> CheckRegister(string userToken)
         {
-            var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.Kycno).FirstOrDefaultAsync();
+            var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.Kycno).OrderByDescending(o => o).FirstOrDefaultAsync();
             if (query <= 0)
             {
                 return false;

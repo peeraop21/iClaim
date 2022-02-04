@@ -356,6 +356,7 @@
                                 } else {
                                     this.$store.state.hasRegistered = true;
                                     liff.closeWindow()
+                                    window.close();
                                 }
                                 
                             }
@@ -981,6 +982,7 @@
 
         },
         created() {
+            this.getJwtToken();
             if (this.$route.params.id != "Register") {
                 this.accData = this.$store.getters.accGetter(this.$route.params.id)
                 this.userData = this.$store.state.userStateData

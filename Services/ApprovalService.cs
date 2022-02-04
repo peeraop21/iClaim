@@ -1010,9 +1010,10 @@ namespace Services
         public async Task<ApprovalPDFViewModel> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo)
         {
             var iclaimIdInvhd = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => s.IdInvhd).ToListAsync();
+            var hosIdList = await rvpofficeContext.Invoicehd.Where(w => w.IdInvhd == iclaimIdInvhd[0]).Select(s => s.Hosid).ToListAsync();
             var invhd = await rvpofficeContext.Invoicehd.Where(w => w.IdInvhd == iclaimIdInvhd[0]).Select(s => new { s.AppNo, s.RecordDate }).FirstOrDefaultAsync();
             var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == invhd.AppNo).FirstOrDefaultAsync();
-            var iclaimApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.RefCodeOtp }).FirstOrDefaultAsync();
+            var iclaimApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.RefCodeOtp, s.IsEverAuthorize, s.EverAuthorizeHosId, s.EverAuthorizeMoney}).FirstOrDefaultAsync();
 
             ApprovalPDFViewModel approvalPDF = new ApprovalPDFViewModel();
             if (query == null)
@@ -1025,8 +1026,13 @@ namespace Services
                 approvalPDF.RecordMonth = await GetMonthName(invhd.RecordDate.Value.ToString("MM"));
                 approvalPDF.RecordYear = (int.Parse(invhd.RecordDate.Value.ToString("yyyy")) + 543).ToString();
                 approvalPDF.OtpSign = iclaimApp.RefCodeOtp;
+                approvalPDF.HosId = string.Join(", ", hosIdList);
+                approvalPDF.IsEverAuthorize = iclaimApp.IsEverAuthorize;
+                approvalPDF.EverAuthorizeHosId = iclaimApp.EverAuthorizeHosId;
+                approvalPDF.EverAuthorizeMoney = iclaimApp.EverAuthorizeMoney;
                 return approvalPDF;
             }
+            approvalPDF.ClaimNo = query.ClaimNo;
             approvalPDF.IdInvhd = string.Join(", ", iclaimIdInvhd);
             approvalPDF.InvCount = iclaimIdInvhd.Count;
             approvalPDF.CureMoney = (double)query.CureMoney;
@@ -1035,6 +1041,10 @@ namespace Services
             approvalPDF.RecordMonth = await GetMonthName(invhd.RecordDate.Value.ToString("MM"));
             approvalPDF.RecordYear = (int.Parse(invhd.RecordDate.Value.ToString("yyyy")) + 543).ToString();
             approvalPDF.OtpSign = iclaimApp.RefCodeOtp;
+            approvalPDF.HosId = string.Join(", ", hosIdList);
+            approvalPDF.IsEverAuthorize = iclaimApp.IsEverAuthorize;
+            approvalPDF.EverAuthorizeHosId = iclaimApp.EverAuthorizeHosId;
+            approvalPDF.EverAuthorizeMoney = iclaimApp.EverAuthorizeMoney;
             //approvalPDF.ReqDate = query.InsertDate.Value.ToString("dd/MM/yyyy");
             //approvalPDF.TimeDate = query.InsertDate.Value.ToString("HH:mm");
             return approvalPDF;
@@ -1223,6 +1233,12 @@ namespace Services
             await UpdateApprovalStatusAsync(accNo, victimNo, reqNo, "CanselApproval", false);
             
             return "Success";
+        }
+
+        public async Task<string> GetLaseClaimNoByAccNo()
+        {
+
+            return null;
         }
     }
 }
