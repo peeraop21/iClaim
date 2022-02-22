@@ -50,7 +50,7 @@ namespace Core
         public void ConfigureServices(IServiceCollection services)
         {
 
-
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddControllers();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAutoMapper(typeof(DataMapperProfile));
@@ -101,17 +101,8 @@ namespace Core
                 };
             });
 
-            //var architectureFolder = (IntPtr.Size == 8) ? "64 bit" : "32 bit";
-            //var wkHtmlToPdfPath = Path.Combine(Directory.GetCurrentDirectory(), $"wkhtmltox\\v0.12.4\\{architectureFolder}\\libwkhtmltox");
-            //CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
-            //context.LoadUnmanagedLibrary(wkHtmlToPdfPath);
-            //services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-            //CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
-            //context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
-            //var converter = new SynchronizedConverter(new PdfTools());
-            //var context = new CustomAssemblyLoadContext();
-            //context.LoadUnmanagedLibrary(Path.GetFullPath(@"C:\Users\User\source\repos\WebSolution\WebApp\libwkhtmltox.dll"));
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+      
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

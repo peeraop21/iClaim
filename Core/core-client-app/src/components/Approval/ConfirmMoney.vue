@@ -7,6 +7,11 @@
                  :is-full-page="true">
 
         </loading>
+        <vs-dialog width="550px" not-center v-model="modalBigImage">
+            <div class="con-content" align="center">
+                <img class="big-img-show" :src="srcBigImage" />
+            </div>
+        </vs-dialog>
         <div class="container">
             <div class="row">
                 <div class="col-12" align="center">
@@ -35,22 +40,22 @@
                 <div class="col-12">
                     <div class="text-start">
                         <div>
-                            &emsp;&emsp;จากที่ท่านได้ทำการยื่นคำร้องขอเบิกค่ารักษาพยาบาลเป็นจำนวนเงิน
-                            <span class="p-main-color">{{confirmMoneyData.sumReqMoney}}</span> บาท มีบางรายการในใบเสร็จค่ารักษาจำเป็นต้องเปลี่ยนแปลง เพื่อให้ตรงตามเงื่อนไขของการเบิกค่ารักษาพยาบาลกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด โดยมีรายละเอียดดังนี้
+                            <span class="fw-bold">&emsp;&emsp;ตามที่ท่านได้ทำการยื่นคำร้องขอเบิกค่ารักษาพยาบาลเบื้องต้น มีบางรายการที่ไม่สามารถจ่ายได้ เนื่องจากไม่เกี่ยวกับค่ารักษาพยาบาลจำเป็นต้องตัดออก และมีบางรายการจำเป็นต้องหักออก เนื่องจากเกินราคามาตรฐานกลางฯ</span>
+                            <!--<span class="p-main-color">{{confirmMoneyData.sumReqMoney}}</span>มีบางรายการที่ไม่สามารถจ่ายได้ เนื่องจากไม่เกี่ยวกับค่ารักษาพยาบาลจำเป็นต้องตัดออก และมีบางรายการจำเป็นต้องหักออก เนื่องจากเกินราคามาตรฐานกลาง-->
                         </div>
                         <div class="my-3" v-for="inv in confirmMoneyData.invoiceList" :key="inv.idInvhd">
                             <div class="div-center-image">
-                                <div class="divImage" style="width:95%" v-if="inv.base64Image != null" align="left">
+                                <div class="divImage" style="width: 100%;border-style: solid;" v-if="inv.base64Image != null" align="left">
                                     <div class="row">
-                                        <div class="col-5" align="center">
+                                        <div class="col-5" align="center" @click="showBigImage(inv.base64Image)">
                                             <img class="img-show" :src="inv.base64Image" />
                                         </div>
                                         <div class="col-7 px-0">
                                             <div class="row mt-2">
                                                 <p class="inv-text">เล่มที่ใบเสร็จ : {{inv.bookNo}}</p>
                                                 <p class="inv-text">เลขที่ใบเสร็จ : {{inv.receiptNo}}</p>
-                                                <p class="inv-text">จำนวนเงินที่ร้องขอ : {{inv.reqMoney}} บาท</p>
-                                                <p class="inv-text">จำนวนเงินที่จ่ายได้ : {{inv.payMoney}} บาท</p>
+                                                <p class="inv-text" style="color:red">จำนวนเงินที่ร้องขอ : {{inv.reqMoney}} บาท</p>
+                                                <p class="inv-text" style="color:green">จำนวนเงินที่จ่ายได้ : {{inv.payMoney}} บาท</p>
                                             </div>
                                         </div>
                                     </div>
@@ -58,7 +63,7 @@
                                         <table id="treatments" class="mb-4 mt-2">
                                             <thead>
                                                 <tr>
-                                                    <th>รายการ</th>
+                                                    <th>รายการที่สามารถจ่ายได้</th>
                                                     <th>จำนวนเงิน</th>
                                                 </tr>
                                             </thead>
@@ -76,10 +81,10 @@
                             </div>
                         </div>
                         <div v-if="confirmMoneyData.sumReqMoney != null">
-                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน
+                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่ารักษาพยาบาลเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน
                             <span class="p-main-color">{{confirmMoneyData.sumPayMoney}}</span> บาท
 
-                            โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
+                            และ {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
                         </div>
                     </div>
                     <div class="text-start mt-4 mb-4">
@@ -214,9 +219,15 @@
                 },
                 bankNames: null,
                 isLoading: true,
+                modalBigImage: false,
+                srcBigImage: null,
             }
         },
         methods: {
+            showBigImage(src) {
+                this.modalBigImage = true
+                this.srcBigImage = src
+            },
             tik() {
                 console.log(this.acceptR)
             },
@@ -245,27 +256,34 @@
                 this.$refs.otpInput.clearInput();
             },
 
-            getBankNames() {
-                var url = this.$store.state.envUrl + '/api/Master/Bank';
-                axios.get(url)
-                    .then((response) => {
-                        this.bankNames = response.data;
-                        this.getDataConfirmMoney();
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
+            //getBankNames() {
+            //    var url = this.$store.state.envUrl + '/api/Master/Bank';
+            //    axios.get(url)
+            //        .then((response) => {
+            //            this.bankNames = response.data;
+            //            this.getDataConfirmMoney();
+            //        })
+            //        .catch(function (error) {
+            //            alert(error);
+            //        });
+            //},
             getDataConfirmMoney() {
-                var url = this.$store.state.envUrl + '/api/Approval/DataConfirmMoney/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/Approval/DataConfirmMoney';
+                const body = {
+                    AccNo: this.$route.params.id,
+                    VictimNo: parseInt(this.accData.victimNo),
+                    ReqNo: parseInt(this.$route.params.appNo),
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
-                        this.confirmMoneyData = response.data;
+                        this.bankNames = response.data.banks;
+                        this.confirmMoneyData = response.data.confirmMoneyData;
                         if (this.confirmMoneyData != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
                                 if (this.confirmMoneyData.bankAccount.accountBankName == this.bankNames[i].bankCode) {
@@ -402,7 +420,7 @@
             },
         },
         async created() {
-            await this.getBankNames();
+            await this.getDataConfirmMoney();
         }
 
 

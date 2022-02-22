@@ -23,17 +23,19 @@ namespace Core
             this.env = env;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public  Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting IHostedService...");
 
             if (env.IsDevelopment())
             {
                 httpClient.GetAsync("http://localhost:50598/api/master/Warmup");
+                httpClient.GetAsync("http://localhost:50598/api/genpdf/WarmGenPDF");
             }
             else
             {
                 httpClient.GetAsync("https://ts2digitalclaim.rvp.co.th/api/master/Warmup");
+                httpClient.GetAsync("https://ts2digitalclaim.rvp.co.th/api/genpdf/WarmGenPDF");
 
             }
 

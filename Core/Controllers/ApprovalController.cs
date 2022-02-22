@@ -200,10 +200,12 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("DataConfirmMoney/{accNo}/{victimNo}/{reqNo}")]
-        public async Task<IActionResult> GetDataConfirmMoney(string accNo, int victimNo, int reqNo)
+        [HttpPost("DataConfirmMoney")]
+        public async Task<IActionResult> GetDataConfirmMoney([FromBody] PostDataViewModel model)
         {
-            return Ok(await approvalService.GetDataForConfirmMoney(accNo.Replace("-", "/"), victimNo, reqNo));
+            var initConfirmMoney = await approvalService.GetDataForConfirmMoney(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
+            var banks = await masterService.GetBank();
+            return Ok(new {ConfirmMoneyData = initConfirmMoney, Banks = banks });
         }
 
         [Authorize]

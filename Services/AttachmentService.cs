@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.EFCore.RvpSystemModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nancy.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,12 +31,14 @@ namespace Services
     {
         private readonly IMapper _mapper;
         private readonly RvpSystemContext rvpSystemContext;
+        private readonly IConfiguration configuration;
 
-        
-        public AttachmentService(IMapper _mapper, RvpSystemContext rvpSystemContext)
+
+        public AttachmentService(IMapper _mapper, RvpSystemContext rvpSystemContext, IConfiguration configuration)
         {
             this._mapper = _mapper;
             this.rvpSystemContext = rvpSystemContext;
+            this.configuration = configuration;
 
         }
         public async Task<ECMViewModelRes> UploadFileToECM(ECMViewModel model)
@@ -43,7 +46,7 @@ namespace Services
             JObject JsObject = new JObject();
             ECMViewModelRes resp = new ECMViewModelRes();
 
-            string URL = "http://172.41.1.77/api/api/webscan/upload64";
+            string URL = configuration["API:Attachment:UploadFileToECM"];
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
                                        SecurityProtocolType.Tls11 |
                                        SecurityProtocolType.Tls12;
@@ -97,7 +100,7 @@ namespace Services
         {
             JObject JsObject = new JObject();
             var base64Res = "";
-            string URL = "http://172.41.1.77/api/api/webscan/download";
+            string URL = configuration["API:Attachment:DownloadFileFromECM"];
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
                                        SecurityProtocolType.Tls11 |
                                        SecurityProtocolType.Tls12;
@@ -150,7 +153,7 @@ namespace Services
                 
                 JObject JsObject = new JObject();
 
-                string URL = "https://ts2ipolicyapi.rvpeservice.com/api/eDocument/InsertDetail";
+                string URL = configuration["API:Attachment:SaveToEdocDetail"];
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
                 SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls12;

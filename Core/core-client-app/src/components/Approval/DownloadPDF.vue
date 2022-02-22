@@ -38,7 +38,7 @@
                 const body = {
                     AccNo: this.$route.params.accNo,
                     VictimNo: parseInt(this.$route.params.victimNo),
-                    AppNo: parseInt(this.$route.params.appNo),
+                    ReqNo: parseInt(this.$route.params.appNo),
                     Channel: 'HOSPITAL',
                     UserIdCard: this.$route.params.userIdCard
                 };

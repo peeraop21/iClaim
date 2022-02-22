@@ -1,5 +1,11 @@
 <template>
     <div class="container">
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#5c2e91"
+                 loader="dots"
+                 :is-full-page="true">
+        </loading>
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ประวัติ/สถานะคำร้อง</h2>
@@ -45,7 +51,7 @@
 
                                         <ul id="progress" v-for="status in iclaimApp.appStatus" :key="status.statusId">
                                             <li class="li-custom " :id="'liLbl' + status.statusId">
-                                                <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -12px; margin-top: -1px;">{{status.statusDate}}</p>
+                                                <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -18px; margin-top: -1px;">{{status.statusDate}}</p>
                                                 <p v-if="status.statusTime != null" class="p-custom divider-p" style="font-size: 10px; position: absolute; left: -1px; margin-top: 7px; ">{{status.statusTime}}</p>
                                                 <div class="node " v-bind:class="{green:status.active, grey:!status.active}"></div>
                                                 <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
@@ -163,9 +169,13 @@
     import mixin from '../../mixin/index.js'
     import liff from '@line/liff'
     import axios from 'axios'
+    import Loading from 'vue-loading-overlay';
     export default {
         name: 'Accident',
         mixins: [mixin],
+        components: {
+            Loading
+        },
         data() {
             return {
                 
@@ -175,7 +185,8 @@
                 isHasIclaimApprovalData: false,
                 appStatus: [{ statusId: 0, statusName: "", active: false, statusDate: "", statusTime: "" }],
                 isActive: true,
-                pdfsrc: null
+                pdfsrc: null,
+                isLoading: true,
 
 
             }
@@ -184,6 +195,7 @@
         methods: {
 
             getIclaimApproval() {
+                this.isLoading = true
                 var url = this.$store.state.envUrl + '/api/approval/IclaimApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
                 var apiConfig = {
                     headers: {
@@ -236,12 +248,14 @@
                         } else if (this.iclaimApprovalData.length > 0) {
                             this.isHasIclaimApprovalData = true
                         }
+                        this.isLoading = false
                     })
                     .catch((error) => {                                             
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.getIclaimApproval()
                         }
+                        this.isLoading = false
                         
                     });
 
