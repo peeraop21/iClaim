@@ -1,6 +1,6 @@
 <template>
     <div class="container" align="center">
-        <label style="font-size:30px">ขณะนี้ระบบกำลังโหลดเอกสาร คำร้องขอรับค่าเสียหายเบื้องต้น</label>
+        <!--<label style="font-size:30px">ขณะนี้ระบบกำลังโหลดเอกสาร คำร้องขอรับค่าเสียหายเบื้องต้น</label>-->
         <loading :active.sync="isLoading"
                  :can-cancel="false"
                  color="#5c2e91"
@@ -42,7 +42,7 @@
                     Channel: 'HOSPITAL',
                     UserIdCard: this.$route.params.userIdCard
                 };
-                
+
                 axios.post(url, JSON.stringify(body), {
                     responseType: 'arraybuffer',
                     headers: {
@@ -53,8 +53,8 @@
                         let blob = new Blob([response.data], { type: 'application/pdf' }),
                             url = window.URL.createObjectURL(blob)
                         this.isLoading = false
-                        
-                        
+
+
                         //liff.openWindow({
                         //    url: url
                         //});
@@ -80,9 +80,9 @@
                             }, 3000)
                         }
 
-                       
 
-                       
+
+
                     })
                     .catch(function (error) {
                         alert(error);
