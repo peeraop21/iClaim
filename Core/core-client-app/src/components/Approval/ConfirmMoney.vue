@@ -28,55 +28,85 @@
                                 <p v-else-if="hosData.appNo===''" style="margin-bottom: 3px">คำร้องขอที่ : -</p>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
+
                 <div class="col-12">
                     <div class="text-start">
                         <div>
-                            &emsp;&emsp;จากที่ท่านได้ทำการยื่นคำร้องขอเบิกค่ารักษาพยาบาลเป็นจำนวนเงิน <span class="p-main-color">{{confirmMoneyData.sumReqMoney}}</span> บาท มีบางรายการในใบเสร็จค่ารักษาจำเป็นต้องเปลี่ยนแปลง เพื่อให้ตรงตามเงื่อนไขของการเบิกค่ารักษาพยาบาลกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด โดยมีรายละเอียดดังนี้
+                            &emsp;&emsp;จากที่ท่านได้ทำการยื่นคำร้องขอเบิกค่ารักษาพยาบาลเป็นจำนวนเงิน
+                            <span class="p-main-color">{{confirmMoneyData.sumReqMoney}}</span> บาท มีบางรายการในใบเสร็จค่ารักษาจำเป็นต้องเปลี่ยนแปลง เพื่อให้ตรงตามเงื่อนไขของการเบิกค่ารักษาพยาบาลกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด โดยมีรายละเอียดดังนี้
                         </div>
                         <div class="my-3" v-for="inv in confirmMoneyData.invoiceList" :key="inv.idInvhd">
                             <div class="div-center-image">
-                                <div class="divImage" style="width:80%" v-if="inv.base64Image != null" align="left">
+                                <div class="divImage" style="width:95%" v-if="inv.base64Image != null" align="left">
                                     <div class="row">
                                         <div class="col-5" align="center">
                                             <img class="img-show" :src="inv.base64Image" />
                                         </div>
-                                        <div class="col-7 px-0">                                            
+                                        <div class="col-7 px-0">
                                             <div class="row mt-2">
                                                 <p class="inv-text">เล่มที่ใบเสร็จ : {{inv.bookNo}}</p>
                                                 <p class="inv-text">เลขที่ใบเสร็จ : {{inv.receiptNo}}</p>
                                                 <p class="inv-text">จำนวนเงินที่ร้องขอ : {{inv.reqMoney}} บาท</p>
                                                 <p class="inv-text">จำนวนเงินที่จ่ายได้ : {{inv.payMoney}} บาท</p>
                                             </div>
-                                        </div>                                       
+                                        </div>
                                     </div>
-                                                                             
+                                    <div class="col-12" style="width: 95%; margin-inline: auto;">
+                                        <table id="treatments" class="mb-4 mt-2">
+                                            <thead>
+                                                <tr>
+                                                    <th>รายการ</th>
+                                                    <th>จำนวนเงิน</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>ค่ายากลับบ้าน</td>
+                                                    <td align="center" style="width:30%">80 บาท</td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div v-if="confirmMoneyData.sumReqMoney != null">
-                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน <span class="p-main-color">{{confirmMoneyData.sumPayMoney}}</span> บาท
-                            
+                            &emsp;&emsp;เอกสารฉบับนี้เป็นเอกสารยืนยันการรับเงินค่าเสียหายเบื้องต้น ตามเงื่อนไขกรมธรรม์คุ้มครองผู้ประสบภัยจากรถ บริษัท กลางคุ้มครองผู้ประสบภัยจากรถ จำกัด เป็นจำนวนเงิน
+                            <span class="p-main-color">{{confirmMoneyData.sumPayMoney}}</span> บาท
+
                             โดย {{userData.prefix}}{{userData.fname}} {{userData.lname}} มีความประสงค์รับเงินดังกล่าว
                         </div>
                     </div>
                     <div class="text-start mt-4 mb-4">
                         <div>
-                            <p v-if="confirmMoneyData.bankAccount.accountBankName != null">โดยการโอนเงินเข้าบัญชีธนาคาร <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountBankName }}</span></p>
+                            <p v-if="confirmMoneyData.bankAccount.accountBankName != null">
+                                โดยการโอนเงินเข้าบัญชีธนาคาร
+                                <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountBankName }}</span>
+                            </p>
                             <p v-else-if="confirmMoneyData.bankAccount.accountBankName === null">โดยการโอนเงินเข้าบัญชีธนาคาร -</p>
                         </div>
                         <div style="margin-top: -15px">
-                            <p v-if="confirmMoneyData.bankAccount.accountName != null">ชื่อบัญชีธนาคาร <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountName }}</span></p>
+                            <p v-if="confirmMoneyData.bankAccount.accountName != null">
+                                ชื่อบัญชีธนาคาร
+                                <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountName }}</span>
+                            </p>
                             <p v-else-if="confirmMoneyData.bankAccount.accountName === null">ชื่อบัญชีธนาคาร -</p>
                         </div>
                         <div style="margin-top: -15px">
-                            <p v-if="confirmMoneyData.bankAccount.accountNumber != null">เลขที่บัญชีธนาคาร <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountNumber }}</span></p>
+                            <p v-if="confirmMoneyData.bankAccount.accountNumber != null">
+                                เลขที่บัญชีธนาคาร
+                                <span class="p-main-color"> {{ confirmMoneyData.bankAccount.accountNumber }}</span>
+                            </p>
                             <p v-else-if="confirmMoneyData.bankAccount.accountNumber === null">เลขที่บัญชีธนาคาร -</p>
                         </div>
                     </div>
                 </div>
+
 
             </div>
             <div class="row mb-2">
@@ -96,10 +126,10 @@
             <div class="row" v-if="acceptR">
                 <br>
                 <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
-                
+
             </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -109,6 +139,7 @@
         margin-bottom: 2px;
         font-size: 12px;
     }
+
     .btn-confirm-money {
         background-color: var(--main-color);
         border: none;
@@ -120,18 +151,19 @@
         border-radius: 10px;
         font-size: 15px;
     }
-    .title-claim-number{
-        font-weight:bold;
-        font-size:12px;
-        text-align:start;
-    }
-    .p-main-color{
-        color: var(--main-color);
-        font-weight:bold;
-        font-size:13px;
-        text-align:start;
+
+    .title-claim-number {
+        font-weight: bold;
+        font-size: 12px;
+        text-align: start;
     }
 
+    .p-main-color {
+        color: var(--main-color);
+        font-weight: bold;
+        font-size: 13px;
+        text-align: start;
+    }
 </style>
 
 <script>
@@ -143,18 +175,18 @@
     export default {
         name: "ConfirmMoney",
         mixins: [mixin],
-        components: {            
+        components: {
             Loading
         },
         data() {
             return {
                 acceptR: false,
-                lblButton: 'ยืนยันจำนวนเงิน',               
+                lblButton: 'ยืนยันจำนวนเงิน',
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 bank: null,
                 total_amount: null,
-                
+
                 // HosApp
                 hosData: this.$store.getters.hosAppGetter(this.$route.params.id, this.$route.params.appNo),
                 countDown: 60,
@@ -180,8 +212,8 @@
 
                     }]
                 },
-                bankNames:null,
-                isLoading:true,
+                bankNames: null,
+                isLoading: true,
             }
         },
         methods: {
@@ -206,13 +238,13 @@
                 this.inputOTP = value
             },
             handleOnChange(value) {
-                
+
                 this.inputOTP = value
             },
             handleClearInput() {
                 this.$refs.otpInput.clearInput();
             },
-            
+
             getBankNames() {
                 var url = this.$store.state.envUrl + '/api/Master/Bank';
                 axios.get(url)
@@ -239,7 +271,7 @@
                                 if (this.confirmMoneyData.bankAccount.accountBankName == this.bankNames[i].bankCode) {
                                     this.confirmMoneyData.bankAccount.accountBankName = this.bankNames[i].name
                                     this.confirmMoneyData.bankAccount.bankId = this.bankNames[i].bankCode
-                                    
+
                                 }
                             }
                         }
@@ -286,7 +318,7 @@
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-                        this.$router.push({ name: 'ConfirmOTP', params: { from: "ConfirmMoney", accNo: this.$route.params.id, victimNo: this.accData.victimNo, appNo: this.$route.params.appNo} })
+                        this.$router.push({ name: 'ConfirmOTP', params: { from: "ConfirmMoney", accNo: this.$route.params.id, victimNo: this.accData.victimNo, appNo: this.$route.params.appNo } })
                     }
                     //} else if (result.isDenied) {
 
@@ -294,7 +326,7 @@
                 });
             },
             postData() {
-                var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}','ConfirmMoney')
+                var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}', 'ConfirmMoney')
                 var apiConfig = {
                     headers: {
                         Authorization: "Bearer " + this.$store.state.jwtToken.token
@@ -309,8 +341,8 @@
                             this.$swal.close();
                             this.showSwalError();
                         }
-                        
-                        
+
+
                     })
                     .catch((error) => {
                         if (error.toString().includes("401")) {
@@ -319,9 +351,9 @@
                         }
                     });
             },
-           
-            
-            
+
+
+
             showSwalError() {
                 this.$swal({
                     icon: 'error',
@@ -372,8 +404,8 @@
         async created() {
             await this.getBankNames();
         }
-        
-        
+
+
 
     };
 </script>

@@ -20,7 +20,8 @@
         data() {
             return {
                 isExpanded: false,
-                
+                fromText: "",
+
             }
         },
         methods: {
@@ -40,9 +41,20 @@
                 } else if (routeName == "ApprovalCreate") {
                     this.$router.push({ name: 'Rights' })   
                 } else if (routeName == "ConfirmOTP") {
+                    if (this.$route.params.from == "Create") {
+                        this.fromText = "การส่งคำร้อง"
+                    } else if (this.$route.params.from == "Edit") {
+                        this.fromText = "การส่งเอกสารเพิ่มเติม"
+                    } else if (this.$route.params.from == "CanselApproval") {
+                        this.fromText = "การยกเลิกคำร้อง"
+                    } else if (this.$route.params.from == "CreateUser") {
+                        this.fromText = "การลงทะเบียน"
+                    } else if (this.$route.params.from == "ConfirmMoney") {
+                        this.fromText = "การยอมรับจำนวนเงิน"
+                    }
                     this.$swal({
                         icon: 'question',
-                        text: 'ท่านต้องการจะยกเลิกการส่งคำร้องหรือไม่?',
+                        text: 'ท่านต้องการจะยกเลิก' + this.fromText +'ใช่หรือไม่?',
                         /*title: 'คำเตือน',*/
                         /*footer: '<a href="">Why do I have this issue?</a>'*/
                         showCancelButton: false,
@@ -52,12 +64,23 @@
                         confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ใช่",
                         confirmButtonColor: '#5c2e91',
                         willClose: () => {
-                            
+
                         }
                     }).then((result) => {
 
                         if (result.isConfirmed) {
-                            this.$router.push({ name: 'Rights' })
+                            if (this.$route.params.from == "Create") {
+                                this.$router.push({ name: 'Rights' })
+                            } else if (this.$route.params.from == "Edit") {
+                                this.$router.push({ name: 'Accident' })
+                            } else if (this.$route.params.from == "CanselApproval") {
+                                this.$router.push({ name: 'Accident' })
+                            } else if (this.$route.params.from == "CreateUser") {
+                                this.$router.push({ name: 'Advice' })
+                            } else if (this.$route.params.from == "ConfirmMoney") {
+                                this.$router.push({ name: 'Accident' })
+                            }
+                            
                         }
                     });
                     

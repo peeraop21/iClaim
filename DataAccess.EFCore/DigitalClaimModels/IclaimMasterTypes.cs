@@ -16,7 +16,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
         /// ชื่อประเภท
         /// </summary>
         public string TypeName { get; set; }
-        public string Description { get; set; }
+        public string TypeNameIclaim { get; set; }
         /// <summary>
         /// 0: ไม่ใช้งาน, 1: ใช้งานอยู่
         /// </summary>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DataAccess.EFCore.iPolicyModels;
 using Newtonsoft.Json;
 using static Services.MasterService;
+using DataAccess.EFCore.DigitalClaimModels;
 
 namespace Services
 {
@@ -20,15 +21,18 @@ namespace Services
         Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol);
         Task<JJJ> GetWoundeds();
         Task<List<string>> GetPrefixesAsync();
+        Task<object> GetTypesOfInvoiceNotPass();
     }
 
     public class MasterService : IMasterService
     {
         private readonly RvpofficeContext rvpofficeContext;
+        private readonly DigitalclaimContext digitalclaimContext;
 
-        public MasterService(RvpofficeContext rvpofficeContext)
+        public MasterService(RvpofficeContext rvpofficeContext, DigitalclaimContext digitalclaimContext)
         {
             this.rvpofficeContext = rvpofficeContext;
+            this.digitalclaimContext = digitalclaimContext;
         }
         public async Task<List<BankNames>> GetBank()
         {
@@ -112,6 +116,11 @@ namespace Services
         {
             var query = await rvpofficeContext.Prefix.Where(w => w.Sex != null).Select(s => new { s.Titlename, s.Seq}).OrderBy(o => o.Seq).ToListAsync();
             return query.Select(s => s.Titlename).ToList();
+        }
+
+        public async Task<object> GetTypesOfInvoiceNotPass()
+        {
+            return await digitalclaimContext.IclaimMasterTypes.Where(w => w.ParentTypeId == 100 && w.IsActive).Select(s => new { s.TypeId, s.TypeName}).ToListAsync();
         }
         
     }

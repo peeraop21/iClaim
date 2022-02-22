@@ -19,7 +19,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
 
         public virtual DbSet<IclaimApproval> IclaimApproval { get; set; }
         public virtual DbSet<IclaimApprovalState> IclaimApprovalState { get; set; }
-        public virtual DbSet<IclaimApprovalStatus> IclaimApprovalStatus { get; set; }
         public virtual DbSet<IclaimBankAccount> IclaimBankAccount { get; set; }
         public virtual DbSet<IclaimBankAccountLog> IclaimBankAccountLog { get; set; }
         public virtual DbSet<IclaimCheckDocuments> IclaimCheckDocuments { get; set; }
@@ -98,20 +97,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
                 entity.Property(e => e.RecordBy)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<IclaimApprovalStatus>(entity =>
-            {
-                entity.HasKey(e => e.StatusId)
-                    .HasName("PK_ApprovalStatus");
-
-                entity.ToTable("IClaimApprovalStatus");
-
-                entity.Property(e => e.StatusId).ValueGeneratedNever();
-
-                entity.Property(e => e.StatusNameEclaim).HasMaxLength(50);
-
-                entity.Property(e => e.StatusNameIclaim).HasMaxLength(50);
             });
 
             modelBuilder.Entity<IclaimBankAccount>(entity =>
@@ -302,8 +287,6 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .HasComment("รหัสประเภท")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Description).HasMaxLength(500);
-
                 entity.Property(e => e.IsActive).HasComment("0: ไม่ใช้งาน, 1: ใช้งานอยู่");
 
                 entity.Property(e => e.ParentTypeId).HasComment("");
@@ -312,6 +295,10 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .IsRequired()
                     .HasMaxLength(256)
                     .HasComment("ชื่อประเภท");
+
+                entity.Property(e => e.TypeNameIclaim)
+                    .HasColumnName("TypeNameIClaim")
+                    .HasMaxLength(500);
             });
 
             OnModelCreatingPartial(modelBuilder);

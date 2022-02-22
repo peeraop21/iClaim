@@ -24,12 +24,14 @@ namespace Core.Controllers
         private readonly IApprovalService approvalService;
         private readonly IConverter converter;
         private readonly IAttachmentService attachmentService;
-        public ApprovalController(IApprovalService approvalService, IMapper _mapper, IConverter converter, IAttachmentService attachmentService)
+        private readonly IMasterService masterService;
+        public ApprovalController(IApprovalService approvalService, IMapper _mapper, IConverter converter, IAttachmentService attachmentService, IMasterService masterService)
         {
             this.converter = converter;
             this.approvalService = approvalService;
             this._mapper = _mapper;
             this.attachmentService = attachmentService;
+            this.masterService = masterService;
         }
 
         [Authorize]
@@ -111,10 +113,12 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("Invoicehd/{accNo}/{victimNo}/{appNo}")]
-        public async Task<IActionResult> GetInvoicehd(string accNo, int victimNo, int appNo)
+        [HttpGet("InvoicehdNotPass/{accNo}/{victimNo}/{appNo}")]
+        public async Task<IActionResult> GetInvoicehdNotPass(string accNo, int victimNo, int appNo)
         {
-            return Ok(await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, appNo, 2));
+            var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
+            var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, appNo, 2);
+            return Ok( new { TypesOfInvoiceNotPass = typesOfInvoiceNotPass, InvoicesNotPass = invoicesNotPass });
         }
 
         [Authorize]

@@ -409,7 +409,6 @@
 
     section {
         width: 100%;
-        height: 70%;
         display: flex;
         align-Items: center;
         justify-content: center;

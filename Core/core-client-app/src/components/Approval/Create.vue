@@ -138,7 +138,7 @@
 
                     <div class="box-container mt-2" v-for="(input, index) in $v.bills.$each.$iter" :key="index">
                         <div class="input wrapper flex items-center">
-                            <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
+                            <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล<span class="star-require">* (รูปภาพขนาดไม่เกิน 7MB)</span></p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
                                        ref="pondBill"
@@ -149,9 +149,10 @@
                                        v-bind:files="bills[index].file"
                                        v-model="bills[index].file"
                                        v-on:addfile="onAddBillFile(index)"
+                                       v-on:removefile="onRemoveBillFile(index)"
                                        v-on:error="onError"
                                        allowFileSizeValidation="true"
-                                       maxFileSize="5MB"
+                                       maxFileSize="7MB"
                                        labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
                                        labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
@@ -175,10 +176,10 @@
                                             </v-select>
 
                                             <!--<select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
-                                                <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
-                                                    {{ category.changwatname }}
-                                                </option>
-                                            </select>-->
+                        <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
+                            {{ category.changwatname }}
+                        </option>
+                    </select>-->
                                         </div>
                                         <div class="mb-2" v-show="divHospitalModal">
 
@@ -240,10 +241,10 @@
                                     </div>
                                 </template>
                             </vs-dialog>
-                            <label class="px-2">อาการบาดเจ็บ</label>
+                            <label class="px-2">อาการบาดเจ็บ<span class="star-require">*</span></label>
                             <b-form-input class="mt-0 mb-2" v-model="input.injuri.$model" type="text" @click="modalWounded=!modalWounded" :class="{ 'is-invalid': input.injuri.$error }"></b-form-input>
                             <div v-if="submitted && !input.injuri.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกอาการบาดเจ็บ</div>
-                            <label class="px-2">ประเภทผู้ป่วย</label>
+                            <label class="px-2">ประเภทผู้ป่วย<span class="star-require">*</span></label>
                             <br />
                             <div class="mt-1 mb-2" style="float: left;">
                                 <vs-radio v-model="input.typePatient.$model" val="IPD" style="float: left">
@@ -254,31 +255,31 @@
                                 </vs-radio>
 
                             </div>
-                            <label class="px-2">โรงพยาบาล</label>
+                            <label class="px-2">โรงพยาบาล<span class="star-require">*</span></label>
                             <b-form-input class="mt-0 mb-2" v-model="input.selectHospital.$model" type="text" @click="modalHospital=!modalHospital" :class="{ 'is-invalid': input.selectHospital.$error }" />
                             <div v-if="submitted && !input.selectHospital.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกโรงพยาบาล</div>
                             <div class="row">
                                 <div class="col-6">
-                                    <label class="px-2">ใบเสร็จเล่มที่</label>
+                                    <label class="px-2">ใบเสร็จเล่มที่<span class="star-require">*</span></label>
                                     <b-form-input class="mt-0 mb-2 form-control" v-model.trim="input.bookNo.$model" type="number" :maxlength="10" :class="{ 'is-invalid': input.bookNo.$error }" />
                                     <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
                                 </div>
                                 <div class="col-6">
-                                    <label class="px-2">เลขที่ใบเสร็จ</label>
-                                    <b-form-input class="mt-0 mb-2 mb-0" v-model="input.bill_no.$model" type="number"  :maxlength="10" :class="{ 'is-invalid': input.bill_no.$error }" />
+                                    <label class="px-2">เลขที่ใบเสร็จ<span class="star-require">*</span></label>
+                                    <b-form-input class="mt-0 mb-2 mb-0" v-model="input.bill_no.$model" type="number" :maxlength="10" :class="{ 'is-invalid': input.bill_no.$error }" />
                                     <div v-if="submitted && !input.bill_no.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่ใบเสร็จ</div>
                                 </div>
                             </div>
 
-                            <label class="px-2">จำนวนเงิน</label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @input="calMoney" @change="rmLeadingZero(index)"  min="1" max="35000" :class="{ 'is-invalid': input.money.$error }" />
+                            <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
+                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @input="calMoney" @change="rmLeadingZero(index)" min="1" max="35000" :class="{ 'is-invalid': input.money.$error }" />
                             <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                             <div class="row">
                                 <div class="col-8">
-                                    <label class="px-2">วันที่เข้ารักษา</label>
+                                    <label class="px-2">วันที่เข้ารักษา<span class="star-require">*</span></label>
                                 </div>
                                 <div class="col-4">
-                                    <label class="px-2">เวลา</label>
+                                    <label class="px-2">เวลา<span class="star-require">*</span></label>
                                 </div>
                             </div>
 
@@ -309,10 +310,10 @@
                             <div v-if="input.typePatient.$model === 'IPD'">
                                 <div class="row">
                                     <div class="col-8">
-                                        <label class="px-2">วันที่ออกจากโรงพยาบาล</label>
+                                        <label class="px-2">วันที่ออกจากโรงพยาบาล<span class="star-require">*</span></label>
                                     </div>
                                     <div class="col-4">
-                                        <label class="px-2">เวลา</label>
+                                        <label class="px-2">เวลา<span class="star-require">*</span></label>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -392,7 +393,7 @@
                                        v-on:addfile="onAddBankAccountFile"
                                        v-if="!haslastDocumentReceive"
                                        allowFileSizeValidation="true"
-                                       maxFileSize="5MB"
+                                       maxFileSize="7MB"
                                        labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
                                        labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
                             <!--<file-pond name="bankFile"
@@ -1338,8 +1339,11 @@
                     })
                 }
             },
+            onRemoveBillFile: function (index) {
+                this.bills[index].billFileShow = ""
+            },
             onAddBillFile: function (index) {
-                if (this.bills[index].file[0].fileSize < 5000000) {
+                if (this.bills[index].file[0].fileSize < 7000000) {
                     this.bills[index].filename = this.bills[index].file[0].filename
                     if (this.bills[index].file[0]) {// Resize Image
                         var fileDataUrl = this.bills[index].file[0].getFileEncodeDataURL()

@@ -157,9 +157,9 @@
                                    v-on:addfile="onAddBankAccountFile"
                                    v-if="inputBank.isEditBankImage"
                                    allowFileSizeValidation="true"
-                                       maxFileSize="5MB"
-                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
-                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"/>
+                                   maxFileSize="5MB"
+                                   labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                   labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
                     </div>
 
 
@@ -201,7 +201,7 @@
                         เลขบัญชีธนาคาร
                         <span class="star-require">*</span>
                     </p>
-                    <b-form-input :disabled="displayBankAccount.isDisabledAccountNumber" class="mt-0 mb-2" v-model="$v.inputBank.accountNumber.$model" type="tel"  v-mask="'###-#-#####-###'" :maxlength="15" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
+                    <b-form-input :disabled="displayBankAccount.isDisabledAccountNumber" class="mt-0 mb-2" v-model="$v.inputBank.accountNumber.$model" type="tel" v-mask="'###-#-#####-###'" :maxlength="15" :class="{ 'is-invalid': $v.inputBank.accountNumber.$error }"></b-form-input>
                     <div v-if="submitted && !$v.inputBank.accountNumber.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่บัญชี</div>
                 </div>
 
@@ -220,7 +220,7 @@
                             </div>
                             <div v-if="!displayBills[index].isDisabledInputImageBill">
                                 <file-pond credits="null"
-                                           ref="pondBillEdit" 
+                                           ref="pondBillEdit"
                                            label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                            v-bind:allow-multiple="false"
                                            v-bind:allowFileEncode="true"
@@ -229,12 +229,12 @@
                                            v-bind:files="bills[index].file"
                                            v-model="bills[index].file"
                                            v-on:addfile="onAddBillFile(index)"
+                                           v-on:removefile="onRemoveBillFile(index)"
                                            v-on:error="onError"
-                                       allowFileSizeValidation="true"
-                                       maxFileSize="5MB"
-                                       labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
-                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"
-                                           />
+                                           allowFileSizeValidation="true"
+                                           maxFileSize="7MB"
+                                           labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
+                                           labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
                             </div>
                             <div v-if="!displayBills[index].isDisabledImageBill">
                                 <div class="mt-2 mb-2" v-if="!bills[index].isEditImage" align="center">
@@ -417,15 +417,20 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="text-center" v-if="!displayBills[index].isHideBtnCansel">
+                                <button class="btn-confirm-money" type="button" @click="onBtnCanselInvClick(index)">ยกเลิกใบเสร็จนี้</button>
+                            </div>
                             <br>
                         </div>
                     </div>
                     <template #overlay>
                         <div class="text-center">
                             <p id="cancel-label">ใบเสร็จนี้ถูกยกเลิกจากการเบิกครั้งนี้แล้ว</p>
+                            <button class="btn-confirm-money" type="button" @click="onBtnCanselInvClick(index)">X</button>
                         </div>
                     </template>
                 </b-overlay>
+
             </div>
             <br>
             <p class="p_right">รวมจำนวนเงินที่ขอเบิก: {{ total_amount }} บาท</p>
@@ -446,7 +451,7 @@
     import * as moment from "moment/moment";
 
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-    import vueFilePond from 'vue-filepond';    
+    import vueFilePond from 'vue-filepond';
     import 'filepond/dist/filepond.min.css'// Import FilePond styles
     // Import FilePond plugins
     // Please note that you need to install these plugins separately
@@ -560,14 +565,17 @@
                 displayBills: [{
                     isDisabledInputImageBill: true, isDisabledImageBill: true, isDisabledConsider: true, isDisabledVictimType: true, isDisabledHospital: true,
                     isDisabledBookNo: true, isDisabledReceiptNo: true, isDisabledMoney: true, isDisabledTakenDate: true, isDisabledTakenTime: true,
-                    isDisabledDispenseDate: true, isDisabledDispenseTime: true, isHideFormInput: true
+                    isDisabledDispenseDate: true, isDisabledDispenseTime: true, isHideFormInput: true, isHideBtnCansel: true
                 }],
                 submitted: false,
                 modalBigImage: false,
                 srcBigImage: null,
                 invNotPassDescList: [],
                 bookbankNotPassDescList: [],
-                invOverlay: [{isShow:false}]
+                invOverlay: [{ isShow: false }],
+                invNotPassTypesList: null,
+                invMustCanselList: null
+
 
 
             };
@@ -663,7 +671,98 @@
                 this.diaryFileDisplay.filename = file.filename
                 this.diaryFileDisplay.base64 = file.getFileEncodeDataURL()
             },
+            onBtnCanselInvClick(index) {
+                if (this.bills[index].isCancel) {
+                    this.bills[index].isCancel = false
+                    this.invOverlay[index].isShow = false
+                    this.displayBills[index].isHideBtnCansel = false
+                    this.calMoney()
+
+                } else {
+                    this.bills[index].isCancel = true
+                    this.invOverlay[index].isShow = true
+                    this.displayBills[index].isHideBtnCansel = true
+                    this.total_amount = this.total_amount - this.bills[index].money
+                }
+
+            },
+            invNotPassMustCansel(listInvMustCansel) {
+                if (listInvMustCansel.length > 0) {
+                    this.isLoading = false;
+                    var htmlMessage = '<p style="margin-bottom:10px" align="left"> <strong>ใบเสร็จที่ : ' + listInvMustCansel.map(m => m.bill_no) + ' </strong><br>&emsp;&emsp;ไม่ใช่ใบเสร็จค่ารักษาที่เกิดเหตุจากรถ </p>'
+                    htmlMessage += '<p style="color:red;margin-bottom:5px" align="left">&emsp;&emsp;*หมายเหตุ หากท่านต้องการยกเลิกใบเสร็จในการเบิกคำร้องนี้ กรุณาติ๊กเลือกใบเสร็จแล้วกดปุ่ม <label style="color:var(--main-color)">"ยกเลิกใบเสร็จ"</label> </p>'
+                    for (let i = 0; i < listInvMustCansel.length; i++) {
+                        htmlMessage += '<div class="form-check px-5"><input id="swal-check' + (i + 1) + '" class="form-check-input" type="checkbox" value="" ><label class="form-check-label" for="swal-check' + (i + 1) + '">ยกเลิกใบเสร็จที่ : ' + listInvMustCansel[i].bill_no + '</label></div>'
+                    }
+
+                    this.$swal({
+                        icon: 'warning',
+                        html: htmlMessage,
+                        title: 'คำเตือน',
+                        showCancelButton: false,
+                        showDenyButton: true,
+                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        denyButtonColor: '#dad5e9',
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิกใบเสร็จ",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            for (let i = 0; i < listInvMustCansel.length; i++) {
+                                if (document.getElementById('swal-check' + (i + 1)).checked) {
+                                    let index = this.bills.findIndex(w => w.billNo === listInvMustCansel[i].idInvhd)
+                                    this.bills[index].isCancel = true
+                                    this.invOverlay[index].isShow = true
+                                    this.displayBills[index].isHideBtnCansel = true
+                                    this.total_amount = this.total_amount - this.bills[index].money
+                                }
+                            }
+                            //var billCansel = this.bills.filter(w => w.isCancel).length
+                            //if (billCansel == this.iclaimAppData.iclaimInvCount) {
+                            //    this.$swal({
+                            //        icon: 'warning',
+                            //        html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount + ' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
+                            //        title: 'คำเตือน',
+                            //        showCancelButton: false,
+                            //        showDenyButton: true,
+                            //        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                            //        denyButtonColor: '#dad5e9',
+                            //        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                            //        confirmButtonColor: '#5c2e91',
+                            //        willClose: () => {
+
+                            //        }
+                            //    }).then((result) => {
+                            //        this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                            //        this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                            //        this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
+                            //        this.$store.state.inputApprovalData.SumMoney = null
+                            //        this.$store.state.inputApprovalData.ClaimNo = null
+                            //        this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
+                            //        this.$store.state.inputApprovalData.Injury = null
+                            //        this.$store.state.inputApprovalData.BillsData = null
+                            //        this.$store.state.inputApprovalData.BankData = null
+                            //        this.$store.state.inputApprovalData.VictimData = null
+                            //        if (result.isConfirmed) {
+                            //            this.$router.push({ name: 'ConfirmOTP', params: { from: "CanselApproval" } })
+                            //        } else {
+                            //            for (let i = 0; i < listInvMustCansel.length; i++) {
+                            //                let index = this.bills.findIndex(w => w.billNo === listInvMustCansel[i].idInvhd)
+                            //                this.bills[index].isCancel = false
+                            //                this.invOverlay[index].isShow = false
+                            //            }
+                            //        }
+                            //    });
+                            //}
+                        }
+                    });
+
+                }
+            },
             loadInvoicehd() {
+                var billsMustCansel = []
                 for (let i = 0; i < this.invoicehd.length; i++) {
 
                     for (let j = 0; j < this.hospitals.length; j++) {
@@ -698,20 +797,10 @@
                     }
                     this.invNotPassDescList[i] = this.invoicehd[i].invNotPassTypeId.split("-");
                     for (let j = 0; j < this.invNotPassDescList[i].length; j++) {
-                        if (this.invNotPassDescList[i][j] == '101') {
-                            this.invNotPassDescList[i][j] = 'ภาพถ่ายไม่ใช่ใบเสร็จค่ารักษา'
-                        } else if (this.invNotPassDescList[i][j] == '102') {
-                            this.invNotPassDescList[i][j] = 'ภาพถ่ายใบเสร็จไม่ชัด'
-                        } else if (this.invNotPassDescList[i][j] == '103') {
-                            this.invNotPassDescList[i][j] = 'ข้อมูลประเภทผู้ป่วยไม่ตรงกับภาพถ่ายใบเสร็จ'
-                        } else if (this.invNotPassDescList[i][j] == '104') {
-                            this.invNotPassDescList[i][j] = 'ข้อมูลโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ'
-                        } else if (this.invNotPassDescList[i][j] == '105') {
-                            this.invNotPassDescList[i][j] = 'ข้อมูลเลขที่ใบเสร็จไม่ตรงกับภาพถ่ายไม่เสร็จ'
-                        } else if (this.invNotPassDescList[i][j] == '106') {
-                            this.invNotPassDescList[i][j] = 'ข้อมูลเล่มที่ใบเสร็จไม่ตรงกับภาพถ่ายใบเสร็จ'
-                        } else if (this.invNotPassDescList[i][j] == '107') {
-                            this.invNotPassDescList[i][j] = 'ข้อมูลจำนวนเงินไม่ตรงกับภาพถ่ายใบเสร็จ'
+                        for (let l = 0; l < this.invNotPassTypesList.length; l++) {
+                            if (this.invNotPassDescList[i][j] == this.invNotPassTypesList[l].typeId) {
+                                this.invNotPassDescList[i][j] = this.invNotPassTypesList[l].typeName
+                            }
                         }
                     }
 
@@ -751,14 +840,40 @@
                             this.displayBills[i].isDisabledImageBill = false
                             this.displayBills[i].isDisabledMoney = false
                             this.displayBills[i].isHideFormInput = false
+                        } else if (invNotPassTypeId[j] == '108') {
+                            this.displayBills[i].isDisabledImageBill = false
+                            this.displayBills[i].isDisabledTakenDate = false
+                            this.displayBills[i].isHideFormInput = false
+                        } else if (invNotPassTypeId[j] == '109') {
+                            this.displayBills[i].isDisabledImageBill = false
+                            this.displayBills[i].isDisabledTakenTime = false
+                            this.displayBills[i].isHideFormInput = false
+                        } else if (invNotPassTypeId[j] == '110') {
+                            this.displayBills[i].isDisabledImageBill = false
+                            this.displayBills[i].isDisabledDispenseDate = false
+                            this.displayBills[i].isHideFormInput = false
+                        } else if (invNotPassTypeId[j] == '111') {
+                            this.displayBills[i].isDisabledImageBill = false
+                            this.displayBills[i].isDisabledDispenseTime = false
+                            this.displayBills[i].isHideFormInput = false
+                        } else if (invNotPassTypeId[j] == '112') {
+                            this.displayBills[i].isDisabledImageBill = false
+                            this.displayBills[i].isHideFormInput = true
+                            billsMustCansel.push({
+                                idInvhd: this.invoicehd[i].idInvhd,
+                                bill_no: (i + 1)
+                            })
                         }
 
                     }
 
+
                 }
+                this.invMustCanselList = billsMustCansel;
+                this.invNotPassMustCansel(billsMustCansel);
             },
-            getInvoicehd() {
-                var url = this.$store.state.envUrl + '/api/approval/Invoicehd/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+            getInvoicehdNotPass() {
+                var url = this.$store.state.envUrl + '/api/approval/InvoicehdNotPass/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
                         Authorization: "Bearer " + this.$store.state.jwtToken.token
@@ -766,14 +881,16 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
-                        this.invoicehd = response.data;
-                        if (response.data.length > 0) {
+                        this.invoicehd = response.data.invoicesNotPass;
+                        this.invNotPassTypesList = response.data.typesOfInvoiceNotPass
+                        console.log("TypesInv", this.invNotPassTypesList)
+                        if (this.invoicehd.length > 0) {
                             for (let i = 0; i < (this.invoicehd.length - 1); i++) {
                                 this.addField(null, this.bills);
                                 this.invOverlay.push({
                                     isShow: false
                                 });
-                                
+
                             }
                         }
                         this.loadInvoicehd();
@@ -784,7 +901,7 @@
                     .catch((error) => {
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
-                            this.getInvoicehd()
+                            this.getInvoicehdNotPass()
                         }
                     });
             },
@@ -859,7 +976,7 @@
                     .then((response) => {
                         this.wounded = response.data.woundedList;
                         this.organ = response.data.organ
-                        this.getInvoicehd();
+                        this.getInvoicehdNotPass();
 
                     })
                     .catch(function (error) {
@@ -978,7 +1095,7 @@
             onAddBankAccountFile: function (error, file) {
                 this.isLoading = true;
                 this.bankFileDisplay.file = file
-                
+
                 if (error != null) {
                     this.isLoading = false;
                     this.$swal({
@@ -1031,7 +1148,7 @@
                         img.src = fileDataUrl
                     }
                 }
-                
+
 
             },
             onError: function (error, file) {
@@ -1056,9 +1173,12 @@
                     })
                 }
             },
+            onRemoveBillFile: function (index) {
+                this.bills[index].editBillImage = ""
+            },
             onAddBillFile: function (index) {
                 this.isLoading = true;
-                if (this.bills[index].file[0].fileSize < 5000000) {
+                if (this.bills[index].file[0].fileSize < 7000000) {
                     this.bills[index].filename = this.bills[index].file[0].filename
                     if (this.bills[index].file[0]) {// Resize Image
                         var fileDataUrl = this.bills[index].file[0].getFileEncodeDataURL()
@@ -1087,7 +1207,7 @@
                             canvas.height = height;
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            this.bills[index].editBillImage = canvas.toDataURL(this.bills[index].file[0].file.type);                                                      
+                            this.bills[index].editBillImage = canvas.toDataURL(this.bills[index].file[0].file.type);
                             this.isLoading = false;
 
                         }
@@ -1119,6 +1239,23 @@
                 this.mockWounded = 0;
                 this.divWoundedModal = false;
             },
+            swalValidateAndCheckEdit(text) {
+                this.$swal({
+                    icon: 'warning',
+                    html: 'หากท่านต้องการที่จะทำการเบิกในครั้งนี้ กรุณา' + text,
+                    title: 'คำเตือน',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    showDenyButton: true,
+                    denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                    denyButtonColor: '#dad5e9',
+
+                    willClose: () => {
+
+                    }
+                })
+                
+            },
             submit() {
                 this.submitted = true;
                 // stop here if form is invalid
@@ -1126,12 +1263,86 @@
                 if (this.$v.$invalid) {
                     return false;
                 }
+
+                //เช็คการแก้ไขตาม types ของใบเสร็จ
+                var checkEditList = this.invNotPassDescList
                 for (let i = 0; i < this.bills.length; i++) {
+                    if (!this.bills[i].isCancel) {
+                        for (let j = 0; j < this.invMustCanselList.length; j++) {
+                            if (this.invMustCanselList[j].idInvhd == this.bills[i].billNo) {
+                                this.swalValidateAndCheckEdit('ยกเลิกใบเสร็จค่ารักษาที่ไม่ได้เกิดเหตุจากรถ')
+                                return false
+                            }
+                        }
+                    }
+                    if (checkEditList) {
+                        for (let j = 0; j < checkEditList[i].length; j++) {
+                            for (let l = 0; l < this.invNotPassTypesList.length; l++) {
+                                if (checkEditList[i][j] == this.invNotPassTypesList[l].typeName && checkEditList[i][j] != 'ไม่ใช่ใบเสร็จค่ารักษาที่เกิดเหตุจากรถ') {
+                                    if (this.bills[i].money == this.invoicehd[i].suminv && checkEditList[i][j] == 'ข้อมูลจำนวนเงินไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].selectHospitalId == this.invoicehd[i].hosid && checkEditList[i][j] == 'ข้อมูลโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].bookNo == this.invoicehd[i].bookNo && checkEditList[i][j] == 'ข้อมูลเล่มที่ใบเสร็จไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].bill_no == this.invoicehd[i].receiptNo && checkEditList[i][j] == 'ข้อมูลเลขที่ใบเสร็จไม่ตรงกับภาพถ่ายไม่เสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].typePatient == this.invoicehd[i].victimType && checkEditList[i][j] == 'ข้อมูลประเภทผู้ป่วยไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].hospitalized_date == moment(this.invoicehd[i].takendate).format("YYYY-MM-DD") && checkEditList[i][j] == 'ข้อมูลวันที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].hospitalized_time == this.invoicehd[i].takentime.replace('.', ':') && checkEditList[i][j] == 'ข้อมูลเวลาที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].out_hospital_date == moment(this.invoicehd[i].dispensedate).format("YYYY-MM-DD") && checkEditList[i][j] == 'ข้อมูลวันที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (this.bills[i].out_hospital_time == this.invoicehd[i].dispensetime.replace('.', ':') && checkEditList[i][j] == 'ข้อมูลเวลาที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (!this.bills[i].isEditImage && checkEditList[i][j] == 'ภาพถ่ายไม่ใช่ใบเสร็จค่ารักษา') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    } else if (!this.bills[i].isEditImage && checkEditList[i][j] == 'ภาพถ่ายใบเสร็จไม่ชัด') {
+                                        this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
+                                        return false
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+                    if (this.bills[i].isEditImage && (this.bills[i].editBillImage == "" || this.bills[i].editBillImage == null)) {
+                        this.$swal({
+                            icon: 'warning',
+                            text: 'กรุณาอัพโหลดรูปภาพใบเสร็จค่ารักษาให้ครบถ้วน',
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+
+                            }
+                        })
+                        return false;
+                    }
+                }
+
+                for (let i = 0; i < this.bills.length; i++) {
+
                     this.bills[i].accNo = this.iclaimAppData.accNo
                     this.bills[i].victimNo = this.accData.victimNo
                     this.bills[i].reqNo = this.$route.params.appNo
                     this.bills[i].money = this.bills[i].money.toString()
                 }
+
                 var url = this.$store.state.envUrl + '/api/Approval/CheckInvoiceUsing'
                 let isDuplicate = false;
                 this.isLoading = true;
@@ -1148,17 +1359,19 @@
                             if (this.duplicateInv[i].isDuplicate == true) {
                                 isDuplicate = true;
                                 billIdDuplicate.push({
-                                    idInvhd: this.duplicateInv[i].billId, bill_no: (i + 1)
+                                    idInvhd: this.duplicateInv[i].billId,
+                                    bill_no: (i + 1)
                                 });
                             }
                         }
                     }
+
                     if (billIdDuplicate.length > 0) {
                         this.isLoading = false;
                         var htmlMessage = '<p style="margin-bottom:10px" align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate.map(m => m.bill_no) + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>'
                         htmlMessage += '<p style="color:red;margin-bottom:5px" align="left">&emsp;&emsp;*หมายเหตุ หากท่านต้องการยกเลิกใบเสร็จในการเบิกคำร้องนี้ กรุณาติ๊กเลือกใบเสร็จแล้วกดปุ่ม <label style="color:var(--main-color)">"ยกเลิกใบเสร็จ"</label> </p>'
                         for (let i = 0; i < billIdDuplicate.length; i++) {
-                            htmlMessage += '<div class="form-check px-5"><input id="swal-check' + (i + 1) + '" class="form-check-input" type="checkbox" value="" ><label class="form-check-label" for="swal-check' + (i + 1) +'">ยกเลิกใบเสร็จที่ : ' + billIdDuplicate[i].bill_no + '</label></div>'
+                            htmlMessage += '<div class="form-check px-5"><input id="swal-check' + (i + 1) + '" class="form-check-input" type="checkbox" value="" ><label class="form-check-label" for="swal-check' + (i + 1) + '">ยกเลิกใบเสร็จที่ : ' + billIdDuplicate[i].bill_no + '</label></div>'
                         }
 
                         this.$swal({
@@ -1187,7 +1400,7 @@
                                 if (billCansel == this.iclaimAppData.iclaimInvCount) {
                                     this.$swal({
                                         icon: 'warning',
-                                        html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount +' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
+                                        html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount + ' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
                                         title: 'คำเตือน',
                                         showCancelButton: false,
                                         showDenyButton: true,
@@ -1212,10 +1425,10 @@
                                         if (result.isConfirmed) {
                                             this.$router.push({ name: 'ConfirmOTP', params: { from: "CanselApproval" } })
                                         } else {
-                                            for (let i = 0; i < billIdDuplicate.length; i++) {                                         
-                                                    let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
-                                                    this.bills[index].isCancel = false
-                                                    this.invOverlay[index].isShow = false                                            
+                                            for (let i = 0; i < billIdDuplicate.length; i++) {
+                                                let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
+                                                this.bills[index].isCancel = false
+                                                this.invOverlay[index].isShow = false
                                             }
                                         }
                                     });
@@ -1276,7 +1489,7 @@
 
 
             },
-           
+
             calMoney() {
                 let sum = 0;
                 for (let i = 0; i < this.bills.length; i++) {
@@ -1332,7 +1545,7 @@
         async created() {
             await this.getHospitalNames();
             await this.getDocumentCheck();
-            
+
             this.selectChangwat = 0;
             this.selectHospital = 0;
         },

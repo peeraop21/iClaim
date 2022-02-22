@@ -243,7 +243,7 @@ namespace Services
 
                 var iclaimInvStatus = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.IdInvhd == invModel[i].billNo).FirstOrDefaultAsync();
                 var iclaimInvoiceStatusLog = new IclaimInvoiceStatusLog();
-                if (invModel[i].isCancel)
+                if (invModel[i].isCancel) //ยกเลิกใบเสร็จ
                 {                  
                     iclaimInvoiceStatusLog.IdInvhd = invModel[i].billNo;
                     iclaimInvoiceStatusLog.AccNo = accNo;
@@ -569,7 +569,7 @@ namespace Services
 
         private async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int victimNo, int appNo)
         {
-            var query = await digitalclaimContext.IclaimApprovalStatus.ToListAsync();
+            var query = await digitalclaimContext.IclaimMasterTypes.Where(w => w.ParentTypeId == 50 && w.IsActive).ToListAsync();
             var appStatus = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == appNo).FirstOrDefaultAsync();
             var appStatusState = await digitalclaimContext.IclaimApprovalState.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == appNo).ToListAsync();
 
@@ -577,11 +577,11 @@ namespace Services
             for (int i = 0; i < query.Count; i++)
             {
                 var appStatusVwModel = new ApprovalStatusViewModel();
-                appStatusVwModel.StatusId = query[i].StatusId;
-                appStatusVwModel.StatusName = query[i].StatusNameIclaim;
-                appStatusVwModel.StatusDate = appStatusState.Where(w => w.NewStatus == query[i].StatusId).Select(s => s.InsertDate.Value.Date.ToString("dd/MM/yyyy")).FirstOrDefault();
-                appStatusVwModel.StatusTime = appStatusState.Where(w => w.NewStatus == query[i].StatusId).Select(s => s.InsertDate.Value.ToString("HH:mm")).FirstOrDefault();
-                if (query[i].StatusId <= appStatus.Status)
+                appStatusVwModel.StatusId = query[i].TypeId;
+                appStatusVwModel.StatusName = query[i].TypeNameIclaim;
+                appStatusVwModel.StatusDate = appStatusState.Where(w => w.NewStatus == query[i].TypeId).Select(s => s.InsertDate.Value.Date.ToString("dd/MM/yyyy")).FirstOrDefault();
+                appStatusVwModel.StatusTime = appStatusState.Where(w => w.NewStatus == query[i].TypeId).Select(s => s.InsertDate.Value.ToString("HH:mm")).FirstOrDefault();
+                if (query[i].TypeId <= appStatus.Status)
                 {
                     appStatusVwModel.Active = true;
                 }
@@ -842,10 +842,11 @@ namespace Services
                 }
                 return invList;
             }
-            else if (status == 2)
+            else if (status == 2) //หาใบเสร็จที่ตรวจแล้วไม่ผ่าน
             {
                 var invStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.Status == status).Select(s => new { s.IdInvhd, s.InvCommentTypeId }).ToListAsync();
                 var query = await rvpofficeContext.Invoicehd.Where(w => invStatusList.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
+                
 
                 List<InvoicehdViewModel> invNotPassList = new List<InvoicehdViewModel>();
                 for (int i = 0; i < query.Count(); i++)
@@ -1235,10 +1236,6 @@ namespace Services
             return "Success";
         }
 
-        public async Task<string> GetLaseClaimNoByAccNo()
-        {
-
-            return null;
-        }
+       
     }
 }

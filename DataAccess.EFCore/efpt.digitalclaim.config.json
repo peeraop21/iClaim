@@ -22,10 +22,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[IClaimApprovalStatus]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[IClaimBankAccount]",
          "ObjectType": 0
       },
@@ -60,6 +56,7 @@
    "UseDbContextSplitting": false,
    "UseFluentApiOnly": true,
    "UseHandleBars": false,
+   "UseHierarchyId": false,
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,

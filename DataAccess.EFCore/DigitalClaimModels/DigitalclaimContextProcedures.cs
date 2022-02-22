@@ -33,6 +33,11 @@ namespace DataAccess.EFCore.DigitalClaimModels
         }
     }
 
+    public interface IDigitalclaimContextProceduresContract
+    {
+        Task<int> sp_InsertInvoiceHdLogFromIClaimAsync(long? IdInvHd, string AccNo, int? VictimNo, string UserIdLine, string IP, CancellationToken cancellationToken = default);
+    }
+
     public partial class DigitalclaimContextProcedures
     {
         private readonly DigitalclaimContext _context;

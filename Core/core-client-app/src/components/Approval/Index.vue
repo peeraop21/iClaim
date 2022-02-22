@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12" align="center">
                 <h2 id="header2">ประวัติ/สถานะคำร้อง</h2>
-                <section>
+                <section class="mt-4">
                     <div v-if="isHasIclaimApprovalData == true" style="height: 95%; width: 100%;">
                         <div class="accordion" v-for="iclaimApp in iclaimApprovalData" :key="iclaimApp.appNo">
                             <b-overlay :show="iclaimApp.status == 0">

@@ -993,11 +993,12 @@
                 this.fromText = "ส่งคำร้อง"
                 this.stampWatermarksFromCreate()
             } else if (this.$route.params.from == "Edit") {
+                this.$store.state.inputApprovalData.SumMoney = parseFloat(this.$store.state.inputApprovalData.SumMoney)
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งเอกสารเพิ่มเติม"
                 this.stampWatermarksFromEditApproval()
                 this.isLoading = false
-            } else if (this.$route.params.from == "CanselApproval") {
+            } else if (this.$route.params.from == "CanselApproval") {                
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ยกเลิกคำร้อง"
                 this.isLoading = false
