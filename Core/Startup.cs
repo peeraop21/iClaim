@@ -50,7 +50,7 @@ namespace Core
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            
             services.AddControllers();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAutoMapper(typeof(DataMapperProfile));
@@ -101,8 +101,8 @@ namespace Core
                 };
             });
 
-      
-            
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
