@@ -718,44 +718,7 @@
                                     this.displayBills[index].isHideBtnCansel = true
                                     this.total_amount = this.total_amount - this.bills[index].money
                                 }
-                            }
-                            //var billCansel = this.bills.filter(w => w.isCancel).length
-                            //if (billCansel == this.iclaimAppData.iclaimInvCount) {
-                            //    this.$swal({
-                            //        icon: 'warning',
-                            //        html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount + ' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
-                            //        title: 'คำเตือน',
-                            //        showCancelButton: false,
-                            //        showDenyButton: true,
-                            //        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
-                            //        denyButtonColor: '#dad5e9',
-                            //        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
-                            //        confirmButtonColor: '#5c2e91',
-                            //        willClose: () => {
-
-                            //        }
-                            //    }).then((result) => {
-                            //        this.$store.state.inputApprovalData.AccNo = this.accData.accNo
-                            //        this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
-                            //        this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
-                            //        this.$store.state.inputApprovalData.SumMoney = null
-                            //        this.$store.state.inputApprovalData.ClaimNo = null
-                            //        this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
-                            //        this.$store.state.inputApprovalData.Injury = null
-                            //        this.$store.state.inputApprovalData.BillsData = null
-                            //        this.$store.state.inputApprovalData.BankData = null
-                            //        this.$store.state.inputApprovalData.VictimData = null
-                            //        if (result.isConfirmed) {
-                            //            this.$router.push({ name: 'ConfirmOTP', params: { from: "CanselApproval" } })
-                            //        } else {
-                            //            for (let i = 0; i < listInvMustCansel.length; i++) {
-                            //                let index = this.bills.findIndex(w => w.billNo === listInvMustCansel[i].idInvhd)
-                            //                this.bills[index].isCancel = false
-                            //                this.invOverlay[index].isShow = false
-                            //            }
-                            //        }
-                            //    });
-                            //}
+                            }                           
                         }
                     });
 
@@ -872,8 +835,21 @@
                 this.invMustCanselList = billsMustCansel;
                 this.invNotPassMustCansel(billsMustCansel);
             },
-            getInvoicehdNotPass() {
-                var url = this.$store.state.envUrl + '/api/approval/InvoicehdNotPass/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+            
+            getHospitalNames() {
+                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                axios.post(url)
+                    .then((response) => {
+                        this.hospitals = response.data.data;
+                        //this.getWoundeds();
+                        this.InitialDataEditApprovalPage(); //ทกสอบรวม api req
+                    })
+                    .catch(function (error) {
+                        alert(error);
+                    });
+            },
+            InitialDataEditApprovalPage() {
+                var url = this.$store.state.envUrl + '/api/approval/DataForEditApprovalPage/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
                         Authorization: "Bearer " + this.$store.state.jwtToken.token
@@ -881,9 +857,14 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
+                        console.log("new ", response)
+                        this.wounded = response.data.woundeds.woundedList;
+                        this.organ = response.data.woundeds.organ;
                         this.invoicehd = response.data.invoicesNotPass;
                         this.invNotPassTypesList = response.data.typesOfInvoiceNotPass
-                        console.log("TypesInv", this.invNotPassTypesList)
+                        this.changwats = response.data.changwats;
+                        this.bankNames = response.data.bankNames;
+                        this.documentCheck = response.data.accountChecks;
                         if (this.invoicehd.length > 0) {
                             for (let i = 0; i < (this.invoicehd.length - 1); i++) {
                                 this.addField(null, this.bills);
@@ -895,104 +876,23 @@
                         }
                         this.loadInvoicehd();
                         this.calMoney();
-                        this.getChangwatNames();
-
-                    })
-                    .catch((error) => {
-                        if (error.toString().includes("401")) {
-                            this.getJwtToken()
-                            this.getInvoicehdNotPass()
-                        }
-                    });
-            },
-            getDocumentReceive() {
-                var url = this.$store.state.envUrl + '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-                var apiConfig = {
-                    headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }
-                axios.get(url, apiConfig)
-                    .then((response) => {
-                        this.getBankFileFromECM()
-                        if (response.data != null) {
+                        this.getBankFileFromECM();
+                        if (response.data.account != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
-                                if (response.data.accountBankName == this.bankNames[i].bankCode) {
+                                if (response.data.account.accountBankName == this.bankNames[i].bankCode) {
                                     this.inputBank.accountBankName = this.bankNames[i].name
                                     this.inputBank.bankId = this.bankNames[i].bankCode
-                                    this.inputBank.accountName = response.data.accountName
-                                    this.inputBank.accountNumber = response.data.accountNumber
+                                    this.inputBank.accountName = response.data.account.accountName
+                                    this.inputBank.accountNumber = response.data.account.accountNumber
                                     this.inputBank.isEditBankImage = false
                                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
                                     this.isLoading = false;
-                                    return true;
+                                    /*return true;*/
                                 }
                             }
-
                         }
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getBankNames() {
-                var url = this.$store.state.envUrl + '/api/Master/Bank';
-                axios.get(url)
-                    .then((response) => {
-                        this.bankNames = response.data;
-                        this.getDocumentReceive();
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getHospitalNames() {
-                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
-                axios.post(url)
-                    .then((response) => {
-                        this.hospitals = response.data.data;
-                        this.getWoundeds();
 
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getChangwatNames() {
-                var url = this.$store.state.envUrl + '/api/Master/Changwat';
-                axios.get(url)
-                    .then((response) => {
-                        this.changwats = response.data;
-                        this.getBankNames();
-
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getWoundeds() {
-                var url = this.$store.state.envUrl + '/api/Master/Wounded';
-                axios.get(url)
-                    .then((response) => {
-                        this.wounded = response.data.woundedList;
-                        this.organ = response.data.organ
-                        this.getInvoicehdNotPass();
-
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            getDocumentCheck() {
-                var url = this.$store.state.envUrl + '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-                var apiConfig = {
-                    headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }
-                axios.get(url, apiConfig)
-                    .then((response) => {
-                        this.documentCheck = response.data;
+                        //from api documentCheck
                         if (this.documentCheck != null) {
                             if (this.documentCheck.bookbankStatus == "N") {
                                 this.accountDoc = true;
@@ -1044,10 +944,215 @@
                     .catch((error) => {
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
-                            this.getDocumentCheck()
+                            this.getInvoicehdNotPass()
                         }
                     });
             },
+            //getInvoicehdNotPass() {
+            //    var url = this.$store.state.envUrl + '/api/approval/InvoicehdNotPass/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+            //    var apiConfig = {
+            //        headers: {
+            //            Authorization: "Bearer " + this.$store.state.jwtToken.token
+            //        }
+            //    }
+            //    axios.get(url, apiConfig)
+            //        .then((response) => {
+            //            this.invoicehd = response.data.invoicesNotPass;
+            //            this.invNotPassTypesList = response.data.typesOfInvoiceNotPass
+            //            console.log("TypesInv", this.invNotPassTypesList)
+            //            if (this.invoicehd.length > 0) {
+            //                for (let i = 0; i < (this.invoicehd.length - 1); i++) {
+            //                    this.addField(null, this.bills);
+            //                    this.invOverlay.push({
+            //                        isShow: false
+            //                    });
+
+            //                }
+            //            }
+            //            this.loadInvoicehd();
+            //            this.calMoney();
+            //            this.getChangwatNames();
+
+            //        })
+            //        .catch((error) => {
+            //            if (error.toString().includes("401")) {
+            //                this.getJwtToken()
+            //                this.getInvoicehdNotPass()
+            //            }
+            //        });
+            //},
+            //getDocumentReceive() {
+            //    var url = this.$store.state.envUrl + '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+            //    var apiConfig = {
+            //        headers: {
+            //            Authorization: "Bearer " + this.$store.state.jwtToken.token
+            //        }
+            //    }
+            //    axios.get(url, apiConfig)
+            //        .then((response) => {
+            //            this.getBankFileFromECM()
+            //            if (response.data != null) {
+            //                for (let i = 0; i < this.bankNames.length; i++) {
+            //                    if (response.data.accountBankName == this.bankNames[i].bankCode) {
+            //                        this.inputBank.accountBankName = this.bankNames[i].name
+            //                        this.inputBank.bankId = this.bankNames[i].bankCode
+            //                        this.inputBank.accountName = response.data.accountName
+            //                        this.inputBank.accountNumber = response.data.accountNumber
+            //                        this.inputBank.isEditBankImage = false
+            //                        this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
+            //                        this.isLoading = false;
+            //                        return true;
+            //                    }
+            //                }
+
+            //            }
+            //        })
+            //        .catch(function (error) {
+            //            alert(error);
+            //        });
+            //},
+            //getBankNames() {
+            //    var url = this.$store.state.envUrl + '/api/Master/Bank';
+            //    axios.get(url)
+            //        .then((response) => {
+            //            this.bankNames = response.data;
+            //            this.getDocumentReceive();
+            //        })
+            //        .catch(function (error) {
+            //            alert(error);
+            //        });
+            //},
+            //getChangwatNames() {
+            //    var url = this.$store.state.envUrl + '/api/Master/Changwat';
+            //    axios.get(url)
+            //        .then((response) => {
+            //            this.changwats = response.data;
+            //            this.getBankNames();
+
+            //        })
+            //        .catch(function (error) {
+            //            alert(error);
+            //        });
+            //},
+            
+            //getAccountAndMasterData() {
+            //    var url = this.$store.state.envUrl + '/api/Approval/AccountAndMasterData';
+            //    const body = {
+            //        AccNo: this.accData.stringAccNo,
+            //        VictimNo: parseInt(this.accData.victimNo),
+            //        ReqNo: parseInt(this.$route.params.appNo),
+            //    };
+            //    var apiConfig = {
+            //        headers: {
+            //            'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+            //            'Content-Type': 'application/json',
+            //        }
+            //    }
+            //    axios.post(url, JSON.stringify(body), apiConfig)
+            //        .then((response) => {
+            //            console.log("new ", response)
+            //            this.getBankFileFromECM()
+            //            var bankNames = response.data.bankNames;
+            //            if (response.data.account != null) {
+            //                for (let i = 0; i < this.bankNames.length; i++) {
+            //                    if (response.data.account.accountBankName == this.bankNames[i].bankCode) {
+            //                        this.inputBank.accountBankName = this.bankNames[i].name
+            //                        this.inputBank.bankId = this.bankNames[i].bankCode
+            //                        this.inputBank.accountName = response.data.account.accountName
+            //                        this.inputBank.accountNumber = response.data.account.accountNumber
+            //                        this.inputBank.isEditBankImage = false
+            //                        this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
+            //                        this.isLoading = false;
+            //                        console.log("good")
+            //                        return true;
+            //                    }
+            //                }
+
+            //            }
+            //        })
+            //        .catch(function (error) {
+            //            alert(error);
+            //        });
+               
+            //},
+            //getWoundeds() {
+            //    var url = this.$store.state.envUrl + '/api/Master/Wounded';
+            //    axios.get(url)
+            //        .then((response) => {
+            //            this.wounded = response.data.woundedList;
+            //            this.organ = response.data.organ
+            //            this.getInvoicehdNotPass();
+
+            //        })
+            //        .catch(function (error) {
+            //            alert(error);
+            //        });
+            //},
+            //getDocumentCheck() {
+            //    var url = this.$store.state.envUrl + '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
+            //    var apiConfig = {
+            //        headers: {
+            //            Authorization: "Bearer " + this.$store.state.jwtToken.token
+            //        }
+            //    }
+            //    axios.get(url, apiConfig)
+            //        .then((response) => {
+            //            this.documentCheck = response.data;
+            //            if (this.documentCheck != null) {
+            //                if (this.documentCheck.bookbankStatus == "N") {
+            //                    this.accountDoc = true;
+            //                    this.bookbankNotPassDescList = this.documentCheck.bbCommentTypeId.split("-");
+            //                    for (let i = 0; i < this.bookbankNotPassDescList.length; i++) {
+            //                        if (this.bookbankNotPassDescList[i] == "201") {
+            //                            this.bookbankNotPassDescList[i] = 'ภาพถ่ายไม่ใช่บัญชีธนาคาร'
+            //                        } else if (this.bookbankNotPassDescList[i] == "202") {
+            //                            this.bookbankNotPassDescList[i] = 'ภาพถ่ายบัญชีธนาคารไม่ชัด'
+            //                        } else if (this.bookbankNotPassDescList[i] == "203") {
+            //                            this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+            //                        } else if (this.bookbankNotPassDescList[i] == "204") {
+            //                            this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อบัญชีไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+            //                        } else if (this.bookbankNotPassDescList[i] == "205") {
+            //                            this.bookbankNotPassDescList[i] = 'ข้อมูลเลขที่บัญชีธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+            //                        }
+            //                    }
+
+            //                    var bookbankNotPassTypeId = this.documentCheck.bbCommentTypeId.split("-");
+            //                    for (let i = 0; i < bookbankNotPassTypeId.length; i++) {
+            //                        if (bookbankNotPassTypeId[i] == "201" || bookbankNotPassTypeId[i] == "202") {
+            //                            this.displayBankAccount.isDisabledInputImageBookBank = false
+            //                            this.displayBankAccount.isDisabledImageBookBank = false
+            //                            this.displayBankAccount.isDisabledBankName = false
+            //                            this.displayBankAccount.isDisabledAccountName = false
+            //                            this.displayBankAccount.isDisabledAccountNumber = false
+            //                            this.displayBankAccount.isHideFormInput = true
+            //                        } else if (bookbankNotPassTypeId[i] == "203") {
+            //                            this.displayBankAccount.isDisabledImageBookBank = false
+            //                            this.displayBankAccount.isDisabledBankName = false
+            //                            this.displayBankAccount.isHideFormInput = false
+            //                        } else if (bookbankNotPassTypeId[i] == "204") {
+            //                            this.displayBankAccount.isDisabledImageBookBank = false
+            //                            this.displayBankAccount.isDisabledAccountName = false
+            //                            this.displayBankAccount.isHideFormInput = false
+            //                        } else if (bookbankNotPassTypeId[i] == "205") {
+            //                            this.displayBankAccount.isDisabledImageBookBank = false
+            //                            this.displayBankAccount.isDisabledAccountNumber = false
+            //                            this.displayBankAccount.isHideFormInput = false
+            //                        }
+            //                    }
+            //                }
+            //                if (this.documentCheck.invoiceStatus == "N") {
+            //                    this.invoiceDoc = true;
+            //                }
+            //            }
+
+            //        })
+            //        .catch((error) => {
+            //            if (error.toString().includes("401")) {
+            //                this.getJwtToken()
+            //                this.getDocumentCheck()
+            //            }
+            //        });
+            //},
             getBillFileFromECM(idInvhd) {
                 var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
@@ -1215,7 +1320,6 @@
                     }
                 }
             },
-
             onChangwatChange() {
                 this.divHospitalModal = true;
 
@@ -1334,6 +1438,8 @@
                         return false;
                     }
                 }
+
+
 
                 for (let i = 0; i < this.bills.length; i++) {
 
@@ -1489,7 +1595,6 @@
 
 
             },
-
             calMoney() {
                 let sum = 0;
                 for (let i = 0; i < this.bills.length; i++) {
@@ -1518,7 +1623,6 @@
                 fieldType.splice(index, 1);
                 this.calMoney()
             },
-
             showSwal() {
                 this.$swal({
                     icon: 'success',
@@ -1544,7 +1648,7 @@
         },
         async created() {
             await this.getHospitalNames();
-            await this.getDocumentCheck();
+            /*await this.getDocumentCheck();*/
 
             this.selectChangwat = 0;
             this.selectHospital = 0;

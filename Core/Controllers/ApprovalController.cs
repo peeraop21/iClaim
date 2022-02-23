@@ -54,6 +54,14 @@ namespace Core.Controllers
         {
             return Ok(await approvalService.GetIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo, appNo));
         }
+        //[Authorize]//-dev
+        //[HttpPost("AccountAndMasterData")]
+        //public async Task<IActionResult> GetAccountAndMasterData([FromBody] ReqDataViewModel model)
+        //{
+        //    var banksName = await masterService.GetBank();
+        //    var account = await approvalService.GetIClaimBankAccountAsync(model.AccNo.Replace("-","/"), model.VictimNo, model.ReqNo);
+        //    return Ok(new { Account = account, BankNames = banksName });
+        //}
 
         // POST api/<ApprovalController>
         [Authorize]
@@ -112,13 +120,36 @@ namespace Core.Controllers
             return Ok(await approvalService.GetLastIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo));
         }
 
-        [Authorize]
-        [HttpGet("InvoicehdNotPass/{accNo}/{victimNo}/{appNo}")]
-        public async Task<IActionResult> GetInvoicehdNotPass(string accNo, int victimNo, int appNo)
+        //[Authorize]
+        //[HttpGet("InvoicehdNotPass/{accNo}/{victimNo}/{appNo}")]
+        //public async Task<IActionResult> GetInvoicehdNotPass(string accNo, int victimNo, int appNo)
+        //{
+        //    var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
+        //    var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, appNo, 2);
+        //    return Ok( new { TypesOfInvoiceNotPass = typesOfInvoiceNotPass, InvoicesNotPass = invoicesNotPass });
+        //}
+        [Authorize]//-dev
+        [HttpGet("DataForEditApprovalPage/{accNo}/{victimNo}/{reqNo}")]
+        public async Task<IActionResult> GetDataForEditApprovalPage(string accNo, int victimNo, int reqNo)
         {
+            var wounded = await masterService.GetWoundeds();
             var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
-            var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, appNo, 2);
-            return Ok( new { TypesOfInvoiceNotPass = typesOfInvoiceNotPass, InvoicesNotPass = invoicesNotPass });
+            var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, reqNo, 2);
+            var changwats = await masterService.GetChangwat();
+            var banksName = await masterService.GetBank();
+            var account = await approvalService.GetIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo, reqNo);
+            var accountChecks = await approvalService.GetDocumentCheck(accNo.Replace("-", "/"), victimNo, reqNo);
+            return Ok(new { 
+                Woundeds = wounded,
+                TypesOfInvoiceNotPass = typesOfInvoiceNotPass, 
+                InvoicesNotPass = invoicesNotPass,
+                Changwats = changwats,
+                BankNames = banksName,
+                Account = account,
+                accountChecks = accountChecks
+
+                
+            });
         }
 
         [Authorize]
@@ -201,7 +232,7 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("DataConfirmMoney")]
-        public async Task<IActionResult> GetDataConfirmMoney([FromBody] PostDataViewModel model)
+        public async Task<IActionResult> GetDataConfirmMoney([FromBody] ReqDataViewModel model)
         {
             var initConfirmMoney = await approvalService.GetDataForConfirmMoney(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
             var banks = await masterService.GetBank();
