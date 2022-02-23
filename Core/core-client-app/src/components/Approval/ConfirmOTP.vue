@@ -989,6 +989,7 @@
             }
 
             if (this.$route.params.from == "Create") {
+                this.$store.state.inputApprovalData.SumMoney = parseFloat(this.$store.state.inputApprovalData.SumMoney)
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งคำร้อง"
                 this.stampWatermarksFromCreate()
