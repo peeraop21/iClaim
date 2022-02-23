@@ -33,7 +33,7 @@ namespace Core.Controllers
 
         //[HttpGet("GetBoto3/{accNo}/{victimNo}/{appNo}/{channel}")]
         [HttpPost]
-        public async Task<IActionResult> GetPDF([FromBody]PostDataViewModel model)
+        public async Task<IActionResult> GetPDF([FromBody] ReqDataViewModel model)
         {
             var acc = await accidentService.GetAccidentForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
             var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.Channel, model.UserIdCard, model.VictimNo);

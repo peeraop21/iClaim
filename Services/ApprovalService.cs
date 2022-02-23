@@ -123,6 +123,7 @@ namespace Services
             dataBankAccount.AccountNo = inputBank.accountNumber;
             dataBankAccount.AccountName = inputBank.accountName;
             dataBankAccount.BankId = inputBank.bankId;
+            dataBankAccount.InsertDate = DateTime.Now;
             dataBankAccount.RecordBy = userLineId;
             await digitalclaimContext.IclaimBankAccount.AddAsync(dataBankAccount);
 
@@ -134,6 +135,7 @@ namespace Services
             dataIclaimApprovalStatusState.OldStatus = null;
             dataIclaimApprovalStatusState.NewStatus = 1;
             dataIclaimApprovalStatusState.InsertDate = DateTime.Now;
+            dataIclaimApprovalStatusState.RecordBy = userLineId;
             await digitalclaimContext.IclaimApprovalState.AddAsync(dataIclaimApprovalStatusState);
 
             var idInvhd = await rvpofficeContext.Invoicehd.Select(s => s.IdInvhd).OrderByDescending(o => o).FirstOrDefaultAsync();
@@ -220,7 +222,7 @@ namespace Services
             iclaimBankAccount.BankId = bankModel.bankId;
 
             bool isHasInvCancel = false;
-            var lastInvStatusState = await digitalclaimContext.IclaimApprovalState.Where(w => w.AccNo == accNo && w.ReqNo == reqNo && w.VictimNo == victimNo).Select(s => new { s.StateNo, s.NewStatus }).OrderByDescending(o => o.StateNo).FirstOrDefaultAsync();
+            var lastInvStatusState = await digitalclaimContext.IclaimInvoiceStatusLog.Where(w => w.AccNo == accNo && w.ReqNo == reqNo && w.VictimNo == victimNo).Select(s => new { s.StateNo, s.NewStatus }).OrderByDescending(o => o.StateNo).FirstOrDefaultAsync();
             for (int i = 0; i < invModel.Length; i++)
             {
                 var invhd = await rvpofficeContext.Invoicehd.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.IdInvhd == invModel[i].billNo).FirstOrDefaultAsync();
