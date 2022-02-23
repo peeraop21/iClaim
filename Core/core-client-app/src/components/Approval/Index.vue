@@ -51,7 +51,7 @@
 
                                         <ul id="progress" v-for="status in iclaimApp.appStatus" :key="status.statusId">
                                             <li class="li-custom " :id="'liLbl' + status.statusId">
-                                                <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -18px; margin-top: -1px;">{{status.statusDate}}</p>
+                                                <p v-if="status.statusDate != null" class="p-custom divider-p" style="font-size: 8px; position: absolute; left: -12px; margin-top: -1px;">{{status.statusDate}}</p>
                                                 <p v-if="status.statusTime != null" class="p-custom divider-p" style="font-size: 10px; position: absolute; left: -1px; margin-top: 7px; ">{{status.statusTime}}</p>
                                                 <div class="node " v-bind:class="{green:status.active, grey:!status.active}"></div>
                                                 <p class="p-custom divider-p" v-bind:class="{pgreen:status.active}">{{status.statusName}}</p>
