@@ -137,6 +137,7 @@ namespace Core.Controllers
             var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, reqNo, 2);
             var changwats = await masterService.GetChangwat();
             var banksName = await masterService.GetBank();
+            var typesOfBankAccountNotPass = await masterService.GetTypesOfBankAccountNotPass();
             var account = await approvalService.GetIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo, reqNo);
             var accountChecks = await approvalService.GetDocumentCheck(accNo.Replace("-", "/"), victimNo, reqNo);
             return Ok(new { 
@@ -145,6 +146,7 @@ namespace Core.Controllers
                 InvoicesNotPass = invoicesNotPass,
                 Changwats = changwats,
                 BankNames = banksName,
+                TypesOfBankAccountNotPass = typesOfBankAccountNotPass,
                 Account = account,
                 accountChecks = accountChecks
 
@@ -177,6 +179,7 @@ namespace Core.Controllers
         [HttpPost("UpdateApproval")]
         public async Task<IActionResult> UpdateApproval([FromBody] ApprovalViewModel model)
         {
+            model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
             var resultMapBank = _mapper.Map<UpdateBankViewModel>(model.BankData);
             var resultMapToInvoicehd = _mapper.Map<UpdateInvoiceViewModel[]>(model.BillsData);
             var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);

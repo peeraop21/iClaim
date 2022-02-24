@@ -574,7 +574,10 @@
                 bookbankNotPassDescList: [],
                 invOverlay: [{ isShow: false }],
                 invNotPassTypesList: null,
-                invMustCanselList: null
+                invMustCanselList: null,
+                bankAccountNotPassTypesList: null,
+                beforeInputBank: { accountName: null, accountNumber: null, accountBankName: null, bankId: null, bankBase64String: '', bankFilename: '', isEditBankImage: false }
+
 
 
 
@@ -842,13 +845,13 @@
                     .then((response) => {
                         this.hospitals = response.data.data;
                         //this.getWoundeds();
-                        this.InitialDataEditApprovalPage(); //ทกสอบรวม api req
+                        this.initialDataEditApprovalPage(); //ทกสอบรวม api req
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            InitialDataEditApprovalPage() {
+            initialDataEditApprovalPage() {
                 var url = this.$store.state.envUrl + '/api/approval/DataForEditApprovalPage/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
                 var apiConfig = {
                     headers: {
@@ -864,6 +867,7 @@
                         this.invNotPassTypesList = response.data.typesOfInvoiceNotPass
                         this.changwats = response.data.changwats;
                         this.bankNames = response.data.bankNames;
+                        this.bankAccountNotPassTypesList = response.data.typesOfBankAccountNotPass;
                         this.documentCheck = response.data.accountChecks;
                         if (this.invoicehd.length > 0) {
                             for (let i = 0; i < (this.invoicehd.length - 1); i++) {
@@ -879,7 +883,7 @@
                         this.getBankFileFromECM();
                         if (response.data.account != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
-                                if (response.data.account.accountBankName == this.bankNames[i].bankCode) {
+                                if (response.data.account.accountBankName == this.bankNames[i].bankCode) {                                   
                                     this.inputBank.accountBankName = this.bankNames[i].name
                                     this.inputBank.bankId = this.bankNames[i].bankCode
                                     this.inputBank.accountName = response.data.account.accountName
@@ -887,28 +891,37 @@
                                     this.inputBank.isEditBankImage = false
                                     this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
                                     this.isLoading = false;
+                                    this.beforeInputBank.accountBankName = this.bankNames[i].name
+                                    this.beforeInputBank.bankId = this.bankNames[i].bankCode
+                                    this.beforeInputBank.accountName = response.data.account.accountName
+                                    this.beforeInputBank.accountNumber = response.data.account.accountNumber
                                     /*return true;*/
                                 }
                             }
                         }
-
+                        
                         //from api documentCheck
                         if (this.documentCheck != null) {
                             if (this.documentCheck.bookbankStatus == "N") {
                                 this.accountDoc = true;
                                 this.bookbankNotPassDescList = this.documentCheck.bbCommentTypeId.split("-");
                                 for (let i = 0; i < this.bookbankNotPassDescList.length; i++) {
-                                    if (this.bookbankNotPassDescList[i] == "201") {
-                                        this.bookbankNotPassDescList[i] = 'ภาพถ่ายไม่ใช่บัญชีธนาคาร'
-                                    } else if (this.bookbankNotPassDescList[i] == "202") {
-                                        this.bookbankNotPassDescList[i] = 'ภาพถ่ายบัญชีธนาคารไม่ชัด'
-                                    } else if (this.bookbankNotPassDescList[i] == "203") {
-                                        this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
-                                    } else if (this.bookbankNotPassDescList[i] == "204") {
-                                        this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อบัญชีไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
-                                    } else if (this.bookbankNotPassDescList[i] == "205") {
-                                        this.bookbankNotPassDescList[i] = 'ข้อมูลเลขที่บัญชีธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+                                    for (let j = 0; j < this.bankAccountNotPassTypesList.length; j++) {
+                                        if (this.bookbankNotPassDescList[i] == this.bankAccountNotPassTypesList[j].typeId) {
+                                            this.bookbankNotPassDescList[i] = this.bankAccountNotPassTypesList[j].typeName
+                                        }
                                     }
+                                    //if (this.bookbankNotPassDescList[i] == "201") {
+                                    //    this.bookbankNotPassDescList[i] = 'ภาพถ่ายไม่ใช่บัญชีธนาคาร'
+                                    //} else if (this.bookbankNotPassDescList[i] == "202") {
+                                    //    this.bookbankNotPassDescList[i] = 'ภาพถ่ายบัญชีธนาคารไม่ชัด'
+                                    //} else if (this.bookbankNotPassDescList[i] == "203") {
+                                    //    this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+                                    //} else if (this.bookbankNotPassDescList[i] == "204") {
+                                    //    this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อบัญชีไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+                                    //} else if (this.bookbankNotPassDescList[i] == "205") {
+                                    //    this.bookbankNotPassDescList[i] = 'ข้อมูลเลขที่บัญชีธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
+                                    //}
                                 }
 
                                 var bookbankNotPassTypeId = this.documentCheck.bbCommentTypeId.split("-");
@@ -1367,9 +1380,13 @@
                 if (this.$v.$invalid) {
                     return false;
                 }
-
+                for (let i = 0; i < this.bankNames.length; i++) {
+                    if (this.inputBank.accountBankName == this.bankNames[i].name) {
+                        this.inputBank.bankId = this.bankNames[i].bankCode
+                    }
+                }
                 //เช็คการแก้ไขตาม types ของใบเสร็จ
-                var checkEditList = this.invNotPassDescList
+                var checkInvEditList = this.invNotPassDescList
                 for (let i = 0; i < this.bills.length; i++) {
                     if (!this.bills[i].isCancel) {
                         for (let j = 0; j < this.invMustCanselList.length; j++) {
@@ -1379,46 +1396,44 @@
                             }
                         }
                     }
-                    if (checkEditList) {
-                        for (let j = 0; j < checkEditList[i].length; j++) {
+                    if (checkInvEditList) {
+                        for (let j = 0; j < checkInvEditList[i].length; j++) {
                             for (let l = 0; l < this.invNotPassTypesList.length; l++) {
-                                if (checkEditList[i][j] == this.invNotPassTypesList[l].typeName && checkEditList[i][j] != 'ไม่ใช่ใบเสร็จค่ารักษาที่เกิดเหตุจากรถ') {
-                                    if (this.bills[i].money == this.invoicehd[i].suminv && checkEditList[i][j] == 'ข้อมูลจำนวนเงินไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                if (checkInvEditList[i][j] == this.invNotPassTypesList[l].typeName && checkInvEditList[i][j] != 'ไม่ใช่ใบเสร็จค่ารักษาที่เกิดเหตุจากรถ') {
+                                    if (this.bills[i].money == this.invoicehd[i].suminv && checkInvEditList[i][j] == 'ข้อมูลจำนวนเงินไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].selectHospitalId == this.invoicehd[i].hosid && checkEditList[i][j] == 'ข้อมูลโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].selectHospitalId == this.invoicehd[i].hosid && checkInvEditList[i][j] == 'ข้อมูลโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].bookNo == this.invoicehd[i].bookNo && checkEditList[i][j] == 'ข้อมูลเล่มที่ใบเสร็จไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].bookNo == this.invoicehd[i].bookNo && checkInvEditList[i][j] == 'ข้อมูลเล่มที่ใบเสร็จไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].bill_no == this.invoicehd[i].receiptNo && checkEditList[i][j] == 'ข้อมูลเลขที่ใบเสร็จไม่ตรงกับภาพถ่ายไม่เสร็จ') {
+                                    } else if (this.bills[i].bill_no == this.invoicehd[i].receiptNo && checkInvEditList[i][j] == 'ข้อมูลเลขที่ใบเสร็จไม่ตรงกับภาพถ่ายไม่เสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].typePatient == this.invoicehd[i].victimType && checkEditList[i][j] == 'ข้อมูลประเภทผู้ป่วยไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].typePatient == this.invoicehd[i].victimType && checkInvEditList[i][j] == 'ข้อมูลประเภทผู้ป่วยไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].hospitalized_date == moment(this.invoicehd[i].takendate).format("YYYY-MM-DD") && checkEditList[i][j] == 'ข้อมูลวันที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].hospitalized_date == moment(this.invoicehd[i].takendate).format("YYYY-MM-DD") && checkInvEditList[i][j] == 'ข้อมูลวันที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].hospitalized_time == this.invoicehd[i].takentime.replace('.', ':') && checkEditList[i][j] == 'ข้อมูลเวลาที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].hospitalized_time == this.invoicehd[i].takentime.replace('.', ':') && checkInvEditList[i][j] == 'ข้อมูลเวลาที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].out_hospital_date == moment(this.invoicehd[i].dispensedate).format("YYYY-MM-DD") && checkEditList[i][j] == 'ข้อมูลวันที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].out_hospital_date == moment(this.invoicehd[i].dispensedate).format("YYYY-MM-DD") && checkInvEditList[i][j] == 'ข้อมูลวันที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (this.bills[i].out_hospital_time == this.invoicehd[i].dispensetime.replace('.', ':') && checkEditList[i][j] == 'ข้อมูลเวลาที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                    } else if (this.bills[i].out_hospital_time == this.invoicehd[i].dispensetime.replace('.', ':') && checkInvEditList[i][j] == 'ข้อมูลเวลาที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (!this.bills[i].isEditImage && checkEditList[i][j] == 'ภาพถ่ายไม่ใช่ใบเสร็จค่ารักษา') {
+                                    } else if (!this.bills[i].isEditImage && checkInvEditList[i][j] == 'ภาพถ่ายไม่ใช่ใบเสร็จค่ารักษา') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
                                         return false
-                                    } else if (!this.bills[i].isEditImage && checkEditList[i][j] == 'ภาพถ่ายใบเสร็จไม่ชัด') {
+                                    } else if (!this.bills[i].isEditImage && checkInvEditList[i][j] == 'ภาพถ่ายใบเสร็จไม่ชัด') {
                                         this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
                                         return false
                                     }
-
-
                                 }
                             }
                         }
@@ -1438,9 +1453,47 @@
                         return false;
                     }
                 }
+                console.log("old", this.beforeInputBank)
+                console.log("new", this.inputBank)
+                var checkBankAccountEditList = this.bookbankNotPassDescList
+                if (checkBankAccountEditList) {
+                    for (let i = 0; i < checkBankAccountEditList.length; i++) {
+                        for (let j = 0; j < this.bankAccountNotPassTypesList.length; j++) {
+                            if (checkBankAccountEditList[i] == this.bankAccountNotPassTypesList[j].typeName) {
+                                if (this.inputBank.accountBankName == this.beforeInputBank.accountBankName && checkBankAccountEditList[i] == 'ข้อมูลชื่อธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร') {
+                                    this.swalValidateAndCheckEdit('ตรวจสอบ' + this.bankAccountNotPassTypesList[j].typeName)
+                                    return false
+                                } else if (this.inputBank.accountName == this.beforeInputBank.accountName && checkBankAccountEditList[i] == 'ข้อมูลชื่อบัญชีไม่ตรงกับภาพถ่ายบัญชีธนาคาร') {
+                                    this.swalValidateAndCheckEdit('ตรวจสอบ' + this.bankAccountNotPassTypesList[j].typeName)
+                                    return false
+                                } else if (this.inputBank.accountNumber == this.beforeInputBank.accountNumber && checkBankAccountEditList[i] == 'ข้อมูลเลขที่บัญชีธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร') {
+                                    this.swalValidateAndCheckEdit('ตรวจสอบ' + this.bankAccountNotPassTypesList[j].typeName)
+                                    return false
+                                } else if (!this.inputBank.isEditBankImage && checkBankAccountEditList[i] == 'ภาพถ่ายไม่ใช่บัญชีธนาคาร') {
+                                    this.swalValidateAndCheckEdit('ตรวจสอบ' + this.bankAccountNotPassTypesList[j].typeName)
+                                    return false
+                                } else if (!this.inputBank.isEditBankImage && checkBankAccountEditList[i] == 'ภาพถ่ายบัญชีธนาคารไม่ชัด') {
+                                    this.swalValidateAndCheckEdit('ตรวจสอบ' + this.bankAccountNotPassTypesList[j].typeName)
+                                    return false
+                                }
+                            }
+                        }
+                    }
+                }
+                if (this.inputBank.isEditBankImage && (this.inputBank.bankBase64String == "" || this.inputBank.bankBase64String == null)) {
+                    this.$swal({
+                        icon: 'warning',
+                        text: 'กรุณาอัพโหลดรูปภาพบัญชีธนาคารให้ครบถ้วน',
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
 
-
-
+                        }
+                    })
+                    return false;
+                }
                 for (let i = 0; i < this.bills.length; i++) {
 
                     this.bills[i].accNo = this.iclaimAppData.accNo

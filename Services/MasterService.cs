@@ -22,6 +22,7 @@ namespace Services
         Task<JJJ> GetWoundeds();
         Task<List<string>> GetPrefixesAsync();
         Task<object> GetTypesOfInvoiceNotPass();
+        Task<object> GetTypesOfBankAccountNotPass();
     }
 
     public class MasterService : IMasterService
@@ -122,6 +123,11 @@ namespace Services
         {
             return await digitalclaimContext.IclaimMasterTypes.Where(w => w.ParentTypeId == 100 && w.IsActive).Select(s => new { s.TypeId, s.TypeName}).ToListAsync();
         }
-        
+
+        public async Task<object> GetTypesOfBankAccountNotPass()
+        {
+            return await digitalclaimContext.IclaimMasterTypes.Where(w => w.ParentTypeId == 200 && w.IsActive).Select(s => new { s.TypeId, s.TypeName }).ToListAsync();
+        }
+
     }
 }
