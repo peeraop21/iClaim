@@ -60,7 +60,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12" style="width: 95%; margin-inline: auto;">
-                                        <table id="treatments" class="mb-4 mt-2">
+                                        <table id="treatments" class=" mb-4 mt-2" style="font-size:12px">
                                             <thead>
                                                 <tr>
                                                     <th>รายการที่สามารถจ่ายได้</th>
@@ -68,9 +68,32 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <tr v-for="item in inv.invoicedtVerify.items" :key="item.listNo" >
+                                                    <td>
+                                                        <p class="mb-0">{{item.treatName}}</p>
+                                                        <p class="mb-0" v-if="item.reqMoney != item.paidMoney" style="color:red; font-size:10px">*มีการหักรายการนี้ออก {{item.reqMoney - item.paidMoney}} บาท</p>
+                                                    </td>
+                                                    <td align="center" style="width:30%">{{item.paidMoney}} บาท</td>
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-12" style="width: 95%; margin-inline: auto;">
+                                        <table  id="treatments-danger" class="mb-4 mt-2" style="font-size:12px">
+                                            <thead>
                                                 <tr>
-                                                    <td>ค่ายากลับบ้าน</td>
-                                                    <td align="center" style="width:30%">80 บาท</td>
+                                                    <th>รายการที่ถูกตัดออก (ไม่ใช่ค่ารักษา)</th>
+                                                    <th>จำนวนเงิน</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="item in inv.invoiceCutList" :key="item.listNo" >
+                                                    <td>
+                                                        {{item.cutListName}}
+                                                    </td>
+                                                    <td align="center" style="width:30%">{{item.cutListPrice}} บาท</td>
 
                                                 </tr>
 
@@ -139,6 +162,34 @@
 </template>
 
 <style>
+    #treatments-danger {
+        border-collapse: collapse;
+        width: 100%;
+        border-radius: 20px;
+    }
+
+        #treatments-danger td, #treatments-danger th {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        #treatments-danger tr:nth-child(even) {
+            background-color: #ddd;
+        }
+
+        #treatments-danger tr:hover {
+            background-color: white;
+        }
+
+        #treatments-danger th {
+            border: 1.8px solid #ddd;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            background-color: indianred;
+            color: white;
+        }
+
     .inv-text {
         padding: 0px;
         margin-bottom: 2px;
@@ -284,6 +335,7 @@
                     .then((response) => {
                         this.bankNames = response.data.banks;
                         this.confirmMoneyData = response.data.confirmMoneyData;
+                        console.log(this.confirmMoneyData)
                         if (this.confirmMoneyData != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
                                 if (this.confirmMoneyData.bankAccount.accountBankName == this.bankNames[i].bankCode) {

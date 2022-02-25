@@ -31,6 +31,11 @@ namespace DataAccess.EFCore.DigitalClaimModels
         {
             return Procedures;
         }
+
+        protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<sp_InsertInvoiceHdLogFromIClaimResult>().HasNoKey().ToView(null);
+        }
     }
 
     public interface IDigitalclaimContextProceduresContract

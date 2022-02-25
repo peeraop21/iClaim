@@ -34,6 +34,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[IClaimInvoiceCutLists]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IClaimInvoiceDT_Verify]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[IClaimInvoiceStatus]",
          "ObjectType": 0
       },

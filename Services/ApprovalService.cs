@@ -891,7 +891,7 @@ namespace Services
             var iclaimApproval = await digitalclaimContext.IclaimApproval
                 .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.Status == 4).Select(s => new { s.SumReqMoney, s.SumPayMoney, s.InsertDate }).FirstOrDefaultAsync();
             var car = await rvpofficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
-            var idInvhdList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.IdInvhd, s.ReqMoney, s.PayMoney }).ToListAsync();
+            var iclaimInvoiceStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.IdInvhd, s.ReqMoney, s.PayMoney }).ToListAsync();
 
             CarViewModel carViewModel = new CarViewModel();
             carViewModel.FoundCarLicense = car.FoundCarLicense;
@@ -907,18 +907,41 @@ namespace Services
             confirmMoney.Car = carViewModel;
             confirmMoney.BankAccount = await GetIClaimBankAccountAsync(accNo, victimNo, reqNo);
 
-
+            //var invoicehds = await rvpofficeContext.Invoicehd.Where(w => iclaimInvoiceStatusList.Select(s => s.IdInvhd).ToList().Contains(w.IdInvhd)).ToListAsync();
+            var invoicehds = await rvpofficeContext.Invoicehd
+                .Join(rvpofficeContext.Hospital, invhd => invhd.Hosid, hos => hos.Hospitalid, (invhd, hos) => new { Invhd = invhd, HospitalName = hos.Hospitalname })
+                .Where(w => iclaimInvoiceStatusList.Select(s => s.IdInvhd).ToList().Contains(w.Invhd.IdInvhd))
+                .Select(s => new InvoicehdViewModel {
+                    IdInvhd = s.Invhd.IdInvhd,
+                    IdInvdt = s.Invhd.IdInvdt,
+                    Hostype = s.Invhd.Hostype,
+                    HospitalName = s.HospitalName,
+                    Takendate = s.Invhd.Takendate,
+                    Takentime = s.Invhd.Takentime,
+                    Suminv = s.Invhd.Suminv,
+                    BookNo = s.Invhd.BookNo,
+                    ReceiptNo = s.Invhd.ReceiptNo
+                }).ToListAsync();
+            
+            var invdtVerify = await GetIclaimInvoicedtVerify(invoicehds);
+            var invCutList = await digitalclaimContext.IclaimInvoiceCutLists
+                .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo)
+                .Select(s => new IclaimInvoiceCutListViewModel { IdInvhd = s.IdInvhd, CutListNo = s.CutListNo, CutListName = s.CutListName, CutListPrice = s.CutListPrice })
+                .ToListAsync();
             List<InvoiceStatusViewModel> invStatusList = new List<InvoiceStatusViewModel>();
-            for (int i = 0; i < idInvhdList.Count; i++)
+            for (int i = 0; i < iclaimInvoiceStatusList.Count; i++)
             {
-                var invhd = await rvpofficeContext.Invoicehd.Where(w => w.IdInvhd == idInvhdList[i].IdInvhd).Select(s => new { s.BookNo, s.ReceiptNo }).FirstOrDefaultAsync();
+                var invhd = invoicehds.Where(w => w.IdInvhd == iclaimInvoiceStatusList[i].IdInvhd).Select(s => new { s.BookNo, s.ReceiptNo }).FirstOrDefault();
+                var idInvdt = invoicehds.Where(w => w.IdInvhd == iclaimInvoiceStatusList[i].IdInvhd).Select(s => s.IdInvdt).FirstOrDefault();
                 InvoiceStatusViewModel invStatus = new InvoiceStatusViewModel();
-                var refId = idInvhdList[i].IdInvhd + "|" + accNo + "|" + victimNo;
-                invStatus.IdInvhd = idInvhdList[i].IdInvhd;
+                var refId = iclaimInvoiceStatusList[i].IdInvhd + "|" + accNo + "|" + victimNo;
+                invStatus.IdInvhd = iclaimInvoiceStatusList[i].IdInvhd;
                 invStatus.BookNo = invhd.BookNo;
                 invStatus.ReceiptNo = invhd.ReceiptNo;
-                invStatus.ReqMoney = idInvhdList[i].ReqMoney;
-                invStatus.PayMoney = idInvhdList[i].PayMoney;
+                invStatus.ReqMoney = iclaimInvoiceStatusList[i].ReqMoney;
+                invStatus.PayMoney = iclaimInvoiceStatusList[i].PayMoney;
+                invStatus.InvoicedtVerify = invdtVerify.Where(w => w.IdInvdt == idInvdt).FirstOrDefault();
+                invStatus.InvoiceCutList = invCutList.Where(w => w.IdInvhd == iclaimInvoiceStatusList[i].IdInvhd).ToList();
                 var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId)).Select(s => new { s.Paths, s.CreateDate, s.RunningNo }).OrderByDescending(o => o.RunningNo).FirstOrDefaultAsync();
                 invStatus.Base64Image = await attachmentService.DownloadFileFromECM(edocDetail.Paths);
                 invStatusList.Add(invStatus);
@@ -926,6 +949,93 @@ namespace Services
             confirmMoney.InvoiceList = invStatusList;
 
             return confirmMoney;
+        }
+        public async Task<List<IclaimInvoicedtVerifyViewModel>> GetIclaimInvoicedtVerify(List<InvoicehdViewModel> invoicehds)
+        {
+            var iclaimInvdtVerify = await digitalclaimContext.IclaimInvoiceDtVerify.Where(w => invoicehds.Select(s => s.IdInvdt).Contains(w.IdInvdt)).ToListAsync();                     
+            if (invoicehds.Count > 0)
+            {
+                var invhdHosTypeP = invoicehds.Where(w => w.Hostype != "G").Select(s => new { s.IdInvdt, s.HospitalName, s.Takendate, s.Takentime, s.Suminv }).ToList();
+                var invhdHosTypeG = invoicehds.Where(w => w.Hostype == "G").Select(s => new { s.IdInvdt, s.HospitalName, s.Takendate, s.Takentime, s.Suminv }).ToList();
+                if (invhdHosTypeP.Count > 0 && invhdHosTypeG.Count > 0)
+                {
+                    var invdtItemsP = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeP.Select(s => s.IdInvdt).Contains(w.invdtID)).ToListAsync();
+                    var invdtItemsPJoinInvdtVerify = invdtItemsP
+                        .Join(iclaimInvdtVerify, invdt => (invdt.invdtID, invdt.listNo), invdtver => (invdtver.IdInvdt, invdtver.Listno), (invdt, invdtver) => new { invDt = invdt, reqMoney = invdtver.InvPrice, paidMoney = invdtver.PaidPrice })
+                        .Select(s => new { invdtID = s.invDt.invdtID, listNo = s.invDt.listNo, treatName = s.invDt.treatName, reqMoney = s.reqMoney, paidMoney = s.paidMoney })
+                        .ToList();
+
+                    var invdtItemsG = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars3, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeG.Select(s => s.IdInvdt).Contains(w.invdtID))
+                    .ToListAsync();
+                    var invdtItemsGJoinInvdtVerify = invdtItemsG
+                        .Join(iclaimInvdtVerify, invdt => (invdt.invdtID, invdt.listNo), invdtver => (invdtver.IdInvdt, invdtver.Listno), (invdt, invdtver) => new { invDt = invdt, reqMoney = invdtver.InvPrice, paidMoney = invdtver.PaidPrice })
+                        .Select(s => new { invdtID = s.invDt.invdtID, listNo = s.invDt.listNo, treatName = s.invDt.treatName, reqMoney = s.reqMoney, paidMoney = s.paidMoney })
+                        .ToList();
+
+                    var mergeInvdtList = invdtItemsPJoinInvdtVerify.Concat(invdtItemsGJoinInvdtVerify).ToList();
+                    var mergeHospital = invhdHosTypeP.Concat(invhdHosTypeG).ToList();
+
+                    return mergeInvdtList.GroupBy(item => item.invdtID,
+                    (key, group) => new IclaimInvoicedtVerifyViewModel
+                    {
+                        IdInvdt = key,
+                        Hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
+                        TakenDate = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takendate.Value.ToString("dd/MM/yyyy")).FirstOrDefault(),
+                        TakenTime = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takentime).FirstOrDefault(),
+                        SumMoney = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Suminv).FirstOrDefault(),
+                        Items = group.Select(s => new { s.listNo, s.treatName, s.reqMoney, s.paidMoney }).OrderBy(o => o.listNo).ToList()
+                    }).ToList();
+                }
+                else if (invhdHosTypeP.Count > 0 && invhdHosTypeG.Count == 0)
+                {
+                    var invdtItemsP = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeP.Select(s => s.IdInvdt).Contains(w.invdtID)).ToListAsync();
+
+                    var invdtItemsPJoinInvdtVerify = invdtItemsP
+                        .Join(iclaimInvdtVerify, invdt => (invdt.invdtID, invdt.listNo), invdtver => (invdtver.IdInvdt, invdtver.Listno), (invdt, invdtver) => new { invDt = invdt, reqMoney = invdtver.InvPrice, paidMoney = invdtver.PaidPrice })
+                        .Select(s => new { invdtID = s.invDt.invdtID, listNo = s.invDt.listNo, treatName = s.invDt.treatName, reqMoney = s.reqMoney, paidMoney = s.paidMoney })
+                        .ToList();
+                    return invdtItemsPJoinInvdtVerify.GroupBy(item => item.invdtID,
+                   (key, group) => new IclaimInvoicedtVerifyViewModel
+                   {
+                       IdInvdt = key,
+                       Hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
+                       TakenDate = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takendate.Value.ToString("dd/MM/yyyy")).FirstOrDefault(),
+                       TakenTime = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takentime).FirstOrDefault(),
+                       SumMoney = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Suminv).FirstOrDefault(),
+                       Items = group.Select(s => new { s.listNo, s.treatName, s.reqMoney, s.paidMoney }).OrderBy(o => o.listNo).ToList()
+                   }).ToList();
+                }
+                else if (invhdHosTypeG.Count > 0 && invhdHosTypeP.Count == 0)
+                {
+                    var invdtItemsG = await rvpofficeContext.Invoicedt
+                    .Join(rvpofficeContext.Particulars3, invdt => invdt.Treatid, par => par.Id, (invdt, par) => new { invdtID = invdt.IdInvdt, listNo = invdt.Listno, treatName = par.Name, money = invdt.Price })
+                    .Where(w => invhdHosTypeG.Select(s => s.IdInvdt).Contains(w.invdtID))
+                    .ToListAsync();
+                    var invdtItemsGJoinInvdtVerify = invdtItemsG
+                        .Join(iclaimInvdtVerify, invdt => ( invdt.invdtID, invdt.listNo ), invdtver => ( invdtver.IdInvdt, invdtver.Listno ), (invdt, invdtver) => new { invDt = invdt, reqMoney = invdtver.InvPrice, paidMoney = invdtver.PaidPrice })
+                        .Select(s => new { invdtID = s.invDt.invdtID, listNo = s.invDt.listNo, treatName = s.invDt.treatName, reqMoney = s.reqMoney, paidMoney = s.paidMoney })
+                        .ToList();
+
+                    return invdtItemsGJoinInvdtVerify.GroupBy(item => item.invdtID,
+                    (key, group) => new IclaimInvoicedtVerifyViewModel
+                    {
+                        IdInvdt = key,
+                        Hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
+                        TakenDate = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takendate.Value.ToString("dd/MM/yyyy")).FirstOrDefault(),
+                        TakenTime = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Takentime).FirstOrDefault(),
+                        SumMoney = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.Suminv).FirstOrDefault(),
+                        Items = group.Select(s => new { s.listNo, s.treatName, s.reqMoney, s.paidMoney }).OrderBy(o => o.listNo).ToList()
+                    }).ToList();
+                }
+            }
+
+            return null;
         }
 
         public async Task<ApprovalDetailViewModel> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard)
@@ -1237,6 +1347,8 @@ namespace Services
             
             return "Success";
         }
+
+
 
        
     }

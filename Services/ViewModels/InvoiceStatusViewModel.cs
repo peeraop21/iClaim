@@ -12,5 +12,7 @@ namespace Services.ViewModels
         public string ReceiptNo { get; set; }
         public double? ReqMoney { get; set; }
         public double? PayMoney { get; set; }
+        public IclaimInvoicedtVerifyViewModel InvoicedtVerify { get; set; }
+        public List<IclaimInvoiceCutListViewModel> InvoiceCutList { get; set; }
     }
 }

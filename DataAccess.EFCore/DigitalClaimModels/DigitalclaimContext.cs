@@ -22,6 +22,8 @@ namespace DataAccess.EFCore.DigitalClaimModels
         public virtual DbSet<IclaimBankAccount> IclaimBankAccount { get; set; }
         public virtual DbSet<IclaimBankAccountLog> IclaimBankAccountLog { get; set; }
         public virtual DbSet<IclaimCheckDocuments> IclaimCheckDocuments { get; set; }
+        public virtual DbSet<IclaimInvoiceCutLists> IclaimInvoiceCutLists { get; set; }
+        public virtual DbSet<IclaimInvoiceDtVerify> IclaimInvoiceDtVerify { get; set; }
         public virtual DbSet<IclaimInvoiceStatus> IclaimInvoiceStatus { get; set; }
         public virtual DbSet<IclaimInvoiceStatusLog> IclaimInvoiceStatusLog { get; set; }
         public virtual DbSet<IclaimMasterTypes> IclaimMasterTypes { get; set; }
@@ -200,6 +202,62 @@ namespace DataAccess.EFCore.DigitalClaimModels
                 entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<IclaimInvoiceCutLists>(entity =>
+            {
+                entity.HasKey(e => new { e.IdInvhd, e.CutListNo });
+
+                entity.ToTable("IClaimInvoiceCutLists");
+
+                entity.Property(e => e.IdInvhd).HasColumnName("id_invhd");
+
+                entity.Property(e => e.AccNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CutListName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Ip)
+                    .HasColumnName("IP")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecordBy)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<IclaimInvoiceDtVerify>(entity =>
+            {
+                entity.HasKey(e => new { e.IdInvdt, e.Treatid })
+                    .HasName("PK_IClaimInvoiceDtVerify");
+
+                entity.ToTable("IClaimInvoiceDT_Verify");
+
+                entity.Property(e => e.IdInvdt).HasColumnName("id_invdt");
+
+                entity.Property(e => e.Treatid).HasColumnName("treatid");
+
+                entity.Property(e => e.Ip)
+                    .HasColumnName("ip")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Listno).HasColumnName("listno");
+
+                entity.Property(e => e.Recordby)
+                    .HasColumnName("recordby")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Recorddate)
+                    .HasColumnName("recorddate")
+                    .HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<IclaimInvoiceStatus>(entity =>
             {
                 entity.HasKey(e => e.IdInvhd)
@@ -301,6 +359,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     .HasMaxLength(500);
             });
 
+            OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
         }
 
