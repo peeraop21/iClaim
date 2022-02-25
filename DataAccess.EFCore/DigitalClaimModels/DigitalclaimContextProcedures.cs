@@ -34,13 +34,13 @@ namespace DataAccess.EFCore.DigitalClaimModels
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<sp_InsertInvoiceHdLogFromIClaimResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp_InsertInvoiceLogFromIClaimResult>().HasNoKey().ToView(null);
         }
     }
 
     public interface IDigitalclaimContextProceduresContract
     {
-        Task<int> sp_InsertInvoiceHdLogFromIClaimAsync(long? IdInvHd, string AccNo, int? VictimNo, string UserIdLine, string IP, CancellationToken cancellationToken = default);
+        Task<int> sp_InsertInvoiceLogFromIClaimAsync(string flag, long? IdInvHd, long? IdIndDt, string AccNo, int? VictimNo, string UserIdLine, string IP, string RecordComment, CancellationToken cancellationToken = default);
     }
 
     public partial class DigitalclaimContextProcedures
@@ -52,7 +52,7 @@ namespace DataAccess.EFCore.DigitalClaimModels
             _context = context;
         }
 
-        public virtual async Task<int> sp_InsertInvoiceHdLogFromIClaimAsync(long? IdInvHd, string AccNo, int? VictimNo, string UserIdLine, string IP, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp_InsertInvoiceLogFromIClaimAsync(string flag, long? IdInvHd, long? IdIndDt, string AccNo, int? VictimNo, string UserIdLine, string IP, string RecordComment, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -65,8 +65,21 @@ namespace DataAccess.EFCore.DigitalClaimModels
             {
                 new SqlParameter
                 {
+                    ParameterName = "flag",
+                    Size = 50,
+                    Value = flag ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                new SqlParameter
+                {
                     ParameterName = "IdInvHd",
                     Value = IdInvHd ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.BigInt,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "IdIndDt",
+                    Value = IdIndDt ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.BigInt,
                 },
                 new SqlParameter
@@ -96,9 +109,16 @@ namespace DataAccess.EFCore.DigitalClaimModels
                     Value = IP ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
+                new SqlParameter
+                {
+                    ParameterName = "RecordComment",
+                    Size = 200,
+                    Value = RecordComment ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp_InsertInvoiceHdLogFromIClaim] @IdInvHd, @AccNo, @VictimNo, @UserIdLine, @IP", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp_InsertInvoiceLogFromIClaim] @flag, @IdInvHd, @IdIndDt, @AccNo, @VictimNo, @UserIdLine, @IP, @RecordComment", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

@@ -105,12 +105,12 @@ namespace Core.Controllers
 
             return Ok(new { reqNo = result[0].IclaimAppNo });
         }
-
+     
         [Authorize]
-        [HttpGet("UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}")]
-        public async Task<IActionResult> UpdateStatus(string accNo, int victimNo, int appNo, string status)
+        [HttpPost("ConfirmMoney")]
+        public async Task<IActionResult> ConfirmMoney([FromBody] ReqDataViewModel model)
         {
-            return Ok(await approvalService.UpdateApprovalStatusAsync(accNo.Replace('-', '/'), victimNo, appNo, status, false));
+            return Ok(await approvalService.UpdateApprovalStatusAsync(model.AccNo.Replace('-', '/'), model.VictimNo, model.ReqNo, "ConfirmMoney", false));
         }
 
         [Authorize]

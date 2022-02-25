@@ -55,13 +55,19 @@
                     <div style="color: red; padding-left: 5px" v-for="(value, index) in bookbankNotPassDescList" :key="index">
                         - {{bookbankNotPassDescList[index]}}
                     </div>
+                    <div style="color: #2C3E50; padding-left: 5px"  v-if="documentCheck.bookbankComment">
+                        *หมายเหตุเพิ่มเติม : {{documentCheck.bookbankComment}}
+                    </div>
                 </div>
             </div>
-            <div v-if="invNotPassDescList.length > 0" style="padding-left:10px">
+            <div v-if="invNotPassDescList.length > 0" style="padding-left: 10px; margin-top: 10px;">
                 <div style="color: var(--main-color)" v-for="(input, indexi) in invNotPassDescList" :key="indexi">
                     ใบเสร็จที่ : {{indexi + 1}}
                     <div style="color: red; padding-left: 5px" v-for="(value, indexj) in invNotPassDescList[indexi]" :key="indexj">
                         - {{invNotPassDescList[indexi][indexj]}}
+                    </div>
+                    <div style="color: #2C3E50; padding-left: 5px" v-if="invoicehd[indexi].invNotPassComment">
+                        *หมายเหตุเพิ่มเติม : {{invoicehd[indexi].invNotPassComment}}
                     </div>
                 </div>
             </div>
@@ -957,7 +963,7 @@
                     .catch((error) => {
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
-                            this.getInvoicehdNotPass()
+                            this.initialDataEditApprovalPage()
                         }
                     });
             },

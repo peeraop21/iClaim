@@ -395,32 +395,7 @@
                     //}
                 });
             },
-            postData() {
-                var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}', 'ConfirmMoney')
-                var apiConfig = {
-                    headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }
-                axios.get(url, apiConfig)
-                    .then((response) => {
-                        if (response.data == "Success") {
-                            this.$swal.close();
-                            this.showSwalSuccess();
-                        } else {
-                            this.$swal.close();
-                            this.showSwalError();
-                        }
-
-
-                    })
-                    .catch((error) => {
-                        if (error.toString().includes("401")) {
-                            this.getJwtToken()
-                            this.postData()
-                        }
-                    });
-            },
+            
 
 
 

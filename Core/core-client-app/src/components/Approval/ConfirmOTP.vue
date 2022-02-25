@@ -219,21 +219,21 @@
                 if (this.countDown > 0) {
                     if (this.countDown < 120 && this.countDown > 60) {
                         this.disableBtnReqOTP = true
-                        setTimeout(() => {                            
+                        setTimeout(() => {
                             this.countDown -= 1
                             this.displayCountDown = (this.countDown < 70 && this.countDown >= 60) ? "01:0" + (this.countDown - 60) : "01:" + (this.countDown - 60)
                             this.countDownTimer()
                         }, 1000)
                     } else if (this.countDown <= 60) {
                         this.disableBtnReqOTP = true
-                        setTimeout(() => {                        
+                        setTimeout(() => {
                             this.countDown -= 1
                             this.displayCountDown = (this.countDown < 10 && this.countDown >= 0) ? "00:0" + (this.countDown) : "00:" + (this.countDown)
                             this.countDownTimer()
                         }, 1000)
                     } else {
                         this.disableBtnReqOTP = true
-                        setTimeout(() => {                          
+                        setTimeout(() => {
                             this.countDown -= 1
                             this.displayCountDown = "01:" + (this.countDown - 60)
                             this.countDownTimer()
@@ -358,7 +358,7 @@
                                     liff.closeWindow()
                                     window.close();
                                 }
-                                
+
                             }
                         })
 
@@ -384,37 +384,40 @@
 
                     });
                 } else if (this.$route.params.from == "ConfirmMoney") {
-
-                    var url = this.$store.state.envUrl + "/api/Approval/UpdateStatus/{accNo}/{victimNo}/{appNo}/{status}".replace('{accNo}', this.$route.params.accNo).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo).replace('{status}', this.$route.params.from)
-                    var apiConfig = {
+                    const url = this.$store.state.envUrl + "/api/Approval/ConfirmMoney";
+                    const body = {
+                        AccNo: this.$route.params.accNo,
+                        VictimNo: parseInt(this.$route.params.victimNo),
+                        ReqNo: parseInt(this.$route.params.appNo),
+                    };
+                    axios.post(url, JSON.stringify(body), {
                         headers: {
-                            Authorization: "Bearer " + this.$store.state.jwtToken.token
+                            'Content-Type': 'application/json',
+                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }
-                    axios.get(url, apiConfig)
-                        .then((response) => {
-                            this.isLoading = false;
-                            if (response.data == "Success") {
-                                this.$swal({
-                                    icon: 'success',
-                                    title: 'ยืนยันรับจำนวนเงินเรียบร้อยแล้ว',
-                                    showCancelButton: false,
-                                    showDenyButton: false,
-                                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                                    confirmButtonColor: '#5c2e91',
-                                    willClose: () => {
-                                        this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
-                                    }
-                                })
-                            }
-                        })
-                        .catch((error) => {
-                            this.isLoading = false;
-                            if (error.toString().includes("401")) {
-                                this.getJwtToken()
-                                this.postData()
-                            }
-                        });
+                    }).then((response) => {
+                        this.isLoading = false;
+                        if (response.data == "Success") {
+                            this.$swal({
+                                icon: 'success',
+                                title: 'ยืนยันรับจำนวนเงินเรียบร้อยแล้ว',
+                                showCancelButton: false,
+                                showDenyButton: false,
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+                                    this.$router.push({ name: 'Approvals', params: { id: this.accData.stringAccNo } })
+                                }
+                            })
+                        }
+                    }).catch((error) => {
+                        this.isLoading = false;
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                            this.postData()
+                        }
+                    });
+                    
                 }
 
 
@@ -999,7 +1002,7 @@
                 this.fromText = "ส่งเอกสารเพิ่มเติม"
                 this.stampWatermarksFromEditApproval()
                 this.isLoading = false
-            } else if (this.$route.params.from == "CanselApproval") {                
+            } else if (this.$route.params.from == "CanselApproval") {
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ยกเลิกคำร้อง"
                 this.isLoading = false

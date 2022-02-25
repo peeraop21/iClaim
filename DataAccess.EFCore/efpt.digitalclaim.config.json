@@ -54,7 +54,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[sp_InsertInvoiceHdLogFromIClaim]",
+         "Name": "[dbo].[sp_InsertInvoiceLogFromIClaim]",
          "ObjectType": 1
       }
    ],

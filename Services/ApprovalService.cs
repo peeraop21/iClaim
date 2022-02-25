@@ -226,7 +226,7 @@ namespace Services
             for (int i = 0; i < invModel.Length; i++)
             {
                 var invhd = await rvpofficeContext.Invoicehd.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.IdInvhd == invModel[i].billNo).FirstOrDefaultAsync();
-                await storeProc.sp_InsertInvoiceHdLogFromIClaimAsync(invhd.IdInvhd, invhd.AccNo, invhd.VictimNo, userIdLine, ip);               
+                await storeProc.sp_InsertInvoiceLogFromIClaimAsync("InvoiceHd",invhd.IdInvhd, invhd.IdInvdt, invhd.AccNo, invhd.VictimNo, userIdLine, ip, "แก้ไขใบแจ้งหนี้ iclaim");               
 
 
 
@@ -683,6 +683,7 @@ namespace Services
 
         public async Task<string> UpdateApprovalStatusAsync(string accNo, int victimNo, int reqNo, string status, bool isHasInvCancel)
         {
+            var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             if (status == "ConfirmMoney")
             {
                 var approvalStatus = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).FirstOrDefaultAsync();
@@ -705,6 +706,20 @@ namespace Services
                 await digitalclaimContext.IclaimApprovalState.AddAsync(dataIclaimApprovalState);
 
                 var invoiceStatus = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).ToListAsync();
+
+                var invoicehd = await rvpofficeContext.Invoicehd.Where(w => invoiceStatus.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
+                var invoicedtVerify = await digitalclaimContext.IclaimInvoiceDtVerify.Where(w => invoicehd.Select(s => s.IdInvdt).Contains(w.IdInvdt)).ToListAsync();
+                for (int i = 0; i < invoicehd.Count; i++)
+                {
+                    await storeProc.sp_InsertInvoiceLogFromIClaimAsync("InvoiceHd", invoicehd[i].IdInvhd, invoicehd[i].IdInvdt, accNo, victimNo, invoiceStatus[0].RecordBy, ip, "ผสภ ยืนยันจำนวนเงิน iClaim");
+                    var invoicedt = await rvpofficeContext.Invoicedt.Where(w => w.IdInvdt == invoicehd[i].IdInvdt).ToListAsync();
+                    await storeProc.sp_InsertInvoiceLogFromIClaimAsync("InvoiceDt", invoicehd[i].IdInvhd, invoicehd[i].IdInvdt, accNo, victimNo, invoiceStatus[0].RecordBy, ip, null);
+                    for (int j = 0; j < invoicedt.Count; j++)
+                    {
+                        invoicedt[j].Price = invoicedtVerify.Where(w => w.IdInvdt == invoicedt[j].IdInvdt && w.Listno == invoicedt[j].Listno && w.Treatid == invoicedt[j].Treatid).Select(s => s.PaidPrice).FirstOrDefault();
+                    }
+                    invoicehd[i].Suminv = invoicedt.Select(s => s.Price).Sum();
+                }
                 for (int i = 0; i < invoiceStatus.Count; i++)
                 {
                     var lastInvoiceStatusState = await digitalclaimContext.IclaimInvoiceStatusLog
@@ -733,7 +748,7 @@ namespace Services
 
 
 
-
+                await rvpofficeContext.SaveChangesAsync();
                 await digitalclaimContext.SaveChangesAsync();
                 return "Success";
             }
@@ -846,7 +861,7 @@ namespace Services
             }
             else if (status == 2) //หาใบเสร็จที่ตรวจแล้วไม่ผ่าน
             {
-                var invStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.Status == status).Select(s => new { s.IdInvhd, s.InvCommentTypeId }).ToListAsync();
+                var invStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo && w.Status == status).Select(s => new { s.IdInvhd, s.InvCommentTypeId, s.InvDocComment }).ToListAsync();
                 var query = await rvpofficeContext.Invoicehd.Where(w => invStatusList.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
                 
 
@@ -869,6 +884,7 @@ namespace Services
                     invNotPass.Dispensedate = query[i].Dispensedate;
                     invNotPass.Dispensetime = query[i].Dispensetime;
                     invNotPass.InvNotPassTypeId = invStatusList.Where(w => w.IdInvhd == query[i].IdInvhd).Select(s => s.InvCommentTypeId).FirstOrDefault();
+                    invNotPass.InvNotPassComment = invStatusList.Where(w => w.IdInvhd == query[i].IdInvhd).Select(s => s.InvDocComment).FirstOrDefault();
                     invNotPassList.Add(invNotPass);
                 }
                 return invNotPassList;
@@ -950,7 +966,7 @@ namespace Services
 
             return confirmMoney;
         }
-        public async Task<List<IclaimInvoicedtVerifyViewModel>> GetIclaimInvoicedtVerify(List<InvoicehdViewModel> invoicehds)
+        private async Task<List<IclaimInvoicedtVerifyViewModel>> GetIclaimInvoicedtVerify(List<InvoicehdViewModel> invoicehds)
         {
             var iclaimInvdtVerify = await digitalclaimContext.IclaimInvoiceDtVerify.Where(w => invoicehds.Select(s => s.IdInvdt).Contains(w.IdInvdt)).ToListAsync();                     
             if (invoicehds.Count > 0)

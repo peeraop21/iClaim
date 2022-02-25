@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.EFCore.DigitalClaimModels
 {
-    public partial class sp_InsertInvoiceHdLogFromIClaimResult
+    public partial class sp_InsertInvoiceLogFromIClaimResult
     {
     }
 }
