@@ -356,7 +356,7 @@
                                     </div>
                                 </div>
                                 <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @input="calMoney" @change="rmLeadingZero(index)" min="1" max="35000" :class="{ 'is-invalid': input.money.$error }" />
+                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="rmLeadingZero(index)"  v-mask="'####'"  :class="{ 'is-invalid': input.money.$error }" />
                                 <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                                 <div class="row">
                                     <div class="col-8">
@@ -511,7 +511,7 @@
                 typePatient: 0,
                 typeContect: 1,
                 bills: [{
-                    billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: ""
+                    billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: "0", hospitalized_date: "", hospitalized_time: ""
                     , out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: ""
                     , file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
                     , isCancel: false
@@ -1457,6 +1457,19 @@
                             }
                         })
                         return false;
+                    } else if (this.bills[i].money == "0") {
+                        this.$swal({
+                            icon: 'warning',
+                            text: 'กรุณาระบุจำนวนเงินให้ครบถ้วน',
+                            showCancelButton: false,
+                            showDenyButton: false,
+                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                            confirmButtonColor: '#5c2e91',
+                            willClose: () => {
+
+                            }
+                        })
+                        return false;
                     }
                 }
                 console.log("old", this.beforeInputBank)
@@ -1664,13 +1677,45 @@
 
             },
             rmLeadingZero(index) {
-                this.bills[index].money = parseFloat(this.bills[index].money)
-                this.bills[index].money = this.bills[index].money.toString()
+                let sum = 0;
+                for (let i = 0; i < this.bills.length; i++) {
+                    if (i != index) {
+                        sum = sum + parseFloat(this.bills[i].money)
+                    }
+                }
+                if ((sum + parseFloat(this.bills[index].money)) > 2000) {
+                    this.bills[index].money = 2000 - sum
+                    this.bills[index].money = this.bills[index].money.toString()
+                    this.calMoney()
+                } else {
+                    this.bills[index].money = parseFloat(this.bills[index].money)
+                    this.bills[index].money = this.bills[index].money.toString()
+                    this.calMoney()
+                }
             },
             addField(value, fieldType) {
+                let sum = 0;
+                for (let i = 0; i < this.bills.length; i++) {
+
+                    sum = sum + parseFloat(this.bills[i].money)
+                }
+                if (sum >= 2000) {
+                    this.$swal({
+                        icon: 'warning',
+                        text: 'ไม่สามารถเพิ่มใบเสร็จได้ เนื่องจากจำนวนเงินถึง 2000 บาทแล้ว',
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+                        }
+                    })
+                    return false
+                }
                 var index = this.bills.length + 1
                 fieldType.push({
-                    billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "", hospitalized_date: "", hospitalized_time: "",
+                    billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "0", hospitalized_date: "", hospitalized_time: "",
                     out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",
                     file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ",
                     isCancel: false
