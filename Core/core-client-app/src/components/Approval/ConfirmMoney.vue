@@ -84,7 +84,7 @@
                                         <table  id="treatments-danger" class="mb-4 mt-2" style="font-size:12px">
                                             <thead>
                                                 <tr>
-                                                    <th>รายการที่ถูกตัดออก (ไม่ใช่ค่ารักษา)</th>
+                                                    <th>รายการที่ไม่สามารถจ่ายได้</th>
                                                     <th>จำนวนเงิน</th>
                                                 </tr>
                                             </thead>

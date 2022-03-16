@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,27 +16,31 @@ namespace Core
         private readonly ILogger _logger;
         private readonly HttpClient httpClient;
         private readonly IWebHostEnvironment env;
+        private readonly IConfiguration configuration;
 
-        public CoreWarmupService(ILogger<CoreWarmupService> logger, IWebHostEnvironment env)
+
+        public CoreWarmupService(ILogger<CoreWarmupService> logger, IWebHostEnvironment env, IConfiguration configuration)
         {
             _logger = logger;
             httpClient = new HttpClient();
             this.env = env;
+            this.configuration = configuration;
         }
 
         public  Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting IHostedService...");
-
             if (env.IsDevelopment())
             {
-                httpClient.GetAsync("http://localhost:50598/api/master/Warmup");
-                httpClient.GetAsync("http://localhost:50598/api/genpdf/WarmGenPDF");
+                var baseUrl = configuration["BaseUrl:Local"];
+                httpClient.GetAsync(baseUrl + "api/master/Warmup");
+                //httpClient.GetAsync(baseUrl + "api/genpdf/WarmGenPDF");
             }
             else
             {
-                httpClient.GetAsync("https://ts2digitalclaim.rvp.co.th/api/master/Warmup");
-                httpClient.GetAsync("https://ts2digitalclaim.rvp.co.th/api/genpdf/WarmGenPDF");
+                var baseUrl = configuration["BaseUrl:Publish"];
+                httpClient.GetAsync(baseUrl + "api/master/Warmup");
+                //httpClient.GetAsync(baseUrl + "api/genpdf/WarmGenPDF");
 
             }
 

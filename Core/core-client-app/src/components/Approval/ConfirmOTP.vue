@@ -389,6 +389,7 @@
                         AccNo: this.$route.params.accNo,
                         VictimNo: parseInt(this.$route.params.victimNo),
                         ReqNo: parseInt(this.$route.params.appNo),
+                        UserIdCard: this.$store.state.userStateData.idcardNo
                     };
                     axios.post(url, JSON.stringify(body), {
                         headers: {

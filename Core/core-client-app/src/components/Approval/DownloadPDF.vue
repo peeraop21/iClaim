@@ -34,15 +34,13 @@
         },
         methods: {
             getPDF() {
-                var url = this.$store.state.envUrl + '/api/genpdf';
+                var url = this.$store.state.envUrl + '/api/Approval/DownloadPdfBoto3'
                 const body = {
-                    AccNo: this.$route.params.accNo,
-                    VictimNo: parseInt(this.$route.params.victimNo),
-                    ReqNo: parseInt(this.$route.params.appNo),
-                    Channel: 'HOSPITAL',
-                    UserIdCard: this.$route.params.userIdCard
+                    SystemId: '02',
+                    TemplateId: '03',
+                    DocumentId: '06',
+                    RefId: this.$route.params.appNo + '|' + this.$route.params.accNo + '|' + this.$route.params.victimNo,
                 };
-
                 axios.post(url, JSON.stringify(body), {
                     responseType: 'arraybuffer',
                     headers: {
@@ -87,6 +85,8 @@
                     .catch(function (error) {
                         alert(error);
                     });
+
+                
 
             }
 
