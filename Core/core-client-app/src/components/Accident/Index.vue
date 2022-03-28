@@ -107,7 +107,7 @@
                                         </p>
                                     </div>
                                     <div style="text-align: center">
-                                        <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ใช้สิทธิ์</router-link>
+                                        <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ข้อมูลสิทธิ์</router-link>
                                         <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'Approvals', params: { id: accident.stringAccNo}}">ติดตามสถานะ<span v-if="accident.countNotify > 0" class="icon-count-notify">{{accident.countNotify}}</span></router-link>
                                     </div>
                                 </div>

@@ -60,7 +60,7 @@
                             <br>
 
                             <router-link v-if="accData.crippledRightsBalance != 35000" class="btn-rights-history" :to="{ name: 'RightsHistory', params: { id: accData.stringAccNo, typerights: 2}}">ประวัติการใช้สิทธิ์</router-link>
-                            <router-link class="btn-select-rights" :to="{ name: 'ApprovalCreate', params: { id: accData.stringAccNo, type: 2}}" hidden>เลือก</router-link>
+                            <router-link class="btn-select-rights" :to="{ name: 'ApprovalCreate', params: { id: accData.stringAccNo, type: 2}}" hidden>ใช้สิทธิ์</router-link>
                         </div>
                     </div>
                     <br>
