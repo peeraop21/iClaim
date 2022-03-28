@@ -866,7 +866,6 @@
                 }
                 axios.get(url, apiConfig)
                     .then((response) => {
-                        console.log("new ", response)
                         this.wounded = response.data.woundeds.woundedList;
                         this.organ = response.data.woundeds.organ;
                         this.invoicehd = response.data.invoicesNotPass;
@@ -1472,8 +1471,7 @@
                         return false;
                     }
                 }
-                console.log("old", this.beforeInputBank)
-                console.log("new", this.inputBank)
+
                 var checkBankAccountEditList = this.bookbankNotPassDescList
                 if (checkBankAccountEditList) {
                     for (let i = 0; i < checkBankAccountEditList.length; i++) {

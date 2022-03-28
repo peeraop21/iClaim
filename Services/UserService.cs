@@ -56,7 +56,7 @@ namespace Services
 
         public async Task<bool> CheckRegister(string userToken)
         {
-            var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).Select(s => s.Kycno).OrderByDescending(o => o).FirstOrDefaultAsync();
+            var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken && w.Status == "Y").Select(s => s.Kycno).OrderByDescending(o => o).FirstOrDefaultAsync();
             if (query <= 0)
             {
                 return false;

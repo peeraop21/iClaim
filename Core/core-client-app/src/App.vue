@@ -34,9 +34,20 @@
         },
         created() {
             if (process.env.NODE_ENV == "production") {
-                this.$store.state.envUrl = "https://ts2digitalclaim.rvp.co.th"
+                this.$store.state.envUrl = "https://ts2digitalclaim.rvp.co.th" // demo
+                this.$store.state.liffId = "1655252355-n08QYdAA" //demo
+
+                //this.$store.state.envUrl = "https://iclaimapi.rvpeservice.com" // UAT
+                //this.$store.state.liffId = "1655252355-Jla4mbZZ" //UAT
+
+                //this.$store.state.envUrl = "https://iclaimapi.rvpeservice.com" // prod
+                //this.$store.state.liffId = "1655252355-Jla4mbZZ" //prod
+                
+
             } else if (process.env.NODE_ENV == "development") {
                 this.$store.state.envUrl = "http://localhost:50598"
+                this.$store.state.liffId = "1655252355-n08QYdAA" //demo
+
             }
             
         }

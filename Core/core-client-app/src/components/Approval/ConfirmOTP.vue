@@ -314,7 +314,6 @@
 
                 }
                 else if (this.$route.params.from == "Create") {
-                    console.log(this.$store.state.inputApprovalData)
                     axios.post(this.$store.state.envUrl + "/api/Approval", JSON.stringify(this.$store.state.inputApprovalData), {
                         headers: {
                             'Content-Type': 'application/json',
@@ -799,7 +798,6 @@
 
                         watermark([this.$store.state.inputApprovalData.BillsData[i].editBillImage], options)
                             .dataUrl(function (target) {
-                                console.log("Target: ", target)
                                 var context = target.getContext('2d');
                                 var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                                 var x = (target.width / 2);
@@ -924,7 +922,6 @@
                 };
                 watermark([imgDataUrl], faceOptions)
                     .dataUrl(function (target) {
-                        console.log("Target: ", target)
                         var context = target.getContext('2d');
                         var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                         var x = (target.width / 2);
@@ -972,7 +969,6 @@
                     })
                     .then((imgFace) => {
                         this.$store.state.inputUserData.base64Face = imgFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-                        console.log("addFace: ", this.$store.state.inputUserData.base64Face)
                     }).catch(function (error) {
                         alert(error);
                     });

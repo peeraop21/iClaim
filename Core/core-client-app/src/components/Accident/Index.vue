@@ -166,7 +166,6 @@
                             request_time: response.data.time,
                             signature: response.data.signature
                         };
-                        console.log(JSON.stringify(body))
 
                         axios.post("https://digitalgatewaytest.digital-access.com/api/auth/token", JSON.stringify(body), {
                             headers: {

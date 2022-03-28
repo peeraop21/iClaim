@@ -280,7 +280,6 @@
                 this.srcBigImage = src
             },
             tik() {
-                console.log(this.acceptR)
             },
             showSwal() {
                 this.$swal({
@@ -335,7 +334,6 @@
                     .then((response) => {
                         this.bankNames = response.data.banks;
                         this.confirmMoneyData = response.data.confirmMoneyData;
-                        console.log(this.confirmMoneyData)
                         if (this.confirmMoneyData != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
                                 if (this.confirmMoneyData.bankAccount.accountBankName == this.bankNames[i].bankCode) {

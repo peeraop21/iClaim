@@ -544,7 +544,7 @@
                                     'x-api-key': 'uEj0XAy4y69YPgK6IPTFnaVZn7ZsYaum9gJBWowg'
                                 }
                             }).then((response) => {
-
+                                console.log(response)
                                 var result = response.data;
                                 let resultCompare = (result.compare.result[0].similarity * 100).toFixed(2);
 
@@ -604,7 +604,7 @@
                 //--Publish--
                 if (liff.getOS() == "android") {
                     await liff.init({
-                        liffId: '1655252355-n08QYdAA'
+                        liffId: this.$store.state.liffId
                     }).then(() => {
                         if (liff.isLoggedIn()) {
                             liff.getProfile().then(profile => {

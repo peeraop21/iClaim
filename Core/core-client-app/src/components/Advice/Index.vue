@@ -397,7 +397,7 @@
             if (process.env.NODE_ENV == "production") {
                 //--Publish--
                 await liff.init({
-                    liffId: '1655252355-n08QYdAA',
+                    liffId: this.$store.state.liffId,
                 }).then(() => {
                     if (liff.isLoggedIn()) {
 

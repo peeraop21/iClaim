@@ -26,7 +26,9 @@ export default new Vuex.Store({
             refCodeOtp:null
         },
         hasRegistered: false,
-        envUrl:null
+        envUrl: null,
+        liffId: null
+
 
   },
   mutations: {
