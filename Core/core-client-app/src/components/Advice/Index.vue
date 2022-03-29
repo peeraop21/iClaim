@@ -268,7 +268,7 @@
         },
         data() {
             return {
-                msg: "ดำเนินการต่อ",
+                msg: "ดำเนินการต่อ (ข้อมูลรับแจ้งเหตุ)",
                 active: false,
                 active2: false,
                 active3: false,

@@ -7,7 +7,7 @@
                  :is-full-page="true">
 
         </loading>
-        <h2 id="header2" class="mb-4">กรอกข้อมูล/แนบเอกสารเพิ่มเติม</h2>
+        <h2 id="header2" class="mb-4">แก้ไขข้อมูล/แนบเอกสารเพิ่มเติม</h2>
         <div align="left">
             <p style="font-weight: bold">
                 <ion-icon name="newspaper-outline" style="font-size: 20px; margin-bottom: -5px;"></ion-icon> เลขที่รับแจ้ง:
@@ -444,7 +444,7 @@
         </div>
         <br />
         <br />
-        <button class="btn-confirm-money" type="button" @click="submit">ส่งเอกสารเพิ่มเติม</button>
+        <button class="btn-confirm-money" type="button" @click="submit">ยืนยัน/ส่งเอกสารเพิ่มเติม</button>
         <br>
         <br>
         <br>

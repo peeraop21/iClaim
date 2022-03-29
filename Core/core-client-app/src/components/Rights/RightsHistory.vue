@@ -78,7 +78,7 @@
                                                 </p>
                                             </div>
                                             <div style="text-align: center">
-                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, appNo: approvals.accAppNo, victimNo: approvals.accVictimNo, typerights: 1,sumMoney: approvals.apTotal}}">ดูเพิ่มเติม</router-link>
+                                                <router-link class="btn-select" :to="{ name: 'RightsHistoryDetail', params: { id: accData.stringAccNo, appNo: approvals.accAppNo, victimNo: approvals.accVictimNo, typerights: 1,sumMoney: approvals.apTotal}}">รายละเอียด</router-link>
 
                                             </div>
                                         </div>

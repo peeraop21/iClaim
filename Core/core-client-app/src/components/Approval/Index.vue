@@ -8,7 +8,7 @@
         </loading>
         <div class="row">
             <div class="col-12" align="center">
-                <h2 id="header2">ประวัติ/สถานะคำร้อง</h2>
+                <h2 id="header2">ติดตามสถานะคำร้อง</h2>
                 <section class="mt-4">
                     <div v-if="isHasIclaimApprovalData == true" style="height: 95%; width: 100%;">
                         <div class="accordion" v-for="iclaimApp in iclaimApprovalData" :key="iclaimApp.appNo">
@@ -64,8 +64,8 @@
                                         <br />
                                     </div>
                                     <div style="text-align: center">
-                                        <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'ApprovalEdit', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แนบเอกสารเพิ่มเติม</router-link>
-                                        <router-link class="btn-checked" v-if="iclaimApp.status == 4" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">ยอมรับจำนวนเงิน</router-link>
+                                        <router-link class="btn-select" v-if="iclaimApp.status == 2" :to="{ name: 'ApprovalEdit', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo }}" style="padding-right: 10px; padding-left: 10px">แก้ไข/แนบเอกสารเพิ่มเติม</router-link>
+                                        <router-link class="btn-checked" v-if="iclaimApp.status == 4" :to="{ name: 'ConfirmMoney', params: { id: iclaimApp.stringAccNo, appNo: iclaimApp.appNo}}">รายละเอียดการพิจารณา</router-link>
                                         <router-link class="btn-checked" v-if="iclaimApp.status == 9" :to="{ name: 'Rating', params: { id: iclaimApp.stringAccNo }}">ประเมินความพึงพอใจ</router-link>
                                     </div>
                                     <div style="text-align: center">
@@ -223,10 +223,10 @@
                         if (showNoti) {
                             var htmlMessage = "";
                             if (appNoDocumentNotPass.length > 0) {
-                                htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoDocumentNotPass + ' </strong><br>&emsp;&emsp;เอกสารของท่านไม่สมบูรณ์ กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"แนบเอกสารเพิ่มเติม"</label> เพื่อดูรายละเอียด และแนบเอกสารที่ไม่สมบูรณ์</p>'
+                                htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoDocumentNotPass + ' </strong><br>&emsp;&emsp;เอกสารของท่านไม่สมบูรณ์ กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"แก้ไข/แนบเอกสารเพิ่มเติม"</label> เพื่อดูรายละเอียด และแก้ไขข้อมูล/แนบเอกสารที่ไม่สมบูรณ์</p>'
                             }
                             if (appNoConfirmMoney.length > 0) {
-                                htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoConfirmMoney + ' </strong><br>&emsp;&emsp;เนื่องจากจำนวนเงินที่เจ้าหน้าที่พิจารณา ไม่ตรงตามจำนวนเงินที่ท่านส่งคำร้องขอไป กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"ยอมรับจำนวนเงิน"</label> เพื่อดูรายละเอียด และยอมรับจำนวนเงิน</p>'
+                                htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoConfirmMoney + ' </strong><br>&emsp;&emsp;เนื่องจากจำนวนเงินที่เจ้าหน้าที่พิจารณา ไม่ตรงตามจำนวนเงินที่ท่านส่งคำร้องขอไป กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"รายละเอียดการพิจารณา"</label> เพื่อดูรายละเอียด และยอมรับจำนวนเงิน</p>'
                                 
                             }
                             

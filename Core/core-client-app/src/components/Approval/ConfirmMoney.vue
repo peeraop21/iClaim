@@ -153,7 +153,7 @@
             </div>
             <div class="row" v-if="acceptR">
                 <br>
-                <button class="btn-confirm-money" type="button" @click="submit">{{lblButton}}</button>
+                <button class="btn-confirm-money" type="button" @click="submit">ยืนยันยอมรับจำนวนเงิน</button>
 
             </div>
         </div>
@@ -237,7 +237,6 @@
         data() {
             return {
                 acceptR: false,
-                lblButton: 'ยืนยันจำนวนเงิน',
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 bank: null,
