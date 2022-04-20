@@ -178,24 +178,28 @@ namespace Core.Controllers
             var resultMapToInvoicehd = _mapper.Map<UpdateInvoiceViewModel[]>(model.BillsData);
             var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);
             ECMViewModel ecmModel = new ECMViewModel();
-            
-            for (int i = 0; i < model.BillsData.Count; i++)
+
+            if (model.BillsData != null)
             {
-                if (resultMapToInvoicehd[i].isEditImage && !resultMapToInvoicehd[i].isCancel)
+                for (int i = 0; i < model.BillsData.Count; i++)
                 {
-                    ecmModel.SystemId = "02";
-                    ecmModel.TemplateId = "03";
-                    ecmModel.DocID = "01";                   
-                    ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo  /*+ "|" + model.AppNo*/;
-                    ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename;
-                    ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage;
-                    var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                    var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
-                    resultMapEdocDetail.Paths = invoiceEcmRes.Path;
-                    await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    if (resultMapToInvoicehd[i].isEditImage && !resultMapToInvoicehd[i].isCancel)
+                    {
+                        ecmModel.SystemId = "02";
+                        ecmModel.TemplateId = "03";
+                        ecmModel.DocID = "01";
+                        ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo  /*+ "|" + model.AppNo*/;
+                        ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename;
+                        ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage;
+                        var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                        var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                        resultMapEdocDetail.Paths = invoiceEcmRes.Path;
+                        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    }
+
                 }
-                
             }
+           
             if (resultMapBank.isEditBankImage)
             {
                 ecmModel.RefNo = model.AppNo + "|" + model.AccNo + "|" + model.VictimNo;

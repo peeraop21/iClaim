@@ -1,23 +1,36 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Advice from "@/components/Advice/Index.vue";
-import Accident from "@/components/Accident/Index.vue";
-import Rights from "@/components/Rights/Index.vue";
-import RightsHistory from "@/components/Rights/RightsHistory.vue";
-import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
-import ApprovalCreate from "@/components/Approval/Create.vue";
-import ConfirmOTP from "@/components/Approval/ConfirmOTP.vue";
-import Approvals from "@/components/Approval/Index.vue";
-import ApprovalDetail from "@/components/Approval/Detail.vue";
-import ConfirmMoney from "@/components/Approval/ConfirmMoney.vue";
-import Ocr from "@/components/Ocr/Index.vue";
-import Rating from "@/components/Rating/Index.vue";
-import ApprovalEdit from "@/components/Approval/Edit.vue";
-import DownloadPDF from "@/components/Approval/DownloadPDF.vue";
+import Advice from "@/views/Advice/Index.vue";
+import Accident from "@/views/Accident/Index.vue";
+import Rights from "@/views/Rights/Index.vue";
+import RightsHistory from "@/views/Rights/RightsHistory.vue";
+import RightsHistoryDetail from "@/views/Rights/RightsHistoryDetail.vue";
+import ApprovalCreate from "@/views/Approval/Create.vue";
+import ConfirmOTP from "@/views/Approval/ConfirmOTP.vue";
+import Approvals from "@/views/Approval/Index.vue";
+import ApprovalDetail from "@/views/Approval/Detail.vue";
+import ConfirmMoney from "@/views/Approval/ConfirmMoney.vue";
+import Ocr from "@/views/Ocr/Index.vue";
+import Rating from "@/views/Rating/Index.vue";
+import ApprovalEdit from "@/views/Approval/Edit.vue";
+import DownloadPDF from "@/views/Approval/DownloadPDF.vue";
+import Rtc from "@/components/WebRTC/Rtc.vue";
+import CameraRtc from "@/components/WebRTC/CameraRtc.vue";
+
 
 Vue.use(VueRouter)
 
 const routes = [
+    {
+        path: "/CameraRtc",
+        name: "CameraRtc",
+        component: CameraRtc,
+    },
+    {
+        path: "/Rtc",
+        name: "Rtc",
+        component: Rtc,
+    },
     {
         path: "/",
         name: "Advice",

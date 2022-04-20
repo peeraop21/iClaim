@@ -13,6 +13,13 @@
             <h2 id="header2">คำแนะนำ</h2>
             <br>
         </div>
+        <!--<router-link class="btn-select-rights" :to="{ name: 'Rtc'}">RTC</router-link>-->
+        <div hidden>
+            <router-link class="btn-select-rights" :to="{ name: 'CameraRtc'}">newRTC</router-link>
+            <button class="btn-select-rights" @click="showRtc=!showRtc">RTC</button>
+            <button class="btn-select-rights" @click="showNewRtc=!showRtc">newRTC</button>
+        </div>
+        
         <div class="row mb-2" @click="active=!active" style="margin-top: -10px">
             <div class="col-12">
                 <vs-card type="3" align="center">
@@ -219,35 +226,35 @@
                     2. ใบเสร็จรับเงินค่ารักษาพยาบาล
                 </p>
                 <br />
-                <!--<label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีเบิกค่าชดเชย นอนรักษาตัวในโรงพยาบาล (ผู้ป่วยใน)</strong></label>
-    <br />
-    <p>
-        1. สำเนาบัตรประจำตัวประชาชน
-        <br />
-        2. ใบเสร็จรับเงินค่ารักษาพยาบาล หรือใบสรุปหน้างบ หรือหนังสือรับรองการรักษาตัวเป็นผู้ป่วยในจากโรงพยาบาล
-    </p>
-    <br />
-    <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีทุพพลภาพถาวร หรือสูญเสียอวัยวะ</strong></label>
-    <br />
-    <p>
-        1. สำเนาบัตรประจำตัวประชาชน
-        <br />
-        2. ใบรับรองแพทย์หรือหลักฐานอื่นที่แสดงว่าผู้นั้นได้รับความเสียหายเพราะประสบภัยจากรถ และหลักฐานรับรองแสดงถึงการสูญเสียอวัยวะ หรือ ทุพพลภาพถาวร เช่น หนังสือรับรองความพิการ
-        <br />
-        3. สำเนาบันทึกประจำวันของพนักงานสอบสวน
-    </p>
-    <br />-->
-                <!-- <label class="space-title-procedure"><strong class="purple-title">เอกสารประกอบคำร้อง กรณีเสียชีวิต</strong></label>
-     <br />
-    <p>
-         1. ใบมรณบัตรของผู้ประสบภัยที่เสียชีวิต<br />
-         2. สำเนาทะเบียนบ้านของผู้เสียชีวิต<br />
-         3. สำเนาบัตรประจำตัวประชาชนของทายาทโดยธรรม<br />
-         4. สำเนาบันทึกประจำวันของพนักงานสอบสวน
-     </p>
-     <br />-->
+
             </div>
         </vs-dialog>
+        <!-- Dialog RTC -->
+        <b-modal v-model="showRtc"
+                 hide-footer
+                 hide-header
+                 hide-header-close>
+            <Rtc @base64="hiddenRtc" ref="rtc" class="text-center"></Rtc>
+        </b-modal>
+        <b-modal v-model="showNewRtc"
+                 hide-footer
+                 @hidden="hiddenRtc"
+                 hide-header
+                 hide-header-close>
+            <camera-rtc class="text-center"></camera-rtc>
+        </b-modal>
+        <img style="width: -webkit-fill-available;" src="" id="img555">
+        <!--<vs-dialog width="550px" center >
+            <template #header>
+                <h4 class="not-margin">
+                    RTC
+                </h4>
+            </template>
+            <div class="con-content" align="center">
+                <Rtc></Rtc>
+
+            </div>
+        </vs-dialog>-->
 
     </div>
 </template>
@@ -259,12 +266,15 @@
     import Loading from 'vue-loading-overlay';
     // Import stylesheet
 
-
+    import Rtc from '../../components/WebRTC/Rtc.vue'
+    import CameraRtc from '../../components/WebRTC/CameraRtc.vue'
 
     export default {
         name: 'Advice',
         components: {
-            Loading
+            Loading,
+            Rtc,
+            CameraRtc
         },
         data() {
             return {
@@ -276,12 +286,17 @@
                 passangerDialog: false,
                 page: 1,
                 registered: null,
-                isLoading: true
-
-
+                isLoading: true,
+                showRtc: false,
+                showNewRtc: false
             }
         },
         methods: {
+            hiddenRtc(value) {
+                this.showRtc = false
+                const previewImage1 = document.querySelector('#img555')
+                previewImage1.src = value
+            },
             getJwtToken() {
                 var urlJwt = this.$store.state.envUrl + '/api/jwt'
                 axios.post(urlJwt, {
@@ -289,8 +304,8 @@
                     Email: 'peeran@rvp.co.th'
                 }).then((response) => {
                     this.$store.state.jwtToken = response.data
-                    this.checkRegister()
-
+                    /*this.checkRegister()*/
+                    this.isLoading = false
                 }).catch(function (error) {
                     alert(error)
                 })
@@ -310,10 +325,7 @@
                         }, 1000)
                         /*this.userApi = response.data;*/
                         this.registered = response.data;
-
-
                         if (this.registered == false) {
-
                             this.$swal({
                                 icon: 'info',
                                 text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
@@ -335,7 +347,6 @@
                                     }
                                 }
                             })
-
                             /*this.$router.push({ name: 'Ocr' })*/
                         }
 
@@ -367,11 +378,9 @@
                                 /*footer: '<a href="">Why do I have this issue?</a>'*/
                                 showCancelButton: false,
                                 showDenyButton: false,
-
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-
                                     if (liff.getOS() == "ios") {
                                         this.$router.push('/Ocr')
                                     } else {
@@ -380,7 +389,6 @@
                                             external: true
                                         });
                                     }
-
                                 }
                             })
                         } else {
@@ -391,7 +399,6 @@
                         alert(error);
                     });
             }
-
         },
         async created() {
             if (process.env.NODE_ENV == "production") {
@@ -400,20 +407,16 @@
                     liffId: this.$store.state.liffId,
                 }).then(() => {
                     if (liff.isLoggedIn()) {
-
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
                         }).catch(err => alert(err));
-
                     } else {
                         liff.login();
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
                             this.getJwtToken()//ตรวจสอบการลงทะเบียน
                         }).catch(err => alert(err));
-
-
                     }
                 }).catch(err => {
                     alert(err);
@@ -421,10 +424,8 @@
                 });
             } else if (process.env.NODE_ENV == "development") {
                 //--LocalHost--
-                this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069Mock";
+                this.$store.state.userTokenLine = "Ub3ab146d6efded0db3dc7404f94966cb";
                 this.getJwtToken()//ตรวจสอบการลงทะเบียน
-                
-
             }
 
 

@@ -590,6 +590,15 @@
             };
         },
         validations() {
+            if (this.bills.length == 1 && this.bills[0].bill_no == "" && this.bills[0].billNo == 1) {
+                return {                   
+                    inputBank: {
+                        accountName: { required },
+                        accountNumber: { required },
+                        accountBankName: { required }
+                    },
+                }
+            }
             if (this.bills.some(s => s.typePatient === "IPD")) {
                 return {
                     bills: {
@@ -1392,85 +1401,88 @@
                 }
                 //เช็คการแก้ไขตาม types ของใบเสร็จ
                 var checkInvEditList = this.invNotPassDescList
-                for (let i = 0; i < this.bills.length; i++) {
-                    if (!this.bills[i].isCancel) {
-                        for (let j = 0; j < this.invMustCanselList.length; j++) {
-                            if (this.invMustCanselList[j].idInvhd == this.bills[i].billNo) {
-                                this.swalValidateAndCheckEdit('ยกเลิกใบเสร็จค่ารักษาที่ไม่ได้เกิดเหตุจากรถ')
-                                return false
+                if (checkInvEditList.length > 0) {
+                    for (let i = 0; i < this.bills.length; i++) {
+                        if (!this.bills[i].isCancel) {
+                            for (let j = 0; j < this.invMustCanselList.length; j++) {
+                                if (this.invMustCanselList[j].idInvhd == this.bills[i].billNo) {
+                                    this.swalValidateAndCheckEdit('ยกเลิกใบเสร็จค่ารักษาที่ไม่ได้เกิดเหตุจากรถ')
+                                    return false
+                                }
                             }
                         }
-                    }
-                    if (checkInvEditList) {
-                        for (let j = 0; j < checkInvEditList[i].length; j++) {
-                            for (let l = 0; l < this.invNotPassTypesList.length; l++) {
-                                if (checkInvEditList[i][j] == this.invNotPassTypesList[l].typeName && checkInvEditList[i][j] != 'ไม่ใช่ใบเสร็จค่ารักษาที่เกิดเหตุจากรถ') {
-                                    if (this.bills[i].money == this.invoicehd[i].suminv && checkInvEditList[i][j] == 'ข้อมูลจำนวนเงินไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].selectHospitalId == this.invoicehd[i].hosid && checkInvEditList[i][j] == 'ข้อมูลโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].bookNo == this.invoicehd[i].bookNo && checkInvEditList[i][j] == 'ข้อมูลเล่มที่ใบเสร็จไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].bill_no == this.invoicehd[i].receiptNo && checkInvEditList[i][j] == 'ข้อมูลเลขที่ใบเสร็จไม่ตรงกับภาพถ่ายไม่เสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].typePatient == this.invoicehd[i].victimType && checkInvEditList[i][j] == 'ข้อมูลประเภทผู้ป่วยไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].hospitalized_date == moment(this.invoicehd[i].takendate).format("YYYY-MM-DD") && checkInvEditList[i][j] == 'ข้อมูลวันที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].hospitalized_time == this.invoicehd[i].takentime.replace('.', ':') && checkInvEditList[i][j] == 'ข้อมูลเวลาที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].out_hospital_date == moment(this.invoicehd[i].dispensedate).format("YYYY-MM-DD") && checkInvEditList[i][j] == 'ข้อมูลวันที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (this.bills[i].out_hospital_time == this.invoicehd[i].dispensetime.replace('.', ':') && checkInvEditList[i][j] == 'ข้อมูลเวลาที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (!this.bills[i].isEditImage && checkInvEditList[i][j] == 'ภาพถ่ายไม่ใช่ใบเสร็จค่ารักษา') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
-                                        return false
-                                    } else if (!this.bills[i].isEditImage && checkInvEditList[i][j] == 'ภาพถ่ายใบเสร็จไม่ชัด') {
-                                        this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
-                                        return false
+                        if (checkInvEditList) {
+                            for (let j = 0; j < checkInvEditList[i].length; j++) {
+                                for (let l = 0; l < this.invNotPassTypesList.length; l++) {
+                                    if (checkInvEditList[i][j] == this.invNotPassTypesList[l].typeName && checkInvEditList[i][j] != 'ไม่ใช่ใบเสร็จค่ารักษาที่เกิดเหตุจากรถ') {
+                                        if (this.bills[i].money == this.invoicehd[i].suminv && checkInvEditList[i][j] == 'ข้อมูลจำนวนเงินไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].selectHospitalId == this.invoicehd[i].hosid && checkInvEditList[i][j] == 'ข้อมูลโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].bookNo == this.invoicehd[i].bookNo && checkInvEditList[i][j] == 'ข้อมูลเล่มที่ใบเสร็จไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].bill_no == this.invoicehd[i].receiptNo && checkInvEditList[i][j] == 'ข้อมูลเลขที่ใบเสร็จไม่ตรงกับภาพถ่ายไม่เสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].typePatient == this.invoicehd[i].victimType && checkInvEditList[i][j] == 'ข้อมูลประเภทผู้ป่วยไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].hospitalized_date == moment(this.invoicehd[i].takendate).format("YYYY-MM-DD") && checkInvEditList[i][j] == 'ข้อมูลวันที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].hospitalized_time == this.invoicehd[i].takentime.replace('.', ':') && checkInvEditList[i][j] == 'ข้อมูลเวลาที่เข้ารักษาไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].out_hospital_date == moment(this.invoicehd[i].dispensedate).format("YYYY-MM-DD") && checkInvEditList[i][j] == 'ข้อมูลวันที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (this.bills[i].out_hospital_time == this.invoicehd[i].dispensetime.replace('.', ':') && checkInvEditList[i][j] == 'ข้อมูลเวลาที่ออกจากโรงพยาบาลไม่ตรงกับภาพถ่ายใบเสร็จ') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบ' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (!this.bills[i].isEditImage && checkInvEditList[i][j] == 'ภาพถ่ายไม่ใช่ใบเสร็จค่ารักษา') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        } else if (!this.bills[i].isEditImage && checkInvEditList[i][j] == 'ภาพถ่ายใบเสร็จไม่ชัด') {
+                                            this.swalValidateAndCheckEdit('ตรวจสอบรายละเอียด เนื่องจาก' + this.invNotPassTypesList[l].typeName)
+                                            return false
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (this.bills[i].isEditImage && (this.bills[i].editBillImage == "" || this.bills[i].editBillImage == null)) {
-                        this.$swal({
-                            icon: 'warning',
-                            text: 'กรุณาอัพโหลดรูปภาพใบเสร็จค่ารักษาให้ครบถ้วน',
-                            showCancelButton: false,
-                            showDenyButton: false,
-                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                            confirmButtonColor: '#5c2e91',
-                            willClose: () => {
+                        if (this.bills[i].isEditImage && (this.bills[i].editBillImage == "" || this.bills[i].editBillImage == null)) {
+                            this.$swal({
+                                icon: 'warning',
+                                text: 'กรุณาอัพโหลดรูปภาพใบเสร็จค่ารักษาให้ครบถ้วน',
+                                showCancelButton: false,
+                                showDenyButton: false,
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
 
-                            }
-                        })
-                        return false;
-                    } else if (this.bills[i].money == "0") {
-                        this.$swal({
-                            icon: 'warning',
-                            text: 'กรุณาระบุจำนวนเงินให้ครบถ้วน',
-                            showCancelButton: false,
-                            showDenyButton: false,
-                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                            confirmButtonColor: '#5c2e91',
-                            willClose: () => {
+                                }
+                            })
+                            return false;
+                        } else if (this.bills[i].money == "0") {
+                            this.$swal({
+                                icon: 'warning',
+                                text: 'กรุณาระบุจำนวนเงินให้ครบถ้วน',
+                                showCancelButton: false,
+                                showDenyButton: false,
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
 
-                            }
-                        })
-                        return false;
+                                }
+                            })
+                            return false;
+                        }
                     }
                 }
+                
 
                 var checkBankAccountEditList = this.bookbankNotPassDescList
                 if (checkBankAccountEditList) {
@@ -1518,143 +1530,182 @@
                     this.bills[i].reqNo = this.$route.params.appNo
                     this.bills[i].money = this.bills[i].money.toString()
                 }
-
-                var url = this.$store.state.envUrl + '/api/Approval/CheckInvoiceUsing'
                 let isDuplicate = false;
-                this.isLoading = true;
-                axios.post(url, JSON.stringify(this.bills), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }).then((response) => {
-                    var billIdDuplicate = [];
-                    this.duplicateInv = response.data
-                    if (this.duplicateInv.length > 0) {
-                        for (let i = 0; i < this.duplicateInv.length; i++) {
-                            if (this.duplicateInv[i].isDuplicate == true) {
-                                isDuplicate = true;
-                                billIdDuplicate.push({
-                                    idInvhd: this.duplicateInv[i].billId,
-                                    bill_no: (i + 1)
-                                });
-                            }
+                if (checkInvEditList.length > 0) {
+
+
+                    var url = this.$store.state.envUrl + '/api/Approval/CheckInvoiceUsing'
+
+                    this.isLoading = true;
+                    axios.post(url, JSON.stringify(this.bills), {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
-                    }
-
-                    if (billIdDuplicate.length > 0) {
-                        this.isLoading = false;
-                        var htmlMessage = '<p style="margin-bottom:10px" align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate.map(m => m.bill_no) + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>'
-                        htmlMessage += '<p style="color:red;margin-bottom:5px" align="left">&emsp;&emsp;*หมายเหตุ หากท่านต้องการยกเลิกใบเสร็จในการเบิกคำร้องนี้ กรุณาติ๊กเลือกใบเสร็จแล้วกดปุ่ม <label style="color:var(--main-color)">"ยกเลิกใบเสร็จ"</label> </p>'
-                        for (let i = 0; i < billIdDuplicate.length; i++) {
-                            htmlMessage += '<div class="form-check px-5"><input id="swal-check' + (i + 1) + '" class="form-check-input" type="checkbox" value="" ><label class="form-check-label" for="swal-check' + (i + 1) + '">ยกเลิกใบเสร็จที่ : ' + billIdDuplicate[i].bill_no + '</label></div>'
-                        }
-
-                        this.$swal({
-                            icon: 'warning',
-                            html: htmlMessage,
-                            title: 'คำเตือน',
-                            showCancelButton: false,
-                            showDenyButton: true,
-                            denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                            denyButtonColor: '#dad5e9',
-                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิกใบเสร็จ",
-                            confirmButtonColor: '#5c2e91',
-                            willClose: () => {
-
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                for (let i = 0; i < billIdDuplicate.length; i++) {
-                                    if (document.getElementById('swal-check' + (i + 1)).checked) {
-                                        let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
-                                        this.bills[index].isCancel = true
-                                        this.invOverlay[index].isShow = true
-                                    }
-                                }
-                                var billCansel = this.bills.filter(w => w.isCancel).length
-                                if (billCansel == this.iclaimAppData.iclaimInvCount) {
-                                    this.$swal({
-                                        icon: 'warning',
-                                        html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount + ' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
-                                        title: 'คำเตือน',
-                                        showCancelButton: false,
-                                        showDenyButton: true,
-                                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
-                                        denyButtonColor: '#dad5e9',
-                                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
-                                        confirmButtonColor: '#5c2e91',
-                                        willClose: () => {
-
-                                        }
-                                    }).then((result) => {
-                                        this.$store.state.inputApprovalData.AccNo = this.accData.accNo
-                                        this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
-                                        this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
-                                        this.$store.state.inputApprovalData.SumMoney = null
-                                        this.$store.state.inputApprovalData.ClaimNo = null
-                                        this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
-                                        this.$store.state.inputApprovalData.Injury = null
-                                        this.$store.state.inputApprovalData.BillsData = null
-                                        this.$store.state.inputApprovalData.BankData = null
-                                        this.$store.state.inputApprovalData.VictimData = null
-                                        if (result.isConfirmed) {
-                                            this.$router.push({ name: 'ConfirmOTP', params: { from: "CanselApproval" } })
-                                        } else {
-                                            for (let i = 0; i < billIdDuplicate.length; i++) {
-                                                let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
-                                                this.bills[index].isCancel = false
-                                                this.invOverlay[index].isShow = false
-                                            }
-                                        }
+                    }).then((response) => {
+                        var billIdDuplicate = [];
+                        this.duplicateInv = response.data
+                        if (this.duplicateInv.length > 0) {
+                            for (let i = 0; i < this.duplicateInv.length; i++) {
+                                if (this.duplicateInv[i].isDuplicate == true) {
+                                    isDuplicate = true;
+                                    billIdDuplicate.push({
+                                        idInvhd: this.duplicateInv[i].billId,
+                                        bill_no: (i + 1)
                                     });
                                 }
                             }
-                        });
-                        return false;
-                    } else {
+                        }
+
+                        if (billIdDuplicate.length > 0) {
+                            this.isLoading = false;
+                            var htmlMessage = '<p style="margin-bottom:10px" align="left"> <strong>ใบเสร็จที่ : ' + billIdDuplicate.map(m => m.bill_no) + ' </strong><br>&emsp;&emsp;เคยใช้ในการเบิกค่าเสียหายเบื้องต้นไปแล้ว กรุณาใช้ใบเสร็จค่ารักษาอื่น </p>'
+                            htmlMessage += '<p style="color:red;margin-bottom:5px" align="left">&emsp;&emsp;*หมายเหตุ หากท่านต้องการยกเลิกใบเสร็จในการเบิกคำร้องนี้ กรุณาติ๊กเลือกใบเสร็จแล้วกดปุ่ม <label style="color:var(--main-color)">"ยกเลิกใบเสร็จ"</label> </p>'
+                            for (let i = 0; i < billIdDuplicate.length; i++) {
+                                htmlMessage += '<div class="form-check px-5"><input id="swal-check' + (i + 1) + '" class="form-check-input" type="checkbox" value="" ><label class="form-check-label" for="swal-check' + (i + 1) + '">ยกเลิกใบเสร็จที่ : ' + billIdDuplicate[i].bill_no + '</label></div>'
+                            }
+
+                            this.$swal({
+                                icon: 'warning',
+                                html: htmlMessage,
+                                title: 'คำเตือน',
+                                showCancelButton: false,
+                                showDenyButton: true,
+                                denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                denyButtonColor: '#dad5e9',
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิกใบเสร็จ",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    for (let i = 0; i < billIdDuplicate.length; i++) {
+                                        if (document.getElementById('swal-check' + (i + 1)).checked) {
+                                            let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
+                                            this.bills[index].isCancel = true
+                                            this.invOverlay[index].isShow = true
+                                        }
+                                    }
+                                    var billCansel = this.bills.filter(w => w.isCancel).length
+                                    if (billCansel == this.iclaimAppData.iclaimInvCount) {
+                                        this.$swal({
+                                            icon: 'warning',
+                                            html: '<p style="margin-bottom:10px" align="left">&emsp;&emsp;เนื่องจากคำร้องของท่านมีใบเสร็จค่ารักษาพยาบาลอยู่ ' + this.iclaimAppData.iclaimInvCount + ' ใบเสร็จ และท่านต้องการจะยกเลิกใบเสร็จทั้งหมด หมายความว่าท่านต้องการจะยกเลิกคำร้องนี้. </p>',
+                                            title: 'คำเตือน',
+                                            showCancelButton: false,
+                                            showDenyButton: true,
+                                            denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                                            denyButtonColor: '#dad5e9',
+                                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                                            confirmButtonColor: '#5c2e91',
+                                            willClose: () => {
+
+                                            }
+                                        }).then((result) => {
+                                            this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                                            this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                                            this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
+                                            this.$store.state.inputApprovalData.SumMoney = null
+                                            this.$store.state.inputApprovalData.ClaimNo = null
+                                            this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
+                                            this.$store.state.inputApprovalData.Injury = null
+                                            this.$store.state.inputApprovalData.BillsData = null
+                                            this.$store.state.inputApprovalData.BankData = null
+                                            this.$store.state.inputApprovalData.VictimData = null
+                                            if (result.isConfirmed) {
+                                                this.$router.push({ name: 'ConfirmOTP', params: { from: "CanselApproval" } })
+                                            } else {
+                                                for (let i = 0; i < billIdDuplicate.length; i++) {
+                                                    let index = this.bills.findIndex(w => w.billNo === billIdDuplicate[i].idInvhd)
+                                                    this.bills[index].isCancel = false
+                                                    this.invOverlay[index].isShow = false
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            return false;
+                        } else {
+                            this.isLoading = false;
+                            this.$swal({
+                                icon: 'question',
+                                text: 'ท่านยืนยันที่จะส่งเอกสารเพิ่มเติมหรือไม่?',
+                                /*title: 'แจ้งเตือน',*/
+                                /*footer: '<a href="">Why do I have this issue?</a>'*/
+                                showCancelButton: false,
+                                showDenyButton: true,
+                                denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                                denyButtonColor: '#dad5e9',
+                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                                confirmButtonColor: '#5c2e91',
+                                willClose: () => {
+
+                                }
+                            }).then((result) => {
+                                this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                                this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                                this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
+                                this.$store.state.inputApprovalData.SumMoney = this.total_amount
+                                this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
+                                this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
+                                this.$store.state.inputApprovalData.Injury = this.injuri
+                                this.$store.state.inputApprovalData.BillsData = this.bills
+                                this.$store.state.inputApprovalData.BankData = this.inputBank
+                                this.$store.state.inputApprovalData.VictimData = null
+                                if (result.isConfirmed) {
+                                    this.$router.push({ name: 'ConfirmOTP', params: { from: "Edit" } })
+                                }
+                                //} else if (result.isDenied) {
+
+                                //}
+                            });
+                        }
+
+
+                    }).catch((error) => {
                         this.isLoading = false;
-                        this.$swal({
-                            icon: 'question',
-                            text: 'ท่านยืนยันที่จะส่งเอกสารเพิ่มเติมหรือไม่?',
-                            /*title: 'แจ้งเตือน',*/
-                            /*footer: '<a href="">Why do I have this issue?</a>'*/
-                            showCancelButton: false,
-                            showDenyButton: true,
-                            denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
-                            denyButtonColor: '#dad5e9',
-                            confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
-                            confirmButtonColor: '#5c2e91',
-                            willClose: () => {
-
-                            }
-                        }).then((result) => {
-                            this.$store.state.inputApprovalData.AccNo = this.accData.accNo
-                            this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
-                            this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
-                            this.$store.state.inputApprovalData.SumMoney = this.total_amount
-                            this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
-                            this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
-                            this.$store.state.inputApprovalData.Injury = this.injuri
-                            this.$store.state.inputApprovalData.BillsData = this.bills
-                            this.$store.state.inputApprovalData.BankData = this.inputBank
-                            this.$store.state.inputApprovalData.VictimData = null
-                            if (result.isConfirmed) {
-                                this.$router.push({ name: 'ConfirmOTP', params: { from: "Edit" } })
-                            }
-                            //} else if (result.isDenied) {
-
-                            //}
-                        });
-                    }
-
-
-                }).catch((error) => {
+                        if (error.toString().includes("401")) {
+                            this.getJwtToken()
+                        }
+                    });
+                } else {
                     this.isLoading = false;
-                    if (error.toString().includes("401")) {
-                        this.getJwtToken()
-                    }
-                });
+                    this.$swal({
+                        icon: 'question',
+                        text: 'ท่านยืนยันที่จะส่งเอกสารเพิ่มเติมหรือไม่?',
+                        /*title: 'แจ้งเตือน',*/
+                        /*footer: '<a href="">Why do I have this issue?</a>'*/
+                        showCancelButton: false,
+                        showDenyButton: true,
+                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                        denyButtonColor: '#dad5e9',
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+
+                        }
+                    }).then((result) => {
+                        this.$store.state.inputApprovalData.AccNo = this.accData.accNo
+                        this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
+                        this.$store.state.inputApprovalData.AppNo = this.$route.params.appNo
+                        this.$store.state.inputApprovalData.SumMoney = this.total_amount
+                        this.$store.state.inputApprovalData.ClaimNo = this.accData.lastClaim.claimNo
+                        this.$store.state.inputApprovalData.UserIdLine = this.$store.state.userTokenLine
+                        this.$store.state.inputApprovalData.Injury = this.injuri
+                        this.$store.state.inputApprovalData.BillsData = null
+                        this.$store.state.inputApprovalData.BankData = this.inputBank
+                        this.$store.state.inputApprovalData.VictimData = null
+                        console.log(this.$store.state.inputApprovalData)
+                        if (result.isConfirmed) {
+                            this.$router.push({ name: 'ConfirmOTP', params: { from: "Edit" } })
+                        }
+                        //} else if (result.isDenied) {
+
+                        //}
+                    });
+                }
                 if (isDuplicate) {
                     return false;
                 } else {

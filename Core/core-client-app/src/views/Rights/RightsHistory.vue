@@ -104,7 +104,6 @@
 <script>
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
-    //import RightsHistoryDetail from "@/components/Rights/RightsHistoryDetail.vue";
 
     // Import loading-overlay
     import Loading from 'vue-loading-overlay';
