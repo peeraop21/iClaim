@@ -24,18 +24,10 @@ namespace Services.ViewModels
         public string ProvAcc { get; set; }
         public List<VictimtViewModel> Victim { get; set; }
         public List<string> Car { get; set; }
-        public string Channel { get; set; }
         public double? CureRightsBalance { get; set; }
         public double? CrippledRightsBalance { get; set; }
         public int CountHosApp { get; set; }
         public int CountNotify { get; set; }
 
-        /*public string EaCarLicense { get; set; }
-        public string EaPrefixVictim { get; set; }
-        public string EaFnameVictim { get; set; }
-        public string EaLnameVictim { get; set; }
-        public List<string> EaIdCardVictim { get; set; }
-        public string EaPhoneNumber { get; set; }
-        public string TokenId { get; set; }*/
     }
 }

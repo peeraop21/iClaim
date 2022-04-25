@@ -25,8 +25,8 @@ namespace Services.ViewModels
         public string hospitalized_time { get; set; }
         public string out_hospital_time { get; set; }
         public string billFileShow { get; set; }
-        public string filename { get; set; }
-        public string editBillImage { get; set; }
+        public List<string> filename { get; set; }
+        public List<string> editBillImage { get; set; }
         public bool isEditImage { get; set; }
         public bool isCancel { get; set; }
     }

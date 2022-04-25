@@ -50,11 +50,6 @@
                                 <div class="d-block text-left">
                                     <div class="mb-2">
                                         <label class="px-2">จังหวัด</label>
-                                        <!--<select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
-                                            <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
-                                                {{ category.changwatname }}
-                                            </option>
-                                        </select>-->
                                         <v-select class="v-select-claim style-chooser"
                                                   :clearable="false"
                                                   label="changwatname"
@@ -67,11 +62,6 @@
                                     </div>
                                     <div class="mb-2" v-show="divHospitalModal">
                                         <label class="px-2">โรงพยาบาล</label>
-                                        <!--<select name="item" id="item" v-model="mockSaysoHospital">
-                                            <option v-for="(item, index) in filteredItems" :value="item.HOSPITALNAME " :key="index">
-                                                {{ item.HOSPITALNAME  }}
-                                            </option>
-                                        </select>-->
                                         <v-select class="v-select-claim style-chooser"
                                                   :clearable="false"
                                                   label="HOSPITALNAME"
@@ -124,7 +114,7 @@
                         </div>
                     </div>
                     <div v-if="acceptClaim && acceptData" class="mb-4 mt-2" align="center">
-                        <button class="btn-confirm-money" type="button" @click="submitApproval" >ยืนยันส่งคำร้อง</button>
+                        <button class="btn-confirm-money" type="button" @click="submitApproval">ยืนยันส่งคำร้อง</button>
                     </div>
                 </div>
             </div>
@@ -138,19 +128,20 @@
 
                     <div class="box-container mt-2" v-for="(input, index) in $v.bills.$each.$iter" :key="index">
                         <div class="input wrapper flex items-center">
-                            <p class="px-2 mb-0">ใบเสร็จรับเงินค่ารักษาพยาบาล<span class="star-require">* (รูปภาพขนาดไม่เกิน 7MB)</span></p>
+                            <p class="px-2 mb-0">
+                                ใบเสร็จรับเงินค่ารักษาพยาบาล
+                                <span class="star-require">* (รูปภาพขนาดไม่เกิน 7MB)</span>
+                            </p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
                                        ref="pondBill"
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
-                                       v-bind:allow-multiple="false"
+                                       v-bind:allow-multiple="true"
                                        v-bind:allowFileEncode="true"
                                        accepted-file-types="image/jpeg, image/png"
                                        v-bind:files="bills[index].file"
                                        v-model="bills[index].file"
-                                       v-on:addfile="onAddBillFile(index)"
-                                       v-on:removefile="onRemoveBillFile(index)"
-                                       v-on:error="onError"
+                                       v-on:updatefiles="onBillFileUpdated(index)"
                                        allowFileSizeValidation="true"
                                        maxFileSize="7MB"
                                        labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
@@ -174,12 +165,6 @@
                                                       @input="onChangwatChange">
 
                                             </v-select>
-
-                                            <!--<select name="category" id="category" v-model="selectChangwat" @change="onChangwatChange">
-                        <option v-for="(category, index) in changwats" :value="category.changwatshortname" :key="index" style="font-size: 12px; line-height: 0px">
-                            {{ category.changwatname }}
-                        </option>
-                    </select>-->
                                         </div>
                                         <div class="mb-2" v-show="divHospitalModal">
 
@@ -272,7 +257,7 @@
                             </div>
 
                             <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder=""  @change="rmLeadingZero(index)"  v-mask="'####'" :class="{ 'is-invalid': input.money.$error }" />
+                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="rmLeadingZero(index)" v-mask="'####'" :class="{ 'is-invalid': input.money.$error }" />
                             <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                             <div class="row">
                                 <div class="col-8">
@@ -396,15 +381,7 @@
                                        maxFileSize="7MB"
                                        labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
                                        labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
-                            <!--<file-pond name="bankFile"
-                                       ref="pond"
-                                       credits="null"
-                                       label-idle="กดที่นี่เพื่ออัพโหลดรูปบัญชีธนาคาร"
-                                       v-bind:allow-multiple="false"
-                                       accepted-file-types="image/jpeg, image/png"
-                                       v-bind:files="bankFile"
-                                       v-on:addfile="onAddBankAccountFile"
-                                       v-if="haslastDocumentReceive" />-->
+
                             <div class="div-center-image" v-if="haslastDocumentReceive">
                                 <div class="divImage">
                                     <img class="img-show" :src="bankFileDisplay.base64" />
@@ -639,7 +616,7 @@
                         <p class="label-text">-</p>
                         <hr class="mt-0">
                     </div>
-                    
+
 
                     <p class="mb-0">หมายเลขทะเบียนรถคันเอาประกันภัย</p>
                     <div class="mt-0" v-if="accidentCarData.foundCarLicense != ''">
@@ -679,11 +656,11 @@
                 <div class="box-container mb-3">
                     <div class="card-bill" v-for="bill in bills" :key="bill.billNo">
                         <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาลที่ {{bill.billNo}}</p>
-                        <div class="div-center-image">
-                            <div class="divImage" v-if="bill.billFileShow != null" align="center">
-                                <img class="img-show" :src="bill.billFileShow" />
+                        <div class="div-center-image" v-for="(input, index) in bill.billFileShow" :key="index">
+                            <div class="divImage" v-if="bill.billFileShow[index] != null" align="center">
+                                <img class="img-show" :src="bill.billFileShow[index]" />
                                 <br />
-                                <label class="lblFilename">{{bill.filename}}</label>
+                                <label class="lblFilename">{{bill.filename[index]}}</label>
                             </div>
                         </div>
 
@@ -957,7 +934,7 @@
                 },
                 date: new Date(),
                 // ---Bill
-                bills: [{ billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: '0', hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "", file: null, billFileShow: "", filename: "" }],
+                bills: [{ billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: '0', hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "", file: null, billFileShow: [], filename: [] }],
                 total_amount: 0,
                 // --BookBank
                 inputBank: { accountName: '', accountNumber: '', accountBankName: '', bankId: '', bankBase64String: '', bankFilename: '' },
@@ -982,7 +959,7 @@
                 //----Get Bank Name
                 bankNames: [],
                 //----Get Last Document Receive
-                lastDocumentReceive: [],
+                lastDocumentReceive: [{ bankFilename:''}],
                 haslastDocumentReceive: false,
                 isBtnChangAccountBankShow: false,
                 //----Get Hospital Name
@@ -1076,7 +1053,7 @@
 
 
         },
-      
+
         methods: {
             submitApproval() {
                 if (this.isEverAuthorize == "1") {
@@ -1106,12 +1083,7 @@
                         this.inputBank.bankId = this.bankNames[i].bankCode
                     }
                 }
-                
-                
-
-
                 this.active = true
-
                 this.$store.state.inputApprovalData.AccNo = this.accData.accNo
                 this.$store.state.inputApprovalData.VictimNo = this.accData.victimNo
                 this.$store.state.inputApprovalData.AppNo = this.accData.lastClaim.appNo
@@ -1135,16 +1107,21 @@
                     });
             },
             getLastDocumentReceive() {
-                var url = this.$store.state.envUrl + '/api/Approval/LastDocumentReceive/{accNo}/{victimNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo);
+                var url = this.$store.state.envUrl + '/api/Approval/LastDocumentReceive';
+                const body = {
+                    AccNo: this.accData.stringAccNo,
+                    VictimNo: parseInt(this.accData.victimNo),
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
+                        
                         this.lastDocumentReceive = response.data[0]
-
                         if (response.data.length == 0) {
                             this.isBtnChangAccountBankShow = false;
                             this.displayBtnChangeAccountBank = "ใช้บัญชีเดิม";
@@ -1155,6 +1132,8 @@
                             this.isBtnChangAccountBankShow = true;
                             this.displayBtnChangeAccountBank = "เปลี่ยนบัญชีรับเงิน";
                             this.haslastDocumentReceive = true;
+                            this.lastDocumentReceive.bankFilename = ''
+                            console.log(this.lastDocumentReceive)
                             this.getFileFromECM()
                         }
                     })
@@ -1166,7 +1145,7 @@
                     });
             },
             getHospitalNames() {
-                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                var url = process.env.VUE_APP_API_UTILITY_HOSPITAL_URL;
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;
@@ -1197,13 +1176,17 @@
                     });
             },
             getAccidentCar() {
-                var url = this.$store.state.envUrl + '/api/Accident/Car/{accNo}/{channel}'.replace('{accNo}', this.accData.stringAccNo).replace('{channel}', this.accData.channel);
+                var url = this.$store.state.envUrl + '/api/Accident/Car';
+                const body = {
+                    AccNo: this.accData.stringAccNo
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.accidentCarData = response.data;
                     })
@@ -1215,14 +1198,20 @@
                     });
             },
             getAccidentVictim() {
-                var mockIdcard = this.userData.idcardNo /*'3149900145384'*/;
-                var url = this.$store.state.envUrl + '/api/Accident/Victim/{accNo}/{ch}/{userIdCard}'.replace('{accNo}', this.accData.stringAccNo).replace('{ch}', this.accData.channel).replace('{userIdCard}', mockIdcard);
+
+                var url = this.$store.state.envUrl + '/api/Accident/Victim';
+                const body = {
+                    AccNo: this.accData.stringAccNo,
+                    VictimNo: parseInt(this.accData.victimNo),
+                    UserIdCard: this.userData.idcardNo,
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.accidentVictimData = response.data;
                         this.inputBank.accountName = this.accidentVictimData.fname + " " + this.accidentVictimData.lname
@@ -1237,9 +1226,9 @@
             getFileFromECM() {
                 var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
-                    SystemId: '03',
-                    TemplateId: '09',
-                    DocumentId: '01',
+                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID,
+                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID,
+                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID,
                     RefId: this.lastDocumentReceive.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
                 };
                 axios.post(url, JSON.stringify(body), {
@@ -1339,49 +1328,102 @@
                     })
                 }
             },
-            onRemoveBillFile: function (index) {
-                this.bills[index].billFileShow = ""
-            },
-            onAddBillFile: function (index) {
-                if (this.bills[index].file[0].fileSize < 7000000) {
-                    this.bills[index].filename = this.bills[index].file[0].filename
-                    if (this.bills[index].file[0]) {// Resize Image
-                        var fileDataUrl = this.bills[index].file[0].getFileEncodeDataURL()
-                        var imgRes = new Image();
-                        imgRes.src = fileDataUrl
-                        var img = document.createElement("img");
-                        img.onload = () => {
-                            var canvas = document.createElement("canvas");
-                            var MAX_WIDTH = 720;
-                            var MAX_HEIGHT = 720;
-                            var width = img.width;
-                            var height = img.height;
+            //onRemoveBillFile: function (index) {
+            //    this.bills[index].billFileShow = ""
+            //},
+            resizeBillImages(billIndex, imageIndex, dataUrl, fileType) {
+                var img = new Image();
+                img.src = dataUrl
+                img.onload = () => {
+                    var canvas = document.createElement("canvas");
+                    var MAX_WIDTH = 720;
+                    var MAX_HEIGHT = 720;
+                    var width = img.width;
+                    var height = img.height;
 
-                            if (width > height) {
-                                if (width > MAX_WIDTH) {
-                                    height *= MAX_WIDTH / width;
-                                    width = MAX_WIDTH;
-                                }
-                            } else {
-                                if (height > MAX_HEIGHT) {
-                                    width *= MAX_HEIGHT / height;
-                                    height = MAX_HEIGHT;
-                                }
-                            }
-                            canvas.width = width;
-                            canvas.height = height;
-                            var ctx = canvas.getContext("2d");
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            this.bills[index].billFileShow = canvas.toDataURL(this.bills[index].file[0].file.type);
-                            this.isLoading = false;
-
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
                         }
-                        img.src = fileDataUrl
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
                     }
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    this.bills[billIndex].billFileShow[imageIndex] = canvas.toDataURL(fileType);
+                    this.isLoading = false;
+
                 }
-
-
             },
+            createBillImageDataUrl(fileObject, billIndex, imageIndex,) {
+                const reader = new FileReader();
+                reader.readAsDataURL(fileObject)
+                reader.onload = (e) => {
+                    this.resizeBillImages(billIndex, imageIndex, e.target.result, fileObject.type)
+                }
+            },
+            onBillFileUpdated: async function(index) {
+                this.isLoading = true
+                this.bills[index].billFileShow = []
+                this.bills[index].filename = []
+                if (this.bills[index].file.length > 0) {
+                    for (let i = 0; i < this.bills[index].file.length; i++) {
+                        if (this.bills[index].file[i].fileSize < 7000000) {
+                            this.bills[index].filename[i] = this.bills[index].file[i].filename
+                            this.createBillImageDataUrl(this.bills[index].file[i].file, index ,i )
+                        }
+                    }
+                } else {
+                    this.isLoading = false
+                }
+                console.log(this.bills[index].billFileShow)
+            },
+            //onAddBillFile: function (index) {
+            //    if (this.bills[index].file[0].fileSize < 7000000) {
+            //        this.bills[index].filename = this.bills[index].file[0].filename
+            //        if (this.bills[index].file[0]) {// Resize Image
+            //            var fileDataUrl = this.bills[index].file[0].getFileEncodeDataURL()
+            //            var imgRes = new Image();
+            //            imgRes.src = fileDataUrl
+            //            var img = document.createElement("img");
+            //            img.onload = () => {
+            //                var canvas = document.createElement("canvas");
+            //                var MAX_WIDTH = 720;
+            //                var MAX_HEIGHT = 720;
+            //                var width = img.width;
+            //                var height = img.height;
+
+            //                if (width > height) {
+            //                    if (width > MAX_WIDTH) {
+            //                        height *= MAX_WIDTH / width;
+            //                        width = MAX_WIDTH;
+            //                    }
+            //                } else {
+            //                    if (height > MAX_HEIGHT) {
+            //                        width *= MAX_HEIGHT / height;
+            //                        height = MAX_HEIGHT;
+            //                    }
+            //                }
+            //                canvas.width = width;
+            //                canvas.height = height;
+            //                var ctx = canvas.getContext("2d");
+            //                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            //                this.bills[index].billFileShow = canvas.toDataURL(this.bills[index].file[0].file.type);
+            //                this.isLoading = false;
+
+            //            }
+            //            img.src = fileDataUrl
+            //        }
+            //    }
+
+
+            //},
             async OnChangePageOne() {
                 this.submitted = true;
 
@@ -1391,7 +1433,7 @@
                     return false;
                 }
                 for (let i = 0; i < this.bills.length; i++) {
-                    if (this.bills[i].billFileShow == "" || this.bills[i].billFileShow == null) {
+                    if (this.bills[i].billFileShow.length == 0) {
                         this.$swal({
                             icon: 'warning',
                             text: 'กรุณาอัพโหลดรูปภาพใบเสร็จค่ารักษาให้ครบถ้วน',
@@ -1404,7 +1446,7 @@
                             }
                         })
                         return false;
-                    } else if ( this.bills[i].money == "0"){
+                    } else if (this.bills[i].money == "0") {
                         this.$swal({
                             icon: 'warning',
                             text: 'กรุณาระบุจำนวนเงินให้ครบถ้วน',
@@ -1558,10 +1600,10 @@
                 this.divHospitalModal = false;
                 for (let i = 0; i < this.hospitals.length; i++) {
                     if (this.saysoHospital == this.hospitals[i].HOSPITALNAME) {
-                        this.$store.state.inputApprovalData.EverAuthorizeHosId = this.hospitals[i].HOSPITALID                    
+                        this.$store.state.inputApprovalData.EverAuthorizeHosId = this.hospitals[i].HOSPITALID
                     }
                 }
-                
+
             },
             calMoney() {
                 let sum = 0;
@@ -1610,7 +1652,7 @@
                     return false
                 }
                 var index = this.bills.length + 1
-                fieldType.push({ billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: '0', hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "", file: null, billFileShow: "", filename: "" });
+                fieldType.push({ billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: '0', hospitalized_date: "", hospitalized_time: "", out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "", file: null, billFileShow: [], filename: [] });
                 this.calMoney()
             },
             removeField(index, fieldType) {
@@ -1626,6 +1668,7 @@
 
         },
         async created() {
+            await this.getJwtToken()
             await this.getAccidentCar();
             await this.getAccidentVictim();
             this.getBankNames();

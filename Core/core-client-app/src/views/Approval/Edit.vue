@@ -228,15 +228,13 @@
                                 <file-pond credits="null"
                                            ref="pondBillEdit"
                                            label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
-                                           v-bind:allow-multiple="false"
+                                           v-bind:allow-multiple="true"
                                            v-bind:allowFileEncode="true"
                                            accepted-file-types="image/jpeg, image/png"
                                            v-if="bills[index].isEditImage"
                                            v-bind:files="bills[index].file"
                                            v-model="bills[index].file"
-                                           v-on:addfile="onAddBillFile(index)"
-                                           v-on:removefile="onRemoveBillFile(index)"
-                                           v-on:error="onError"
+                                           v-on:updatefiles="onBillFileUpdated(index)"
                                            allowFileSizeValidation="true"
                                            maxFileSize="7MB"
                                            labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
@@ -244,11 +242,11 @@
                             </div>
                             <div v-if="!displayBills[index].isDisabledImageBill">
                                 <div class="mt-2 mb-2" v-if="!bills[index].isEditImage" align="center">
-                                    <div class="div-center-image" @click="showBigImage(bills[index].billFileShow)">
+                                    <div class="div-center-image" v-for="(input, indexj) in bills[index].billFileShow" :key="indexj" @click="showBigImage(bills[index].billFileShow[indexj])">
                                         <div class="divImage">
-                                            <img class="img-show" :src="bills[index].billFileShow" />
+                                            <img class="img-show" :src="bills[index].billFileShow[indexj]" />
                                             <br />
-                                            <label>{{bills[index].filename}}</label>
+                                            <label>{{bills[index].filename[indexj]}}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -471,7 +469,6 @@
 
     const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode, FilePondPluginFileValidateSize);
 
-    // Import loading-overlay
     import Loading from 'vue-loading-overlay';
 
     import { required } from "vuelidate/lib/validators";
@@ -513,7 +510,7 @@
                 bills: [{
                     billNo: 1, bill_no: "", bookNo: "", selectHospital: '', money: "0", hospitalized_date: "", hospitalized_time: ""
                     , out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: ""
-                    , file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
+                    , file: null, billFileShow: [], filename: [], editBillImage: [], isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ"
                     , isCancel: false
                 }],
                 total_amount: 0,
@@ -651,9 +648,7 @@
         },
         methods: {
             onOrganChange() {
-
                 this.divWoundedModal = true;
-
             },
             changeAccountBank() {
                 if (!this.inputBank.isEditBankImage) {
@@ -855,7 +850,7 @@
             },
             
             getHospitalNames() {
-                var url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/api/Utility/Hospital";
+                var url = process.env.VUE_APP_API_UTILITY_HOSPITAL_URL;
                 axios.post(url)
                     .then((response) => {
                         this.hospitals = response.data.data;
@@ -866,14 +861,20 @@
                         alert(error);
                     });
             },
-            initialDataEditApprovalPage() {
-                var url = this.$store.state.envUrl + '/api/approval/DataForEditApprovalPage/{accNo}/{victimNo}/{reqNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo);
+            initialDataEditApprovalPage() {                             
+                var url = this.$store.state.envUrl + '/api/approval/DataForEditApprovalPage';
+                const body = {
+                    AccNo: this.accData.stringAccNo,
+                    VictimNo: parseInt(this.accData.victimNo),
+                    ReqNo: parseInt(this.$route.params.appNo),
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.wounded = response.data.woundeds.woundedList;
                         this.organ = response.data.woundeds.organ;
@@ -975,217 +976,13 @@
                         }
                     });
             },
-            //getInvoicehdNotPass() {
-            //    var url = this.$store.state.envUrl + '/api/approval/InvoicehdNotPass/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-            //    var apiConfig = {
-            //        headers: {
-            //            Authorization: "Bearer " + this.$store.state.jwtToken.token
-            //        }
-            //    }
-            //    axios.get(url, apiConfig)
-            //        .then((response) => {
-            //            this.invoicehd = response.data.invoicesNotPass;
-            //            this.invNotPassTypesList = response.data.typesOfInvoiceNotPass
-            //            console.log("TypesInv", this.invNotPassTypesList)
-            //            if (this.invoicehd.length > 0) {
-            //                for (let i = 0; i < (this.invoicehd.length - 1); i++) {
-            //                    this.addField(null, this.bills);
-            //                    this.invOverlay.push({
-            //                        isShow: false
-            //                    });
-
-            //                }
-            //            }
-            //            this.loadInvoicehd();
-            //            this.calMoney();
-            //            this.getChangwatNames();
-
-            //        })
-            //        .catch((error) => {
-            //            if (error.toString().includes("401")) {
-            //                this.getJwtToken()
-            //                this.getInvoicehdNotPass()
-            //            }
-            //        });
-            //},
-            //getDocumentReceive() {
-            //    var url = this.$store.state.envUrl + '/api/Approval/DocumentReceive/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-            //    var apiConfig = {
-            //        headers: {
-            //            Authorization: "Bearer " + this.$store.state.jwtToken.token
-            //        }
-            //    }
-            //    axios.get(url, apiConfig)
-            //        .then((response) => {
-            //            this.getBankFileFromECM()
-            //            if (response.data != null) {
-            //                for (let i = 0; i < this.bankNames.length; i++) {
-            //                    if (response.data.accountBankName == this.bankNames[i].bankCode) {
-            //                        this.inputBank.accountBankName = this.bankNames[i].name
-            //                        this.inputBank.bankId = this.bankNames[i].bankCode
-            //                        this.inputBank.accountName = response.data.accountName
-            //                        this.inputBank.accountNumber = response.data.accountNumber
-            //                        this.inputBank.isEditBankImage = false
-            //                        this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
-            //                        this.isLoading = false;
-            //                        return true;
-            //                    }
-            //                }
-
-            //            }
-            //        })
-            //        .catch(function (error) {
-            //            alert(error);
-            //        });
-            //},
-            //getBankNames() {
-            //    var url = this.$store.state.envUrl + '/api/Master/Bank';
-            //    axios.get(url)
-            //        .then((response) => {
-            //            this.bankNames = response.data;
-            //            this.getDocumentReceive();
-            //        })
-            //        .catch(function (error) {
-            //            alert(error);
-            //        });
-            //},
-            //getChangwatNames() {
-            //    var url = this.$store.state.envUrl + '/api/Master/Changwat';
-            //    axios.get(url)
-            //        .then((response) => {
-            //            this.changwats = response.data;
-            //            this.getBankNames();
-
-            //        })
-            //        .catch(function (error) {
-            //            alert(error);
-            //        });
-            //},
-            
-            //getAccountAndMasterData() {
-            //    var url = this.$store.state.envUrl + '/api/Approval/AccountAndMasterData';
-            //    const body = {
-            //        AccNo: this.accData.stringAccNo,
-            //        VictimNo: parseInt(this.accData.victimNo),
-            //        ReqNo: parseInt(this.$route.params.appNo),
-            //    };
-            //    var apiConfig = {
-            //        headers: {
-            //            'Authorization': "Bearer " + this.$store.state.jwtToken.token,
-            //            'Content-Type': 'application/json',
-            //        }
-            //    }
-            //    axios.post(url, JSON.stringify(body), apiConfig)
-            //        .then((response) => {
-            //            console.log("new ", response)
-            //            this.getBankFileFromECM()
-            //            var bankNames = response.data.bankNames;
-            //            if (response.data.account != null) {
-            //                for (let i = 0; i < this.bankNames.length; i++) {
-            //                    if (response.data.account.accountBankName == this.bankNames[i].bankCode) {
-            //                        this.inputBank.accountBankName = this.bankNames[i].name
-            //                        this.inputBank.bankId = this.bankNames[i].bankCode
-            //                        this.inputBank.accountName = response.data.account.accountName
-            //                        this.inputBank.accountNumber = response.data.account.accountNumber
-            //                        this.inputBank.isEditBankImage = false
-            //                        this.inputBank.displayBtnChangeBankImage = "แก้ไขรูปบัญชีรับเงิน"
-            //                        this.isLoading = false;
-            //                        console.log("good")
-            //                        return true;
-            //                    }
-            //                }
-
-            //            }
-            //        })
-            //        .catch(function (error) {
-            //            alert(error);
-            //        });
-               
-            //},
-            //getWoundeds() {
-            //    var url = this.$store.state.envUrl + '/api/Master/Wounded';
-            //    axios.get(url)
-            //        .then((response) => {
-            //            this.wounded = response.data.woundedList;
-            //            this.organ = response.data.organ
-            //            this.getInvoicehdNotPass();
-
-            //        })
-            //        .catch(function (error) {
-            //            alert(error);
-            //        });
-            //},
-            //getDocumentCheck() {
-            //    var url = this.$store.state.envUrl + '/api/Approval/DocumentCheck/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', this.$route.params.appNo);
-            //    var apiConfig = {
-            //        headers: {
-            //            Authorization: "Bearer " + this.$store.state.jwtToken.token
-            //        }
-            //    }
-            //    axios.get(url, apiConfig)
-            //        .then((response) => {
-            //            this.documentCheck = response.data;
-            //            if (this.documentCheck != null) {
-            //                if (this.documentCheck.bookbankStatus == "N") {
-            //                    this.accountDoc = true;
-            //                    this.bookbankNotPassDescList = this.documentCheck.bbCommentTypeId.split("-");
-            //                    for (let i = 0; i < this.bookbankNotPassDescList.length; i++) {
-            //                        if (this.bookbankNotPassDescList[i] == "201") {
-            //                            this.bookbankNotPassDescList[i] = 'ภาพถ่ายไม่ใช่บัญชีธนาคาร'
-            //                        } else if (this.bookbankNotPassDescList[i] == "202") {
-            //                            this.bookbankNotPassDescList[i] = 'ภาพถ่ายบัญชีธนาคารไม่ชัด'
-            //                        } else if (this.bookbankNotPassDescList[i] == "203") {
-            //                            this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
-            //                        } else if (this.bookbankNotPassDescList[i] == "204") {
-            //                            this.bookbankNotPassDescList[i] = 'ข้อมูลชื่อบัญชีไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
-            //                        } else if (this.bookbankNotPassDescList[i] == "205") {
-            //                            this.bookbankNotPassDescList[i] = 'ข้อมูลเลขที่บัญชีธนาคารไม่ตรงกับภาพถ่ายบัญชีธนาคาร'
-            //                        }
-            //                    }
-
-            //                    var bookbankNotPassTypeId = this.documentCheck.bbCommentTypeId.split("-");
-            //                    for (let i = 0; i < bookbankNotPassTypeId.length; i++) {
-            //                        if (bookbankNotPassTypeId[i] == "201" || bookbankNotPassTypeId[i] == "202") {
-            //                            this.displayBankAccount.isDisabledInputImageBookBank = false
-            //                            this.displayBankAccount.isDisabledImageBookBank = false
-            //                            this.displayBankAccount.isDisabledBankName = false
-            //                            this.displayBankAccount.isDisabledAccountName = false
-            //                            this.displayBankAccount.isDisabledAccountNumber = false
-            //                            this.displayBankAccount.isHideFormInput = true
-            //                        } else if (bookbankNotPassTypeId[i] == "203") {
-            //                            this.displayBankAccount.isDisabledImageBookBank = false
-            //                            this.displayBankAccount.isDisabledBankName = false
-            //                            this.displayBankAccount.isHideFormInput = false
-            //                        } else if (bookbankNotPassTypeId[i] == "204") {
-            //                            this.displayBankAccount.isDisabledImageBookBank = false
-            //                            this.displayBankAccount.isDisabledAccountName = false
-            //                            this.displayBankAccount.isHideFormInput = false
-            //                        } else if (bookbankNotPassTypeId[i] == "205") {
-            //                            this.displayBankAccount.isDisabledImageBookBank = false
-            //                            this.displayBankAccount.isDisabledAccountNumber = false
-            //                            this.displayBankAccount.isHideFormInput = false
-            //                        }
-            //                    }
-            //                }
-            //                if (this.documentCheck.invoiceStatus == "N") {
-            //                    this.invoiceDoc = true;
-            //                }
-            //            }
-
-            //        })
-            //        .catch((error) => {
-            //            if (error.toString().includes("401")) {
-            //                this.getJwtToken()
-            //                this.getDocumentCheck()
-            //            }
-            //        });
-            //},
+          
             getBillFileFromECM(idInvhd) {
                 var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
-                    SystemId: '02',
-                    TemplateId: '03',
-                    DocumentId: '01',
+                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_SYSTEM_ID,
+                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_TEMPLATE_ID,
+                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_DOCUMENT_ID,
                     RefId: idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo,
                 };
                 axios.post(url, JSON.stringify(body), {
@@ -1194,10 +991,16 @@
                         'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
+                    console.log(response.data.length)
                     for (let i = 0; i < this.invoicehd.length; i++) {
                         if (this.invoicehd[i].idInvhd == idInvhd) {
-                            this.bills[i].billFileShow = 'data:image/png;base64,' + response.data
+                            for (let j = 0; j < response.data.length; j++) {
+                                console.log(response.data[j])
+                                this.bills[i].billFileShow[j] = 'data:image/png;base64,' + response.data[j]
+                            }                            
                         }
+                        this.changeBillImage(i)
+                        this.changeBillImage(i)
                     }
                 }).catch(function (error) {
                     alert(error);
@@ -1207,9 +1010,9 @@
             getBankFileFromECM() {
                 var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
-                    SystemId: '03',
-                    TemplateId: '09',
-                    DocumentId: '01',
+                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID,
+                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID,
+                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID,
                     RefId: this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
                 };
                 axios.post(url, JSON.stringify(body), {
@@ -1305,8 +1108,62 @@
                     })
                 }
             },
-            onRemoveBillFile: function (index) {
-                this.bills[index].editBillImage = ""
+            //onRemoveBillFile: function (index) {
+            //    this.bills[index].editBillImage = ""
+            //},
+            resizeBillImages(billIndex, imageIndex, dataUrl, fileType) {
+                var img = new Image();
+                img.src = dataUrl
+                img.onload = () => {
+                    var canvas = document.createElement("canvas");
+                    var MAX_WIDTH = 720;
+                    var MAX_HEIGHT = 720;
+                    var width = img.width;
+                    var height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    this.bills[billIndex].editBillImage[imageIndex] = canvas.toDataURL(fileType);
+                    this.isLoading = false;
+
+                }
+            },
+            createBillImageDataUrl(fileObject, billIndex, imageIndex,) {
+                console.log(fileObject)
+                const reader = new FileReader();
+                reader.readAsDataURL(fileObject)
+                reader.onload = (e) => {
+                    this.resizeBillImages(billIndex, imageIndex, e.target.result, fileObject.type)
+                }
+            },
+            onBillFileUpdated: async function (index) {
+                this.isLoading = true
+                this.bills[index].editBillImage = []
+                this.bills[index].filename = []
+                if (this.bills[index].file.length > 0) {
+                    for (let i = 0; i < this.bills[index].file.length; i++) {
+                        if (this.bills[index].file[i].fileSize < 7000000) {
+                            this.bills[index].filename[i] = this.bills[index].file[i].filename
+                            this.createBillImageDataUrl(this.bills[index].file[i].file, index, i)
+                        }
+                    }
+                } else {
+                    this.isLoading = false
+                }
+                console.log(this.bills[index].editBillImage)
             },
             onAddBillFile: function (index) {
                 this.isLoading = true;
@@ -1453,7 +1310,7 @@
                                 }
                             }
                         }
-                        if (this.bills[i].isEditImage && (this.bills[i].editBillImage == "" || this.bills[i].editBillImage == null)) {
+                        if (this.bills[i].isEditImage && (this.bills[i].editBillImage.length == 0)) {
                             this.$swal({
                                 icon: 'warning',
                                 text: 'กรุณาอัพโหลดรูปภาพใบเสร็จค่ารักษาให้ครบถ้วน',
@@ -1766,7 +1623,7 @@
                 fieldType.push({
                     billNo: index, bill_no: "", bookNo: "", selectHospital: '', money: "0", hospitalized_date: "", hospitalized_time: "",
                     out_hospital_date: "", out_hospital_time: "", typePatient: "OPD", injuri: "", injuriId: "", selectHospitalId: "",
-                    file: null, billFileShow: "", filename: "", editBillImage: "", isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ",
+                    file: null, billFileShow: [], filename: [], editBillImage: [], isEditImage: false, displayBtnChangeBillImage: "แก้ไขรูปใบเสร็จ",
                     isCancel: false
                 });
                 this.calMoney()

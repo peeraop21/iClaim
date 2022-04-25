@@ -13,10 +13,11 @@ namespace Services
 {
     public interface IUserService
     {
-        Task<DirectPolicyKycViewModel> GetUser(string userToken);
-        Task<bool> CheckRegister(string userToken);
+        Task<DirectPolicyKycViewModel> GetUserByIdLine(string userToken);
+        Task<bool> CheckRegisterByIdLine(string userToken);
         Task<object> AddAsync(DirectPolicyKycViewModel model);
         Task<int> GetLastKyc();
+        Task<bool> CheckUserAccessToken(string systemName, string userToken);
     }
 
 
@@ -33,7 +34,7 @@ namespace Services
             this._mapper = _mapper;
         }
 
-        public async Task<DirectPolicyKycViewModel> GetUser(string userToken)
+        public async Task<DirectPolicyKycViewModel> GetUserByIdLine(string userToken)
         {
             var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).
                 Select(s => new { s.LineId, s.Prefix, s.Fname, s.Lname, s.IdcardNo, s.MobileNo, s.Kycno}).OrderByDescending(o => o.Kycno).FirstOrDefaultAsync();
@@ -54,7 +55,7 @@ namespace Services
             return directPolicyKyc;
         }
 
-        public async Task<bool> CheckRegister(string userToken)
+        public async Task<bool> CheckRegisterByIdLine(string userToken)
         {
             var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken && w.Status == "Y").Select(s => s.Kycno).OrderByDescending(o => o).FirstOrDefaultAsync();
             if (query <= 0)
@@ -84,6 +85,23 @@ namespace Services
         public async Task<int> GetLastKyc()
         {            
             return await ipolicyContext.DirectPolicyKyc.OrderByDescending(o => o.Kycno).Select(s => s.Kycno).Take(1).FirstOrDefaultAsync();
+        }
+        public async Task<bool> CheckUserAccessToken(string systemName, string userToken)
+        {
+            if(systemName == "eClaim")
+            {
+                return true;
+            }
+            var userId = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken && w.Status == "Y").Select(s => s.LineId).OrderByDescending(o => o).FirstOrDefaultAsync();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
 
      

@@ -21,11 +21,9 @@ namespace Services
     public interface IAttachmentService
     {
         Task<string> DownloadFileFromECM(string documentPath);
-        Task<string> GetDocumentPath(EdocDetailViewModel model);
+        Task<List<EDocDetail>> GetDocumentPath(EdocDetailViewModel model);
         Task<EdocDetailRes> SaveToEdocDetail(EdocDetailViewModel model);
         Task<ECMViewModelRes> UploadFileToECM(ECMViewModel model);
-        Task<string> UpdateToEdocDetail(EdocDetailViewModel model);
-        Task<string> GetLastEdocDetailAsync(string systemId, string templateId, string documentId, string refId);
     }
     public class AttachmentService: IAttachmentService
     {
@@ -204,27 +202,16 @@ namespace Services
                       
         }
 
-        public async Task<string> UpdateToEdocDetail(EdocDetailViewModel model)
+        public async Task<List<EDocDetail>> GetDocumentPath(EdocDetailViewModel model)
         {
-            var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId == model.RefId).FirstOrDefaultAsync();
-            edocDetail.Paths = model.Paths;
-            await rvpSystemContext.SaveChangesAsync();
-            return null;
+            var maxRunningNo = await rvpSystemContext.EDocDetail.
+                Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId))
+                .MaxAsync(m => m.RunningNo);          
+            var query = await rvpSystemContext.EDocDetail
+                .Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId) && w.RunningNo == maxRunningNo)
+                .Select(s => new EDocDetail(){ Paths = s.Paths, CreateDate = s.CreateDate, RunningNo = s.RunningNo }).OrderByDescending(o => o.RunningNo).ToListAsync();
+            return query;
         }
-        public async Task<string> GetDocumentPath(EdocDetailViewModel model)
-        {
-            var query = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId)).Select(s => new { s.Paths, s.CreateDate, s.RunningNo }).OrderByDescending(o => o.RunningNo).FirstOrDefaultAsync();
-            return query.Paths;
-        }
-        public async Task<string> GetLastEdocDetailAsync(string systemId, string templateId, string documentId, string refId)
-        {
-            var query = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == systemId && w.TemplateId == templateId && w.DocumentId == documentId && w.RefId.StartsWith(refId))
-                .Select(s => new { s.RefId, s.CreateDate }).OrderByDescending(o => o.CreateDate).FirstOrDefaultAsync();
-            if(query == null)
-            {
-                return null;
-            }
-            return query.RefId;
-        }
+        
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -14,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Core.Controllers
 {
+    [EnableCors("iClaim")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -37,21 +40,19 @@ namespace Core.Controllers
 
         [Authorize]
         // GET api/<UserController>/5
-        [HttpGet("{userToken}")]
-        public async Task<IActionResult> Get(string userToken)
+        [HttpPost("GetUser")]
+        public async Task<IActionResult> GetUser([FromBody] ReqData req)
         {
-            return Ok(await userService.GetUser(userToken));
+            return Ok(await userService.GetUserByIdLine(req.UserIdLine));
         }
 
-        [Authorize]
         // GET api/<UserController>/5
-        [HttpGet("CheckRegister/{userToken}")]
-        public async Task<IActionResult> CheckRegister(string userToken)
+        [HttpPost("CheckRegister")]
+        public async Task<IActionResult> CheckRegister([FromBody] ReqData req)
         {
-            return Ok(await userService.CheckRegister(userToken));
+            return Ok(await userService.CheckRegisterByIdLine(req.UserIdLine));
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] DirectPolicyKycViewModel model)
         {

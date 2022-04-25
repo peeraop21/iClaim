@@ -21,7 +21,10 @@ namespace Core.ViewModels
         public bool? IsEverAuthorize { get; set; }
         public double? EverAuthorizeMoney { get; set; }
         public string EverAuthorizeHosId { get; set; }
-        
+        public int RightsType { get; set; }
+
+
+
 
     }
 }

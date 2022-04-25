@@ -17,24 +17,30 @@ using System.Net;
 using Nancy.Json;
 using DinkToPdf;
 using Core.Models.API;
+using Core.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Cors;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Core.Controllers
-{   
+{
+    [EnableCors("iClaim")]
     [Route("api/[controller]")]
     [ApiController]
     public class ApprovalController : ControllerBase
     {
+        private readonly IConfiguration configuration;
         private readonly IMapper _mapper;
         private readonly IApprovalService approvalService;
         private readonly IAccidentService accidentService;
         private readonly IConverter converter;
         private readonly IAttachmentService attachmentService;
         private readonly IMasterService masterService;
-        public ApprovalController(IApprovalService approvalService, IAccidentService accidentService, IMapper _mapper, IConverter converter, IAttachmentService attachmentService, IMasterService masterService)
+        public ApprovalController(IConfiguration configuration, IApprovalService approvalService, IAccidentService accidentService, IMapper _mapper, IConverter converter, IAttachmentService attachmentService, IMasterService masterService)
         {
+            this.configuration = configuration;
             this.converter = converter;
             this.approvalService = approvalService;
             this._mapper = _mapper;
@@ -44,25 +50,19 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("{accNo}/{victimNo}/{rightsType}")]
-        public async Task<IActionResult> GetApproval(string accNo, int victimNo, int rightsType)
+        [HttpPost("HistoryRights")]
+        public async Task<IActionResult> GetHistoryRights([FromBody] ApprovalViewModel model)
         {
-            return Ok(await approvalService.GetApprovalRegis(accNo.Replace("-", "/"), victimNo, rightsType));
+            return Ok(await approvalService.GetApprovalRegis(model.AccNo.Replace("-", "/"), model.VictimNo, model.RightsType));
         }
 
         [Authorize]
-        [HttpGet("IclaimApproval/{accNo}/{victimNo}")]
-        public async Task<IActionResult> GetIclaimApproval(string accNo, int victimNo)
+        [HttpPost("IclaimApproval")]
+        public async Task<IActionResult> GetIclaimApproval([FromBody] ReqData model)
         {
-            return Ok(await approvalService.GetIClaimApprovalAsync(accNo.Replace("-", "/"), victimNo));
+            return Ok(await approvalService.GetIClaimApprovalAsync(model.AccNo.Replace("-", "/"), model.VictimNo));
         }
 
-        [Authorize]
-        [HttpGet("DocumentReceive/{accNo}/{victimNo}/{appNo}")]
-        public async Task<IActionResult> GetDocumentReceive(string accNo, int victimNo, int appNo)
-        {
-            return Ok(await approvalService.GetIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo, appNo));
-        }
         
         [Authorize]
         [HttpPost]
@@ -79,17 +79,21 @@ namespace Core.Controllers
             
             for (int i = 0; i < model.BillsData.Count; i++)
             {             
-                ecmModel.SystemId = "02";
-                ecmModel.TemplateId = "03";
-                ecmModel.DocID = "01";
+                for(int j = 0; j< model.BillsData[i].billFileShow.Count;j++)
+                {
+                    ecmModel.SystemId = "02";
+                    ecmModel.TemplateId = "03";
+                    ecmModel.DocID = "01";
 
-                ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo /* + "|" + result[0].AppNo*/;
-                ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename;
-                ecmModel.Base64String = model.BillsData[i].billFileShow;
-                var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
-                resultMapEdocDetail.Paths = invoiceEcmRes.Path;
-                await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "-" + (j+1);
+                    ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename[j];
+                    ecmModel.Base64String = model.BillsData[i].billFileShow[j];
+                    var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                    var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                    resultMapEdocDetail.Paths = invoiceEcmRes.Path;
+                    await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                }
+                
             }    
             ecmModel.SystemId = "03";
             ecmModel.TemplateId = "09";
@@ -108,7 +112,7 @@ namespace Core.Controllers
      
         [Authorize]
         [HttpPost("ConfirmMoney")]
-        public async Task<IActionResult> ConfirmMoney([FromBody] ReqDataViewModel model)
+        public async Task<IActionResult> ConfirmMoney([FromBody] ReqData model)
         {
             var result = await approvalService.UpdateApprovalStatusAsync(model.AccNo.Replace('-', '/'), model.VictimNo, model.ReqNo, "ConfirmMoney", false);
             await CreateAndSignBoto(model);
@@ -116,32 +120,25 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("LastDocumentReceive/{accNo}/{victimNo}")]
-        public async Task<IActionResult> GetLastDocumentReceive(string accNo, int victimNo)
+        [HttpPost("LastDocumentReceive")]
+        public async Task<IActionResult> GetLastDocumentReceive([FromBody] ReqData model)
         {
-            return Ok(await approvalService.GetLastIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo));
+            return Ok(await approvalService.GetLastIClaimBankAccountAsync(model.AccNo.Replace("-", "/"), model.VictimNo));
         }
 
-        //[Authorize]
-        //[HttpGet("InvoicehdNotPass/{accNo}/{victimNo}/{appNo}")]
-        //public async Task<IActionResult> GetInvoicehdNotPass(string accNo, int victimNo, int appNo)
-        //{
-        //    var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
-        //    var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, appNo, 2);
-        //    return Ok( new { TypesOfInvoiceNotPass = typesOfInvoiceNotPass, InvoicesNotPass = invoicesNotPass });
-        //}
+       
         [Authorize]//-dev
-        [HttpGet("DataForEditApprovalPage/{accNo}/{victimNo}/{reqNo}")]
-        public async Task<IActionResult> GetDataForEditApprovalPage(string accNo, int victimNo, int reqNo)
+        [HttpPost("DataForEditApprovalPage")]
+        public async Task<IActionResult> GetDataForEditApprovalPage([FromBody] ReqData model)
         {
             var wounded = await masterService.GetWoundeds();
             var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
-            var invoicesNotPass = await approvalService.GetInvoicehdAsync(accNo.Replace("-", "/"), victimNo, reqNo, 2);
+            var invoicesNotPass = await approvalService.GetInvoicehdAsync(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo, 2);
             var changwats = await masterService.GetChangwat();
             var banksName = await masterService.GetBank();
             var typesOfBankAccountNotPass = await masterService.GetTypesOfBankAccountNotPass();
-            var account = await approvalService.GetIClaimBankAccountAsync(accNo.Replace("-", "/"), victimNo, reqNo);
-            var accountChecks = await approvalService.GetDocumentCheck(accNo.Replace("-", "/"), victimNo, reqNo);
+            var account = await approvalService.GetIClaimBankAccountAsync(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
+            var accountChecks = await approvalService.GetDocumentCheck(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
             return Ok(new { 
                 Woundeds = wounded,
                 TypesOfInvoiceNotPass = typesOfInvoiceNotPass, 
@@ -154,19 +151,18 @@ namespace Core.Controllers
             });
         }
 
-        [Authorize]
-        [HttpGet("DocumentCheck/{accNo}/{victimNo}/{appNo}")]
-        public async Task<IActionResult> GetDocumentCheck(string accNo, int victimNo, int appNo)
-        {
-            return Ok(await approvalService.GetDocumentCheck(accNo.Replace("-", "/"), victimNo, appNo));
-        }
 
         [Authorize]
         [HttpPost("DownloadFromECM")]
         public async Task<IActionResult> GetBase64FromECM([FromBody] EdocDetailViewModel model)
         {
-            var documentPath = await attachmentService.GetDocumentPath(model);            
-            return Ok(await attachmentService.DownloadFileFromECM(documentPath));
+            var documentPath = await attachmentService.GetDocumentPath(model);
+            List<string> base64List = new List<string>();
+            for(int i = 0; i < documentPath.Count; i++)
+            {
+                base64List.Add(await attachmentService.DownloadFileFromECM(documentPath[i].Paths)); 
+            }
+            return Ok(base64List);
         }
 
         [Authorize]
@@ -185,21 +181,22 @@ namespace Core.Controllers
                 {
                     if (resultMapToInvoicehd[i].isEditImage && !resultMapToInvoicehd[i].isCancel)
                     {
-                        ecmModel.SystemId = "02";
-                        ecmModel.TemplateId = "03";
-                        ecmModel.DocID = "01";
-                        ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo  /*+ "|" + model.AppNo*/;
-                        ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename;
-                        ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage;
-                        var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                        var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
-                        resultMapEdocDetail.Paths = invoiceEcmRes.Path;
-                        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                        for(int j = 0; j < resultMapToInvoicehd[i].editBillImage.Count; j++)
+                        {
+                            ecmModel.SystemId = "02";
+                            ecmModel.TemplateId = "03";
+                            ecmModel.DocID = "01";
+                            ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo + "-" + (j+1)  /*+ "|" + model.AppNo*/;
+                            ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename[j];
+                            ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage[j];
+                            var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                            var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                            resultMapEdocDetail.Paths = invoiceEcmRes.Path;
+                            await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                        }                       
                     }
-
                 }
-            }
-           
+            }          
             if (resultMapBank.isEditBankImage)
             {
                 ecmModel.RefNo = model.AppNo + "|" + model.AccNo + "|" + model.VictimNo;
@@ -212,8 +209,7 @@ namespace Core.Controllers
                 var bookbankResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
                 bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
                 await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
-            }
-            
+            }            
             return Ok();
         }
 
@@ -225,15 +221,15 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("Invoicedt/{accNo}/{victimNo}/{appNo}")]
-        public async Task<IActionResult> GetInvoicedtDetail(string accNo, int victimNo, int appNo)
+        [HttpPost("Invoicedt")]
+        public async Task<IActionResult> GetInvoicedtDetail([FromBody] ApprovalViewModel model)
         {
-            return Ok(await approvalService.GetHistoryInvoicedt(accNo.Replace("-", "/"), victimNo, appNo));
+            return Ok(await approvalService.GetHistoryInvoicedt(model.AccNo.Replace("-", "/"), model.VictimNo, model.AppNo));
         }
 
         [Authorize]
         [HttpPost("DataConfirmMoney")]
-        public async Task<IActionResult> GetDataConfirmMoney([FromBody] ReqDataViewModel model)
+        public async Task<IActionResult> GetDataConfirmMoney([FromBody] ReqData model)
         {
             var initConfirmMoney = await approvalService.GetDataForConfirmMoney(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
             var banks = await masterService.GetBank();
@@ -241,10 +237,10 @@ namespace Core.Controllers
         }
 
         [Authorize]
-        [HttpGet("ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}")]
-        public async Task<IActionResult> GetApprovalDataForApprovalDetailPage(string accNo, int victimNo, int reqNo,string userIdCard)
+        [HttpPost("ApprovalDetail")]
+        public async Task<IActionResult> GetApprovalDataForApprovalDetailPage([FromBody] ReqData model)
         {
-            return Ok(await approvalService.GetApprovalDetail(accNo.Replace("-", "/"), victimNo, reqNo, userIdCard));
+            return Ok(await approvalService.GetApprovalDetail(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo, model.UserIdCard));
         }
 
         [Authorize]
@@ -255,71 +251,84 @@ namespace Core.Controllers
             return Ok(await approvalService.CheckDuplicateInvoice(resultMapToInvoicehd));
         }
 
+        [Authorize]
         [HttpPost("DownloadPdfBoto3")]
         public async Task<IActionResult> GetPdfBoto3FromECM([FromBody] EdocDetailViewModel model)
         {
             var documentPath = await attachmentService.GetDocumentPath(model);
-            var base64pdf = await attachmentService.DownloadFileFromECM(documentPath);
+            var base64pdf = await attachmentService.DownloadFileFromECM(documentPath[0].Paths);
             var pdfBytes = Convert.FromBase64String(base64pdf);
             return File(pdfBytes, "application/pdf");
         }
-        private async Task<string> CreateAndSignBoto(ReqDataViewModel model)
+
+        [Authorize]
+        [HttpPost("CreateAndSignBoto3")]
+        public async Task<string> CreateAndSignBoto(ReqData model)
         {
-            model.Channel = "HOSPITAL";
-            var acc = await accidentService.GetAccidentForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
-            var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.Channel, model.UserIdCard, model.VictimNo);
-            var accCar = await accidentService.GetAccidentCar(model.AccNo.Replace("-", "/"), model.Channel);
-            var approvalData = await approvalService.GetApprovalDataForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
-
-            byte[] file = null;
-            var globalSettings = new GlobalSettings
+            try
             {
-                ColorMode = ColorMode.Color,
-                Orientation = Orientation.Portrait,
-                PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 0, Bottom = 0, Left = 0, Right = 0 },
-                DocumentTitle = "บต3",
-                DPI = 300,
-                ImageDPI = 300,
-                Outline = false
-            };
+                var acc = await accidentService.GetAccidentForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
+                var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.UserIdCard, model.VictimNo);
+                var accCar = await accidentService.GetAccidentCar(model.AccNo.Replace("-", "/"));
+                var approvalData = await approvalService.GetApprovalDataForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
+                if (acc == null || accVictim == null || accCar == null || approvalData == null)
+                {
+                    return "Something went wrong!";
+                }
+                byte[] file = null;
+                var globalSettings = new GlobalSettings
+                {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                    Margins = new MarginSettings { Top = 0, Bottom = 0, Left = 0, Right = 0 },
+                    DocumentTitle = "บต3",
+                    DPI = 300,
+                    ImageDPI = 300,
+                    Outline = false
+                };
 
-            string HtmlContent = string.Empty;
-            HtmlContent = await GenBotoBody(acc, accVictim, accCar, approvalData);
+                string HtmlContent = string.Empty;
+                HtmlContent = await GenBotoBody(acc, accVictim, accCar, approvalData);
 
-            var objectSettings = new ObjectSettings
-            {
-                PagesCount = true,
-                HtmlContent = HtmlContent,
-                WebSettings = { DefaultEncoding = "utf-8" },
-                LoadSettings =
+                var objectSettings = new ObjectSettings
+                {
+                    PagesCount = true,
+                    HtmlContent = HtmlContent,
+                    WebSettings = { DefaultEncoding = "utf-8" },
+                    LoadSettings =
                 {
                     DebugJavascript = true,
                     StopSlowScript = false
                 }
-            };
-            var pdf = new HtmlToPdfDocument()
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                file = converter.Convert(pdf);
+                var pdfSigned = await SignPdfByByte(file, model.AccNo.Replace("/", "-"), model.VictimNo, model.ReqNo);
+                if (pdfSigned.Status == 1)
+                {
+                    return pdfSigned.Message;
+                }
+                else
+                {
+                    return pdfSigned.Message;
+                }
+            }catch (Exception ex)
             {
-                GlobalSettings = globalSettings,
-                Objects = { objectSettings }
-            };
-            file = converter.Convert(pdf);
-            var pdfSigned = await SignPdfByByte(file, model.AccNo, model.VictimNo, model.ReqNo);
-            if (pdfSigned.Status == 1)
-            {
-                return pdfSigned.Message;
+                return "Something went wrong!";
             }
-            else
-            {
-                return pdfSigned.Message;
-            }
+           
             
 
 
         }
         private async Task<SignPdfRes> SignPdfByByte(byte[] unSignedPdf, string accNo, int victimNo, int reqNo)
         {
-            string URL = "https://ts2digitalsignapi.rvpeservice.com/api/DigitalSignIclaim/SignPdtByte";
+            string URL = configuration["API:Attachment:DigitalSignPdf"];
 
             try
             {

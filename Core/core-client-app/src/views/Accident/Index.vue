@@ -4,7 +4,7 @@
                  :can-cancel="false"
                  color="#5c2e91"
                  loader="dots"
-                 :is-full-page="true">                   
+                 :is-full-page="true">
         </loading>
         <div class="row">
             <div align="center">
@@ -22,16 +22,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-4 mt-4">
-                    <button @click="testDOPAapi" hidden class="btn-next" to="">Test DOPA API</button>
-                </div>
+
 
                 <div align="left" style="width: 100%;">
                     <label class="title-advice-menu">ประวัติการแจ้งอุบัติเหตุ</label>
                 </div>
                 <div class="row mt-2 mb-2">
                     <div class="col-1">
-                        
+
                     </div>
                     <div class="col-10">
                         <v-date-picker v-model="dateSearch" class="" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
@@ -43,25 +41,24 @@
                                        placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
                                        readonly />-->
                                 <b-input-group style="background-color: #e1deec; border-radius: 7px;">
-                                    <b-input-group-prepend >                                        
-                                        <b-button style=" border: none;" variant="outline-secondary" disabled><b-icon icon="search" /></b-button>                                     
+                                    <b-input-group-prepend>
+                                        <b-button style=" border: none;" variant="outline-secondary" disabled><b-icon icon="search" /></b-button>
                                     </b-input-group-prepend>
                                     <b-form-input style="text-align: center; background-color: #e1deec; border: none;"
-                                                  :value="inputValue"  
+                                                  :value="inputValue"
                                                   v-on="inputEvents"
                                                   placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
-                                                  readonly
-                                                  >
+                                                  readonly>
                                     </b-form-input>
-                                    <b-input-group-append >
-                                        <b-button @click="clearDateSearch" style=" border: none;" variant="outline-secondary" ><b-icon icon="x" /></b-button>
+                                    <b-input-group-append>
+                                        <b-button @click="clearDateSearch" style=" border: none;" variant="outline-secondary"><b-icon icon="x" /></b-button>
                                     </b-input-group-append>
                                 </b-input-group>
                             </template>
                         </v-date-picker>
 
                     </div>
-                    <div class="col-1">                        
+                    <div class="col-1">
                     </div>
 
                 </div>
@@ -98,10 +95,10 @@
                                             <br />
                                             <label v-if="accident.cureRightsBalance >= 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: {{ accident.cureRightsBalance }} บาท</label>
                                             <label v-if="accident.cureRightsBalance < 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: 0 บาท</label>
-                                            <br />
+                                            <!--<br />
 
                                             <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
-                                            <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>
+                                            <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>-->
 
                                             <br />
                                         </p>
@@ -122,6 +119,7 @@
 </template>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import axios from 'axios'
     // Import component
     import Loading from 'vue-loading-overlay';
@@ -133,6 +131,7 @@
         components: {
             Loading
         },
+        mixins: [mixin],
         data() {
             return {
                 attrs: [
@@ -146,7 +145,7 @@
                     type: 'string',
                     mask: 'DD/MM/YYYY',
                 },
-                dateSearch:null,
+                dateSearch: null,
                 userData: [],
                 accData: [],
                 rights_amount: 0,
@@ -156,58 +155,21 @@
 
 
         methods: {
-            testDOPAapi() {
-                var urlTest = this.$store.state.envUrl + '/api/DOPAtest'
-                axios.get(urlTest)
-                    .then((response) => {
-                        const body = {
-                            client_code: "A62",
-                            key_name: "A62_key.pub",
-                            request_time: response.data.time,
-                            signature: response.data.signature
-                        };
-
-                        axios.post("https://digitalgatewaytest.digital-access.com/api/auth/token", JSON.stringify(body), {
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
-                        }).then((response1) => {
-                            alert(response1.data)
-
-                        }).catch((error) => {
-                            alert(error)
-
-                        });
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
             clearDateSearch() {
                 this.dateSearch = null
             },
-            getJwtToken() {
-                var urlJwt = this.$store.state.envUrl + '/api/jwt'
-                axios.post(urlJwt, {
-                    Name: 'Nior',
-                    Email: 'peeran@rvp.co.th'
-                }).then((response) => {
-                    this.$store.state.jwtToken = response.data
-                    this.getAccidents();
-                    this.getUser();
-                }).catch(function (error) {
-                    alert(error)
-                })
-            },
             getAccidents() {
-                var url = this.$store.state.envUrl + '/api/accident/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
-                var tokenJwt = this.$store.state.jwtToken.token
+                var url = this.$store.state.envUrl + '/api/accident';
+                const body = {
+                    UserIdLine: this.$store.state.userTokenLine
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + tokenJwt
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.$store.state.accStateData = response.data;
                         this.accData = this.$store.state.accStateData
@@ -218,34 +180,37 @@
                     });
             },
             getUser() {
-                var url = this.$store.state.envUrl + '/api/user/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
-                var tokenJwt = this.$store.state.jwtToken.token
+                var url = this.$store.state.envUrl + '/api/user/GetUser';
+                const body = {
+                    UserIdLine: this.$store.state.userTokenLine
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + tokenJwt
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         if (response.data == null) {
                             this.$router.push({ name: 'Advice' })
                         }
-                        this.$store.state.userStateData = response.data;                       
+                        this.$store.state.userStateData = response.data;
                         this.userData = this.$store.state.userStateData;
                     })
                     .catch(function (error) {
                         alert(error);
                     });
             },
-            
-            
+
+
+        },
+        async created() {
+            await this.getJwtToken();
+            this.getAccidents();
+            this.getUser();
         },
 
-        async mounted() {
-            /*this.$store.state.userTokenLine = "FrameMock"*/
-            await this.getJwtToken();
-            
-        }
     }
 </script>
 
@@ -253,7 +218,7 @@
     .icon-count-notify {
         display: inherit;
         position: absolute;
-        color:white;
+        color: white;
         background-color: red;
         border: 1px solid #000;
         border-radius: 10px;
@@ -261,6 +226,7 @@
         height: 20px;
         margin-top: -10px;
     }
+
     #header2 {
         font-size: 18px;
         font-weight: bold;
@@ -474,7 +440,6 @@
         }
 
         .answer p {
-            
             padding: 0.7rem 0 0 2rem;
         }
 

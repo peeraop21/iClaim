@@ -85,7 +85,19 @@ namespace Core
             services.AddScoped<IWarmupService, WarmupService>();
             services.AddScoped<DigitalclaimContextProcedures>();
 
-
+            services.AddCors(o => o.AddPolicy("iClaim", builder =>
+            {
+                builder.WithOrigins(
+                    "http://localhost:50598",
+                    "https://ts2digitalclaim.rvp.co.th",
+                    "https://ts2iclaim.rvp.co.th",
+                    "https://iclaim.rvp.co.th",
+                    "http://localhost:4078",
+                    "http://demo.rvp-eclaim.com",
+                    "http://www.rvp-eclaim.com")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -113,13 +125,17 @@ namespace Core
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-            app.UseAuthentication();           
+            //app.UseCors(x => x
+            //.AllowAnyOrigin()
+            //.AllowAnyMethod()
+            //.AllowAnyHeader());
+            
+           
+            
             app.UseRouting();
+            app.UseCors("iClaim");
             app.UseSpaStaticFiles();
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

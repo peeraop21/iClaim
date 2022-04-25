@@ -285,9 +285,9 @@
             <div class="box-container mb-3">
                 <div class="card-bill" v-for="invhd in approvalData.invoicehds" :key="invhd.idinvhd">
                     <p class="mb-2">ใบเสร็จรับเงินค่ารักษาพยาบาล</p>
-                    <div class="div-center-image" @click="showBigImage(invhd.base64Image)">
-                        <div class="divImage" v-if="invhd.base64Image != null" align="center">
-                            <img class="img-show" :src="invhd.base64Image" />
+                    <div class="div-center-image" v-for="(input, index) in invhd.base64Image" :key="index" @click="showBigImage(invhd.base64Image[index])">
+                        <div class="divImage" v-if="invhd.base64Image[index] != null" align="center">
+                            <img class="img-show" :src="invhd.base64Image[index]" />
                             <br />
                         </div>
                     </div>
@@ -460,18 +460,28 @@
         },
         methods: {
             getApprovalDetail() {
-                var url = this.$store.state.envUrl + '/api/Approval/ApprovalDetail/{accNo}/{victimNo}/{reqNo}/{userIdCard}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{reqNo}', this.$route.params.appNo).replace('{userIdCard}', this.userData.idcardNo);
+                var url = this.$store.state.envUrl + '/api/Approval/ApprovalDetail';
+                const body = {
+                    AccNo: this.$route.params.id,
+                    VictimNo: parseInt(this.accData.victimNo),
+                    ReqNo: parseInt(this.$route.params.appNo),
+                    UserIdCard: this.userData.idcardNo
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.approvalData = response.data;
                         this.getBankFileFromECM();
                         for (let i = 0; i < this.approvalData.invoicehds.length; i++) {
-                            this.approvalData.invoicehds[i].base64Image = 'data:image/png;base64,' + this.approvalData.invoicehds[i].base64Image
+                            for (let j = 0; j < this.approvalData.invoicehds[i].base64Image.length; j++) {
+                                this.approvalData.invoicehds[i].base64Image[j] = 'data:image/png;base64,' + this.approvalData.invoicehds[i].base64Image[j]
+
+                            }
                         }
 
                     })
@@ -485,9 +495,9 @@
             getBankFileFromECM() {
                 var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
                 const body = {
-                    SystemId: '03',
-                    TemplateId: '09',
-                    DocumentId: '01',
+                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID,
+                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID,
+                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID,
                     RefId: this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
                 };
                 axios.post(url, JSON.stringify(body), {

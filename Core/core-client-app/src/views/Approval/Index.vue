@@ -178,7 +178,7 @@
         },
         data() {
             return {
-                
+
                 userData: this.$store.state.userStateData,
                 accData: this.$store.getters.accGetter(this.$route.params.id),
                 iclaimApprovalData: null,
@@ -195,14 +195,19 @@
         methods: {
 
             getIclaimApproval() {
-                this.isLoading = true
-                var url = this.$store.state.envUrl + '/api/approval/IclaimApproval/{accNo}/{victimNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo);
+                this.isLoading = true             
+                var url = this.$store.state.envUrl + '/api/Approval/IclaimApproval';
+                const body = {
+                    AccNo: this.$route.params.id,
+                    VictimNo: parseInt(this.accData.victimNo),
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         /*this.userApi = response.data;*/
                         this.$store.state.hosAppStateData = response.data;
@@ -211,7 +216,7 @@
                         var appNoConfirmMoney = [];
                         var showNoti = false;
                         for (let i = 0; i < this.iclaimApprovalData.length; i++) {
-                            if (this.iclaimApprovalData[i].status == 2 ) {
+                            if (this.iclaimApprovalData[i].status == 2) {
                                 appNoDocumentNotPass.push(this.iclaimApprovalData[i].appNo);
                                 showNoti = true;
                             }
@@ -227,9 +232,9 @@
                             }
                             if (appNoConfirmMoney.length > 0) {
                                 htmlMessage = htmlMessage + '<p align="left"> <strong>คำร้องที่ : ' + appNoConfirmMoney + ' </strong><br>&emsp;&emsp;เนื่องจากจำนวนเงินที่เจ้าหน้าที่พิจารณา ไม่ตรงตามจำนวนเงินที่ท่านส่งคำร้องขอไป กรุณากดที่ปุ่ม <label style="color:var(--main-color)">"รายละเอียดการพิจารณา"</label> เพื่อดูรายละเอียด และยอมรับจำนวนเงิน</p>'
-                                
+
                             }
-                            
+
                             this.$swal({
                                 icon: 'info',
                                 html: htmlMessage,
@@ -250,26 +255,27 @@
                         }
                         this.isLoading = false
                     })
-                    .catch((error) => {                                             
+                    .catch((error) => {
                         if (error.toString().includes("401")) {
                             this.getJwtToken()
                             this.getIclaimApproval()
                         }
                         this.isLoading = false
-                        
+
                     });
 
             },
-            externalPagePDF(appNo) {
+            externalPagePDF(appNo) {            
+                var encodedString = window.btoa(this.$store.state.userTokenLine + '|' + this.$route.params.id + '|' + this.accData.victimNo + '|' + appNo);
                 liff.openWindow({
-                    url: location.origin + '/DownloadPDF/{accNo}/{victimNo}/{appNo}/{userIdCard}/?openExternalBrowser=1'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.accData.victimNo).replace('{appNo}', appNo).replace('{userIdCard}', this.userData.idcardNo),
-                    
-                });
+                    url: location.origin + '/DownloadPDF?pdf=' + encodedString,
+                    external: true
+                })       
             },
         },
-        async created() {           
+        async created() {
             await this.getIclaimApproval();
-            
+
         },
     }
 </script>

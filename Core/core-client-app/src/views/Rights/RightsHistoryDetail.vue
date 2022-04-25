@@ -100,13 +100,19 @@
         },
         methods: {
             getInvoicedtDetail() {
-                var url = this.$store.state.envUrl + '/api/Approval/Invoicedt/{accNo}/{victimNo}/{appNo}'.replace('{accNo}', this.$route.params.id).replace('{victimNo}', this.$route.params.victimNo).replace('{appNo}', this.$route.params.appNo);
+                var url = this.$store.state.envUrl + '/api/Approval/Invoicedt';
+                const body = {
+                    AccNo: this.$route.params.id,
+                    VictimNo: parseInt(this.$route.params.victimNo),
+                    AppNo: parseInt(this.$route.params.appNo)
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig )
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.invdtData = response.data;                       
                         this.isLoading = false

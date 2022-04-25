@@ -1,4 +1,6 @@
 ﻿using Core.Models.API;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +25,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Core.Controllers
 {
+    [EnableCors("iClaim")]
     [Route("[controller]")]
     [ApiController]
     public class ApiController : ControllerBase
@@ -33,12 +36,13 @@ namespace Core.Controllers
         {
             this.configuration = configuration;
         }
+        [Authorize]
         [HttpPost("PushMessage")]
         public async Task<IActionResult> PushMessage([FromBody] PushMessageReq models)
         {
-            var baseUrl = configuration["BaseUrl:Publish"];
-
-            string URL = "https://api.line.me/v2/bot/message/push";
+            //var baseUrl = configuration["BaseUrl:Publish"];
+            string liffUrl = configuration["Line:LiffUrl"];
+            string URL = configuration["Line:PushMessage"];
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
                                        SecurityProtocolType.Tls11 |
                                        SecurityProtocolType.Tls12;
@@ -107,7 +111,7 @@ namespace Core.Controllers
                                                             {
                                                                 Type = "uri",
                                                                 Label = "เข้าสู่ระบบ",
-                                                                Uri = baseUrl + "?openExternalBrowser=1"
+                                                                Uri = liffUrl
                                                             }
                                                         }
                                                     }

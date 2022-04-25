@@ -45,7 +45,7 @@ namespace Services.ViewModels
         public string HospitalName { get; set; }
         public string StringTakendate { get; set; }
         public string StringDispensedate { get; set; }
-        public string Base64Image { get; set; }
+        public List<string?> Base64Image { get; set; }
         public string InvNotPassTypeId { get; set; }
         public string InvNotPassComment { get; set; }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using System;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Controllers
 {
+    [EnableCors("iClaim")]
     [Route("api/[controller]")]
     [ApiController]
     public class MasterController : ControllerBase

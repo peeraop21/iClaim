@@ -17,6 +17,7 @@
 </style>
 
 <script>
+    import mixin from '../../mixin/index.js'
     import liff from '@line/liff'
     import axios from 'axios'
     import Loading from 'vue-loading-overlay';
@@ -26,10 +27,11 @@
         components: {
             Loading
         },
+        mixins: [mixin],
         data() {
             return {
                 isLoading: true,
-
+                data: null
             }
         },
         methods: {
@@ -39,62 +41,57 @@
                     SystemId: '02',
                     TemplateId: '03',
                     DocumentId: '06',
-                    RefId: this.$route.params.appNo + '|' + this.$route.params.accNo + '|' + this.$route.params.victimNo,
+                    RefId: this.data[3] + '|' + this.data[1] + '|' + this.data[2],
                 };
                 axios.post(url, JSON.stringify(body), {
                     responseType: 'arraybuffer',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: "Bearer " + this.$store.state.jwtToken.token,
                     }
-                })
-                    .then((response) => {
-                        let blob = new Blob([response.data], { type: 'application/pdf' }),
-                            url = window.URL.createObjectURL(blob)
-                        this.isLoading = false
-
-
-                        //liff.openWindow({
-                        //    url: url
-                        //});
-                        if (liff.getOS() == "ios") {
-                            const link = document.createElement('a')
-                            link.href = url
-                            link.download = 'บต3' + '|' + this.$route.params.accNo + '|' + this.$route.params.appNo + '.pdf'
-                            document.body.appendChild(link)
-                            link.click()
-                            window.URL.revokeObjectURL(url)
-                            setTimeout(() => {
-                                // For Firefox it is necessary to delay revoking the ObjectURL
-                                document.body.removeChild(link);
-                                window.URL.revokeObjectURL(url);
-                            }, 100)
-                            setTimeout(() => {
-                                liff.closeWindow();
-                            }, 3000)
-                        } else {
-                            window.open(url)
-                            setTimeout(() => {
-                                liff.closeWindow();
-                            }, 3000)
-                        }
-
-
-
-
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-
-                
-
-            }
-
+                }).then((response) => {
+                    let blob = new Blob([response.data], { type: 'application/pdf' }),
+                        url = window.URL.createObjectURL(blob)
+                    this.isLoading = false
+                    if (liff.getOS() == "ios" || liff.getOS() == 'android') {
+                        const link = document.createElement('a')
+                        link.href = url
+                        link.download = 'บต3' + '|' + this.data[1] + '|' + this.data[3] + '.pdf'
+                        document.body.appendChild(link)
+                        link.click()
+                        window.URL.revokeObjectURL(url)
+                        setTimeout(() => {
+                            // For Firefox it is necessary to delay revoking the ObjectURL
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(url);
+                        }, 100)
+                        setTimeout(() => {
+                            liff.closeWindow();
+                        }, 3000)
+                    } else {
+                        window.open(url)
+                        setTimeout(() => {
+                            liff.closeWindow();
+                        }, 3000)
+                    }
+                }).catch(function (error) {
+                    alert(error);
+                });
+            },
+            
         },
-        mounted() {
-            this.getPDF();
+        async created() {
+            this.$store.state.hasRegistered = true
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+            });
+            let value = params.pdf;
+            this.data = window.atob(value).split('|')
+            this.$store.state.userTokenLine = this.data[0]
+            await this.getJwtToken()
+            this.getPDF()
+        },
 
-        }
 
     }
 </script>

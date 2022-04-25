@@ -1,5 +1,7 @@
 ﻿
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Core.Controllers
 {
+    [EnableCors("iClaim")]
     [ApiController]
     [Route("api/[controller]")]
     public class AccidentController : ControllerBase
@@ -20,30 +23,25 @@ namespace Core.Controllers
             this.accidentService = accidentService;
         }
 
-        /*[HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok();
-        }*/
         [Authorize]
-        [HttpGet("{userToken}")]
-        public async Task<IActionResult> Get(string userToken)
+        [HttpPost]
+        public async Task<IActionResult> GetAccident([FromBody] ReqData req)
         {
-            return Ok(await accidentService.GetAccident(userToken));
+            return Ok(await accidentService.GetAccidentByIdLine(req.UserIdLine));
         }
 
         [Authorize]
-        [HttpGet("Car/{accNo}/{channel}")]
-        public async Task<IActionResult> GetAccidentCar(string accNo, string channel)
+        [HttpPost("Car")]
+        public async Task<IActionResult> GetAccidentCar([FromBody] ReqData req)
         {
-            return Ok(await accidentService.GetAccidentCar(accNo.Replace("-","/"), channel));
+            return Ok(await accidentService.GetAccidentCar(req.AccNo.Replace("-","/")));
         }
 
         [Authorize]
-        [HttpGet("Victim/{accNo}/{ch}/{userIdCard}")]
-        public async Task<IActionResult> GetAccidentVictim(string accNo, string ch, string userIdCard)
+        [HttpPost("Victim")]
+        public async Task<IActionResult> GetAccidentVictim([FromBody] ReqData req)
         {
-            return Ok(await accidentService.GetAccidentVictim(accNo.Replace("-", "/"), ch, userIdCard, 0));
+            return Ok(await accidentService.GetAccidentVictim(req.AccNo.Replace("-", "/"), req.UserIdCard, req.VictimNo));
         }
     }
 }

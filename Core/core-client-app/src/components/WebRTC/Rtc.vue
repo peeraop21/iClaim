@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
-        <div id="camera" style="inline-size: -webkit-fill-available !important;">
-            <video id="stream" style="inline-size: -webkit-fill-available !important;"></video>
+        <div id="camera">
+            <video id="stream"></video>
 
             <div id="snapCam" @click="onClickBtnCapture">
                 <span></span>
@@ -14,7 +14,7 @@
 
             </div>
         </div>
-        <canvas id="canvas" style="inline-size: -webkit-fill-available !important;"></canvas>
+        <canvas id="canvas"></canvas>
         <div id="snapshot">
             <img src="" id="img1">
             <div id="accept-img" @click="acceptImage">
@@ -30,7 +30,6 @@
         <div class="button-group">
             <button hidden id="btnStream" type="button" class="button" @click="onClickBtnStream">Take a photo</button>
             <label hidden id="picture" for="file" class="label custom-file-upload">Browse an image</label>
-            <!--<input id="file" name="file" type="file" accept="image/*" @change="onAddFile">-->
         </div>
     </div>
 </template>
@@ -38,16 +37,6 @@
 <script>
 
     import liff from '@line/liff'
-
-    //const canvas = document.querySelector('#canvas')
-    //const stream = document.querySelector('#stream')
-    //const camera = document.querySelector('#camera')
-    ////const fileInput = document.querySelector('#file')
-    ////const btnStream = document.querySelector('#btnStream')
-    ////const btnCapture = document.querySelector('#camera div')
-    //const snapshot = document.querySelector('#snapshot')
-    //const previewImage = document.querySelector('#snapshot img')
-    //var camStream;
     export default {
         name: "Rtc",
         components: {
@@ -64,7 +53,14 @@
                         facingMode: "environment"
                     },
                 },
-
+            }
+        },
+        props: ['active'],
+        watch: {
+            active: function (newVal, oldVal) {
+                if (newVal == false && oldVal == true) {
+                    this.stopStreaming()
+                }
             }
         },
         methods: {
@@ -82,12 +78,10 @@
                 this.stopStreaming()
                 const stream = document.querySelector('#stream')
                 const mediaSupport = 'mediaDevices' in navigator
-           
+
                 if (mediaSupport && (null == this.cameraStream || this.cameraStream == '')) {
                     navigator.mediaDevices.getUserMedia(this.constraints).then((mediaStream) => {
                         this.cameraStream = mediaStream
-                        /*camStream = mediaStream*/
-                        //stream.width = screen.width * 0.75
                         stream.srcObject = mediaStream
                         stream.play()
                     }).catch((err) => {
@@ -119,7 +113,6 @@
                     stream.load()
                     this.cameraStream = null
                 }
-                
             },
             onClickBtnStream() {
                 const camera = document.querySelector('#camera')
@@ -137,24 +130,17 @@
                 this.stopStreaming()
             },
             acceptImage() {
+                this.stopStreaming();
                 this.$emit('base64', this.files)
             }
-
         },
-        created: function () {
+        created() {
             liff.init({
                 liffId: this.$store.state.liffId,
             }).then(() => {
                 this.onClickBtnStream()
             })
-            
-            
         },
-        mounted() {
-           
-
-        },
-     
     }
 </script>
 
@@ -201,7 +187,8 @@
     }
 
     #stream, #snapshot img, #canvas {
-        inline-size: -webkit-fill-available;
+        /*inline-size: -webkit-fill-available;*/
+        width: 100%;
     }
 
     .custom-file-upload {
@@ -246,7 +233,7 @@
 
             #camera #snapCam span:nth-of-type(2) {
                 background: gray;
-                opacity:0.5;
+                opacity: 0.5;
                 bottom: 24px;
                 width: 72px;
                 height: 72px;
@@ -320,15 +307,14 @@
                 width: 50px;
                 height: 50px;
             }
-        
-        #snapshot #accept-img span:last-of-type {
 
-            bottom: 28px;
-            width: 50px;
-            height: 50px;
-        }
+            #snapshot #accept-img span:last-of-type {
+                bottom: 28px;
+                width: 50px;
+                height: 50px;
+            }
 
-  
+
 
         #snapshot #cansel-img span {
             position: absolute;
@@ -358,8 +344,9 @@
             }
 
     img#img1 {
-        width: -webkit-fill-available;
+        width: 100%;
     }
+
     @media only screen and (min-width: 960px) {
         #container {
             width: 36%;

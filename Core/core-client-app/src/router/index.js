@@ -14,23 +14,13 @@ import Ocr from "@/views/Ocr/Index.vue";
 import Rating from "@/views/Rating/Index.vue";
 import ApprovalEdit from "@/views/Approval/Edit.vue";
 import DownloadPDF from "@/views/Approval/DownloadPDF.vue";
-import Rtc from "@/components/WebRTC/Rtc.vue";
-import CameraRtc from "@/components/WebRTC/CameraRtc.vue";
+
 
 
 Vue.use(VueRouter)
 
 const routes = [
-    {
-        path: "/CameraRtc",
-        name: "CameraRtc",
-        component: CameraRtc,
-    },
-    {
-        path: "/Rtc",
-        name: "Rtc",
-        component: Rtc,
-    },
+   
     {
         path: "/",
         name: "Advice",
@@ -99,7 +89,7 @@ const routes = [
         props: true
     },
     {
-        path: "/DownloadPDF/:accNo/:victimNo/:appNo/:userIdCard",
+        path: "/DownloadPDF",
         name: "DownloadPDF",
         component: DownloadPDF,
     },

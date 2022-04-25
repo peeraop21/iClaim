@@ -183,7 +183,7 @@
 </style>
 
 <script>
-    import liff from '@line/liff'
+    //import liff from '@line/liff'
     import mixin from '../../mixin/index.js'
     import axios from 'axios'
     import qs from 'qs'
@@ -324,7 +324,6 @@
                             'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
                     }).then((response) => {
-
                         this.pushMessageToUser(response.data.reqNo)
                     }).catch((error) => {
                         this.isLoading = false;
@@ -340,7 +339,6 @@
                     axios.post(this.$store.state.envUrl + "/api/User", JSON.stringify(this.$store.state.inputUserData), {
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': "Bearer " + this.$store.state.jwtToken.token
                         }
                     }).then(() => {
                         this.isLoading = false;
@@ -353,14 +351,16 @@
                             confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ดำเนินการต่อ",
                             confirmButtonColor: '#5c2e91',
                             willClose: () => {
-                                if (liff.getOS() == "ios") {
-                                    this.$store.state.hasRegistered = true;
-                                    this.$router.push('/Accident')
-                                } else {
-                                    this.$store.state.hasRegistered = true;
-                                    liff.closeWindow()
-                                    window.close();
-                                }
+                                this.$store.state.hasRegistered = true;
+                                this.$router.push('/Accident')
+                                //if (liff.getOS() == "ios") {
+                                //    this.$store.state.hasRegistered = true;
+                                //    this.$router.push('/Accident')
+                                //} else {
+                                //    this.$store.state.hasRegistered = true;
+                                //    liff.closeWindow()
+                                //    window.close();
+                                //}
 
                             }
                         })
@@ -435,6 +435,7 @@
                 axios.post(this.$store.state.envUrl + "/api/PushMessage", JSON.stringify(body), {
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then(() => {
                     this.isLoading = false;
@@ -465,7 +466,7 @@
             requestOTP() {
                 this.isLoading = true
                 //ตัวจริง
-                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/RequestOTP";
+                const url = process.env.VUE_APP_OTP_REQUEST_URL;
                 const body = {
                     TelNo: (this.$route.params.from == "CreateUser") ? this.$store.state.inputUserData.mobileNo.replaceAll("-", "") : this.userData.mobileNo
                 };
@@ -496,25 +497,12 @@
             },
 
             submit: async function () {
-                //this.$swal({
-                //    title: 'กำลังตรวจสอบ',
-                //    html: 'ขณะนี้ระบบกำลังตรวจสอบรหัสยืนยัน OTP',
-                //    timerProgressBar: true,
-                //    didOpen: () => {
-                //        this.$swal.showLoading()
-
-                //    },
-                //    willClose: () => {
-
-                //    }
-                //})
                 this.isLoading = true
                 await this.verifyOTP()
-
             },
             verifyOTP() {
                 //ตัวจริง
-                const url = "https://ts2thairscapi.rvpeservice.com/3PAccidentAPI/OTP/VerifyOTP";
+                const url = process.env.VUE_APP_OTP_VERIFY_URL;
                 const body = {
                     'token': this.dataOTP.token,
                     'otp_code': this.inputOTP,
@@ -597,75 +585,13 @@
             },
             stampWatermarksFromCreate() {
                 //Stamp ลายน้ำ
-                var options1 = {
-                    init(img) {
-                        img.crossOrigin = 'anonymous';
-                    }
-                };
-                var textBankRotate = function (target) {
-                    var context = target.getContext('2d');
-                    var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
-                    var x = (target.width / 2);
-                    var y = (target.height / 2);
-                    var fontSize = (target.width + target.height) * (3.5 / 100)
-                    context.save();
-                    context.translate(x, y);
-
-                    if (target.width > target.height) {
-                        context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
-                    } else {
-                        context.rotate(-Math.atan(target.height / target.width));
-                    }
-                    context.globalAlpha = 0.3;
-                    context.fillStyle = 'red';
-                    context.font = fontSize + 'px Kanit';
-                    context.textAlign = 'center';
-                    if (target.width > target.height) {
-                        context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
-
-                    } else {
-                        context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
-                    }
-
-                    context.restore();
-
-                    var text1 = 'บริษัทกลางฯเท่านั้น';
-                    context.translate(x, y);
-                    if (target.width > target.height) {
-                        context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
-                    } else {
-                        context.rotate(-Math.atan(target.height / target.width));
-                    }
-                    context.globalAlpha = 0.3;
-                    context.fillStyle = 'red';
-                    context.font = fontSize + 'px Kanit';
-                    context.textAlign = 'center';
-                    if (target.width > target.height) {
-                        context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
-                    } else {
-                        context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
-                    }
-
-                    return target;
-                };
-                var resultAddWatermarkToBankImage = "";
-                watermark([this.$store.state.inputApprovalData.BankData.bankBase64String], options1)
-                    .image(textBankRotate)
-                    .then((imgBank) => {
-                        resultAddWatermarkToBankImage = imgBank.src;
-                        resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-                        this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
-                    }).catch(function (error) {
-                        alert(error);
-                    });
-
-                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
-                    var options = {
+                if (this.$store.state.inputApprovalData.BankData.bankFilename) {
+                    var options1 = {
                         init(img) {
                             img.crossOrigin = 'anonymous';
                         }
                     };
-                    var textRotate = function (target) {
+                    var textBankRotate = function (target) {
                         var context = target.getContext('2d');
                         var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
                         var x = (target.width / 2);
@@ -711,16 +637,86 @@
 
                         return target;
                     };
-                    var resultAddWatermark = "";
-                    watermark([this.$store.state.inputApprovalData.BillsData[i].billFileShow], options)
-                        .image(textRotate)
-                        .then((imgBill) => {
-                            resultAddWatermark = imgBill.src;
-                            resultAddWatermark = resultAddWatermark.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-                            this.$store.state.inputApprovalData.BillsData[i].billFileShow = resultAddWatermark
+                    var resultAddWatermarkToBankImage = "";
+                    watermark([this.$store.state.inputApprovalData.BankData.bankBase64String], options1)
+                        .image(textBankRotate)
+                        .then((imgBank) => {
+                            resultAddWatermarkToBankImage = imgBank.src;
+                            resultAddWatermarkToBankImage = resultAddWatermarkToBankImage.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                            this.$store.state.inputApprovalData.BankData.bankBase64String = resultAddWatermarkToBankImage
                         }).catch(function (error) {
                             alert(error);
                         });
+                } else {
+                    this.$store.state.inputApprovalData.BankData.bankBase64String = this.$store.state.inputApprovalData.BankData.bankBase64String.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
+                }
+                
+
+                for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
+                    for (let j = 0; j < this.$store.state.inputApprovalData.BillsData[i].billFileShow.length; j++) {
+                        var options = {
+                            init(img) {
+                                img.crossOrigin = 'anonymous';
+                            }
+                        };
+                        var textRotate = function (target) {
+                            var context = target.getContext('2d');
+                            var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                            var x = (target.width / 2);
+                            var y = (target.height / 2);
+                            var fontSize = (target.width + target.height) * (3.5 / 100)
+                            context.save();
+                            context.translate(x, y);
+
+                            if (target.width > target.height) {
+                                context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                            } else {
+                                context.rotate(-Math.atan(target.height / target.width));
+                            }
+                            context.globalAlpha = 0.3;
+                            context.fillStyle = 'red';
+                            context.font = fontSize + 'px Kanit';
+                            context.textAlign = 'center';
+                            if (target.width > target.height) {
+                                context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                            } else {
+                                context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                            }
+
+                            context.restore();
+
+                            var text1 = 'บริษัทกลางฯเท่านั้น';
+                            context.translate(x, y);
+                            if (target.width > target.height) {
+                                context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                            } else {
+                                context.rotate(-Math.atan(target.height / target.width));
+                            }
+                            context.globalAlpha = 0.3;
+                            context.fillStyle = 'red';
+                            context.font = fontSize + 'px Kanit';
+                            context.textAlign = 'center';
+                            if (target.width > target.height) {
+                                context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                            } else {
+                                context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                            }
+
+                            return target;
+                        };
+                        var resultAddWatermark = "";
+                        watermark([this.$store.state.inputApprovalData.BillsData[i].billFileShow[j]], options)
+                            .image(textRotate)
+                            .then((imgBill) => {
+                                resultAddWatermark = imgBill.src;
+                                resultAddWatermark = resultAddWatermark.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                                this.$store.state.inputApprovalData.BillsData[i].billFileShow[j] = resultAddWatermark
+                            }).catch(function (error) {
+                                alert(error);
+                            });
+                    }
+                    
                 }
                 this.isLoading = false
             },
@@ -794,64 +790,67 @@
                 if (this.$store.state.inputApprovalData.BillsData != null) {
                     for (let i = 0; i < this.$store.state.inputApprovalData.BillsData.length; i++) {
                         if (this.$store.state.inputApprovalData.BillsData[i].isEditImage) {
-                            var options = {
-                                init(img) {
-                                    img.crossOrigin = 'anonymous';
-                                }
-                            };
-
-                            watermark([this.$store.state.inputApprovalData.BillsData[i].editBillImage], options)
-                                .dataUrl(function (target) {
-                                    var context = target.getContext('2d');
-                                    var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
-                                    var x = (target.width / 2);
-                                    var y = (target.height / 2);
-                                    var fontSize = (target.width + target.height) * (3.5 / 100)
-                                    context.save();
-                                    context.translate(x, y);
-
-                                    if (target.width > target.height) {
-                                        context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
-                                    } else {
-                                        context.rotate(-Math.atan(target.height / target.width));
+                            for (let j = 0; j < this.$store.state.inputApprovalData.BillsData[i].editBillImage.length; j++) {
+                                var options = {
+                                    init(img) {
+                                        img.crossOrigin = 'anonymous';
                                     }
-                                    context.globalAlpha = 0.3;
-                                    context.fillStyle = 'red';
-                                    context.font = fontSize + 'px Kanit';
-                                    context.textAlign = 'center';
-                                    if (target.width > target.height) {
-                                        context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+                                };
 
-                                    } else {
-                                        context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
-                                    }
+                                watermark([this.$store.state.inputApprovalData.BillsData[i].editBillImage[j]], options)
+                                    .dataUrl(function (target) {
+                                        var context = target.getContext('2d');
+                                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                                        var x = (target.width / 2);
+                                        var y = (target.height / 2);
+                                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                                        context.save();
+                                        context.translate(x, y);
 
-                                    context.restore();
+                                        if (target.width > target.height) {
+                                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                                        } else {
+                                            context.rotate(-Math.atan(target.height / target.width));
+                                        }
+                                        context.globalAlpha = 0.3;
+                                        context.fillStyle = 'red';
+                                        context.font = fontSize + 'px Kanit';
+                                        context.textAlign = 'center';
+                                        if (target.width > target.height) {
+                                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
 
-                                    var text1 = 'บริษัทกลางฯเท่านั้น';
-                                    context.translate(x, y);
-                                    if (target.width > target.height) {
-                                        context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
-                                    } else {
-                                        context.rotate(-Math.atan(target.height / target.width));
-                                    }
-                                    context.globalAlpha = 0.3;
-                                    context.fillStyle = 'red';
-                                    context.font = fontSize + 'px Kanit';
-                                    context.textAlign = 'center';
-                                    if (target.width > target.height) {
-                                        context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
-                                    } else {
-                                        context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
-                                    }
+                                        } else {
+                                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                                        }
 
-                                    return target;
-                                })
-                                .then((imgBill) => {
-                                    this.$store.state.inputApprovalData.BillsData[i].editBillImage = imgBill.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
-                                }).catch(function (error) {
-                                    alert(error);
-                                });
+                                        context.restore();
+
+                                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                                        context.translate(x, y);
+                                        if (target.width > target.height) {
+                                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                                        } else {
+                                            context.rotate(-Math.atan(target.height / target.width));
+                                        }
+                                        context.globalAlpha = 0.3;
+                                        context.fillStyle = 'red';
+                                        context.font = fontSize + 'px Kanit';
+                                        context.textAlign = 'center';
+                                        if (target.width > target.height) {
+                                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                                        } else {
+                                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                                        }
+
+                                        return target;
+                                    })
+                                    .then((imgBill) => {
+                                        this.$store.state.inputApprovalData.BillsData[i].editBillImage[j] = imgBill.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                                    }).catch(function (error) {
+                                        alert(error);
+                                    });
+                            }
+                            
                         }
 
                     }
@@ -985,8 +984,8 @@
         mounted() {
 
         },
-        created() {
-            this.getJwtToken();
+        async created() {
+            await this.getJwtToken();
             if (this.$route.params.id != "Register") {
                 this.accData = this.$store.getters.accGetter(this.$route.params.id)
                 this.userData = this.$store.state.userStateData
@@ -997,6 +996,8 @@
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งคำร้อง"
                 this.stampWatermarksFromCreate()
+                console.log(this.$store.state.inputApprovalData.BankData)
+                console.log(this.$store.state.inputApprovalData.BillsData)
             } else if (this.$route.params.from == "Edit") {
                 this.$store.state.inputApprovalData.SumMoney = parseFloat(this.$store.state.inputApprovalData.SumMoney)
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)

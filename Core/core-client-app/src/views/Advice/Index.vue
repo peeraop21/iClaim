@@ -13,13 +13,8 @@
             <h2 id="header2">คำแนะนำ</h2>
             <br>
         </div>
-        <!--<router-link class="btn-select-rights" :to="{ name: 'Rtc'}">RTC</router-link>-->
-        <div hidden>
-            <router-link class="btn-select-rights" :to="{ name: 'CameraRtc'}">newRTC</router-link>
-            <button class="btn-select-rights" @click="showRtc=!showRtc">RTC</button>
-            <button class="btn-select-rights" @click="showNewRtc=!showRtc">newRTC</button>
-        </div>
-        
+
+
         <div class="row mb-2" @click="active=!active" style="margin-top: -10px">
             <div class="col-12">
                 <vs-card type="3" align="center">
@@ -128,7 +123,7 @@
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
-                <button class="button-next1" style="width: 100%; padding: 8px 0;" @click="checkRegisAgain">{{msg}}</button>
+                <button class="button-next1" style="width: 100%; padding: 8px 0;" @click="checkRegister">{{msg}}</button>
             </div>
             <br>
             <br>
@@ -229,53 +224,26 @@
 
             </div>
         </vs-dialog>
-        <!-- Dialog RTC -->
-        <b-modal v-model="showRtc"
-                 hide-footer
-                 hide-header
-                 hide-header-close>
-            <Rtc @base64="hiddenRtc" ref="rtc" class="text-center"></Rtc>
-        </b-modal>
-        <b-modal v-model="showNewRtc"
-                 hide-footer
-                 @hidden="hiddenRtc"
-                 hide-header
-                 hide-header-close>
-            <camera-rtc class="text-center"></camera-rtc>
-        </b-modal>
-        <img style="width: -webkit-fill-available;" src="" id="img555">
-        <!--<vs-dialog width="550px" center >
-            <template #header>
-                <h4 class="not-margin">
-                    RTC
-                </h4>
-            </template>
-            <div class="con-content" align="center">
-                <Rtc></Rtc>
 
-            </div>
-        </vs-dialog>-->
+
+
 
     </div>
 </template>
 <script>
-
+    import mixin from '../../mixin/index.js'
     import liff from '@line/liff'
     import axios from 'axios'
     // Import component
     import Loading from 'vue-loading-overlay';
     // Import stylesheet
 
-    import Rtc from '../../components/WebRTC/Rtc.vue'
-    import CameraRtc from '../../components/WebRTC/CameraRtc.vue'
-
     export default {
         name: 'Advice',
         components: {
             Loading,
-            Rtc,
-            CameraRtc
         },
+        mixins: [mixin],
         data() {
             return {
                 msg: "ดำเนินการต่อ (ข้อมูลรับแจ้งเหตุ)",
@@ -287,84 +255,22 @@
                 page: 1,
                 registered: null,
                 isLoading: true,
-                showRtc: false,
-                showNewRtc: false
+
             }
         },
         methods: {
-            hiddenRtc(value) {
-                this.showRtc = false
-                const previewImage1 = document.querySelector('#img555')
-                previewImage1.src = value
-            },
-            getJwtToken() {
-                var urlJwt = this.$store.state.envUrl + '/api/jwt'
-                axios.post(urlJwt, {
-                    Name: 'Nior',
-                    Email: 'peeran@rvp.co.th'
-                }).then((response) => {
-                    this.$store.state.jwtToken = response.data
-                    /*this.checkRegister()*/
-                    this.isLoading = false
-                }).catch(function (error) {
-                    alert(error)
-                })
-            },
+           
             checkRegister() {
-                var url = this.$store.state.envUrl + '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
-                var tokenJwt = this.$store.state.jwtToken.token
+                var url = this.$store.state.envUrl + '/api/user/CheckRegister';
+                const body = {
+                    UserIdLine: this.$store.state.userTokenLine
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + tokenJwt
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
-                    .then((response) => {
-                        setTimeout(() => {
-                            this.isLoading = false
-                        }, 1000)
-                        /*this.userApi = response.data;*/
-                        this.registered = response.data;
-                        if (this.registered == false) {
-                            this.$swal({
-                                icon: 'info',
-                                text: 'เนื่องจากท่านพึ่งเข้าใช้งานครั้งแรก โปรดยืนยันตัวตนก่อนเข้าใช้งาน',
-                                title: 'ขออภัย',
-                                /*footer: '<a href="">Why do I have this issue?</a>'*/
-                                showCancelButton: false,
-                                showDenyButton: false,
-
-                                confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
-                                confirmButtonColor: '#5c2e91',
-                                willClose: () => {
-                                    if (liff.getOS() == "ios") {
-                                        this.$router.push('/Ocr')
-                                    } else {
-                                        liff.openWindow({
-                                            url: location.origin + '/Ocr' + '?openExternalBrowser=1',
-                                            external: true
-                                        });
-                                    }
-                                }
-                            })
-                            /*this.$router.push({ name: 'Ocr' })*/
-                        }
-
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
-            },
-            checkRegisAgain() {
-
-                var url = this.$store.state.envUrl + '/api/user/CheckRegister/{userToken}'.replace('{userToken}', this.$store.state.userTokenLine);
-                var tokenJwt = this.$store.state.jwtToken.token
-                var apiConfig = {
-                    headers: {
-                        Authorization: "Bearer " + tokenJwt
-                    }
-                }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         setTimeout(() => {
                             this.isLoading = false
@@ -381,17 +287,13 @@
                                 confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
                                 confirmButtonColor: '#5c2e91',
                                 willClose: () => {
-                                    if (liff.getOS() == "ios") {
-                                        this.$router.push('/Ocr')
-                                    } else {
-                                        liff.openWindow({
-                                            url: location.origin + '/Ocr' + '?openExternalBrowser=1',
-                                            external: true
-                                        });
-                                    }
+                                    this.$router.push('/Ocr')
+
                                 }
                             })
                         } else {
+                            this.$store.state.hasRegistered = true;
+                            this.getJwtToken()
                             this.$router.push('/Accident')
                         }
                     })
@@ -401,31 +303,41 @@
             }
         },
         async created() {
+
             if (process.env.NODE_ENV == "production") {
                 //--Publish--
+                if (liff.getOS() == 'web' || !liff.isInClient()) {
+                    liff.closeWindow()
+                    window.location.replace("https://access.line.me/oauth2/v2.1/error400");
+                }
                 await liff.init({
                     liffId: this.$store.state.liffId,
                 }).then(() => {
                     if (liff.isLoggedIn()) {
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
-                            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+                            //this.getJwtToken()  //ตรวจสอบการลงทะเบียน
+                            this.isLoading = false
                         }).catch(err => alert(err));
                     } else {
                         liff.login();
                         liff.getProfile().then(profile => {
                             this.$store.state.userTokenLine = profile.userId
-                            this.getJwtToken()//ตรวจสอบการลงทะเบียน
+                            //this.getJwtToken() //ตรวจสอบการลงทะเบียน
+                            this.isLoading = false
                         }).catch(err => alert(err));
                     }
                 }).catch(err => {
                     alert(err);
                     throw err
                 });
+
             } else if (process.env.NODE_ENV == "development") {
                 //--LocalHost--
-                this.$store.state.userTokenLine = "Ub3ab146d6efded0db3dc7404f94966cb";
-                this.getJwtToken()//ตรวจสอบการลงทะเบียน
+                this.$store.state.userTokenLine = "Ubf8b475f0e21a898cb8fb25d8a7a2e80";
+                //await this.getJwtToken() //ตรวจสอบการลงทะเบียน
+                this.isLoading = false
+
             }
 
 

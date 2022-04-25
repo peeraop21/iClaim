@@ -853,8 +853,18 @@ namespace Services
                     inv.HospitalName = await rvpofficeContext.Hospital.Where(w => w.Hospitalid == query[i].Hosid).Select(s => s.Hospitalname).FirstOrDefaultAsync();
                     inv.StringTakendate = (query[i].Takendate != null) ? query[i].Takendate.Value.Date.ToString("dd/MM/yyyy") : null;
                     inv.StringDispensedate = (query[i].Dispensedate != null) ? query[i].Dispensedate.Value.Date.ToString("dd/MM/yyyy") : null;
-                    var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId)).Select(s => new { s.Paths, s.CreateDate, s.RunningNo }).OrderByDescending(o => o.RunningNo).FirstOrDefaultAsync();
-                    inv.Base64Image = await attachmentService.DownloadFileFromECM(edocDetail.Paths);
+                    var maxRunningNo = await rvpSystemContext.EDocDetail
+                        .Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId))
+                        .MaxAsync(m => m.RunningNo);
+                    var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId) && w.RunningNo == maxRunningNo)
+                        .Select(s => new EDocDetail() { Paths = s.Paths, CreateDate = s.CreateDate, RunningNo = s.RunningNo }).OrderByDescending(o => o.RunningNo).ToListAsync();
+                    List<string> base64Image = new List<string>();
+                    for (int j = 0; j < edocDetail.Count();j++)
+                    {
+                        var file = await attachmentService.DownloadFileFromECM(edocDetail[j].Paths);
+                        base64Image.Add(file);
+                    }
+                    inv.Base64Image = base64Image;
                     invList.Add(inv);
                 }
                 return invList;
@@ -958,8 +968,17 @@ namespace Services
                 invStatus.PayMoney = iclaimInvoiceStatusList[i].PayMoney;
                 invStatus.InvoicedtVerify = invdtVerify.Where(w => w.IdInvdt == idInvdt).FirstOrDefault();
                 invStatus.InvoiceCutList = invCutList.Where(w => w.IdInvhd == iclaimInvoiceStatusList[i].IdInvhd).ToList();
-                var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId)).Select(s => new { s.Paths, s.CreateDate, s.RunningNo }).OrderByDescending(o => o.RunningNo).FirstOrDefaultAsync();
-                invStatus.Base64Image = await attachmentService.DownloadFileFromECM(edocDetail.Paths);
+                var maxRunningNo = await rvpSystemContext.EDocDetail
+                        .Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId))
+                        .MaxAsync(m => m.RunningNo);
+                var edocDetail = await rvpSystemContext.EDocDetail.Where(w => w.SystemId == "02" && w.TemplateId == "03" && w.DocumentId == "01" && w.RefId.StartsWith(refId) && w.RunningNo == maxRunningNo)
+                    .Select(s => new EDocDetail() { Paths = s.Paths, CreateDate = s.CreateDate, RunningNo = s.RunningNo })
+                    .OrderByDescending(o => o.RunningNo).ToListAsync();
+                for (int j = 0; j < edocDetail.Count; j++)
+                {
+                    invStatus.Base64Image.Add(await attachmentService.DownloadFileFromECM(edocDetail[j].Paths));
+                }
+                    
                 invStatusList.Add(invStatus);
             }
             confirmMoney.InvoiceList = invStatusList;
@@ -1088,13 +1107,13 @@ namespace Services
                                     ChangwatShort = hs.Province,
                                     ChangwatName = hschi.Changwatname,
                                 }).FirstOrDefaultAsync();
-            var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard).FirstOrDefaultAsync();
+            var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard && w.Status == "Y").OrderByDescending(o => o.Kycno).FirstOrDefaultAsync();
 
             if (accVic == null) return null;
             victimViewModel.IdCardNo = kyc.IdcardNo;
-            victimViewModel.Fname = kyc.Fname;
-            victimViewModel.Lname = kyc.Lname;
-            victimViewModel.Prefix = kyc.Prefix;
+            victimViewModel.Fname = accVic.Fname;
+            victimViewModel.Lname = accVic.Lname;
+            victimViewModel.Prefix = accVic.Prefix;
             victimViewModel.Age = accVic.Age;
             victimViewModel.Sex = accVic.Sex;
             victimViewModel.TelNo = kyc.MobileNo;

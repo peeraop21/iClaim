@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Core.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,42 +15,40 @@ using System.Threading.Tasks;
 
 namespace Core.Controllers
 {
-    public class User
-    {
-        public string Name { get; set; }
-        public string Email { get; set; }
-    }
 
+    [EnableCors("iClaim")]
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
     public class JWTController : Controller
     {
         private readonly IConfiguration Config;
+        private readonly IUserService userService;
 
-        public JWTController(IConfiguration Config)
+        public JWTController(IConfiguration Config, IUserService userService)
         {
             this.Config = Config;
+            this.userService = userService;
         }
 
        
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult CreateToken([FromBody]User login)
+        public IActionResult CreateToken([FromBody]LoginJwt login)
         {
             IActionResult response = Unauthorized();
             var user = Authenticate(login);
             
-            if(user != null)
+            if(user != null && user.Result.IsAccess)
             {
-                var tokenString = BuildToken(user);
+                var tokenString = BuildToken(user.Result);
                 response = Ok(new { token = tokenString });
             }
 
             return response;
         }
 
-        private string BuildToken(User user)
+        private string BuildToken(LoginJwt user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -55,9 +56,8 @@ namespace Core.Controllers
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Name),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("RVP", "Learn JWT BY RVP"),
+                new Claim(JwtRegisteredClaimNames.Sub, user.SystemName),               
+                new Claim("RVP", "iClaim"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             var token = new JwtSecurityToken(
@@ -70,19 +70,25 @@ namespace Core.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User Authenticate(User login)
+        private async Task<LoginJwt> Authenticate(LoginJwt login)
         {
-            var mockData = new User{
-            Name = "Nior",
-            Email = "peeran@rvp.co.th"
-            };
-            
-            if(mockData.Name.Equals(login.Name) && mockData.Email.Equals(login.Email))
+
+            var section = Config.GetSection($"Jwt:SystemLoginNames");
+            var systemNames = section.Get<string[]>();
+            string password = Config["Jwt:Password"];
+
+            if (systemNames.Contains(login.SystemName) && password.Equals(login.Password))
             {
-                return mockData;
+                bool isAccess = await userService.CheckUserAccessToken(login.SystemName, login.UserId);
+                var result = new LoginJwt
+                {
+                    SystemName = login.SystemName,
+                    Password = null,
+                    UserId = login.UserId,
+                    IsAccess = isAccess,
+                };
+                return result;
             }
-            
-            
             return null ;
         }
 

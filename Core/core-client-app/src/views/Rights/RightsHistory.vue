@@ -129,13 +129,19 @@
         },
         methods: {
             getApprovals() {
-                var url = this.$store.state.envUrl + '/api/Approval/{accNo}/{victimNo}/{rightsType}'.replace('{accNo}', this.accData.stringAccNo).replace('{victimNo}', this.accData.victimNo).replace('{rightsType}', this.$route.params.typerights);
+                var url = this.$store.state.envUrl + '/api/Approval/HistoryRights';
+                const body = {
+                    AccNo: this.accData.stringAccNo,
+                    VictimNo: parseInt(this.accData.victimNo),
+                    RightsType: parseInt(this.$route.params.typerights)
+                };
                 var apiConfig = {
                     headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token
+                        'Authorization': "Bearer " + this.$store.state.jwtToken.token,
+                        'Content-Type': 'application/json',
                     }
                 }
-                axios.get(url, apiConfig)
+                axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         this.$store.state.claimStateData = response.data;
                         this.approval = this.$store.state.claimStateData;
