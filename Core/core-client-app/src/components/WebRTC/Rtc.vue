@@ -85,7 +85,7 @@
                         stream.srcObject = mediaStream
                         stream.play()
                     }).catch((err) => {
-                        console.log("Unable to access camera: " + err)
+                        alert(err)
                     })
                 } else {
                     alert('Your browser does not support media devices.')

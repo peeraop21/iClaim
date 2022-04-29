@@ -1133,7 +1133,6 @@
                             this.displayBtnChangeAccountBank = "เปลี่ยนบัญชีรับเงิน";
                             this.haslastDocumentReceive = true;
                             this.lastDocumentReceive.bankFilename = ''
-                            console.log(this.lastDocumentReceive)
                             this.getFileFromECM()
                         }
                     })
@@ -1382,7 +1381,6 @@
                 } else {
                     this.isLoading = false
                 }
-                console.log(this.bills[index].billFileShow)
             },
             //onAddBillFile: function (index) {
             //    if (this.bills[index].file[0].fileSize < 7000000) {

@@ -991,11 +991,9 @@
                         'Authorization': "Bearer " + this.$store.state.jwtToken.token
                     }
                 }).then((response) => {
-                    console.log(response.data.length)
                     for (let i = 0; i < this.invoicehd.length; i++) {
                         if (this.invoicehd[i].idInvhd == idInvhd) {
                             for (let j = 0; j < response.data.length; j++) {
-                                console.log(response.data[j])
                                 this.bills[i].billFileShow[j] = 'data:image/png;base64,' + response.data[j]
                             }                            
                         }
@@ -1142,7 +1140,6 @@
                 }
             },
             createBillImageDataUrl(fileObject, billIndex, imageIndex,) {
-                console.log(fileObject)
                 const reader = new FileReader();
                 reader.readAsDataURL(fileObject)
                 reader.onload = (e) => {
@@ -1163,7 +1160,6 @@
                 } else {
                     this.isLoading = false
                 }
-                console.log(this.bills[index].editBillImage)
             },
             onAddBillFile: function (index) {
                 this.isLoading = true;
@@ -1554,7 +1550,6 @@
                         this.$store.state.inputApprovalData.BillsData = null
                         this.$store.state.inputApprovalData.BankData = this.inputBank
                         this.$store.state.inputApprovalData.VictimData = null
-                        console.log(this.$store.state.inputApprovalData)
                         if (result.isConfirmed) {
                             this.$router.push({ name: 'ConfirmOTP', params: { from: "Edit" } })
                         }

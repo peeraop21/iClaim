@@ -123,9 +123,6 @@ namespace Services
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var result = streamReader.ReadToEnd();
-                    //JsObject = JObject.Parse(result);
-
-
                     base64Res = JsonConvert.DeserializeObject<string>(result);
 
 

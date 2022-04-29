@@ -418,8 +418,6 @@
 
             },
             hiddenCamFace(value) {
-                console.log('2')
-
                 if (value) {
                     this.isLoading = true;
                     this.showFaceCam = false
@@ -466,7 +464,6 @@
                                 'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
                             }
                         }).then((response) => {
-                            console.log(response)
                             var result = response.data;
                             let resultCompare = (result.compare.result[0].similarity * 100).toFixed(2);
 
@@ -896,7 +893,6 @@
                                     'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
                                 }
                             }).then((response) => {
-                                console.log(response)
                                 var result = response.data;
                                 let resultCompare = (result.compare.result[0].similarity * 100).toFixed(2);
 
