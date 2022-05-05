@@ -354,7 +354,7 @@
                                     </div>
                                 </div>
                                 <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" placeholder="" @change="rmLeadingZero(index)"  v-mask="'####'"  :class="{ 'is-invalid': input.money.$error }" />
+                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" step="any" @change="rmLeadingZero(index)"   :class="{ 'is-invalid': input.money.$error }" />
                                 <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                                 <div class="row">
                                     <div class="col-8">
