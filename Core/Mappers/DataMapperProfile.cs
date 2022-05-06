@@ -7,6 +7,8 @@
     using System;
     using System.Globalization;
     using DataAccess.EFCore.RvpOfficeModels;
+    using Core.Models;
+    using Services.Models;
 
     public class DataMapperProfile : Profile {
         public DataMapperProfile() {           
@@ -44,6 +46,9 @@
                 .ForMember(m => m.StatusDoc, opt => opt.MapFrom(src => "A"));
             CreateMap<BillViewModel, UpdateInvoiceViewModel>();
             CreateMap<BankViewModel, UpdateBankViewModel>();
+            CreateMap<ReqEkyc, EkycReqBody>()
+                .ForMember(m => m.IdentityImage, opt => opt.MapFrom(src => src.IdCardBase64))
+                .ForMember(m => m.FaceImage, opt => opt.MapFrom(src => src.FaceBase64));
 
         }
     }

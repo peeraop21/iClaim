@@ -326,16 +326,20 @@
                         this.capIdCardDataUrl = canvas.toDataURL("image/png");
                     }
                     img.src = fileDataUrl
-                    var url = process.env.VUE_APP_APPMAN_OCR_URL
+                    //var url = process.env.VUE_APP_APPMAN_OCR_URL
+                    //var bodyFormData = new FormData();
+                    //bodyFormData.append('Username', process.env.VUE_APP_APPMAN_OCR_USERNAME);
+                    //bodyFormData.append('Password', process.env.VUE_APP_APPMAN_OCR_PASSWORD);
+                    //bodyFormData.append('image', this.capIdCard);
+
+                    var url = this.$store.state.envUrl + '/api/User/Ocr'
                     var bodyFormData = new FormData();
-                    bodyFormData.append('Username', process.env.VUE_APP_APPMAN_OCR_USERNAME);
-                    bodyFormData.append('Password', process.env.VUE_APP_APPMAN_OCR_PASSWORD);
-                    bodyFormData.append('image', this.capIdCard);
+                    bodyFormData.append('file', this.capIdCard);
 
                     axios.post(url, bodyFormData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
-                            'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
+                            //'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
                         }
                     }).then((response) => {
                         this.resultOCR = response.data.result;
@@ -452,21 +456,25 @@
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         this.capFaceDataUrl = canvas.toDataURL("image/png");
                         const body = {
-                            faceImage: this.capIdCardDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
-                            identityImage: this.capFaceDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
+                            faceBase64: this.capIdCardDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+                            idCardBase64: this.capFaceDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
 
                         };
+                        //const body = {
+                        //    faceImage: this.capIdCardDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+                        //    identityImage: this.capFaceDataUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
 
-                        var url = process.env.VUE_APP_APPMAN_EKYC_URL
+                        //};
+                        var url = this.$store.state.envUrl + '/api/User/Ekyc'
+                        //var url = process.env.VUE_APP_APPMAN_EKYC_URL
                         axios.post(url, body, {
                             headers: {
                                 'Content-Type': 'application/json',
-                                'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
+                                //'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
                             }
                         }).then((response) => {
                             var result = response.data;
                             let resultCompare = (result.compare.result[0].similarity * 100).toFixed(2);
-
                             this.isLoading = false;
                             if (resultCompare < 70) {
                                 this.$swal({
@@ -521,23 +529,11 @@
                     ia[i] = byteString.charCodeAt(i);
                 }
 
-                //Old Code
-                //write the ArrayBuffer to a blob, and you're done
-                //var bb = new BlobBuilder();
-                //bb.append(ab);
-                //return bb.getBlob(mimeString);
-
-                //New Code
                 return new Blob([ab], { type: mimeString });
 
 
             },
-            //formatIdCardNo(e) {
-            //    return String(e).substring(0, 13);
-            //},
-            //formatTel(e) {
-            //    return String(e).substring(0, 10);
-            //},
+
             formatResultOcrDate(date_en) {
                 date_en.replaceAll(" ", "-");
                 if (date_en.includes("Jan.")) {
@@ -740,16 +736,20 @@
 
 
 
-                var url = process.env.VUE_APP_APPMAN_OCR_URL
+                //var url = process.env.VUE_APP_APPMAN_OCR_URL
+                //var bodyFormData = new FormData();
+                //bodyFormData.append('Username', process.env.VUE_APP_APPMAN_OCR_USERNAME);
+                //bodyFormData.append('Password', process.env.VUE_APP_APPMAN_OCR_PASSWORD);
+                //bodyFormData.append('image', file.file);
+
+                var url = this.$store.state.envUrl + '/api/User/Ocr'
                 var bodyFormData = new FormData();
-                bodyFormData.append('Username', process.env.VUE_APP_APPMAN_OCR_USERNAME);
-                bodyFormData.append('Password', process.env.VUE_APP_APPMAN_OCR_PASSWORD);
-                bodyFormData.append('image', file.file);
+                bodyFormData.append('file', file.file);
 
                 axios.post(url, bodyFormData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
+                        //'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
                     }
                 }).then((response) => {
                     this.resultOCR = response.data.result;
@@ -880,17 +880,24 @@
                             var ctx = canvas.getContext("2d");
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             this.input.dataUrlFace = canvas.toDataURL(file.file.type);
+
                             const body = {
-                                faceImage: this.input.dataUrlFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
-                                identityImage: this.input.dataUrlIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
+                                faceBase64: this.input.dataUrlFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+                                idCardBase64: this.input.dataUrlIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
 
                             };
+                            //const body = {
+                            //    faceImage: this.input.dataUrlFace.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+                            //    identityImage: this.input.dataUrlIdCard.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
 
-                            var url = process.env.VUE_APP_APPMAN_EKYC_URL
+                            //};
+
+                            var url = this.$store.state.envUrl + '/api/User/Ekyc'
+                            //var url = process.env.VUE_APP_APPMAN_EKYC_URL
                             axios.post(url, body, {
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
+                                    //'x-api-key': process.env.VUE_APP_APPMAN_X_API_KEY
                                 }
                             }).then((response) => {
                                 var result = response.data;
@@ -978,6 +985,7 @@
             } else if (process.env.NODE_ENV == "development") {
                 //--LocalHost--
                 this.$store.state.userTokenLine = "U097368892fbcd4c33f07fcd4d069Mock";
+                this.os = liff.getOS()
             }
             this.getPrefixes()
 

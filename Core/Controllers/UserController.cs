@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Nancy.Json;
 using Services;
+using Services.Models;
 using Services.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Core.Controllers
 {
@@ -39,14 +40,12 @@ namespace Core.Controllers
         
 
         [Authorize]
-        // GET api/<UserController>/5
         [HttpPost("GetUser")]
         public async Task<IActionResult> GetUser([FromBody] ReqData req)
         {
             return Ok(await userService.GetUserByIdLine(req.UserIdLine));
         }
 
-        // GET api/<UserController>/5
         [HttpPost("CheckRegister")]
         public async Task<IActionResult> CheckRegister([FromBody] ReqData req)
         {
@@ -100,6 +99,44 @@ namespace Core.Controllers
             await attachmentService.SaveToEdocDetail(faceResultMapEdocDetail);
 
             return Ok(await userService.AddAsync(model));
+        }
+
+
+        [HttpPost("Ocr")]
+        public async Task<IActionResult> OcrFrontIdCard(IFormFile file)
+        {
+            var response = await attachmentService.RequestOcrFrontIdCardAppMan(file);
+            var read_response = response.Content.ReadAsStringAsync().Result;
+            var result = new JavaScriptSerializer().DeserializeObject(read_response);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Ok(result);
+            }else if (response.StatusCode == System.Net.HttpStatusCode.Accepted)
+            {
+
+                return StatusCode(202, result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+             
+        }
+
+        [HttpPost("Ekyc")]
+        public async Task<IActionResult> Ekyc([FromBody] ReqEkyc req)
+        {
+            var response = await attachmentService.RequestEkycAppMan(_mapper.Map<EkycReqBody>(req));
+            var read_response = response.Content.ReadAsStringAsync().Result;
+            var result = new JavaScriptSerializer().DeserializeObject(read_response);
+            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
