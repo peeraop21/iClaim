@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Templates\Boto3_Template.html" />
+    <None Remove="Templates\BrowalliaUPC.ttf" />
     
   </ItemGroup>
   <!--<ItemGroup>
