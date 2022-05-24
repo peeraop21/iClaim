@@ -15,12 +15,10 @@ namespace Core.Controllers
     public class MasterController : ControllerBase
     {
         private readonly IMasterService masterService;
-        private readonly IWarmupService warmupService;
 
-        public MasterController(IMasterService masterService, IWarmupService warmupService)
+        public MasterController(IMasterService masterService)
         {
             this.masterService = masterService;
-            this.warmupService = warmupService;
         }
 
         
@@ -48,11 +46,6 @@ namespace Core.Controllers
             return Ok(await masterService.GetPrefixesAsync());
         }
 
-        [HttpGet("Warmup")]
-        public async Task<IActionResult> WarmupApi()
-        {
-            return Ok(await warmupService.GetDataForWarmup());
-        }
 
 
     }

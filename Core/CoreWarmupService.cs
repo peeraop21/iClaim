@@ -30,19 +30,19 @@ namespace Core
         public  Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting IHostedService...");
-            if (env.IsDevelopment())
-            {
-                var baseUrl = configuration["BaseUrl:Local"];
-                httpClient.GetAsync(baseUrl + "api/master/Warmup");
-                //httpClient.GetAsync(baseUrl + "api/genpdf/WarmGenPDF");
-            }
-            else
-            {
-                var baseUrl = configuration["BaseUrl:Publish"];
-                httpClient.GetAsync(baseUrl + "api/master/Warmup");
-                //httpClient.GetAsync(baseUrl + "api/genpdf/WarmGenPDF");
+            //if (env.IsDevelopment())
+            //{
+            //    var baseUrl = configuration["BaseUrl:Local"];
+            //    httpClient.GetAsync(baseUrl + "api/master/Warmup");
+            //    //httpClient.GetAsync(baseUrl + "api/genpdf/WarmGenPDF");
+            //}
+            //else
+            //{
+            //    //var baseUrl = configuration["BaseUrl:Publish"];
+            //    //httpClient.GetAsync(baseUrl + "api/master/Warmup");
+            //    //httpClient.GetAsync(baseUrl + "api/genpdf/WarmGenPDF");
 
-            }
+            //}
 
 
             return Task.CompletedTask;
