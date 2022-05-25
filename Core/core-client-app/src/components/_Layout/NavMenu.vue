@@ -32,14 +32,16 @@
                 var routeName = this.$route.name
                 if (routeName == "Accident") {
                     this.$router.push({ name: 'Advice' })
-                } else if (routeName == "Rights") {
+                } else if (routeName == "AccidentCreate") {
+                    this.$router.push({ name: 'Accident' })
+                } else if (routeName == "Rights") {               
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "RightsHistory") {
                     this.$router.push({ name: 'Rights' })
                 } else if (routeName == "RightsHistoryDetail") {
-                    this.$router.push({ name: 'RightsHistory', params: { id: this.$route.params.id, typerights: this.$route.params.typerights }  })
+                    this.$router.push({ name: 'RightsHistory', params: { id: this.$route.params.id, typerights: this.$route.params.typerights } })
                 } else if (routeName == "ApprovalCreate") {
-                    this.$router.push({ name: 'Rights' })   
+                    this.$router.push({ name: 'Rights' })
                 } else if (routeName == "ConfirmOTP") {
                     if (this.$route.params.from == "Create") {
                         this.fromText = "การส่งคำร้อง"
@@ -54,7 +56,7 @@
                     }
                     this.$swal({
                         icon: 'question',
-                        text: 'ท่านต้องการจะยกเลิก' + this.fromText +'ใช่หรือไม่?',
+                        text: 'ท่านต้องการจะยกเลิก' + this.fromText + 'ใช่หรือไม่?',
                         /*title: 'คำเตือน',*/
                         /*footer: '<a href="">Why do I have this issue?</a>'*/
                         showCancelButton: false,
@@ -80,10 +82,10 @@
                             } else if (this.$route.params.from == "ConfirmMoney") {
                                 this.$router.push({ name: 'Accident' })
                             }
-                            
+
                         }
                     });
-                    
+
                     /*this.$router.push({ name: 'ApprovalCreate', params: { id: this.$route.params.id }})*/
                 } else if (routeName == "Approvals") {
                     this.$router.push({ name: 'Accident' })
@@ -97,7 +99,7 @@
                     } else {
                         liff.closeWindow()
                     }
-                    
+
                 } else if (routeName == "Rating") {
                     this.$router.push({ name: 'Approvals', params: { id: this.$route.params.id } })
                 } else if (routeName == "ApprovalEdit") {
@@ -122,6 +124,7 @@
         padding-right: 20px;
         /*box-shadow: 0 1px 3px 0 rgba(0,0,0,.2);*/
     }
+
     .b-navbar-brand {
         background-color: white;
         /*background: linear-gradient(45deg, #c331ff, var(--main-color));*/

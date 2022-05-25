@@ -11,13 +11,16 @@ using DataAccess.EFCore.iPolicyModels;
 using Newtonsoft.Json;
 using static Services.MasterService;
 using DataAccess.EFCore.DigitalClaimModels;
+using Services.Models;
 
 namespace Services
 {
     public interface IMasterService
     {
         Task<List<BankNames>> GetBank();
-        Task<List<ChangwatViewModel>> GetChangwat();
+        Task<List<Province>> GetChangwatsAsync();
+        Task<List<District>> GetAmphursByChangwatnameAsync(string changwatshortname);
+        Task<List<SubDistrict>> GetTumbolsByAmphurIdAsync(string changwatshortname, string amphurId);
         Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol);
         Task<JJJ> GetWoundeds();
         Task<List<string>> GetPrefixesAsync();
@@ -40,20 +43,18 @@ namespace Services
             return await rvpofficeContext.BankNames.Where(w => w.BankCode != null).ToListAsync();
         }
 
-        public async Task<List<ChangwatViewModel>> GetChangwat()
+        public async Task<List<Province>> GetChangwatsAsync()
+        {         
+            return await rvpofficeContext.Changwat.Where(w => w.Branchid != null).Select(s => new Province { Changwatshortname = s.Changwatshortname, Changwatname = s.Changwatname, Branchid = s.Branchid, ProvinceId = s.Provinceid }).ToListAsync(); ;
+        }
+        public async Task<List<District>> GetAmphursByChangwatnameAsync(string changwatshortname)
         {
-            var query = await rvpofficeContext.Changwat.Where(w => w.Branchid != null).Select(s => new { s.Changwatshortname, s.Changwatname, s.Branchid }).ToListAsync();
-            var chwViewModel = new List<ChangwatViewModel>();
-            foreach (var bank in query)
-            {
-                var result = new ChangwatViewModel();
-                result.Changwatshortname = bank.Changwatshortname;
-                result.Changwatname = bank.Changwatname;
-                result.Branchid = bank.Branchid;
-                chwViewModel.Add(result);
-            }
+            return await rvpofficeContext.Amphur.Where(w => w.Changwatshortname == changwatshortname && !string.IsNullOrEmpty(w.Amphurname)).Select(s => new District { Amphurid = s.Amphurid, Amphurname = s.Amphurname }).ToListAsync();
+        }
 
-            return chwViewModel;
+        public async Task<List<SubDistrict>> GetTumbolsByAmphurIdAsync(string changwatshortname, string amphurId)
+        {
+            return await rvpofficeContext.Tumbol.Where(w => w.Changwatshortname == changwatshortname && w.Amphurid == amphurId && w.Status != "C" && !string.IsNullOrEmpty(w.Tumbolname)).Select(s => new SubDistrict { Tumbolid = s.Tumbolid, Tumbolname = s.Tumbolname, Zipcode = s.Zipcode}).ToListAsync();
         }
 
         // ยังไม่สำบูรณ์ต้องแก้ insert ลง db แล้ว ลงแค่ proviceId

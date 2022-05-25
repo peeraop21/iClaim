@@ -69,6 +69,9 @@
         --main-color: #5c2e91;
     }
 
+    .shadow-box {
+        box-shadow: 3px 3px 5px -4px #888888;
+    }
 
     #nav {
         padding: 30px;

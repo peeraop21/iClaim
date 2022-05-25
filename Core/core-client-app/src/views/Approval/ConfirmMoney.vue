@@ -1,5 +1,5 @@
 ﻿<template>
-    <div class="container space-contianer" align="center">
+    <div class="container" align="center">
         <loading :active.sync="isLoading"
                  :can-cancel="false"
                  color="#5c2e91"

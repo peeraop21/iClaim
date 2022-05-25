@@ -18,9 +18,11 @@ namespace Core.Controllers
     public class AccidentController : ControllerBase
     {
         private readonly IAccidentService accidentService;
+        private readonly IMasterService masterService;
 
-        public AccidentController(IAccidentService accidentService) {
+        public AccidentController(IAccidentService accidentService, IMasterService masterService) {
             this.accidentService = accidentService;
+            this.masterService = masterService;
         }
 
         [Authorize]
@@ -42,6 +44,16 @@ namespace Core.Controllers
         public async Task<IActionResult> GetAccidentVictim([FromBody] ReqData req)
         {
             return Ok(await accidentService.GetAccidentVictim(req.AccNo.Replace("-", "/"), req.UserIdCard, req.VictimNo));
+        }
+
+        [HttpPost("DataForAccidentCreatePage")]
+        public async Task<IActionResult> GetDataForAccidentCreatePage([FromBody] ReqData req)
+        {
+            return Ok(new
+            {
+                Provinces = await masterService.GetChangwatsAsync(),
+                Cars = await accidentService.GetEpoliciesByIdCardAsync(req.UserIdCard)
+            });
         }
     }
 }

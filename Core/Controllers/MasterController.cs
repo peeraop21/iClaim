@@ -31,7 +31,7 @@ namespace Core.Controllers
         [HttpGet("Changwat")]
         public async Task<IActionResult> GetChangwat()
         {
-            return Ok(await masterService.GetChangwat());
+            return Ok(await masterService.GetChangwatsAsync());
         }
 
         [HttpGet("Wounded")]
@@ -46,6 +46,18 @@ namespace Core.Controllers
             return Ok(await masterService.GetPrefixesAsync());
         }
 
+        [HttpGet("Amphurs")]
+        public async Task<IActionResult> GetAmphursByChangwatshortname(string changwatshortname)
+        {
+            return Ok(await masterService.GetAmphursByChangwatnameAsync(changwatshortname));
+        }
+
+        [HttpGet("Tumbols")]
+
+        public async Task<IActionResult> GetTumbolsByAmphurIdAsync(string changwatshortname, string amphurId)
+        {
+            return Ok(await masterService.GetTumbolsByAmphurIdAsync(changwatshortname, amphurId));
+        }
 
 
     }

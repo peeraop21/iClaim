@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Advice from "@/views/Advice/Index.vue";
 import Accident from "@/views/Accident/Index.vue";
+import AccidentCreate from "@/views/Accident/Create.vue"
 import Rights from "@/views/Rights/Index.vue";
 import RightsHistory from "@/views/Rights/RightsHistory.vue";
 import RightsHistoryDetail from "@/views/Rights/RightsHistoryDetail.vue";
@@ -30,6 +31,11 @@ const routes = [
         path: "/Accident",
         name: "Accident",
         component: Accident,
+    },
+    {
+        path: "/AccidentCreate",
+        name: "AccidentCreate",
+        component: AccidentCreate,
     },
     {
         path: "/Rights/:id",

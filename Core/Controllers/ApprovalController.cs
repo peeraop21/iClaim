@@ -134,7 +134,7 @@ namespace Core.Controllers
             var wounded = await masterService.GetWoundeds();
             var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
             var invoicesNotPass = await approvalService.GetInvoicehdAsync(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo, 2);
-            var changwats = await masterService.GetChangwat();
+            var changwats = await masterService.GetChangwatsAsync();
             var banksName = await masterService.GetBank();
             var typesOfBankAccountNotPass = await masterService.GetTypesOfBankAccountNotPass();
             var account = await approvalService.GetIClaimBankAccountAsync(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);

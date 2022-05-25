@@ -31,6 +31,7 @@ using System.Runtime.Loader;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DataAccess.EFCore.RvpSystemModels;
 using Microsoft.AspNetCore.Http;
+using DataAccess.EFCore.PVRModels;
 
 namespace Core
 {
@@ -71,6 +72,7 @@ namespace Core
             services.AddDbContext<DigitalclaimContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DigitalClaim")));
             services.AddDbContext<ClaimDataContext>(o => o.UseSqlServer(Configuration.GetConnectionString("ClaimData")));
             services.AddDbContext<RvpSystemContext>(o => o.UseSqlServer(Configuration.GetConnectionString("RVPSystem")));
+            services.AddDbContext<PVRContext>(o => o.UseSqlServer(Configuration.GetConnectionString("PVR")));
             services.AddTransient<IAccidentService, AccidentService>();
             services.AddScoped<IAccidentService, AccidentService>();
             services.AddTransient<IUserService, UserService>();

@@ -24,7 +24,7 @@
             </div>
         </div>
         <div v-if="acceptData">
-            <div class="box-container space-contianer px-2">
+            <div class="box-container shadow-box px-2">
                 <div class="row" align="center">
                     <div class="col-12">
                         <div class="form-control-sm">
@@ -96,7 +96,7 @@
 
             </div>
             <b-overlay :show="isOverlay" rounded="sm">
-                <div class="box-container  space-contianer px-2 mt-2 mb-5">
+                <div class="box-container  shadow-box px-2 mt-2 mb-5">
                     <div class="row mb-2" align="center">
                         <div class="col-12">
                             <div class="form-control-sm">

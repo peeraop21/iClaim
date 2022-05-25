@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using DataAccess.EFCore.RvpOfficeModels;
 using DataAccess.EFCore.ClaimDataModels;
 using DataAccess.EFCore.DigitalClaimModels;
+using DataAccess.EFCore.PVRModels;
+using System.ComponentModel.DataAnnotations;
+using Services.Models;
 
 namespace Services
 {
@@ -20,6 +23,7 @@ namespace Services
         Task<VictimtViewModel> GetAccidentVictim(string accNo,  string userIdCard,int victimNo);
         Task<CarViewModel> GetAccidentCar(string accNo);
         Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo);
+        Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo);
 
     }
 
@@ -32,8 +36,9 @@ namespace Services
         private readonly IApprovalService approvalService;
         private readonly ClaimDataContext claimDataContext;
         private readonly DigitalclaimContext digitalclaimContext;
+        private readonly PVRContext pvrContext;
 
-        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext, DigitalclaimContext digitalclaimContext)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext, DigitalclaimContext digitalclaimContext, PVRContext pvrContext)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;
@@ -41,6 +46,7 @@ namespace Services
             this.approvalService = approvalService;
             this.claimDataContext = claimDataContext;
             this.digitalclaimContext = digitalclaimContext;
+            this.pvrContext = pvrContext;
         }
 
         public async Task<List<AccidentViewModel>> GetAccidentByIdLine(string userToken)
@@ -50,7 +56,7 @@ namespace Services
                 var _kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken && w.Status == "Y").Select(s => new { s.IdcardNo, s.Kycno }).OrderByDescending(o => o.Kycno).FirstOrDefaultAsync(); /*"3149900145384";*/
                 var accHosList = await rvpOfficeContext.HosAccident
                     .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo, confirmed = vic.Confirmed })
-                    .Where(w => w.victimIdCard == _kyc.IdcardNo && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinVictim.DateAcc, DateTime.Today.AddMonths(-6)) >= 0)
+                    .Where(w => w.victimIdCard == _kyc.IdcardNo && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinVictim.DateAcc, DateTime.Today.AddMonths(-12)) >= 0)
                     .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId })
                     .ToListAsync();
 
@@ -173,6 +179,13 @@ namespace Services
             result.AccPlace = query.AccPlace;
             result.AccProv = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == query.AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
             return result;
+        }
+
+        public async Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo)
+        {
+            return await pvrContext.Epolicy.Where(w => w.Idcard == idCardNo && w.Status == "A" && w.Startdate <=  DateTime.Now.Date && w.Enddate >= DateTime.Now)
+                .Select(s => new CarEpolicy { PolicyNo = s.Policyno, CarLicense = s.Carno, CarProvince = s.Carchangwat, CarTankNo = s.Cartankno, EngineSize = s.Enginesize, Marque = s.Marque })
+                .ToListAsync();
         }
 
         

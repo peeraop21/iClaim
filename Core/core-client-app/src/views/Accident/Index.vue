@@ -23,10 +23,14 @@
                     </div>
                 </div>
 
+                <router-link class="btn-add-accident" :to="{ name: 'AccidentCreate'}">แจ้งเหตุใหม่</router-link>
+
+
 
                 <div align="left" style="width: 100%;">
                     <label class="title-advice-menu">ประวัติการแจ้งอุบัติเหตุ</label>
                 </div>
+
                 <div class="row mt-2 mb-2">
                     <div class="col-1">
 
@@ -35,11 +39,11 @@
                         <v-date-picker v-model="dateSearch" class="" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
                             <template v-slot="{ inputValue, inputEvents }">
                                 <!--<input class=" mt-0 mb-2 form-control "
-                                       style="text-align:center"
-                                       :value="inputValue"
-                                       v-on="inputEvents"
-                                       placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
-                                       readonly />-->
+                    style="text-align:center"
+                    :value="inputValue"
+                    v-on="inputEvents"
+                    placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
+                    readonly />-->
                                 <b-input-group style="background-color: #e1deec; border-radius: 7px;">
                                     <b-input-group-prepend>
                                         <b-button style=" border: none;" variant="outline-secondary" disabled><b-icon icon="search" /></b-button>
@@ -97,8 +101,8 @@
                                             <label v-if="accident.cureRightsBalance < 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: 0 บาท</label>
                                             <!--<br />
 
-                                            <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
-                                            <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>-->
+                                <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
+                                <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>-->
 
                                             <br />
                                         </p>
@@ -215,6 +219,20 @@
 </script>
 
 <style>
+    .btn-add-accident {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 80px;
+        font-size: 16px !important;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 10px;
+        font-size: 13px;
+        border: 2px solid #5c2e91;
+        border-style: none;
+        margin: 10px 0px;
+    }
     .icon-count-notify {
         display: inherit;
         position: absolute;
