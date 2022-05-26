@@ -22,6 +22,8 @@ namespace DataAccess.EFCore.RvpOfficeModels
         public virtual DbSet<Branch> Branch { get; set; }
         public virtual DbSet<Changwat> Changwat { get; set; }
         public virtual DbSet<HosAccident> HosAccident { get; set; }
+        public virtual DbSet<HosAccidentCheck> HosAccidentCheck { get; set; }
+        public virtual DbSet<HosAccidentCheckTypes> HosAccidentCheckTypes { get; set; }
         public virtual DbSet<HosApproval> HosApproval { get; set; }
         public virtual DbSet<HosCarAccident> HosCarAccident { get; set; }
         public virtual DbSet<HosPt4> HosPt4 { get; set; }
@@ -682,12 +684,79 @@ namespace DataAccess.EFCore.RvpOfficeModels
                     .IsFixedLength();
 
                 entity.Property(e => e.UserId)
-                    .HasMaxLength(10)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UserIp)
                     .HasColumnName("UserIP")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<HosAccidentCheck>(entity =>
+            {
+                entity.HasKey(e => new { e.AccNo, e.StateNo });
+
+                entity.Property(e => e.AccNo)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StateNo).HasComment("จำนวนรอบที่ส่งคำร้อง");
+
+                entity.Property(e => e.AccCarImgCheckComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccCarImgCheckType)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasComment("ตรวจสอบรถที่เกิดเหตุ");
+
+                entity.Property(e => e.AccNatureImgCheckType)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasComment("ตรวสอบรูปภาพสภาพแวดล้อมที่เกิดเหตุ");
+
+                entity.Property(e => e.AccNutureImageCheckComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccVictimImgCheckComment)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AccVictimImgCheckType)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasComment("ตรวจสอบรูปภาพอาการบาดเจ็บ");
+
+                entity.Property(e => e.BranchId)
+                    .HasColumnName("BranchID")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Ip)
+                    .HasColumnName("IP")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RecordBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status).HasComment("สถานะคำร้อง");
+            });
+
+            modelBuilder.Entity<HosAccidentCheckTypes>(entity =>
+            {
+                entity.HasKey(e => e.TypeId);
+
+                entity.Property(e => e.TypeId).ValueGeneratedNever();
+
+                entity.Property(e => e.TypeName)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<HosApproval>(entity =>
@@ -1675,7 +1744,7 @@ namespace DataAccess.EFCore.RvpOfficeModels
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
-                    .HasMaxLength(10)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -2250,7 +2319,7 @@ namespace DataAccess.EFCore.RvpOfficeModels
                     .HasComment("ประเภทบัตร");
 
                 entity.Property(e => e.UserId)
-                    .HasMaxLength(10)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.VCf014)

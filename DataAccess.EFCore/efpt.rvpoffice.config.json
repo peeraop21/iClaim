@@ -34,6 +34,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[HosAccidentCheck]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HosAccidentCheckTypes]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[HosApproval]",
          "ObjectType": 0
       },
