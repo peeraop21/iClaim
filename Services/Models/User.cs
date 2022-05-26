@@ -42,6 +42,13 @@ namespace Services.Models
         public string HashData { get; set; }
         public string LineId { get; set; }
         public string Status { get; set; }
+        public DateTime? LineRegisDate { get; set; }
+        public string LineRegisIp { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string UserToken { get; set; }
+        public DateTime? WebRegisDate { get; set; }
+        public string WebRegisIp { get; set; }
         public string StringDateofBirth { get; set; }
         public string Base64IdCard { get; set; }
         public string Base64Face { get; set; }

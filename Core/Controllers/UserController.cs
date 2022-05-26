@@ -72,6 +72,8 @@ namespace Core.Controllers
             model.LastUpdateDate = DateTime.Now;
             model.Status = "Y";
             model.LastUpdateIp = ip;
+            model.LineRegisDate = DateTime.Now;
+            model.LineRegisIp = ip;
 
 
             ECMViewModel idCardEcmModel = new ECMViewModel();
