@@ -221,6 +221,17 @@ namespace Services
             hosVicTimAccident.Age = await GetAgeAsync(hosVicTimAccident.BirthDate.Value);
             await rvpOfficeContext.HosVicTimAccident.AddAsync(hosVicTimAccident);
 
+            HosAccidentCheck hosAccidentCheck = new HosAccidentCheck();
+            hosAccidentCheck.AccNo = hosAccident.AccNo;
+            hosAccidentCheck.StateNo = 1;
+            hosAccidentCheck.Status = 101;
+            hosAccidentCheck.InsertDate = DateTime.Now;
+            hosAccidentCheck.RecordBy = hosVicTimAccident.UserId;
+            hosAccidentCheck.Ip = ip;
+            hosAccidentCheck.BranchId = hosAccident.BranchId;
+            await rvpOfficeContext.HosAccidentCheck.AddAsync(hosAccidentCheck);
+          
+
             return hosAccident.AccNo;
         }
 
