@@ -1,5 +1,7 @@
 ﻿
+using AutoMapper;
 using Core.Models;
+using DataAccess.EFCore.RvpOfficeModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +21,14 @@ namespace Core.Controllers
     {
         private readonly IAccidentService accidentService;
         private readonly IMasterService masterService;
+        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public AccidentController(IAccidentService accidentService, IMasterService masterService) {
+        public AccidentController(IAccidentService accidentService, IMasterService masterService, IMapper _mapper, IHttpContextAccessor httpContextAccessor) {
             this.accidentService = accidentService;
             this.masterService = masterService;
+            this._mapper = _mapper;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [Authorize]
@@ -54,6 +60,18 @@ namespace Core.Controllers
                 Provinces = await masterService.GetChangwatsAsync(),
                 Cars = await accidentService.GetEpoliciesByIdCardAsync(req.UserIdCard)
             });
+        }
+
+        [HttpPost("InsertAccident")]
+        public async Task<IActionResult> PostAccident([FromBody] ReqPostAccident req)
+        {
+            var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            var hosAccident = _mapper.Map<HosAccident>(req.AccidentInput);
+            var hosCarAccident = _mapper.Map<HosCarAccident>(req.AccidentCarInput);
+            var hosVicTimAccident = _mapper.Map<HosVicTimAccident>(req.AccidentVictimInput);
+
+            var result = await accidentService.AddAsync(hosAccident, hosCarAccident, hosVicTimAccident, ip);
+            return Ok();
         }
     }
 }

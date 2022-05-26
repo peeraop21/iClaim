@@ -53,7 +53,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] DirectPolicyKycViewModel model)
+        public async Task<IActionResult> PostAsync([FromBody] User model)
         {
             var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var kycno = await userService.GetLastKyc();

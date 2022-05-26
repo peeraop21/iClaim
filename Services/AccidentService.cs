@@ -14,6 +14,7 @@ using DataAccess.EFCore.DigitalClaimModels;
 using DataAccess.EFCore.PVRModels;
 using System.ComponentModel.DataAnnotations;
 using Services.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Services
 {
@@ -24,7 +25,7 @@ namespace Services
         Task<CarViewModel> GetAccidentCar(string accNo);
         Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo);
         Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo);
-
+        Task<string> AddAsync(HosAccident hosAccident, HosCarAccident hosCarAccident, HosVicTimAccident hosVicTimAccident, string ip);
     }
 
 
@@ -37,8 +38,9 @@ namespace Services
         private readonly ClaimDataContext claimDataContext;
         private readonly DigitalclaimContext digitalclaimContext;
         private readonly PVRContext pvrContext;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext, DigitalclaimContext digitalclaimContext, PVRContext pvrContext)
+        public AccidentService(RvpaccidentContext rvpAccidentContext, IpolicyContext ipolicyContext, RvpofficeContext rvpOfficeContext, IApprovalService approvalService, ClaimDataContext claimDataContext, DigitalclaimContext digitalclaimContext, PVRContext pvrContext, IHttpContextAccessor httpContextAccessor)
         {
             this.rvpAccidentContext = rvpAccidentContext;
             this.ipolicyContext = ipolicyContext;
@@ -184,11 +186,52 @@ namespace Services
         public async Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo)
         {
             return await pvrContext.Epolicy.Where(w => w.Idcard == idCardNo && w.Status == "A" && w.Startdate <=  DateTime.Now.Date && w.Enddate >= DateTime.Now)
-                .Select(s => new CarEpolicy { PolicyNo = s.Policyno, CarLicense = s.Carno, CarProvince = s.Carchangwat, CarTankNo = s.Cartankno, EngineSize = s.Enginesize, Marque = s.Marque })
+                .Select(s => new CarEpolicy {
+                    PolicyNo = s.Policyno,
+                    CarLicense = s.Carno,
+                    CarProvince = s.Carchangwat,
+                    CarTankNo = s.Cartankno,
+                    EngineSize = s.Enginesize,
+                    Marque = s.Marque,
+                    StartDate = s.Startdate.Value.ToString("dd/MM/yyyy"), 
+                    StartTime = s.Starttime,
+                    EndDate = s.Enddate.Value.ToString("dd/MM/yyyy"),
+                    EndTime = s.Starttime,
+                    CarTypeId = s.Pcartype
+                })
                 .ToListAsync();
         }
 
-        
+        public async Task<string> AddAsync(HosAccident hosAccident, HosCarAccident hosCarAccident, HosVicTimAccident hosVicTimAccident, string ip)
+        {
+            hosAccident.AccNo = await rvpOfficeContext.HosAccident.Select(s => RvpofficeContext.fnGenerateAccNo(hosAccident.BranchId)).FirstOrDefaultAsync();
+            hosAccident.HosAccNo = hosAccident.AccNo;
+            hosAccident.UserId = hosVicTimAccident.UserId;
+            hosAccident.UserIp = ip;           
+            await rvpOfficeContext.HosAccident.AddAsync(hosAccident);
+
+            hosCarAccident.UserId = hosVicTimAccident.UserId;
+            hosCarAccident.AccNo = hosAccident.AccNo;
+            hosCarAccident.BranchId = hosAccident.BranchId;
+            await rvpOfficeContext.HosCarAccident.AddAsync(hosCarAccident);
+
+            hosVicTimAccident.AccNo = hosAccident.AccNo;
+            hosVicTimAccident.BranchId = hosAccident.BranchId;
+            hosVicTimAccident.Sex = await rvpOfficeContext.Prefix.Where(w => w.Titlename == hosVicTimAccident.Prefix.Trim()).Select(s => s.Sex).FirstOrDefaultAsync();
+            hosVicTimAccident.Age = await GetAgeAsync(hosVicTimAccident.BirthDate.Value);
+            await rvpOfficeContext.HosVicTimAccident.AddAsync(hosVicTimAccident);
+
+            return hosAccident.AccNo;
+        }
+
+        private async Task<short> GetAgeAsync(DateTime birthDay)
+        {
+            var age = DateTime.Now.Year - birthDay.Year;
+            if (DateTime.Now < birthDay.AddYears(age))
+                age--;
+            return short.Parse(age.ToString());
+        }
+
 
     }
 }

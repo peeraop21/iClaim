@@ -84,6 +84,10 @@
       {
          "Name": "[dbo].[HOSPITAL]",
          "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[fnGenerateAccNo]",
+         "ObjectType": 2
       }
    ],
    "UiHint": "T1DB10.RvpOffice",
@@ -92,6 +96,7 @@
    "UseDbContextSplitting": false,
    "UseFluentApiOnly": true,
    "UseHandleBars": false,
+   "UseHierarchyId": false,
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,

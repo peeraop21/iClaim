@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
         <div class="box-container shadow-box px-2 validate-me">
-            <div class="accident-title">ข้อมูลอุบัติเหตุ</div>
+            <div class="accident-title">ข้อมูลรายละเอียดอุบัติเหตุ</div>
             <div class="row">
                 <div class="col-8">
                     <label for="accDateInput" class="form-label">วันที่เกิดเหตุ<span class="star-require">*</span></label>
@@ -81,7 +81,7 @@
             <div class="row">
                 <div class="col-12">
                     <label for="accDetailInput" class="form-label">ลักษณะการเกิดเหตุ<span class="star-require">*</span></label>
-                    <textarea v-model="input.accDetail" class="form-control mt-0 mb-2" id="accDetailInput" placeholder="เช่น ขับรถตกหลุมรถพลิกคว่ำ" required></textarea>
+                    <textarea v-model="input.accDetail" class="form-control mt-0 mb-2" id="accDetailInput" placeholder="เช่น ขี่รถตกหลุมรถพลิกคว่ำ" required></textarea>
                     <div class="invalid-feedback">
                         กรุณากรอกลักษณะการเกิดเหตุ.
                     </div>
@@ -133,7 +133,8 @@
                     accDist: null,
                     accSubDist: null,
                     accPlace: null,
-                    accDetail: null
+                    accDetail: null,
+                    accBranchId:null
                 }
             }
         },
@@ -145,6 +146,7 @@
             onChange(elementName) {
                 var url = this.$store.state.envUrl
                 if (elementName == 'changwat') {
+                    this.input.accBranchId = this.provinces.filter(w => w.changwatshortname === this.input.accProv).map(s => s.branchid)[0]
                     url = url + '/api/Master/Amphurs';
                     axios.get(url, { params: { changwatshortname: this.input.accProv } })
                         .then((response) => {

@@ -129,7 +129,17 @@
                     accCarLicense: null,
                     accCarLicenseProv: null,
                     accCarTankNo: null,
-                    accCarIsRedCarLicense: false
+                    accCarEngineSize:null,
+                    accCarTypeCarId:null,
+                    accCarIsRedCarLicense: false,
+                    accCarDrivePrefixName: this.$store.state.userStateData.prefix,
+                    accCarDriveFirstname: this.$store.state.userStateData.fname,
+                    accCarDriveLastname: this.$store.state.userStateData.lname,
+                    accCarDriveTelNo: this.$store.state.userStateData.mobileNo,
+                    accCarDriveProtectStartDate: null,
+                    accCarDriveProtectStartTime: null,
+                    accCarDriveProtectEndDate:null,
+                    accCarDriveProtectEndTime: null
                 },
             }
         },
@@ -148,6 +158,12 @@
                     this.input.accCarLicense = this.cars.filter(w => w.policyNo === value).map(s => s.carLicense).toString()
                     this.input.accCarLicenseProv = this.provinces.filter(w => w.provinceId === this.cars.filter(w => w.policyNo === value).map(s => s.carProvince).toString()).map(s => s.changwatshortname).toString()
                     this.input.accCarTankNo = this.cars.filter(w => w.policyNo === value).map(s => s.carTankNo).toString()
+                    this.input.accCarEngineSize = this.cars.filter(w => w.policyNo === value).map(s => s.engineSize).toString()
+                    this.input.accCarTypeCarId = this.cars.filter(w => w.policyNo === value).map(s => s.carTypeId).toString()
+                    this.input.accCarDriveProtectStartDate = this.cars.filter(w => w.policyNo === value).map(s => s.startDate).toString()
+                    this.input.accCarDriveProtectStartTime = this.cars.filter(w => w.policyNo === value).map(s => s.startTime).toString()
+                    this.input.accCarDriveProtectEndDate = this.cars.filter(w => w.policyNo === value).map(s => s.endDate).toString()
+                    this.input.accCarDriveProtectEndTime = this.cars.filter(w => w.policyNo === value).map(s => s.endTime).toString()
                     console.log("input: ", this.input)
                 } else {
                     window.location.href = '#' + value

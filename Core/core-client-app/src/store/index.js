@@ -11,7 +11,28 @@ export default new Vuex.Store({
         hosAppStateData: [],
         userTokenLine:null,
         jwtToken: [],
-        inputApprovalData: { AccNo: null, VictimNo: null, AppNo: null, BranchId: null, SumMoney: null, ClaimNo: null, Injury: null, BillsData: null, BankData: null, VictimData: null, UserIdLine: null, RefCodeOtp: null, IsEverAuthorize: false, EverAuthorizeMoney: null, EverAuthorizeHosId:null},
+        inputAccidentData: {
+            AccidentInput: null,
+            AccidentCarInput: null,
+            AccidentVictimInput:null
+        },
+        inputApprovalData: {
+            AccNo: null,
+            VictimNo: null,
+            AppNo: null,
+            BranchId: null,
+            SumMoney: null,
+            ClaimNo: null,
+            Injury: null,
+            BillsData: null,
+            BankData: null,
+            VictimData: null,
+            UserIdLine: null,
+            RefCodeOtp: null,
+            IsEverAuthorize: false,
+            EverAuthorizeMoney: null,
+            EverAuthorizeHosId: null
+        },
         inputUserData: {
             idcardNo: null,
             idcardLaserCode: null,

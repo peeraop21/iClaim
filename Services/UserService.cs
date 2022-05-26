@@ -8,14 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Services.Models;
 
 namespace Services
 {
     public interface IUserService
     {
-        Task<DirectPolicyKycViewModel> GetUserByIdLine(string userToken);
+        Task<User> GetUserByIdLine(string userToken);
         Task<bool> CheckRegisterByIdLine(string userToken);
-        Task<object> AddAsync(DirectPolicyKycViewModel model);
+        Task<object> AddAsync(User model);
         Task<int> GetLastKyc();
         Task<bool> CheckUserAccessToken(string systemName, string userToken);
     }
@@ -34,25 +35,13 @@ namespace Services
             this._mapper = _mapper;
         }
 
-        public async Task<DirectPolicyKycViewModel> GetUserByIdLine(string userToken)
+        public async Task<User> GetUserByIdLine(string userToken)
         {
-            var query = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken).
-                Select(s => new { s.LineId, s.Prefix, s.Fname, s.Lname, s.IdcardNo, s.MobileNo, s.Kycno}).OrderByDescending(o => o.Kycno).FirstOrDefaultAsync();
-            if (query == null)
-            {
-                return null;
-            }
-            var directPolicyKyc = new DirectPolicyKycViewModel();
-            directPolicyKyc.Kycno = query.Kycno;
-            directPolicyKyc.LineId = query.LineId;
-            directPolicyKyc.Prefix = query.Prefix;
-            directPolicyKyc.Fname = query.Fname;
-            directPolicyKyc.Lname = query.Lname;
-            directPolicyKyc.IdcardNo = query.IdcardNo;
-            directPolicyKyc.MobileNo = query.MobileNo;
-
-
-            return directPolicyKyc;
+            return await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken && w.Status == "Y").
+                Select(s => new User { Kycno = s.Kycno, LineId = s.LineId, Prefix = s.Prefix, Fname = s.Fname, Lname = s.Lname, IdcardNo = s.IdcardNo, MobileNo = s.MobileNo, StringDateofBirth = s.DateofBirth.Value.ToString("dd/MM/yyyy") })
+                .OrderByDescending(o => o.Kycno)
+                .Take(1)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> CheckRegisterByIdLine(string userToken)
@@ -68,7 +57,7 @@ namespace Services
             }           
         }
 
-        public async Task<object> AddAsync(DirectPolicyKycViewModel model)
+        public async Task<object> AddAsync(User model)
         {        
             try
             {

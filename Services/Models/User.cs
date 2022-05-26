@@ -2,10 +2,10 @@
 using System;
 
 
-namespace Services.ViewModels
+namespace Services.Models
 {
 
-    public class DirectPolicyKycViewModel
+    public class User
     {
         public int Kycno { get; set; }
         public string IdcardNo { get; set; }
