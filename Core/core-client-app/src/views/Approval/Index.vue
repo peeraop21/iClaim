@@ -27,6 +27,7 @@
                                         <div align="right" style="margin-top: -10px;">
                                             <div style="margin-top:-5px">
                                                 <vs-button v-if="iclaimApp.status >= 5"
+                                                           class="pdf-btn"
                                                            v-on:click="externalPagePDF(iclaimApp.appNo)"
                                                            icon
                                                            primary
@@ -89,6 +90,9 @@
 </template>
 
 <style>
+    .pdf-btn {
+        box-shadow: 3px 3px 5px -4px #888888;
+    }
     .verticalLine {
         border-left: 1px solid #bbb;
         margin-left: 25px;

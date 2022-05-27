@@ -1038,18 +1038,6 @@
         display: flex;
     }
 
-    .btn-next-submit {
-        background-color: var(--main-color);
-        color: white;
-        padding: 5px 50px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        border-radius: 20px;
-        font-size: 15px;
-        border: none;
-    }
-
     .vs-checkbox-mask::before {
         background-color: white;
     }

@@ -68,7 +68,38 @@
     :root {
         --main-color: #5c2e91;
     }
-
+    .btn-next-submit {
+        box-shadow: 3px 3px 5px -4px #888888;
+        background-color: var(--main-color);
+        color: white;
+        padding: 5px 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 20px;
+        font-size: 15px;
+        border: none;
+    }
+    .shadow-vs .vs-card{
+        box-shadow: 3px 3px 5px -4px #888888;
+    }
+    .shadow-vs-button {
+        box-shadow: 3px 3px 5px -4px #888888;
+    }
+    .wizard-icon-container {
+        box-shadow: 3px 3px 5px -4px #888888;
+    }
+    .white-vs-radio .vs-radio {
+        background-color: white !important;
+    }
+    .box-container {
+        box-shadow: 3px 3px 5px -4px #888888;
+        background-color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 20px 20px 15px 20px;
+        text-align: left;
+    }
     .shadow-box {
         box-shadow: 3px 3px 5px -4px #888888;
     }

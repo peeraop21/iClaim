@@ -11,11 +11,14 @@
                         <div class="accordion">
                             <div class="accordion-item" :id="item.policyNo">
                                 <a class="accordion-link" @click="onClickCar(item.policyNo)">
-                                    <div class="form-check">
-                                        <input v-model="input.accCarPolicyNo" :value="item.policyNo" class="form-check-input" type="radio" name="flexRadioDefault" :id="item.policyNo">
+                                    <div class="radio-select-car" style="float: left">
+                                        <vs-radio class="white-vs-radio" v-model="input.accCarPolicyNo" :val="item.policyNo" :id="item.policyNo">
+                                            คันที่ {{index + 1}} ทะเบียน : {{item.carLicense}} {{provinces.filter(w => w.provinceId === item.carProvince).map(s => s.changwatname).toString()}}
+                                        </vs-radio>
+                                        <!--<input v-model="input.accCarPolicyNo" :value="item.policyNo" class="form-check-input" type="radio" name="flexRadioDefault" :id="item.policyNo">
                                         <label class="form-check-label" :for="item.policyNo">
                                             คันที่ {{index + 1}} ทะเบียน : {{item.carLicense}} {{provinces.filter(w => w.provinceId === item.carProvince).map(s => s.changwatname).toString()}}
-                                        </label>
+                                        </label>-->
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
@@ -44,11 +47,14 @@
                         <div class="accordion">
                             <div class="accordion-item" :id="'New'">
                                 <a class="accordion-link" @click="onClickCar('New')">
-                                    <div class="form-check">
-                                        <input v-model="input.accCarPolicyNo" :value="'New'" class="form-check-input" type="radio" name="flexRadioDefault" :id="'New'">
+                                    <div class="radio-select-car">
+                                        <vs-radio class="white-vs-radio" v-model="input.accCarPolicyNo" :val="'New'" :id="'New'">
+                                            อื่นๆ
+                                        </vs-radio>
+                                        <!--<input v-model="input.accCarPolicyNo" :value="'New'" class="form-check-input" type="radio" name="flexRadioDefault" :id="'New'">
                                         <label class="form-check-label" :for="'New'">
                                             อื่นๆ
-                                        </label>
+                                        </label>-->
                                     </div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
@@ -208,6 +214,11 @@
 </script>
 
 <style scoped>
+    
+    .radio-select-car {
+        margin-bottom: 5px;
+        float: left;
+    }
     .accident-car-title {
         text-align: center;
         font-size: 16px;

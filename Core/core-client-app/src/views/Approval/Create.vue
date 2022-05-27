@@ -1833,6 +1833,7 @@
         margin: 5px;
         max-height: 90px;
         border-radius: 10px;
+        box-shadow: 3px 3px 5px -4px #888888;
     }
 
     .card-file {
@@ -1844,6 +1845,7 @@
     }
 
     .card-bill {
+        box-shadow: 3px 3px 5px -4px #888888;
         border: 1px solid #cccccc;
         border-radius: 10px;
         padding: 10px;
@@ -1859,10 +1861,6 @@
         line-height: 20px;
     }
 
-    .box-container {
-        background-color: white;
-        border: none;
-    }
     /* Input */
     .mt-0.mb-2.form-control {
         background-color: #e1deec;

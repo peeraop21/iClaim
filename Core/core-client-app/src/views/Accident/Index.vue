@@ -284,6 +284,7 @@
     }
 
     .tab-user {
+        box-shadow: 3px 3px 5px -4px #888888;
         cursor: pointer;
         position: relative;
         padding: 1rem 1rem;
@@ -336,6 +337,7 @@
     }
 
     .btn-select {
+        box-shadow: 3px 3px 5px -4px #888888;
         background-color: var(--main-color);
         color: white;
         padding: 85px 90px;
@@ -366,6 +368,7 @@
 
 
     a[class="btn-select"]:link, a[class="btn-select"]:visited {
+        box-shadow: 3px 3px 5px -4px #888888;
         background-color: var(--main-color);
         margin-top: 10px;
         margin-left: 0px;
@@ -379,8 +382,9 @@
         /*font-size: 14px;*/
     }
 
-
+    
     a[class="btn-checked"]:link, a[class="btn-checked"]:visited {
+        box-shadow: 3px 3px 5px -4px #888888;
         background-color: white;
         margin-top: 10px;
         margin-left: 10px;
@@ -416,6 +420,7 @@
     }
 
     .accordion-item {
+        box-shadow: 3px 3px 5px -4px #888888;
         background-color: white;
         border-radius: .4rem;
         border-color: #cccccc;
@@ -486,10 +491,5 @@
         display: none;
     }
 
-    .box-container {
-        border-radius: 10px;
-        border: 1px solid #cccccc;
-        padding: 20px 20px 15px 20px;
-        text-align: left;
-    }
+    
 </style>

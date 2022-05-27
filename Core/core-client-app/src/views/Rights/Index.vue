@@ -153,6 +153,7 @@
 
 <style>
     .btn-select-rights {
+        box-shadow: 3px 3px 5px -4px #888888;
         background-color: #5c2e91;
         color: white;
         text-align: center;

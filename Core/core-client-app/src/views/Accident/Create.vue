@@ -14,7 +14,7 @@
             <AccidentCarInfo ref="accidentCarInfo" :hasSubmit="hasSubmit" :provinces="init.provinces" :cars="init.cars"></AccidentCarInfo>
             <AccidentInfo class="mt-3" ref="accidentInfo" :hasSubmit="hasSubmit" :provinces="init.provinces"></AccidentInfo>
             <AccidentVictimInfo class="mt-3" ref="accidentVictimInfo" :hasSubmit="hasSubmit" :provinces="init.provinces"></AccidentVictimInfo>
-            <button class="btn-next-submit mt-5" style="width: 100%; padding: 8px 0px;" type="submit">ยืนยัน</button>
+            <button class="btn-next-submit mt-5 mb-3" style="width: 100%; padding: 8px 0px;" type="submit">ยืนยัน</button>
         </form>
     </div>
 </template>

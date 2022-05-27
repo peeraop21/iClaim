@@ -17,7 +17,7 @@
 
         <div class="row mb-2" @click="active=!active" style="margin-top: -10px">
             <div class="col-12">
-                <vs-card type="3" align="center">
+                <vs-card class="shadow-vs" type="3" align="center">
                     <!-- <template #title>
                         <h3>Pot with a plant</h3>
                     </template>-->
@@ -34,7 +34,7 @@
         </div>
         <div class="row mb-2" @click="active2=!active2">
             <div class="col-12">
-                <vs-card type="3" align="center">
+                <vs-card class="shadow-vs" type="3" align="center">
                     <!-- <template #title>
                         <h3>Pot with a plant</h3>
                     </template>-->
@@ -51,7 +51,7 @@
         </div>
         <div class="row mb-2" @click="active3=!active3">
             <div class="col-12">
-                <vs-card type="3" align="center">
+                <vs-card class="shadow-vs" type="3" align="center">
                     <!-- <template #title>
                         <h3>Pot with a plant</h3>
                     </template>-->
@@ -76,7 +76,8 @@
         </div>
         <div class="row" style="margin-top: -15px">
             <div class="col-12 px-0" align="center">
-                <vs-button circle
+                <vs-button class="shadow-vs-button"
+                           circle
                            icon
                            light
                            flat
@@ -123,10 +124,8 @@
 
         <div class="row mt-4 mb-2">
             <div class="col-12">
-                <button class="button-next1" style="width: 100%; padding: 8px 0;" @click="checkRegister">{{msg}}</button>
+                <button class="btn-next-submit" style="width: 100%; padding: 8px 0;" @click="checkRegister">{{msg}}</button>
             </div>
-            <br>
-            <br>
             <br>
         </div>
 
@@ -350,17 +349,6 @@
 
 </script>
 <style>
-    .button-next1 {
-        background-color: var(--main-color);
-        color: white;
-        padding: 5px 50px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        border-radius: 20px;
-        font-size: 15px;
-        border: none;
-    }
 
     .bg-main {
         /*background-color: var(--main-color);
