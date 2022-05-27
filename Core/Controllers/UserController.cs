@@ -76,7 +76,7 @@ namespace Core.Controllers
             model.LineRegisIp = ip;
 
 
-            ECMViewModel idCardEcmModel = new ECMViewModel();
+            ECM idCardEcmModel = new ECM();
             idCardEcmModel.SystemId = "02";
             idCardEcmModel.TemplateId = "03";
             idCardEcmModel.DocID = "04";
@@ -84,11 +84,11 @@ namespace Core.Controllers
             idCardEcmModel.FileName = model.Kycno + "IdCard" + model.IdcardNo + ".png";
             idCardEcmModel.Base64String = model.Base64IdCard;
             var idCardEcmRes = await attachmentService.UploadFileToECM(idCardEcmModel);
-            var idCardResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(idCardEcmModel);
+            var idCardResultMapEdocDetail = _mapper.Map<DocumentDetail>(idCardEcmModel);
             idCardResultMapEdocDetail.Paths = idCardEcmRes.Path;
             await attachmentService.SaveToEdocDetail(idCardResultMapEdocDetail);
 
-            ECMViewModel faceEcmModel = new ECMViewModel();
+            ECM faceEcmModel = new ECM();
             faceEcmModel.SystemId = "02";
             faceEcmModel.TemplateId = "03";
             faceEcmModel.DocID = "05";
@@ -96,7 +96,7 @@ namespace Core.Controllers
             faceEcmModel.FileName = model.Kycno + "Face" + model.IdcardNo + ".png";
             faceEcmModel.Base64String = model.Base64Face;
             var faceEcmRes = await attachmentService.UploadFileToECM(faceEcmModel);
-            var faceResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(faceEcmModel);
+            var faceResultMapEdocDetail = _mapper.Map<DocumentDetail>(faceEcmModel);
             faceResultMapEdocDetail.Paths = faceEcmRes.Path;
             await attachmentService.SaveToEdocDetail(faceResultMapEdocDetail);
 

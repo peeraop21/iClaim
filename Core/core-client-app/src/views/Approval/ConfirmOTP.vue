@@ -422,7 +422,38 @@
                         }
                     });
 
+                } else if (this.$route.params.from == "AccidentCreate") {
+                    var url = this.$store.state.envUrl + '/api/accident/InsertAccident';
+                    var apiConfig = {
+                        headers: {
+                            Authorization: "Bearer " + this.$store.state.jwtToken.token,
+                            'Content-Type': 'application/json',
+                        }
+                    }
+                    axios.post(url, JSON.stringify(this.$store.state.inputAccidentData), apiConfig)
+                        .then((response) => {
+                            console.log(response)
+                            if (response.data.status == "Success") {
+                                this.$swal({
+                                    icon: 'success',
+                                    title: 'ส่งข้อมูลอุบัติเหตุเพื่อขอใช้สิทธิ์สำเร็จ',
+                                    showCancelButton: false,
+                                    showDenyButton: false,
+                                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                    confirmButtonColor: '#5c2e91',
+                                    willClose: () => {
+                                        this.$router.push('/Accident')
+                                    }
+                                })
+                            }
+                            this.isLoading = false;
+                        })
+                        .catch(function (error) {
+                            this.isLoading = false;
+                            alert(error);
+                        });
                 }
+                
 
 
             },
@@ -461,6 +492,11 @@
                 this.$store.state.inputApprovalData.BankData = null
                 this.$store.state.inputApprovalData.VictimData = null
                 this.$store.state.inputApprovalData.RefCodeOtp = null
+
+                this.$store.state.inputAccidentData.AccidentInput = null
+                this.$store.state.inputAccidentData.AccidentCarInput = null
+                this.$store.state.inputAccidentData.AccidentVictimInput = null
+
             },
 
             requestOTP() {
@@ -530,9 +566,6 @@
                         this.isLoading = false
                     } else if (this.verifyResultOTP.status == "true") {
                         this.postData()
-
-
-
                     }
                 }).catch(() => {
                     this.isLoading = false
@@ -856,6 +889,7 @@
                     }
                 }
             },
+
             stampWatermarksIdCardImage(imgDataUrl) {
                 //Stamp ลายน้ำ
                 var idCardOptions = {
@@ -978,7 +1012,203 @@
                 this.isLoading = false
 
 
-            }
+            },
+
+            stampWatermarksFromAccidentCreate() {
+                //Stamp ลายน้ำ รูปสภาพแวดล้อมอุบัติเหตุ          
+                for (let i = 0; i < this.$store.state.inputAccidentData.AccidentInput.accImages.length; i++) {
+                    var optionsAcc = {
+                        init(img) {
+                            img.crossOrigin = 'anonymous';
+                        }
+                    };
+                    var textRotateAcc = function (target) {
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
+
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+
+                        return target;
+                    };
+                    var resultAddWatermarkAcc = "";
+                    watermark([this.$store.state.inputAccidentData.AccidentInput.accImages[i].base64], optionsAcc)
+                        .image(textRotateAcc)
+                        .then((imgBill) => {
+                            resultAddWatermarkAcc = imgBill.src;
+                            this.$store.state.inputAccidentData.AccidentInput.accImages[i].base64 = resultAddWatermarkAcc.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                        }).catch(function (error) {
+                            alert(error);
+                        });
+
+                }
+                //Stamp ลายน้ำ รูปสภาพรถที่เกิดอุบัติเหตุ 
+                for (let i = 0; i < this.$store.state.inputAccidentData.AccidentCarInput.accCarImages.length; i++) {
+                    var optionsAccCar = {
+                        init(img) {
+                            img.crossOrigin = 'anonymous';
+                        }
+                    };
+                    var textRotateAccCar = function (target) {
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
+
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+
+                        return target;
+                    };
+                    var resultAddWatermarkAccCar = "";
+                    watermark([this.$store.state.inputAccidentData.AccidentCarInput.accCarImages[i].base64], optionsAccCar)
+                        .image(textRotateAccCar)
+                        .then((imgBill) => {
+                            resultAddWatermarkAccCar = imgBill.src;
+                            this.$store.state.inputAccidentData.AccidentCarInput.accCarImages[i].base64 = resultAddWatermarkAccCar.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                        }).catch(function (error) {
+                            alert(error);
+                        });
+
+                }
+                //Stamp ลายน้ำ รูปสภาพอาการบาดเจ็บ
+                for (let i = 0; i < this.$store.state.inputAccidentData.AccidentVictimInput.accVicBrokenImages.length; i++) {
+                    var optionsAccVic = {
+                        init(img) {
+                            img.crossOrigin = 'anonymous';
+                        }
+                    };
+                    var textRotateAccVic = function (target) {
+                        var context = target.getContext('2d');
+                        var text = 'ใช้สำหรับรับค่าสินไหมทดแทนจาก';
+                        var x = (target.width / 2);
+                        var y = (target.height / 2);
+                        var fontSize = (target.width + target.height) * (3.5 / 100)
+                        context.save();
+                        context.translate(x, y);
+
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text, ((x * 10) / 100) * 0.3, -((y * 10) / 100));
+
+                        } else {
+                            context.fillText(text, ((x * 10) / 100), -((y * 10) / 100));
+                        }
+
+                        context.restore();
+
+                        var text1 = 'บริษัทกลางฯเท่านั้น';
+                        context.translate(x, y);
+                        if (target.width > target.height) {
+                            context.rotate(-Math.atan((target.height - ((target.height * 20) / 100)) / target.width));
+                        } else {
+                            context.rotate(-Math.atan(target.height / target.width));
+                        }
+                        context.globalAlpha = 0.3;
+                        context.fillStyle = 'red';
+                        context.font = fontSize + 'px Kanit';
+                        context.textAlign = 'center';
+                        if (target.width > target.height) {
+                            context.fillText(text1, -((x * 10) / 100) * 0.3, (y * 10) / 100);
+                        } else {
+                            context.fillText(text1, -((x * 10) / 100), (y * 10) / 100);
+                        }
+
+                        return target;
+                    };
+                    var resultAddWatermarkAccVic = "";
+                    watermark([this.$store.state.inputAccidentData.AccidentVictimInput.accVicBrokenImages[i].base64], optionsAccVic)
+                        .image(textRotateAccVic)
+                        .then((imgBill) => {
+                            resultAddWatermarkAccVic = imgBill.src;
+                            this.$store.state.inputAccidentData.AccidentVictimInput.accVicBrokenImages[i].base64 = resultAddWatermarkAccVic.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+                        }).catch(function (error) {
+                            alert(error);
+                        });
+
+                }
+                this.isLoading = false
+            },
 
         },
         mounted() {
@@ -988,6 +1218,8 @@
             await this.getJwtToken();
             if (this.$route.params.id != "Register") {
                 this.accData = this.$store.getters.accGetter(this.$route.params.id)
+                this.userData = this.$store.state.userStateData
+            } else if (this.$route.params.id != "RegisterAccident") {
                 this.userData = this.$store.state.userStateData
             }
 
@@ -1018,6 +1250,10 @@
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ยอมรับจำนวนเงิน"
                 this.isLoading = false
+            } else if (this.$route.params.from == "AccidentCreate") {
+                this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
+                this.fromText = "ส่งข้อมูลอุบัติเหตุเพื่อขอใช้สิทธิ์"
+                this.stampWatermarksFromAccidentCreate()
             }
         }
 

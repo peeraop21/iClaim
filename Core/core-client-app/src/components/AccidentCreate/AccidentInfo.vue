@@ -88,8 +88,15 @@
                 </div>
                 
             </div>
-
-
+            <div class="row">
+                <div class="col-12">
+                    <label for="accImagesInput" class="form-label">รูปภาพสถานที่เกิดเหตุ<span class="star-require">*</span></label>
+                    <InputImg ref="accImages" @storeFile="storeFile"></InputImg>
+                    <div v-if="input.accImages.length == 0 && hasSubmit" class="un-input-image">
+                        กรุณาแนบรูปสถานที่เกิดเหตุ.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -99,10 +106,13 @@
 
     import axios from 'axios'
 
+    import InputImg from '../InputImgByFilePond/InputImg.vue'
+
     export default {
         name: 'AccidentInfo',
-        props: ['provinces'],
+        props: ['provinces', 'hasSubmit'],
         components: {
+            InputImg
         },
         data() {
             return {
@@ -134,12 +144,17 @@
                     accSubDist: null,
                     accPlace: null,
                     accDetail: null,
-                    accBranchId:null
+                    accBranchId: null,
+                    accImages:[]
                 }
             }
         },
 
         methods: {
+            storeFile(file) {
+                console.log("file come: ", file)
+                this.input.accImages = file
+            },
             clearInput(event) {
                 event.preventDefault();
             },

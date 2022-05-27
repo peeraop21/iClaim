@@ -105,7 +105,16 @@
                     </div>
                 </div>
             </section>
-
+            <div class="row">
+                <div class="col-12">
+                    <label for="accCarImagesInput" class="form-label">รูปภาพรถที่เกิดเหตุ (รถที่ประสบอุบัติเหตุ)<span class="star-require">*</span></label>
+                    <InputImg ref="accCarImages" @storeFile="storeFile"></InputImg>
+                    <div v-if="input.accCarImages.length == 0 && hasSubmit" class="un-input-image">
+                        กรุณาแนบรูปรถที่เกิดเหตุ.
+                    </div>
+                </div>
+                
+            </div>
 
         </div>
     </div>
@@ -115,11 +124,13 @@
 <script>
 
     //import axios from 'axios'
+    import InputImg from '../InputImgByFilePond/InputImg.vue'
 
     export default {
         name: 'AccidentCarInfo',
         props: ['provinces', 'cars', 'hasSubmit'],
         components: {
+            InputImg
         },
         data() {
             return {
@@ -139,7 +150,8 @@
                     accCarDriveProtectStartDate: null,
                     accCarDriveProtectStartTime: null,
                     accCarDriveProtectEndDate:null,
-                    accCarDriveProtectEndTime: null
+                    accCarDriveProtectEndTime: null,
+                    accCarImages:[]
                 },
             }
         },
@@ -147,6 +159,11 @@
 
         },
         methods: {
+            storeFile(file) {
+                
+                this.input.accCarImages = file
+                console.log("file car come: ", this.input.accCarImages)
+            },
             onInputCarLicense() {
                 this.input.accCarLicense = document.getElementById("startCarLicenseInput").value + '-' + document.getElementById("endCarLicenseInput").value
             },

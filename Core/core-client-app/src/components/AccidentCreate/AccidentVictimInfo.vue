@@ -90,10 +90,16 @@
                         กรุณากรอกลักษณะอาการบาดเจ็บ.
                     </div>
                 </div>
-
             </div>
-
-
+            <div class="row">
+                <div class="col-12">
+                    <label for="accVicBrokenImagesInput" class="form-label">รูปภาพอาการบาดเจ็บ<span class="star-require">*</span></label>
+                    <InputImg ref="accVicBrokenImages" @storeFile="storeFile"></InputImg>
+                    <div v-if="input.accVicBrokenImages.length == 0 && hasSubmit" class="un-input-image">
+                        กรุณาแนบรูปอาการบาดเจ็บ.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -102,11 +108,13 @@
 <script>
 
     import axios from 'axios'
+    import InputImg from '../InputImgByFilePond/InputImg.vue'
 
     export default {
         name: 'AccidentVictimInfo',
-        props: ['provinces'],
+        props: ['provinces', 'hasSubmit'],
         components: {
+            InputImg
         },
         data() {
             return {
@@ -131,6 +139,7 @@
                     accVicLastname: this.$store.state.userStateData.lname,
                     accVicTelNo: this.$store.state.userStateData.mobileNo,
                     accVicDateOfBirth: this.$store.state.userStateData.stringDateofBirth,
+                    accVicBrokenImages:[]
 
                 },
             }
@@ -139,6 +148,9 @@
 
         },
         methods: {
+            storeFile(file) {
+                this.input.accVicBrokenImages = file
+            },
             onChange(elementName) {
                 var url = this.$store.state.envUrl
                 if (elementName == 'changwat') {

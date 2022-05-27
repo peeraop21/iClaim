@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Services.ViewModels
 {
-    public class EdocDetailRes
+    public class DocumentDetailRes
     {
         public string Path { get; set; }
         public string DocumentID { get; set; }
         public string Message { get; set; }
         public string Status { get; set; }
     }
-    public class EdocDetailViewModel
+    public class DocumentDetail
     {
         public string SystemId { get; set; }
         public string TemplateId { get; set; }

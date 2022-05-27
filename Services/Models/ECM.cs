@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class ECMViewModel
+    public class ECM
     {
         public string RefNo { get; set; }
         public string SystemId { get; set; }
@@ -15,7 +15,7 @@ namespace Services.ViewModels
         public string Path { get; set; }
 
     }
-    public class ECMViewModelRes
+    public class ECMRes
     {
         public string Path { get; set; }
         public string DocumentID { get; set; }

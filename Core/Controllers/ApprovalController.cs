@@ -20,6 +20,7 @@ using Core.Models.API;
 using Core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Cors;
+using Services.Models;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -75,7 +76,7 @@ namespace Core.Controllers
             var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
 
             var result = await approvalService.AddAsync(resultMapIclaimApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
-            ECMViewModel ecmModel = new ECMViewModel();
+            ECM ecmModel = new ECM();
             
             for (int i = 0; i < model.BillsData.Count; i++)
             {             
@@ -89,7 +90,7 @@ namespace Core.Controllers
                     ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename[j];
                     ecmModel.Base64String = model.BillsData[i].billFileShow[j];
                     var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                    var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                    var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
                     resultMapEdocDetail.Paths = invoiceEcmRes.Path;
                     await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
                 }
@@ -103,7 +104,7 @@ namespace Core.Controllers
             ecmModel.FileName = (string.IsNullOrEmpty(model.BankData.bankFilename)) ? DateTime.Now.ToString("ddMMyyyyHHmmss") + "bankold.png" : DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
             ecmModel.Base64String = model.BankData.bankBase64String;
             var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-            var bookbankResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+            var bookbankResultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
             bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
             await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
 
@@ -154,7 +155,7 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("DownloadFromECM")]
-        public async Task<IActionResult> GetBase64FromECM([FromBody] EdocDetailViewModel model)
+        public async Task<IActionResult> GetBase64FromECM([FromBody] DocumentDetail model)
         {
             var documentPath = await attachmentService.GetDocumentPath(model);
             List<string> base64List = new List<string>();
@@ -173,7 +174,7 @@ namespace Core.Controllers
             var resultMapBank = _mapper.Map<UpdateBankViewModel>(model.BankData);
             var resultMapToInvoicehd = _mapper.Map<UpdateInvoiceViewModel[]>(model.BillsData);
             var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);
-            ECMViewModel ecmModel = new ECMViewModel();
+            ECM ecmModel = new ECM();
 
             if (model.BillsData != null)
             {
@@ -190,7 +191,7 @@ namespace Core.Controllers
                             ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename[j];
                             ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage[j];
                             var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                            var resultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                            var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
                             resultMapEdocDetail.Paths = invoiceEcmRes.Path;
                             await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
                         }                       
@@ -206,7 +207,7 @@ namespace Core.Controllers
                 ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
                 ecmModel.Base64String = model.BankData.bankBase64String;
                 var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                var bookbankResultMapEdocDetail = _mapper.Map<EdocDetailViewModel>(ecmModel);
+                var bookbankResultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
                 bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
                 await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
             }            
@@ -253,7 +254,7 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("DownloadPdfBoto3")]
-        public async Task<IActionResult> GetPdfBoto3FromECM([FromBody] EdocDetailViewModel model)
+        public async Task<IActionResult> GetPdfBoto3FromECM([FromBody] DocumentDetail model)
         {
             var documentPath = await attachmentService.GetDocumentPath(model);
             var base64pdf = await attachmentService.DownloadFileFromECM(documentPath[0].Paths);

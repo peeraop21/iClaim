@@ -11,9 +11,9 @@
             <p align="left">&emsp;กรอกข้อมูลอุบัติเหตุส่งให้เจ้าหน้าที่ตรวจสอบ เพื่อใช้สิทธิ์เบิกค่ารักษาพยาบาล</p>
         </div>
         <form ref="createAccident" class="row mx-0 needs-validation" @submit="onSubmit" novalidate>
-            <AccidentInfo ref="accidentInfo" :provinces="init.provinces"></AccidentInfo>
-            <AccidentCarInfo class="mt-3" ref="accidentCarInfo" :hasSubmit="hasSubmit" :provinces="init.provinces" :cars="init.cars"></AccidentCarInfo>
-            <AccidentVictimInfo ref="accidentVictimInfo" class="mt-3" :provinces="init.provinces" ></AccidentVictimInfo>
+            <AccidentCarInfo ref="accidentCarInfo" :hasSubmit="hasSubmit" :provinces="init.provinces" :cars="init.cars"></AccidentCarInfo>
+            <AccidentInfo class="mt-3" ref="accidentInfo" :hasSubmit="hasSubmit" :provinces="init.provinces"></AccidentInfo>
+            <AccidentVictimInfo class="mt-3" ref="accidentVictimInfo" :hasSubmit="hasSubmit" :provinces="init.provinces"></AccidentVictimInfo>
             <button class="btn-next-submit mt-5" style="width: 100%; padding: 8px 0px;" type="submit">ยืนยัน</button>
         </form>
     </div>
@@ -53,22 +53,8 @@
         computed: {
         },
         methods: {
-            postDataTest() {
-                var url = this.$store.state.envUrl + '/api/accident/InsertAccident';
-                const ReqPostAccident = this.$store.state.inputAccidentData;
-                var apiConfig = {
-                    headers: {
-                        Authorization: "Bearer " + this.$store.state.jwtToken.token,
-                        'Content-Type': 'application/json',
-                    }
-                }
-                axios.post(url, JSON.stringify(ReqPostAccident), apiConfig)
-                    .then((response) => {
-                        console.log(response)
-                    })
-                    .catch(function (error) {
-                        alert(error);
-                    });
+            goToConfirmOTP() {
+                this.$router.push({ name: 'ConfirmOTP', params: { id:'RegisterAccident', from: 'AccidentCreate' } })
             },
             storeData() {
                 this.$store.state.inputAccidentData.AccidentInput = this.$refs.accidentInfo.input
@@ -83,10 +69,10 @@
                 }
                 this.hasSubmit = true
                 this.storeData();
-                
-                if (this.$refs.createAccident.checkValidity() && this.$refs.accidentCarInfo.input.accCarPolicyNo) {
+
+                if (this.$refs.createAccident.checkValidity() && this.$refs.accidentCarInfo.input.accCarPolicyNo && this.$refs.accidentInfo.input.accImages.length > 0 && this.$refs.accidentCarInfo.input.accCarImages.length > 0 && this.$refs.accidentVictimInfo.input.accVicBrokenImages.length > 0) {
                     this.formIsValid = true
-                    this.postDataTest();
+                    this.goToConfirmOTP();
                     console.log(this.formIsValid, this.$store.state.inputAccidentData)
                 } else {
                     this.formIsValid = false
@@ -124,5 +110,17 @@
 </script>
 
 <style>
+    #accidentFile .filepond--list-scroller .filepond--list .filepond--item {
+        width: calc(50% - 0.5em);
+    }
+        #accidentFile .filepond--list-scroller .filepond--list .filepond--item .filepond--file-wrapper .filepond--file .filepond--file-status {
+            width: calc(50% - 0.5em);
+        }
+    .un-input-image {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #dc3545;
+    }
     
 </style>

@@ -26,6 +26,7 @@ namespace Services
         Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo);
         Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo);
         Task<string> AddAsync(HosAccident hosAccident, HosCarAccident hosCarAccident, HosVicTimAccident hosVicTimAccident, string ip);
+        Task<int> GetEpolicyCountAsync(string idCardNo);
     }
 
 
@@ -241,6 +242,11 @@ namespace Services
             if (DateTime.Now < birthDay.AddYears(age))
                 age--;
             return short.Parse(age.ToString());
+        }
+
+        public async Task<int> GetEpolicyCountAsync(string idCardNo)
+        {
+            return await pvrContext.Epolicy.Where(w => w.Idcard == idCardNo && w.Status == "A" && w.Startdate <= DateTime.Now.Date && w.Enddate >= DateTime.Now).CountAsync();
         }
 
 

@@ -24,9 +24,9 @@ namespace Services
     public interface IAttachmentService
     {
         Task<string> DownloadFileFromECM(string documentPath);
-        Task<List<EDocDetail>> GetDocumentPath(EdocDetailViewModel model);
-        Task<EdocDetailRes> SaveToEdocDetail(EdocDetailViewModel model);
-        Task<ECMViewModelRes> UploadFileToECM(ECMViewModel model);
+        Task<List<EDocDetail>> GetDocumentPath(DocumentDetail model);
+        Task<DocumentDetailRes> SaveToEdocDetail(DocumentDetail model);
+        Task<ECMRes> UploadFileToECM(ECM model);
         Task<HttpResponseMessage> RequestOcrFrontIdCardAppMan(IFormFile idCardFile);
         Task<HttpResponseMessage> RequestEkycAppMan(EkycReqBody req);
     }
@@ -44,10 +44,10 @@ namespace Services
             this.configuration = configuration;
 
         }
-        public async Task<ECMViewModelRes> UploadFileToECM(ECMViewModel model)
+        public async Task<ECMRes> UploadFileToECM(ECM model)
         {
             JObject JsObject = new JObject();
-            ECMViewModelRes resp = new ECMViewModelRes();
+            ECMRes resp = new ECMRes();
 
             string URL = configuration["API:Attachment:UploadFileToECM"];
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
@@ -85,7 +85,7 @@ namespace Services
                     //JsObject = JObject.Parse(result);
 
 
-                    resp = JsonConvert.DeserializeObject<ECMViewModelRes>(result);
+                    resp = JsonConvert.DeserializeObject<ECMRes>(result);
 
 
                     //return JsonConvert.SerializeObject(JsObject);
@@ -141,13 +141,13 @@ namespace Services
             }
         }
 
-        public async Task<EdocDetailRes> SaveToEdocDetail(EdocDetailViewModel model)
+        public async Task<DocumentDetailRes> SaveToEdocDetail(DocumentDetail model)
         {
             if (model is null)
             {
                 throw new ArgumentNullException(nameof(model));
             }
-            EdocDetailRes resp = new EdocDetailRes();
+            DocumentDetailRes resp = new DocumentDetailRes();
             try
             {
                 
@@ -190,7 +190,7 @@ namespace Services
                         var result = streamReader.ReadToEnd();
                         JsObject = JObject.Parse(result);
 
-                        resp = JsonConvert.DeserializeObject<EdocDetailRes>(result);
+                        resp = JsonConvert.DeserializeObject<DocumentDetailRes>(result);
 
                         return resp;
                     }
@@ -204,7 +204,7 @@ namespace Services
                       
         }
 
-        public async Task<List<EDocDetail>> GetDocumentPath(EdocDetailViewModel model)
+        public async Task<List<EDocDetail>> GetDocumentPath(DocumentDetail model)
         {
             var maxRunningNo = await rvpSystemContext.EDocDetail.
                 Where(w => w.SystemId == model.SystemId && w.TemplateId == model.TemplateId && w.DocumentId == model.DocumentId && w.RefId.StartsWith(model.RefId))

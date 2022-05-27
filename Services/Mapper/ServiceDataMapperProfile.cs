@@ -9,7 +9,7 @@
     public class ServiceDataMapperProfile : Profile {
         public ServiceDataMapperProfile() {
             CreateMap<User, DirectPolicyKyc>();
-            CreateMap<EdocDetailViewModel, EDocDetail>();
+            CreateMap<DocumentDetail, EDocDetail>();
         }
     }
 }

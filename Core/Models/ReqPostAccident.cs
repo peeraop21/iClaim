@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace Core.Models
 {
 
@@ -20,6 +22,7 @@ namespace Core.Models
         public string AccPlace { get; set; }
         public string AccDetail { get; set; }
         public string AccBranchId { get; set; }
+        public List<FileInput> AccImages { get; set; }
 
     }
     public class AccidentCarInput
@@ -39,6 +42,7 @@ namespace Core.Models
         public string AccCarDriveProtectStartTime { get; set; }
         public string AccCarDriveProtectEndDate { get; set; }
         public string AccCarDriveProtectEndTime { get; set; }
+        public List<FileInput> AccCarImages { get; set; }
     }
     public class AccidentVictimInput
     {
@@ -58,5 +62,12 @@ namespace Core.Models
         public string AccVicLastname { get; set; }
         public string AccVicTelNo { get; set; }
         public string AccVicDateOfBirth { get; set; }
+        public List<FileInput> AccVicBrokenImages { get; set; }
+    }
+    public class FileInput
+    {
+        public string Id { get; set; }
+        public string Filename { get; set; }
+        public string Base64 { get; set; }
     }
 }

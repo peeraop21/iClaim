@@ -37,7 +37,7 @@
                 .ForMember(m => m.Mainconsider, opt => opt.MapFrom(src => src.injuriId.ToString()))
                 .ForMember(m => m.BookNo, opt => opt.MapFrom(src => src.bookNo))
                 .ForMember(m => m.Suminv, opt => opt.MapFrom(src => double.Parse(src.money)));
-            CreateMap<ECMViewModel, EdocDetailViewModel>()
+            CreateMap<ECM, DocumentDetail>()
                 .ForMember(m => m.SystemId, opt => opt.MapFrom(src => src.SystemId))
                 .ForMember(m => m.TemplateId, opt => opt.MapFrom(src => src.TemplateId))
                 .ForMember(m => m.DocumentId, opt => opt.MapFrom(src => src.DocID))

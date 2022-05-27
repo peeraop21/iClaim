@@ -23,8 +23,7 @@
                     </div>
                 </div>
 
-                <router-link class="btn-add-accident" :to="{ name: 'AccidentCreate'}">แจ้งเหตุใหม่</router-link>
-
+                <button class="btn-add-accident" @click="goToAccidentCreate">{{btnAccidentCreateName}}</button>
 
 
                 <div align="left" style="width: 100%;">
@@ -38,12 +37,6 @@
                     <div class="col-10">
                         <v-date-picker v-model="dateSearch" class="" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
                             <template v-slot="{ inputValue, inputEvents }">
-                                <!--<input class=" mt-0 mb-2 form-control "
-                    style="text-align:center"
-                    :value="inputValue"
-                    v-on="inputEvents"
-                    placeholder="ค้นหาด้วยวันที่เกิดเหตุ"
-                    readonly />-->
                                 <b-input-group style="background-color: #e1deec; border-radius: 7px;">
                                     <b-input-group-prepend>
                                         <b-button style=" border: none;" variant="outline-secondary" disabled><b-icon icon="search" /></b-button>
@@ -153,6 +146,8 @@
                 userData: [],
                 accData: [],
                 rights_amount: 0,
+                policyCount: 0,
+                btnAccidentCreateName:"แจ้งเหตุใหม่",
                 isLoading: true
             }
         },
@@ -162,10 +157,28 @@
             clearDateSearch() {
                 this.dateSearch = null
             },
+            goToAccidentCreate() {
+                if (this.policyCount > 0) {
+                    this.$router.push({ name: 'AccidentCreate' })
+                } else {
+                    this.$swal({
+                        icon: 'warning',
+                        text: 'ไม่สามารถ' + this.btnAccidentCreateName + 'ได้' + 'เนื่องจากท่านไม่มีกรมธรรม์',
+                        showCancelButton: false,
+                        showDenyButton: false,
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+
+                        }
+                    })
+                }
+            },
             getAccidents() {
                 var url = this.$store.state.envUrl + '/api/accident';
                 const body = {
-                    UserIdLine: this.$store.state.userTokenLine
+                    UserIdLine: this.$store.state.userTokenLine,
+                    UserIdCard: this.$store.state.userStateData.idcardNo,
                 };
                 var apiConfig = {
                     headers: {
@@ -175,8 +188,10 @@
                 }
                 axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
-                        this.$store.state.accStateData = response.data;
+                        this.$store.state.accStateData = response.data.accData;
+                        this.policyCount = response.data.policyCount;
                         this.accData = this.$store.state.accStateData
+                        console.log(response.data)
                         this.isLoading = false
                     })
                     .catch(function (error) {
@@ -201,6 +216,7 @@
                         }
                         this.$store.state.userStateData = response.data;
                         this.userData = this.$store.state.userStateData;
+                        this.getAccidents();
                     })
                     .catch(function (error) {
                         alert(error);
@@ -211,7 +227,7 @@
         },
         async created() {
             await this.getJwtToken();
-            this.getAccidents();
+            
             this.getUser();
         },
 
@@ -220,6 +236,7 @@
 
 <style>
     .btn-add-accident {
+        box-shadow: 3px 3px 5px -4px #888888;
         background-color: #4caf50;
         color: white;
         padding: 10px 80px;

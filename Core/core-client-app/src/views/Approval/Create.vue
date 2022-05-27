@@ -134,6 +134,7 @@
                             </p>
                             <!--<input type="file" @change="onFileChange">-->
                             <file-pond credits="null"
+                                       id="invFile"
                                        ref="pondBill"
                                        label-idle="กดที่นี่เพื่ออัพโหลดใบเสร็จค่ารักษา"
                                        v-bind:allow-multiple="true"
@@ -145,7 +146,9 @@
                                        allowFileSizeValidation="true"
                                        maxFileSize="7MB"
                                        labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
-                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}" />
+                                       labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"
+                                       imagePreviewHeight="150"
+                                       />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
                                 <template #header>
                                     <h4 class="not-margin">
@@ -1694,6 +1697,9 @@
 </script>
 
 <style>
+    #invFile .filepond--list-scroller .filepond--list .filepond--item {
+        width: calc(50% - 0.5em);
+    }
     .v-select-claim > .vs__dropdown-toggle {
         height: 36px;
     }
