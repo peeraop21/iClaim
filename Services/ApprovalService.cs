@@ -892,10 +892,10 @@ namespace Services
             var car = await rvpofficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
             var iclaimInvoiceStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.IdInvhd, s.ReqMoney, s.PayMoney }).ToListAsync();
 
-            CarHasPolicy carViewModel = new CarHasPolicy();
-            carViewModel.FoundCarLicense = car.FoundCarLicense;
-            carViewModel.FoundChassisNo = car.FoundChassisNo;
-            carViewModel.FoundPolicyNo = car.FoundPolicyNo;
+            CarHasPolicy carHasPolicy = new CarHasPolicy();
+            carHasPolicy.FoundCarLicense = car.FoundCarLicense;
+            carHasPolicy.FoundChassisNo = car.FoundChassisNo;
+            carHasPolicy.FoundPolicyNo = car.FoundPolicyNo;
 
             ConfirmMoney confirmMoney = new ConfirmMoney();
             confirmMoney.ReqNo = reqNo;
@@ -903,7 +903,7 @@ namespace Services
             confirmMoney.ReqTime = iclaimApproval.InsertDate.Value.ToString("HH:mm");
             confirmMoney.SumReqMoney = (iclaimApproval.SumReqMoney != null) ? (double)iclaimApproval.SumReqMoney : 0;
             confirmMoney.SumPayMoney = (iclaimApproval.SumPayMoney != null) ? (double)iclaimApproval.SumPayMoney : 0;
-            confirmMoney.Car = carViewModel;
+            confirmMoney.Car = carHasPolicy;
             confirmMoney.BankAccount = await GetIClaimBankAccountAsync(accNo, victimNo, reqNo);
 
             //var invoicehds = await rvpofficeContext.Invoicehd.Where(w => iclaimInvoiceStatusList.Select(s => s.IdInvhd).ToList().Contains(w.IdInvhd)).ToListAsync();
@@ -1105,27 +1105,27 @@ namespace Services
 
             //ข้อมูลรถ
             var car = await rvpofficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
-            CarHasPolicy carViewModel = new CarHasPolicy();
-            carViewModel.FoundCarLicense = car.FoundCarLicense;
-            carViewModel.FoundChassisNo = car.FoundChassisNo;
-            carViewModel.FoundPolicyNo = car.FoundPolicyNo;
+            CarHasPolicy carHasPolicy = new CarHasPolicy();
+            carHasPolicy.FoundCarLicense = car.FoundCarLicense;
+            carHasPolicy.FoundChassisNo = car.FoundChassisNo;
+            carHasPolicy.FoundPolicyNo = car.FoundPolicyNo;
 
             var iclaimApproval = await digitalclaimContext.IclaimApproval
                 .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.InsertDate }).FirstOrDefaultAsync();
 
-            ApprovalDetail approvalDetailViewModel = new ApprovalDetail();
-            approvalDetailViewModel.ReqNo = reqNo;
-            approvalDetailViewModel.ReqDate = iclaimApproval.InsertDate.Value.Date.ToString("dd/MM/yyyy");
-            approvalDetailViewModel.ReqTime = iclaimApproval.InsertDate.Value.ToString("HH:mm");
-            approvalDetailViewModel.SumReqMoney = (double)iclaimApproval.SumReqMoney;
-            approvalDetailViewModel.Victim = victim;
-            approvalDetailViewModel.Car = carViewModel;
-            approvalDetailViewModel.Invoicehds = await GetInvoicehdAsync(accNo, victimNo, reqNo, 0);
-            approvalDetailViewModel.BankAccount = await GetIClaimBankAccountAsync(accNo, victimNo, reqNo);
-            approvalDetailViewModel.BankAccount.bankId = approvalDetailViewModel.BankAccount.accountBankName;
-            approvalDetailViewModel.BankAccount.accountBankName = await rvpofficeContext.BankNames.Where(w => w.BankCode != null && w.BankCode == approvalDetailViewModel.BankAccount.bankId).Select(s => s.Name).FirstOrDefaultAsync();
+            ApprovalDetail approvalDetail = new ApprovalDetail();
+            approvalDetail.ReqNo = reqNo;
+            approvalDetail.ReqDate = iclaimApproval.InsertDate.Value.Date.ToString("dd/MM/yyyy");
+            approvalDetail.ReqTime = iclaimApproval.InsertDate.Value.ToString("HH:mm");
+            approvalDetail.SumReqMoney = (double)iclaimApproval.SumReqMoney;
+            approvalDetail.Victim = victim;
+            approvalDetail.Car = carHasPolicy;
+            approvalDetail.Invoicehds = await GetInvoicehdAsync(accNo, victimNo, reqNo, 0);
+            approvalDetail.BankAccount = await GetIClaimBankAccountAsync(accNo, victimNo, reqNo);
+            approvalDetail.BankAccount.bankId = approvalDetail.BankAccount.accountBankName;
+            approvalDetail.BankAccount.accountBankName = await rvpofficeContext.BankNames.Where(w => w.BankCode != null && w.BankCode == approvalDetail.BankAccount.bankId).Select(s => s.Name).FirstOrDefaultAsync();
 
-            return approvalDetailViewModel;
+            return approvalDetail;
         }
 
         public async Task<ApprovalPDF> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo)
