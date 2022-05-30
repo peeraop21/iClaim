@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Services;
 using Services.Models;
 using System;
@@ -25,13 +26,15 @@ namespace Core.Controllers
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IAttachmentService attachmentService;
+        private readonly ILogger<AccidentController> logger;
 
-        public AccidentController(IAccidentService accidentService, IMasterService masterService, IMapper _mapper, IHttpContextAccessor httpContextAccessor, IAttachmentService attachmentService) {
+        public AccidentController(IAccidentService accidentService, IMasterService masterService, IMapper _mapper, IHttpContextAccessor httpContextAccessor, IAttachmentService attachmentService, ILogger<AccidentController> logger) {
             this.accidentService = accidentService;
             this.masterService = masterService;
             this._mapper = _mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.attachmentService = attachmentService;
+            this.logger = logger;
         }
 
         [Authorize]
