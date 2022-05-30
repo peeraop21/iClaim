@@ -35,9 +35,9 @@
 
                     </div>
                     <div class="col-10">
-                        <v-date-picker v-model="dateSearch" class="" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
+                        <v-date-picker v-model="dateSearch" locale="th" mode="date" :max-date='new Date()' :attributes='attrs' :model-config="dateModelConfig">
                             <template v-slot="{ inputValue, inputEvents }">
-                                <b-input-group style="background-color: #e1deec; border-radius: 7px;">
+                                <b-input-group class="shadow-box" style="background-color: #e1deec; border-radius: 7px;">
                                     <b-input-group-prepend>
                                         <b-button style=" border: none;" variant="outline-secondary" disabled><b-icon icon="search" /></b-button>
                                     </b-input-group-prepend>

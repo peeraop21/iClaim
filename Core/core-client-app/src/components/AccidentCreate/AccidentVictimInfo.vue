@@ -151,11 +151,11 @@
             storeFile(file) {
                 this.input.accVicBrokenImages = file
             },
-            onChange(elementName) {
+            async onChange(elementName) {
                 var url = this.$store.state.envUrl
                 if (elementName == 'changwat') {
                     url = url + '/api/Master/Amphurs';
-                    axios.get(url, { params: { changwatshortname: this.input.accVicCurrentProv } })
+                    await axios.get(url, { params: { changwatshortname: this.input.accVicCurrentProv } })
                         .then((response) => {
                             this.init.districts = response.data;
                         })
@@ -164,9 +164,10 @@
                         });
                     this.input.accVicCurrentDist = null
                     this.input.accVicCurrentSubDist = null
+                    return "reqProvinceSuccess"
                 } else if (elementName == 'amphur') {
                     url = url + '/api/Master/Tumbols';
-                    axios.get(url, { params: { changwatshortname: this.input.accVicCurrentProv, amphurId: this.input.accVicCurrentDist } })
+                    await axios.get(url, { params: { changwatshortname: this.input.accVicCurrentProv, amphurId: this.input.accVicCurrentDist } })
                         .then((response) => {
                             this.init.subDistricts = response.data;
                         })
@@ -174,8 +175,10 @@
                             alert(error);
                         });
                     this.input.accVicCurrentSubDist = null
+                    return "reqDistrictSuccess"
                 } else if (elementName == 'tumbol') {
                     console.log("tumbol")
+                    return
                 }
             }
 
@@ -198,6 +201,9 @@
         font-size: 16px;
         text-decoration: underline;
         margin-bottom: 10px;
+    }
+    .form-label {
+        margin-bottom: 0px;
     }
     textarea {
         height: 5rem;

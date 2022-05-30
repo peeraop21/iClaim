@@ -43,19 +43,19 @@
                         </div>
                     </div>
 
-                    <div>
+                    <!--<div>
                         <div class="accordion">
                             <div class="accordion-item" :id="'New'">
                                 <a class="accordion-link" @click="onClickCar('New')">
                                     <div class="radio-select-car">
                                         <vs-radio class="white-vs-radio" v-model="input.accCarPolicyNo" :val="'New'" :id="'New'">
                                             อื่นๆ
-                                        </vs-radio>
+                                        </vs-radio>-->
                                         <!--<input v-model="input.accCarPolicyNo" :value="'New'" class="form-check-input" type="radio" name="flexRadioDefault" :id="'New'">
                                         <label class="form-check-label" :for="'New'">
                                             อื่นๆ
                                         </label>-->
-                                    </div>
+                                    <!--</div>
                                     <ion-icon name="chevron-down-outline" class="icon ion-md-add"></ion-icon>
                                 </a>
                                 <div class="answer " :class="{ 'new': input.accCarPolicyNo == 'New'}">
@@ -105,7 +105,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                     <div v-if="!input.accCarPolicyNo && hasSubmit" class="un-select-car">
                         กรุณาเลือกรถที่เกิดเหตุ.
                     </div>

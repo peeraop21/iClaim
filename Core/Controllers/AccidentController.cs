@@ -65,7 +65,8 @@ namespace Core.Controllers
             return Ok(new
             {
                 Provinces = await masterService.GetChangwatsAsync(),
-                Cars = await accidentService.GetEpoliciesByIdCardAsync(req.UserIdCard)
+                Cars = await accidentService.GetEpoliciesByIdCardAsync(req.UserIdCard),
+                CurrentAddress = await accidentService.GetLastCurrentAddressByIdCardNo(req.UserIdCard)
             });
         }
 

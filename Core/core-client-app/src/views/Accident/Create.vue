@@ -13,7 +13,7 @@
         <form ref="createAccident" class="row mx-0 needs-validation" @submit="onSubmit" novalidate>
             <AccidentCarInfo ref="accidentCarInfo" :hasSubmit="hasSubmit" :provinces="init.provinces" :cars="init.cars"></AccidentCarInfo>
             <AccidentInfo class="mt-3" ref="accidentInfo" :hasSubmit="hasSubmit" :provinces="init.provinces"></AccidentInfo>
-            <AccidentVictimInfo class="mt-3" ref="accidentVictimInfo" :hasSubmit="hasSubmit" :provinces="init.provinces"></AccidentVictimInfo>
+            <AccidentVictimInfo class="mt-3" ref="accidentVictimInfo" :hasSubmit="hasSubmit" :provinces="init.provinces" ></AccidentVictimInfo>
             <button class="btn-next-submit mt-5 mb-3" style="width: 100%; padding: 8px 0px;" type="submit">ยืนยัน</button>
         </form>
     </div>
@@ -43,7 +43,8 @@
             return {
                 init: {
                     provinces: null,
-                    cars:null
+                    cars: null,
+                    currentAddress:null
                 },
                 isLoading: true,
                 formIsValid:false,
@@ -93,8 +94,35 @@
                 }
                 axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
+                        console.log(response)
                         this.init.provinces = response.data.provinces;
                         this.init.cars = response.data.cars;
+                        this.init.currentAddress = response.data.currentAddress;
+
+                        if (this.init.currentAddress) {
+                            console.log("come: ",this.init.currentAddress)
+                            this.$refs.accidentVictimInfo.input.accVicCurrentHomeId = this.init.currentAddress.houseNo
+                            this.$refs.accidentVictimInfo.input.accVicCurrentMoo = this.init.currentAddress.moo
+                            this.$refs.accidentVictimInfo.input.accVicCurrentSoi = this.init.currentAddress.soi
+                            this.$refs.accidentVictimInfo.input.accVicCurrentRoad = this.init.currentAddress.road
+                            this.$refs.accidentVictimInfo.input.accVicCurrentProv = this.init.currentAddress.province
+                            this.$refs.accidentVictimInfo.onChange("changwat").then((res) => {
+                                if (res === "reqProvinceSuccess") {
+                                    this.$refs.accidentVictimInfo.input.accVicCurrentDist = this.init.currentAddress.district
+                                    this.$refs.accidentVictimInfo.onChange("amphur").then((res) => {
+                                        if (res === "reqDistrictSuccess") {
+                                            this.$refs.accidentVictimInfo.input.accVicCurrentSubDist = this.init.currentAddress.subDistrict
+                                        }
+                                    }).catch((err) => {
+                                        this.isLoading = false
+                                        alert(err);
+                                    })
+                                }
+                            }).catch((err) => {
+                                this.isLoading = false
+                                alert(err);
+                            })
+                        }
                         this.isLoading = false
                     })
                     .catch(function (error) {

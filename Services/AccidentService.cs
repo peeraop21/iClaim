@@ -27,6 +27,7 @@ namespace Services
         Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo);
         Task<string> AddAsync(HosAccident hosAccident, HosCarAccident hosCarAccident, HosVicTimAccident hosVicTimAccident, string ip);
         Task<int> GetEpolicyCountAsync(string idCardNo);
+        Task<Address> GetLastCurrentAddressByIdCardNo(string idCardNo);
     }
 
 
@@ -249,6 +250,21 @@ namespace Services
             return await pvrContext.Epolicy.Where(w => w.Idcard == idCardNo && w.Status == "A" && w.Startdate <= DateTime.Now.Date && w.Enddate >= DateTime.Now).CountAsync();
         }
 
+        ///// สร้าง function สำหรับ query ข้อมูลที่อยู่ปัจจุบันจากรับแจ้งล่าสุด
+        public async Task<Address> GetLastCurrentAddressByIdCardNo(string idCardNo)
+        {
+            return await rvpOfficeContext.HosVicTimAccident.Where(w => w.DrvSocNo == idCardNo).Select(s => new Address
+            {
+                HouseNo = s.HomeId,
+                Moo = s.Moo,
+                Soi = s.Soi,
+                Road = s.Road,
+                SubDistrict = s.Tumbol,
+                District = s.District,
+                Province = s.Province,
+                LastDate = s.LastUpdate
+            }).OrderByDescending(o => o.LastDate).FirstOrDefaultAsync();
+        }
 
     }
 }
