@@ -182,14 +182,14 @@
                  hide-footer
                  hide-header
                  hide-header-close>
-            <Rtc @base64="hiddenCamIdCard" :active="showIdCardCam" class="text-center"></Rtc>
+            <Rtc @base64="hiddenCamIdCard" @clickCanselBtn="onClickCanselBtn" :active="showIdCardCam" class="text-center"></Rtc>
         </b-modal>
         <b-modal v-model="showFaceCam"
                  ref="faceModel"
                  hide-footer
                  hide-header
                  hide-header-close>
-            <Rtc @base64="hiddenCamFace" :active="showFaceCam" class="text-center"></Rtc>
+            <Rtc @base64="hiddenCamFace" @clickCanselBtn="onClickCanselBtn" :active="showFaceCam" class="text-center"></Rtc>
         </b-modal>
 
     </div>
@@ -284,6 +284,13 @@
         },
 
         methods: {
+            onClickCanselBtn(action) {
+                console.log(action)
+                if (action === 'close-cam') {
+                    this.showIdCardCam = false
+                    this.showFaceCam = false
+                }
+            },
             removeIdCardFile() {
                 this.capIdCardDataUrl = null
                 this.isOverlay = true;

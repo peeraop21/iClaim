@@ -13,6 +13,10 @@
                 <span><b-icon icon="arrow-repeat" font-scale="3" style="color: white; opacity:1"></b-icon></span>
 
             </div>
+            <div id="cansel-img" @click="onClickCanselBtn('close-cam')">
+                <span></span>
+                <span><b-icon icon="x" font-scale="3" style="color: white; opacity:1"></b-icon></span>
+            </div>
         </div>
         <canvas id="canvas"></canvas>
         <div id="snapshot">
@@ -21,7 +25,7 @@
                 <span></span>
                 <span><b-icon icon="check2" font-scale="3" style="color: white; opacity:1"></b-icon></span>
             </div>
-            <div id="cansel-img">
+            <div id="cansel-img" @click="onClickCanselBtn('close-cam')">
                 <span></span>
                 <span><b-icon icon="x" font-scale="3" style="color: white; opacity:1"></b-icon></span>
             </div>
@@ -64,6 +68,12 @@
             }
         },
         methods: {
+            onClickCanselBtn(action) {
+                if (action === 'close-cam') {
+                    this.stopStreaming();
+                    this.$emit('clickCanselBtn', action)
+                }
+            },
             changeCamMode() {
                 this.stopStreaming();
                 if (this.constraints.video.facingMode == 'environment') {
@@ -277,6 +287,32 @@
                     width: 50px;
                     height: 50px;
                 }
+        #camera #cansel-img span {
+            position: absolute;
+            border-radius: 50%;
+            left: -65%;
+            right: 0;
+            top: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #camera #cansel-img span:first-of-type {
+                background: gray;
+                opacity: 0.5;
+                bottom: 28px;
+                width: 50px;
+                height: 50px;
+            }
+
+            #camera #cansel-img span:last-of-type {
+                bottom: 28px;
+                width: 50px;
+                height: 50px;
+            }
 
 
     #snapshot {
@@ -342,6 +378,8 @@
                 width: 50px;
                 height: 50px;
             }
+
+
 
     img#img1 {
         width: 100%;
