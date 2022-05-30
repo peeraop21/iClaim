@@ -1,7 +1,6 @@
 ﻿using DataAccess.EFCore.iPolicyModels;
 using DataAccess.EFCore.AccidentModels;
 using Microsoft.EntityFrameworkCore;
-using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

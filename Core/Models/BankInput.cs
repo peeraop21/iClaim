@@ -1,9 +1,9 @@
 ﻿
 
-namespace Core.ViewModels
+namespace Core.Models
 {
 
-    public class BankViewModel
+    public class BankInput
     {
         public string accountName { get; set; }
         public string accountNumber { get; set; }

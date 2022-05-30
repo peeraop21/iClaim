@@ -1,11 +1,9 @@
-﻿using Core.ViewModels;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using DataAccess.EFCore.DigitalClaimModels;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using DataAccess.EFCore.RvpOfficeModels;
@@ -52,7 +50,7 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("HistoryRights")]
-        public async Task<IActionResult> GetHistoryRights([FromBody] ApprovalViewModel model)
+        public async Task<IActionResult> GetHistoryRights([FromBody] ApprovalReq model)
         {
             return Ok(await approvalService.GetApprovalRegis(model.AccNo.Replace("-", "/"), model.VictimNo, model.RightsType));
         }
@@ -67,7 +65,7 @@ namespace Core.Controllers
         
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] ApprovalViewModel model)
+        public async Task<IActionResult> PostAsync([FromBody] ApprovalReq model)
         {
             model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
             var resultMapIclaimApproval = _mapper.Map<DataAccess.EFCore.DigitalClaimModels.IclaimApproval>(model);
@@ -168,7 +166,7 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("UpdateApproval")]
-        public async Task<IActionResult> UpdateApproval([FromBody] ApprovalViewModel model)
+        public async Task<IActionResult> UpdateApproval([FromBody] ApprovalReq model)
         {
             model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
             var resultMapBank = _mapper.Map<UpdateBank>(model.BankData);
@@ -216,14 +214,14 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("CanselApproval")]
-        public async Task<IActionResult> CanselApproval([FromBody] ApprovalViewModel model)
+        public async Task<IActionResult> CanselApproval([FromBody] ApprovalReq model)
         {         
             return Ok(await approvalService.CanselApprovalAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine));
         }
 
         [Authorize]
         [HttpPost("Invoicedt")]
-        public async Task<IActionResult> GetInvoicedtDetail([FromBody] ApprovalViewModel model)
+        public async Task<IActionResult> GetInvoicedtDetail([FromBody] ApprovalReq model)
         {
             return Ok(await approvalService.GetHistoryInvoicedt(model.AccNo.Replace("-", "/"), model.VictimNo, model.AppNo));
         }
@@ -246,7 +244,7 @@ namespace Core.Controllers
 
         [Authorize]
         [HttpPost("CheckInvoiceUsing")]
-        public async Task<IActionResult> CheckInvoiceUsing([FromBody] List<BillViewModel> models)
+        public async Task<IActionResult> CheckInvoiceUsing([FromBody] List<Bill> models)
         {
             var resultMapToInvoicehd = _mapper.Map<CheckDuplicateInvoice[]>(models);                    
             return Ok(await approvalService.CheckDuplicateInvoice(resultMapToInvoicehd));

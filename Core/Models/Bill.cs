@@ -2,10 +2,10 @@
 
 using System.Collections.Generic;
 
-namespace Core.ViewModels
+namespace Core.Models
 {
 
-    public class BillViewModel
+    public class Bill
     {
         public int billNo { get; set; }
         public string accNo { get; set; }

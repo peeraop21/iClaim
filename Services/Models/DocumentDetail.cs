@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     public class DocumentDetailRes
     {

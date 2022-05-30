@@ -2,8 +2,6 @@
     using AutoMapper;
     using Core.Controllers;
     using DataAccess.EFCore.DigitalClaimModels;
-    using Services.ViewModels;
-    using Core.ViewModels;
     using System;
     using System.Globalization;
     using DataAccess.EFCore.RvpOfficeModels;
@@ -12,12 +10,12 @@
 
     public class DataMapperProfile : Profile {
         public DataMapperProfile() {
-            CreateMap<ApprovalViewModel, DataAccess.EFCore.DigitalClaimModels.IclaimApproval>()
+            CreateMap<ApprovalReq, DataAccess.EFCore.DigitalClaimModels.IclaimApproval>()
                 .ForMember(m => m.SumReqMoney, opt => opt.MapFrom(src => src.SumMoney))
                 .ForMember(m => m.CureMoney, opt => opt.MapFrom(src => src.SumMoney));
-            CreateMap<BankViewModel, InputBank>();
-            CreateMap<VictimViewModel, Victim>();
-            CreateMap<BillViewModel, CheckDuplicateInvoice>()
+            CreateMap<BankInput, InputBank>();
+            CreateMap<VictimDetail, Victim>();
+            CreateMap<Bill, CheckDuplicateInvoice>()
                 .ForMember(m => m.AccNo, opt => opt.MapFrom(src => src.accNo))
                 .ForMember(m => m.VictimNo, opt => opt.MapFrom(src => src.victimNo))
                 .ForMember(m => m.ReqNo, opt => opt.MapFrom(src => src.reqNo))
@@ -26,7 +24,7 @@
                 .ForMember(m => m.ReceiptNo, opt => opt.MapFrom(src => src.bill_no))
                 .ForMember(m => m.HosId, opt => opt.MapFrom(src => src.selectHospitalId))
                 .ForMember(m => m.IsCansel, opt => opt.MapFrom(src => src.isCancel));
-            CreateMap<BillViewModel, Invoicehd>()
+            CreateMap<Bill, Invoicehd>()
                 .ForMember(m => m.Takendate, opt => opt.MapFrom(src => DateTime.ParseExact(src.hospitalized_date, "yyyy-MM-dd", CultureInfo.InvariantCulture) ))
                 .ForMember(m => m.Takentime, opt => opt.MapFrom(src => src.hospitalized_time.Replace(":",".")))
                 .ForMember(m => m.Dispensedate, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.out_hospital_date) ? DateTime.ParseExact(src.hospitalized_date, "yyyy-MM-dd", CultureInfo.InvariantCulture): DateTime.ParseExact(src.out_hospital_date, "yyyy-MM-dd", CultureInfo.InvariantCulture)))
@@ -44,8 +42,8 @@
                 .ForMember(m => m.RefId, opt => opt.MapFrom(src => src.RefNo))
                 .ForMember(m => m.CreateDate, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(m => m.StatusDoc, opt => opt.MapFrom(src => "A"));
-            CreateMap<BillViewModel, UpdateInvoice>();
-            CreateMap<BankViewModel, UpdateBank>();
+            CreateMap<Bill, UpdateInvoice>();
+            CreateMap<BankInput, UpdateBank>();
             CreateMap<ReqEkyc, EkycReqBody>()
                 .ForMember(m => m.IdentityImage, opt => opt.MapFrom(src => src.IdCardBase64))
                 .ForMember(m => m.FaceImage, opt => opt.MapFrom(src => src.FaceBase64));

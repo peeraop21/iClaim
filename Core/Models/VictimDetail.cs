@@ -1,9 +1,9 @@
 ﻿
 
-namespace Core.ViewModels
+namespace Core.Models
 {
 
-    public class VictimViewModel
+    public class VictimDetail
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }

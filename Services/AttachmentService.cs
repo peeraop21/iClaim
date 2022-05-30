@@ -7,7 +7,6 @@ using Nancy.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Services.Models;
-using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;

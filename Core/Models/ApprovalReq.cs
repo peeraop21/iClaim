@@ -2,10 +2,10 @@
 
 using System.Collections.Generic;
 
-namespace Core.ViewModels
+namespace Core.Models
 {
 
-    public class ApprovalViewModel
+    public class ApprovalReq
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }
@@ -14,9 +14,9 @@ namespace Core.ViewModels
         public double? SumMoney { get; set; }
         public string ClaimNo { get; set; }
         public string UserIdLine { get; set; }
-        public List<BillViewModel> BillsData { get; set; }
-        public BankViewModel BankData { get; set; }
-        public VictimViewModel VictimData { get; set; }
+        public List<Bill> BillsData { get; set; }
+        public BankInput BankData { get; set; }
+        public VictimDetail VictimData { get; set; }
         public string RefCodeOtp { get; set; }
         public bool? IsEverAuthorize { get; set; }
         public double? EverAuthorizeMoney { get; set; }
