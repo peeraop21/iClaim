@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class IclaimInvoicedtVerifyViewModel
+    public class IclaimInvoicedtVerify
     {
         public long IdInvdt { get; set; }
         public string Hospital { get; set; }

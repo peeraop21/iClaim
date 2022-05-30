@@ -1124,14 +1124,14 @@
                 axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
                         
-                        this.lastDocumentReceive = response.data[0]
-                        if (response.data.length == 0) {
+                        this.lastDocumentReceive = response.data
+                        if (!this.lastDocumentReceive) {
                             this.isBtnChangAccountBankShow = false;
                             this.displayBtnChangeAccountBank = "ใช้บัญชีเดิม";
                             this.lastDocumentReceive = null;
                             this.haslastDocumentReceive = false;
                             this.isLoading = false
-                        } else if (this.lastDocumentReceive != null) {
+                        } else if (this.lastDocumentReceive) {
                             this.isBtnChangAccountBankShow = true;
                             this.displayBtnChangeAccountBank = "เปลี่ยนบัญชีรับเงิน";
                             this.haslastDocumentReceive = true;

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class CarViewModel
+    public class CarHasPolicy
     {
         public string FoundCarLicense { get; set; }
         public string FoundChassisNo { get; set; }

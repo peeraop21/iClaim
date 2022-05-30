@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class ResultApprovalPostViewModel
+    public class ResultAddApproval
     {
         public long IdInvhd { get; set; }
         public string AccNo { get; set; }

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class AccidentPDFViewModel
+    public class AccidentPDF
     {
         public string AccNo { get; set; }
         public DateTime? DateAcc { get; set; }

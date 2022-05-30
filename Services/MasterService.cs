@@ -21,8 +21,7 @@ namespace Services
         Task<List<Province>> GetChangwatsAsync();
         Task<List<District>> GetAmphursByChangwatnameAsync(string changwatshortname);
         Task<List<SubDistrict>> GetTumbolsByAmphurIdAsync(string changwatshortname, string amphurId);
-        Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol);
-        Task<JJJ> GetWoundeds();
+        Task<ResultWound> GetWoundeds();
         Task<List<string>> GetPrefixesAsync();
         Task<object> GetTypesOfInvoiceNotPass();
         Task<object> GetTypesOfBankAccountNotPass();
@@ -57,62 +56,27 @@ namespace Services
             return await rvpofficeContext.Tumbol.Where(w => w.Changwatshortname == changwatshortname && w.Amphurid == amphurId && w.Status != "C" && !string.IsNullOrEmpty(w.Tumbolname)).Select(s => new SubDistrict { Tumbolid = s.Tumbolid, Tumbolname = s.Tumbolname, Zipcode = s.Zipcode}).ToListAsync();
         }
 
-        // ยังไม่สำบูรณ์ต้องแก้ insert ลง db แล้ว ลงแค่ proviceId
-        public async Task<GenAddressViewModel> GetIdAddress(string changwat, string amphur, string tumbol)
+       
+        
+        public async Task<ResultWound> GetWoundeds()
         {
-            var changwatShortname = await rvpofficeContext.Changwat.Where(w => w.Changwatname.Contains(changwat)).Select(s => s.Changwatshortname).FirstOrDefaultAsync();
-            var amphurId = await rvpofficeContext.Amphur.Where(w => w.Amphurname.Contains(amphur) && w.Changwatshortname == changwatShortname).Select(s => s.Amphurid).FirstOrDefaultAsync();
-            var query = await rvpofficeContext.Tumbol.Where(w => w.Tumbolname.Contains(tumbol) && w.Amphurid == amphurId && w.Changwatshortname == changwatShortname).Select(s => new { s.Tumbolid, s.Amphurid, s.Provinceid, s.Zipcode }).FirstOrDefaultAsync();
-            //var query = await rvpofficeContext.Tumbol
-            //        .Join(rvpofficeContext.Amphur, tja => tja.Amphurid, amp => amp.Amphurid, (tja, amp) => new { tumbolJoinAmphur = tja, amphurName = amp.Amphurname, amphurId = amp.Amphurid })
-            //        .Join(rvpofficeContext.Changwat, tjchw => tjchw.tumbolJoinAmphur.Changwatshortname, chw => chw.Changwatshortname, (tjchw, chw) => new { tumbolJoinChangwat = tjchw, changwatName = chw.Changwatname, changwatShort = chw.Changwatshortname })
-            //        .Where(w => w.tumbolJoinChangwat.tumbolJoinAmphur.Tumbolname.Contains(tumbol) && w.tumbolJoinChangwat.amphurName == amphur && w.changwatName == changwat)
-            //        .Select(s => new { s.tumbolJoinChangwat.tumbolJoinAmphur.Tumbolid, s.tumbolJoinChangwat.amphurId, s.changwatShort , s.tumbolJoinChangwat.tumbolJoinAmphur.Zipcode}).FirstOrDefaultAsync();
-            GenAddressViewModel genAddress = new GenAddressViewModel();
-            genAddress.ProvinceId = (query != null) ? query.Provinceid : null;
-            genAddress.DistrictId = (query != null) ? query.Amphurid : amphurId;
-            genAddress.SubDistrictId = (query != null) ? query.Tumbolid : null;
-            genAddress.ZipCode = (query != null) ? query.Zipcode : null;
-            return genAddress;
-        }
+            ResultWound result = new ResultWound();
+            var mcWoundeds = await rvpofficeContext.Mcwounded.Where(w => w.Organ != "มป" && w.Organ != "หัวเข่า").Select(s => new { s.WoundedId, s.WoundedName, s.Organ}).ToListAsync();
+            var organ = mcWoundeds.GroupBy(x => x.Organ).Select(s => s.Key).ToList();
+            var lookup = mcWoundeds.ToLookup(x => x.Organ);
+            List<Wound> WoundedList = new List<Wound>();
 
-        public class JJJ
-        {
-            public List<wound> WoundedList { get; set; }
-            public List<string> Organ { get; set; }
-        }
-        public class wound
-        {
-            public short WoundedId { get; set; }
-            public string Wounded { get; set; }
-
-            public string Organ { get; set; }
-        }
-        public async Task<JJJ> GetWoundeds()
-        {
-
-            JJJ jjj = new JJJ();
-            var qurey = await rvpofficeContext.Mcwounded.Where(w => w.Organ != "มป" && w.Organ != "หัวเข่า").Select(s => new { s.WoundedId, s.WoundedName, s.Organ}).ToListAsync();
-            var organ = qurey.GroupBy(x => x.Organ).Select(s => s.Key).ToList();
-            var lookup = qurey.ToLookup(x => x.Organ);
-            List<wound> WoundedList = new List<wound>();
-            foreach (var l in qurey)
+            for (int i = 0; i < mcWoundeds.Count; i++)
             {
-                wound w = new wound();
-                w.WoundedId = l.WoundedId;
-                w.Wounded = l.WoundedName;
-                w.Organ = l.Organ;
+                Wound w = new Wound();
+                w.WoundedId = mcWoundeds[i].WoundedId;
+                w.Wounded = mcWoundeds[i].WoundedName;
+                w.Organ = mcWoundeds[i].Organ;
                 WoundedList.Add(w);
             }
-            
-            jjj.WoundedList = WoundedList;
-            
-            jjj.Organ = organ;                  
-            
-            
-
-            
-            return jjj;
+            result.WoundedList = WoundedList;
+            result.Organ = organ;                  
+            return result;
         }
         public async Task<List<string>> GetPrefixesAsync()
         {

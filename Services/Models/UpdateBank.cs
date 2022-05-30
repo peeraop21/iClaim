@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class UpdateBankViewModel
+    public class UpdateBank
     {
         public string accountName { get; set; }
         public string accountNumber { get; set; }

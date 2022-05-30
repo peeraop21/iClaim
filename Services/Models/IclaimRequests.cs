@@ -1,15 +1,14 @@
-﻿using DataAccess.EFCore.iPolicyModels;
-using DataAccess.EFCore.AccidentModels;
+﻿using Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class IcliamApprovalViewModel
+    public class IclaimRequests
     {
 
         public string AccNo { get; set; }
@@ -40,7 +39,7 @@ namespace Services.ViewModels
         public string StringRegDate { get; set; }
         public string StringAccNo { get; set; }
         public string AppStatusName { get; set; }
-        public List<ApprovalStatusViewModel> AppStatus { get; set; }
+        public List<ApprovalStatus> AppStatus { get; set; }
         public int IclaimInvCount { get; set; }
     }
 }

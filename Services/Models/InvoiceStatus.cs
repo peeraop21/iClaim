@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class InvoiceStatusViewModel
+    public class InvoiceStatus
     {
         public long IdInvhd { get; set; }
         public List<string> Base64Image { get; set; }
@@ -12,7 +12,7 @@ namespace Services.ViewModels
         public string ReceiptNo { get; set; }
         public double? ReqMoney { get; set; }
         public double? PayMoney { get; set; }
-        public IclaimInvoicedtVerifyViewModel InvoicedtVerify { get; set; }
-        public List<IclaimInvoiceCutListViewModel> InvoiceCutList { get; set; }
+        public IclaimInvoicedtVerify InvoicedtVerify { get; set; }
+        public List<IclaimInvoiceCutList> InvoiceCutList { get; set; }
     }
 }

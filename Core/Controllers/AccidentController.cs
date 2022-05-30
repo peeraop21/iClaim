@@ -149,10 +149,11 @@ namespace Core.Controllers
             
         }
 
-        [HttpPost("testfind")]
-        public async Task<IActionResult> testC([FromBody] ReqData req)
+        [HttpPost("DataForAccidentEditPage")]
+        public async Task<IActionResult> GetDataForAccidentEditPage([FromBody] ReqData req)
         {
-            return Ok(await accidentService.GetEpolicyCountAsync(req.UserIdCard));
+
+            return Ok();
         }
     }
 }

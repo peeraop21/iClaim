@@ -20,10 +20,10 @@ namespace Services
 {
     public interface IAccidentService
     {
-        Task<List<AccidentViewModel>> GetAccidentByIdLine(string userToken);
-        Task<VictimtViewModel> GetAccidentVictim(string accNo,  string userIdCard,int victimNo);
-        Task<CarViewModel> GetAccidentCar(string accNo);
-        Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo);
+        Task<List<Accident>> GetAccidentByIdLine(string userToken);
+        Task<Victim> GetAccidentVictim(string accNo,  string userIdCard,int victimNo);
+        Task<CarHasPolicy> GetAccidentCar(string accNo);
+        Task<AccidentPDF> GetAccidentForGenPDF(string accNo, int victimNo, int appNo);
         Task<List<CarEpolicy>> GetEpoliciesByIdCardAsync(string idCardNo);
         Task<string> AddAsync(HosAccident hosAccident, HosCarAccident hosCarAccident, HosVicTimAccident hosVicTimAccident, string ip);
         Task<int> GetEpolicyCountAsync(string idCardNo);
@@ -53,7 +53,7 @@ namespace Services
             this.pvrContext = pvrContext;
         }
 
-        public async Task<List<AccidentViewModel>> GetAccidentByIdLine(string userToken)
+        public async Task<List<Accident>> GetAccidentByIdLine(string userToken)
         {
             if (!string.IsNullOrEmpty(userToken))
             {
@@ -64,29 +64,30 @@ namespace Services
                     .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId })
                     .ToListAsync();
 
-                var accViewModelList = new List<AccidentViewModel>();
-                foreach (var acc in accHosList)
+                var accList = new List<Accident>();
+
+                for (int i = 0; i < accHosList.Count; i++)
                 {
-                    var accVwModel = new AccidentViewModel();
-                    accVwModel.AccNo = acc.AccNo;
-                    accVwModel.VictimNo = acc.victimNo;
-                    accVwModel.BranchId = acc.BranchId;
-                    accVwModel.LastClaim = await approvalService.GetApprovalByAccNo(acc.AccNo, acc.victimNo);
-                    accVwModel.StringAccNo = acc.AccNo.ToString().Replace("/", "-");
-                    accVwModel.AccDate = acc.DateAcc ?? DateTime.Now;
-                    accVwModel.StringAccDate = accVwModel.AccDate.ToString("dd/MM/yyyy") + " เวลา " + acc.TimeAcc.Replace(".", ":") + " น.";
-                    accVwModel.StringAccDateSearch = accVwModel.AccDate.ToString("dd/MM/yyyy");
-                    accVwModel.AccNature = acc.AccNature;
-                    accVwModel.PlaceAcc = acc.AccPlace;
-                    accVwModel.ProvAcc = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == acc.AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
-                    accVwModel.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == acc.AccNo).Select(s => s.CarLicense).ToListAsync();
-                    accVwModel.CureRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CureRights");
-                    accVwModel.CrippledRightsBalance = await approvalService.GetRightsBalance(acc.AccNo, acc.victimNo, "CrippledRights");
-                    accVwModel.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo).CountAsync();
-                    accVwModel.CountNotify = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == acc.AccNo && w.VictimNo == acc.victimNo && (w.Status == 2 || w.Status == 4)).CountAsync();
-                    accViewModelList.Add(accVwModel);
+                    var acc = new Accident();
+                    acc.AccNo = accHosList[i].AccNo;
+                    acc.VictimNo = accHosList[i].victimNo;
+                    acc.BranchId = accHosList[i].BranchId;
+                    acc.LastClaim = await approvalService.GetApprovalByAccNo(accHosList[i].AccNo, accHosList[i].victimNo);
+                    acc.StringAccNo = accHosList[i].AccNo.ToString().Replace("/", "-");
+                    acc.AccDate = accHosList[i].DateAcc ?? DateTime.Now;
+                    acc.StringAccDate = acc.AccDate.ToString("dd/MM/yyyy") + " เวลา " + accHosList[i].TimeAcc.Replace(".", ":") + " น.";
+                    acc.StringAccDateSearch = acc.AccDate.ToString("dd/MM/yyyy");
+                    acc.AccNature = accHosList[i].AccNature;
+                    acc.PlaceAcc = accHosList[i].AccPlace;
+                    acc.ProvAcc = await rvpOfficeContext.Changwat.Where(w => w.Changwatshortname == accHosList[i].AccProv).Select(s => s.Changwatname).FirstOrDefaultAsync();
+                    acc.Car = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == accHosList[i].AccNo).Select(s => s.CarLicense).ToListAsync();
+                    acc.CureRightsBalance = await approvalService.GetRightsBalance(accHosList[i].AccNo, accHosList[i].victimNo, "CureRights");
+                    acc.CrippledRightsBalance = await approvalService.GetRightsBalance(accHosList[i].AccNo, accHosList[i].victimNo, "CrippledRights");
+                    acc.CountHosApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accHosList[i].AccNo && w.VictimNo == accHosList[i].victimNo).CountAsync();
+                    acc.CountNotify = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accHosList[i].AccNo && w.VictimNo == accHosList[i].victimNo && (w.Status == 2 || w.Status == 4)).CountAsync();
+                    accList.Add(acc);
                 }
-                return accViewModelList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
+                return accList.OrderByDescending(o => o.AccDate).ThenByDescending(o => o.AccNo).ToList();
             }
             else
             {
@@ -95,9 +96,9 @@ namespace Services
             
         }
 
-        public async Task<VictimtViewModel> GetAccidentVictim(string accNo, string userIdCard, int victimNo)
+        public async Task<Victim> GetAccidentVictim(string accNo, string userIdCard, int victimNo)
         {
-            var vicVwModel = new VictimtViewModel();
+            var victim = new Victim();
             var accVic = await (from hs in rvpOfficeContext.HosVicTimAccident
                                 join ch in rvpOfficeContext.Changwat on hs.Province equals ch.Changwatshortname into result1
                                 from hschi in result1.DefaultIfEmpty()
@@ -135,36 +136,36 @@ namespace Services
             var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard && w.Status == "Y").OrderByDescending(o => o.Kycno).FirstOrDefaultAsync();
             if (accVic == null)
             {
-                return vicVwModel;
+                return victim;
             }
-            vicVwModel.IdCardNo = kyc.IdcardNo;
-            vicVwModel.Fname = accVic.Fname;
-            vicVwModel.Lname = accVic.Lname;
-            vicVwModel.Prefix = accVic.Prefix;
-            vicVwModel.Age = accVic.Age;
-            vicVwModel.Sex = accVic.Sex;
-            vicVwModel.TelNo = kyc.MobileNo;
-            vicVwModel.HomeId = accVic.HomeId;
-            vicVwModel.Moo = accVic.Moo;
-            vicVwModel.Soi = accVic.Soi;
-            vicVwModel.Road = accVic.Road;
-            vicVwModel.Tumbol = accVic.TumbolId;
-            vicVwModel.TumbolName = accVic.TumbolName;
-            vicVwModel.District = accVic.AmphurId;
-            vicVwModel.DistrictName = accVic.AmphurName;
-            vicVwModel.Province = accVic.ChangwatShort;
-            vicVwModel.ProvinceName = accVic.ChangwatName;
-            vicVwModel.Zipcode = accVic.Zipcode;
-            vicVwModel.AccHomeId = accVic.HomeId;
-            vicVwModel.VictimIs = accVic.VictimIs;
-            vicVwModel.VictimType = accVic.VictimType;
-            vicVwModel.DetailBroken = accVic.DetailBroken;
-            return vicVwModel;
+            victim.IdCardNo = kyc.IdcardNo;
+            victim.Fname = accVic.Fname;
+            victim.Lname = accVic.Lname;
+            victim.Prefix = accVic.Prefix;
+            victim.Age = accVic.Age;
+            victim.Sex = accVic.Sex;
+            victim.TelNo = kyc.MobileNo;
+            victim.HomeId = accVic.HomeId;
+            victim.Moo = accVic.Moo;
+            victim.Soi = accVic.Soi;
+            victim.Road = accVic.Road;
+            victim.Tumbol = accVic.TumbolId;
+            victim.TumbolName = accVic.TumbolName;
+            victim.District = accVic.AmphurId;
+            victim.DistrictName = accVic.AmphurName;
+            victim.Province = accVic.ChangwatShort;
+            victim.ProvinceName = accVic.ChangwatName;
+            victim.Zipcode = accVic.Zipcode;
+            victim.AccHomeId = accVic.HomeId;
+            victim.VictimIs = accVic.VictimIs;
+            victim.VictimType = accVic.VictimType;
+            victim.DetailBroken = accVic.DetailBroken;
+            return victim;
         }
 
-        public async Task<CarViewModel> GetAccidentCar(string accNo)
+        public async Task<CarHasPolicy> GetAccidentCar(string accNo)
         {
-            var carVwModel = new CarViewModel();
+            var carVwModel = new CarHasPolicy();
             var query = await rvpOfficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
             carVwModel.FoundCarLicense = query.FoundCarLicense;
             carVwModel.FoundChassisNo = query.FoundChassisNo;
@@ -172,9 +173,9 @@ namespace Services
             return carVwModel;
         }
 
-        public async Task<AccidentPDFViewModel> GetAccidentForGenPDF(string accNo, int victimNo, int appNo)
+        public async Task<AccidentPDF> GetAccidentForGenPDF(string accNo, int victimNo, int appNo)
         {
-            var result = new AccidentPDFViewModel();
+            var result = new AccidentPDF();
             var query = await rvpOfficeContext.HosAccident.Where(w => w.AccNo == accNo).Select(s => new {s.AccNo, s.DateAcc, s.TimeAcc, s.AccPlace, s.AccProv }).FirstOrDefaultAsync();
             result.AccNo = query.AccNo;
             result.DateAccString = query.DateAcc.Value.Date.ToString("dd-MM-yyyy");

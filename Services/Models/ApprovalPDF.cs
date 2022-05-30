@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class ApprovalPDFViewModel
+    public class ApprovalPDF
     {
         public string ClaimNo { get; set; }
         public double CureMoney { get; set; }

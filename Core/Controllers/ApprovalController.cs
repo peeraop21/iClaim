@@ -70,9 +70,9 @@ namespace Core.Controllers
         public async Task<IActionResult> PostAsync([FromBody] ApprovalViewModel model)
         {
             model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
-            var resultMapIclaimApproval = _mapper.Map<IclaimApproval>(model);
-            var resultMapBank = _mapper.Map<InputBankViewModel>(model.BankData);
-            var resultMapVictim = _mapper.Map<VictimtViewModel>(model.VictimData);
+            var resultMapIclaimApproval = _mapper.Map<DataAccess.EFCore.DigitalClaimModels.IclaimApproval>(model);
+            var resultMapBank = _mapper.Map<InputBank>(model.BankData);
+            var resultMapVictim = _mapper.Map<Victim>(model.VictimData);
             var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
 
             var result = await approvalService.AddAsync(resultMapIclaimApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
@@ -171,8 +171,8 @@ namespace Core.Controllers
         public async Task<IActionResult> UpdateApproval([FromBody] ApprovalViewModel model)
         {
             model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
-            var resultMapBank = _mapper.Map<UpdateBankViewModel>(model.BankData);
-            var resultMapToInvoicehd = _mapper.Map<UpdateInvoiceViewModel[]>(model.BillsData);
+            var resultMapBank = _mapper.Map<UpdateBank>(model.BankData);
+            var resultMapToInvoicehd = _mapper.Map<UpdateInvoice[]>(model.BillsData);
             var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);
             ECM ecmModel = new ECM();
 
@@ -248,7 +248,7 @@ namespace Core.Controllers
         [HttpPost("CheckInvoiceUsing")]
         public async Task<IActionResult> CheckInvoiceUsing([FromBody] List<BillViewModel> models)
         {
-            var resultMapToInvoicehd = _mapper.Map<CheckDuplicateInvoiceViewModel[]>(models);                    
+            var resultMapToInvoicehd = _mapper.Map<CheckDuplicateInvoice[]>(models);                    
             return Ok(await approvalService.CheckDuplicateInvoice(resultMapToInvoicehd));
         }
 
@@ -366,7 +366,7 @@ namespace Core.Controllers
                 return null;
             }
         }
-        private async Task<string> GenBotoBody(AccidentPDFViewModel acc, VictimtViewModel accVictim, CarViewModel accCar, ApprovalPDFViewModel approvalData)
+        private async Task<string> GenBotoBody(AccidentPDF acc, Victim accVictim, CarHasPolicy accCar, ApprovalPDF approvalData)
         {
             var template = System.IO.Directory.GetCurrentDirectory() + @"\Templates\Boto3_Template.html";
             using (StreamReader reader = new StreamReader(template))

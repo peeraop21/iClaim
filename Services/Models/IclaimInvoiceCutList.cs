@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class IclaimInvoiceCutListViewModel
+    public class IclaimInvoiceCutList
     {
         public long IdInvhd { get; set; }
         public int CutListNo { get; set; }

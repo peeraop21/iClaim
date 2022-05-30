@@ -1,7 +1,6 @@
 ﻿using DataAccess.EFCore.DigitalClaimModels;
 using DataAccess.EFCore.RvpOfficeModels;
 using Microsoft.EntityFrameworkCore;
-using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,29 +12,30 @@ using LinqKit;
 using DataAccess.EFCore.RvpSystemModels;
 using DataAccess.EFCore.iPolicyModels;
 using Microsoft.AspNetCore.Http;
+using Services.Models;
 
 namespace Services
 {
     public interface IApprovalService
     {
-        Task<List<ApprovalregisViewModel>> GetApprovalRegis(string accNo, int victimNo, int rightsType);
-        Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, int rightsType);
-        Task<ClaimViewModel> GetApprovalByAccNo(string accNo, int? victimNo);
-        Task<List<ResultApprovalPostViewModel>> AddAsync(IclaimApproval iclaimApproval, InputBankViewModel inputBank, VictimtViewModel victim, Invoicehd[] invoicehd, string userLineId);
-        Task<string> UpdateAsync(string accNo, int victimNo, int reqNo, string userIdLine, UpdateBankViewModel bankModel, UpdateInvoiceViewModel[] invModel);
-        Task<List<IcliamApprovalViewModel>> GetIClaimApprovalAsync(string accNo, int victimNo);
-        Task<InputBankViewModel> GetIClaimBankAccountAsync(string accNo, int victimNo, int reqNo);
-        Task<List<InputBankViewModel>> GetLastIClaimBankAccountAsync(string accNo, int victimNo);
+        Task<List<ApprovalregisDetail>> GetApprovalRegis(string accNo, int victimNo, int rightsType);
+        Task<Claim> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, int rightsType);
+        Task<Claim> GetApprovalByAccNo(string accNo, int? victimNo);
+        Task<List<ResultAddApproval>> AddAsync(DataAccess.EFCore.DigitalClaimModels.IclaimApproval iclaimApproval, InputBank inputBank, Victim victim, Invoicehd[] invoicehd, string userLineId);
+        Task<string> UpdateAsync(string accNo, int victimNo, int reqNo, string userIdLine, UpdateBank bankModel, UpdateInvoice[] invModel);
+        Task<List<IclaimRequests>> GetIClaimApprovalAsync(string accNo, int victimNo);
+        Task<InputBank> GetIClaimBankAccountAsync(string accNo, int victimNo, int reqNo);
+        Task<InputBank> GetLastIClaimBankAccountAsync(string accNo, int victimNo);
         Task<double?> GetRightsBalance(string accNo, int? victimNo, string rightsType);
         Task<string> UpdateApprovalStatusAsync(string accNo, int victimNo, int reqNo, string status, bool isHasInvCancel);
-        Task<List<InvoicehdViewModel>> GetInvoicehdAsync(string accNo, int victimNo, int reqNo, int status);
+        Task<List<InvoiceHeader>> GetInvoicehdAsync(string accNo, int victimNo, int reqNo, int status);
         Task<IclaimCheckDocuments> GetDocumentCheck(string accNo, int victimNo, int appNo);
-        Task<ConfirmMoneyViewModel> GetDataForConfirmMoney(string accNo, int victimNo, int reqNo);
+        Task<ConfirmMoney> GetDataForConfirmMoney(string accNo, int victimNo, int reqNo);
         //Task<string> GeneratePT(string accN);
         Task<object> GetHistoryInvoicedt(string accNo, int victimNo, int appNo);
-        Task<ApprovalDetailViewModel> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard);
-        Task<ApprovalPDFViewModel> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo);
-        Task<CheckDuplicateInvoiceViewModel[]> CheckDuplicateInvoice(CheckDuplicateInvoiceViewModel[] invoicehds);
+        Task<ApprovalDetail> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard);
+        Task<ApprovalPDF> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo);
+        Task<CheckDuplicateInvoice[]> CheckDuplicateInvoice(CheckDuplicateInvoice[] invoicehds);
         Task<string> CanselApprovalAsync(string accNo, int victimNo, int reqNo, string userIdLine);
     }
 
@@ -83,14 +83,14 @@ namespace Services
         //    //var query = await digitalclaimContext.HosApproval.Where
         //    return pt4id;
         //}
-        public async Task<List<ResultApprovalPostViewModel>> AddAsync(IclaimApproval iclaimApproval, InputBankViewModel inputBank, VictimtViewModel victim, Invoicehd[] invoicehd, string userLineId)
+        public async Task<List<ResultAddApproval>> AddAsync(DataAccess.EFCore.DigitalClaimModels.IclaimApproval iclaimApproval, InputBank inputBank, Victim victim, Invoicehd[] invoicehd, string userLineId)
         {
             var lastAppNo = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == iclaimApproval.AccNo && w.VictimNo == iclaimApproval.VictimNo).Select(s => s.ReqNo).OrderByDescending(o => o).FirstOrDefaultAsync();
             if (lastAppNo == null)
             {
                 lastAppNo = 0;
             }
-            var dataIcliamApproval = new IclaimApproval();
+            var dataIcliamApproval = new DataAccess.EFCore.DigitalClaimModels.IclaimApproval();
             dataIcliamApproval.AccNo = iclaimApproval.AccNo;
             dataIcliamApproval.VictimNo = iclaimApproval.VictimNo;
             dataIcliamApproval.ReqNo = lastAppNo + 1;
@@ -139,10 +139,10 @@ namespace Services
             await digitalclaimContext.IclaimApprovalState.AddAsync(dataIclaimApprovalStatusState);
 
             var idInvhd = await rvpofficeContext.Invoicehd.Select(s => s.IdInvhd).OrderByDescending(o => o).FirstOrDefaultAsync();
-            List<ResultApprovalPostViewModel> result = new List<ResultApprovalPostViewModel>();
+            List<ResultAddApproval> result = new List<ResultAddApproval>();
             for (int i = 0; i < invoicehd.Length; i++)
             {
-                var dataResult = new ResultApprovalPostViewModel();
+                var dataResult = new ResultAddApproval();
                 dataResult.IdInvhd = idInvhd + i + 1;
                 dataResult.AccNo = iclaimApproval.AccNo;
                 dataResult.VictimNo = iclaimApproval.VictimNo;
@@ -200,7 +200,7 @@ namespace Services
 
             return result;
         }
-        public async Task<string> UpdateAsync(string accNo, int victimNo, int reqNo, string userIdLine, UpdateBankViewModel bankModel, UpdateInvoiceViewModel[] invModel)
+        public async Task<string> UpdateAsync(string accNo, int victimNo, int reqNo, string userIdLine, UpdateBank bankModel, UpdateInvoice[] invModel)
         {
             var ip = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             var iclaimBankAccount = await digitalclaimContext.IclaimBankAccount.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).FirstOrDefaultAsync();
@@ -298,10 +298,10 @@ namespace Services
             return null;
         }
 
-        public async Task<ClaimViewModel> GetApprovalByAccNo(string accNo, int? victimNo)
+        public async Task<Claim> GetApprovalByAccNo(string accNo, int? victimNo)
         {
             var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.VictimNo, s.AppNo, s.ClaimNo, s.Pt4id }).OrderByDescending(o => o.AppNo).Take(1).FirstOrDefaultAsync();
-            var claimVwModel = new ClaimViewModel();
+            var claimVwModel = new Claim();
             if (query != null)
             {
                 claimVwModel.AccNo = query.AccNo;
@@ -313,44 +313,33 @@ namespace Services
 
             return claimVwModel;
         }
-        public async Task<List<ApprovalregisViewModel>> GetApprovalRegis(string accNo, int victimNo, int rightsType)
+        public async Task<List<ApprovalregisDetail>> GetApprovalRegis(string accNo, int victimNo, int rightsType)
         {
 
-            var approvalVwMdList = new List<ApprovalregisViewModel>();
-            var query = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.Pt4 != null && w.Pt4 != "Compensate" /*&& (w.ApStatus == "P" || w.ApStatus == "A")*/)
-                .Select(s => new { s.CrClaimno, s.VVictimno, s.ApRegno, s.ApRegdate, s.ApPaytype, s.ApMoney, s.AccNo, s.AccAppNo, s.AccVictimNo, s.ApTotal, s.DailyReceiveno, s.Pt4, s.ApStatus }).ToListAsync();
-
-            if (query != null)
-            {
-                foreach (var acc in query)
-                {
-                    var claimVwModel = new ClaimViewModel();
-                    var approvalVwModel = new ApprovalregisViewModel();
-                    approvalVwModel.CrClaimno = acc.CrClaimno;
-                    approvalVwModel.VVictimno = acc.VVictimno;
-                    approvalVwModel.ApRegno = acc.ApRegno;
-                    approvalVwModel.ApRegdate = acc.ApRegdate ?? null;
-                    approvalVwModel.StringApRegdate = acc.ApRegdate.Value.ToString("dd/MM/yyyy เวลา HH:mm น.");
-                    approvalVwModel.ApPaytype = acc.ApPaytype;
-                    approvalVwModel.ApMoney = acc.ApMoney;
-                    approvalVwModel.AccNo = acc.AccNo;
-                    approvalVwModel.AccAppNo = (int)acc.AccAppNo;
-                    approvalVwModel.AccVictimNo = (int)acc.AccVictimNo;
-                    approvalVwModel.ApTotal = acc.ApTotal;
-                    approvalVwModel.Pt4 = acc.Pt4;
-                    approvalVwModel.StringPt4 = approvalVwModel.Pt4.ToString().Replace("/", "-");
-                    approvalVwModel.ApStatus = acc.ApStatus;
-                    approvalVwMdList.Add(approvalVwModel);
-
-                }
-            }
-            return approvalVwMdList.OrderByDescending(o => o.ApRegdate).ToList();
+            var approvalRegisList = await claimDataContext.Approvalregis.Where(w => w.AccNo == accNo && w.AccVictimNo == victimNo && w.Pt4 != null && w.Pt4 != "Compensate" /*&& (w.ApStatus == "P" || w.ApStatus == "A")*/)
+                .Select(s => new ApprovalregisDetail {
+                    CrClaimno = s.CrClaimno,
+                    VVictimno = s.VVictimno,
+                    ApRegno = s.ApRegno,
+                    ApRegdate = s.ApRegdate,
+                    StringApRegdate = s.ApRegdate.Value.ToString("dd/MM/yyyy เวลา HH:mm น."),
+                    ApPaytype = s.ApPaytype,
+                    ApMoney = s.ApMoney,
+                    AccNo = s.AccNo,
+                    AccAppNo = (int)s.AccAppNo,
+                    AccVictimNo = (int)s.AccVictimNo,
+                    ApTotal = s.ApTotal,
+                    Pt4 = s.Pt4,
+                    StringPt4 = s.Pt4.ToString().Replace("/", "-"),
+                    ApStatus = s.ApStatus 
+                }).ToListAsync();           
+            return approvalRegisList.OrderByDescending(o => o.ApRegdate).ToList();
         }
 
-        public async Task<ClaimViewModel> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, int rightsType)
+        public async Task<Claim> GetApprovalByClaimNo(string claimNo, short victimNo, short regNo, int rightsType)
         {
 
-            var claimVwModel = new ClaimViewModel();
+            var claimVwModel = new Claim();
 
             if (rightsType == 1)
             {
@@ -540,45 +529,45 @@ namespace Services
 
             return null;
         }
-        public async Task<List<IcliamApprovalViewModel>> GetIClaimApprovalAsync(string accNo, int victimNo)
+        public async Task<List<IclaimRequests>> GetIClaimApprovalAsync(string accNo, int victimNo)
         {
-            var query = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.VictimNo, s.ReqNo, s.InsertDate, s.SumReqMoney, s.Status }).ToListAsync();
+            var iclaimApps = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccNo, s.VictimNo, s.ReqNo, s.InsertDate, s.SumReqMoney, s.Status }).ToListAsync();
             var reqNoIclaimInvList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => s.ReqNo).ToListAsync();
             var groupIclaimInvByReqNo = reqNoIclaimInvList.ToLookup(g => g).Select(s => new { ReqNo = s.Key, invhdCount = s.Count() });
-            var vwIclaimAppList = new List<IcliamApprovalViewModel>();
-            if (query == null)
+            var iclaimAppList = new List<IclaimRequests>();
+            if (iclaimApps == null)
             {
-                return vwIclaimAppList;
+                return iclaimAppList;
             }
-            foreach (var iclaimApp in query)
+            for(int i = 0;i< iclaimApps.Count;i++)
             {
-                var vwIclaimApp = new IcliamApprovalViewModel();
-                vwIclaimApp.AccNo = iclaimApp.AccNo;
-                vwIclaimApp.StringAccNo = iclaimApp.AccNo.Replace("/", "-");
-                vwIclaimApp.AppNo = iclaimApp.ReqNo;
-                vwIclaimApp.InsertDate = iclaimApp.InsertDate;
-                vwIclaimApp.SumMoney = iclaimApp.SumReqMoney;
-                vwIclaimApp.Status = iclaimApp.Status;
-                vwIclaimApp.StringRegDate = iclaimApp.InsertDate.Value.ToString("dd/MM/yyyy HH:mm");
-                vwIclaimApp.AppStatus = await GetApprovalStatus(iclaimApp.AccNo, iclaimApp.VictimNo, iclaimApp.ReqNo);
-                vwIclaimApp.AppStatusName = vwIclaimApp.AppStatus.Where(w => w.Active == true).Select(s => new { s.StatusName, s.StatusId }).OrderByDescending(o => o.StatusId).Select(s => s.StatusName).FirstOrDefault();
-                vwIclaimApp.IclaimInvCount = groupIclaimInvByReqNo.Where(w => w.ReqNo == iclaimApp.ReqNo).Select(s => s.invhdCount).FirstOrDefault();
-                vwIclaimAppList.Add(vwIclaimApp);
+                var iclaimData = new IclaimRequests();
+                iclaimData.AccNo = iclaimApps[i].AccNo;
+                iclaimData.StringAccNo = iclaimApps[i].AccNo.Replace("/", "-");
+                iclaimData.AppNo = iclaimApps[i].ReqNo;
+                iclaimData.InsertDate = iclaimApps[i].InsertDate;
+                iclaimData.SumMoney = iclaimApps[i].SumReqMoney;
+                iclaimData.Status = iclaimApps[i].Status;
+                iclaimData.StringRegDate = iclaimApps[i].InsertDate.Value.ToString("dd/MM/yyyy HH:mm");
+                iclaimData.AppStatus = await GetApprovalStatus(iclaimApps[i].AccNo, iclaimApps[i].VictimNo, iclaimApps[i].ReqNo);
+                iclaimData.AppStatusName = iclaimData.AppStatus.Where(w => w.Active == true).Select(s => new { s.StatusName, s.StatusId }).OrderByDescending(o => o.StatusId).Select(s => s.StatusName).FirstOrDefault();
+                iclaimData.IclaimInvCount = groupIclaimInvByReqNo.Where(w => w.ReqNo == iclaimApps[i].ReqNo).Select(s => s.invhdCount).FirstOrDefault();
+                iclaimAppList.Add(iclaimData);
             }
 
-            return vwIclaimAppList.OrderByDescending(o => o.AppNo).ToList();
+            return iclaimAppList.OrderByDescending(o => o.AppNo).ToList();
         }
 
-        private async Task<List<ApprovalStatusViewModel>> GetApprovalStatus(string accNo, int victimNo, int appNo)
+        private async Task<List<ApprovalStatus>> GetApprovalStatus(string accNo, int victimNo, int appNo)
         {
             var query = await digitalclaimContext.IclaimMasterTypes.Where(w => w.ParentTypeId == 50 && w.IsActive).ToListAsync();
             var appStatus = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == appNo).FirstOrDefaultAsync();
             var appStatusState = await digitalclaimContext.IclaimApprovalState.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == appNo).ToListAsync();
 
-            var appStatusVwModelList = new List<ApprovalStatusViewModel>();
+            var appStatusVwModelList = new List<ApprovalStatus>();
             for (int i = 0; i < query.Count; i++)
             {
-                var appStatusVwModel = new ApprovalStatusViewModel();
+                var appStatusVwModel = new ApprovalStatus();
                 appStatusVwModel.StatusId = query[i].TypeId;
                 appStatusVwModel.StatusName = query[i].TypeNameIclaim;
                 appStatusVwModel.StatusDate = appStatusState.Where(w => w.NewStatus == query[i].TypeId).Select(s => s.InsertDate.Value.Date.ToString("dd/MM/yyyy")).FirstOrDefault();
@@ -601,38 +590,22 @@ namespace Services
             return appStatusVwModelList;
         }
 
-        public async Task<InputBankViewModel> GetIClaimBankAccountAsync(string accNo, int victimNo, int reqNo)
+        public async Task<InputBank> GetIClaimBankAccountAsync(string accNo, int victimNo, int reqNo)
         {
-            var query = await digitalclaimContext.IclaimBankAccount.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.AccountNo, s.AccountName, s.BankId, s.ReqNo }).FirstOrDefaultAsync();
-            //var bankName = await rvpofficeContext.BankNames.Where(w => w.BankCode != null && w.BankCode == query.BankId).Select(s =>  s.Name).FirstOrDefaultAsync();
-            var inputBankViewModel = new InputBankViewModel();
-            if (query == null)
-            {
-                return inputBankViewModel;
-            }
-
-            inputBankViewModel.accountNumber = query.AccountNo;
-            inputBankViewModel.accountName = query.AccountName;
-            inputBankViewModel.accountBankName = query.BankId;
-            inputBankViewModel.appNo = query.ReqNo;
-
-            return inputBankViewModel;
+            return await digitalclaimContext.IclaimBankAccount.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo)
+                .Select(s => new InputBank { accountNumber = s.AccountNo, accountName = s.AccountName, accountBankName = s.BankId, appNo = s.ReqNo }).FirstOrDefaultAsync();
         }
-        public async Task<List<InputBankViewModel>> GetLastIClaimBankAccountAsync(string accNo, int victimNo)
+        public async Task<InputBank> GetLastIClaimBankAccountAsync(string accNo, int victimNo)
         {
-            var query = await digitalclaimContext.IclaimBankAccount.Where(w => w.AccNo == accNo && w.VictimNo == victimNo).Select(s => new { s.AccountNo, s.AccountName, s.BankId, s.ReqNo }).OrderByDescending(o => o.ReqNo).FirstOrDefaultAsync();
-            var inputBankViewModelsList = new List<InputBankViewModel>();
-            if (query == null)
-            {
-                return inputBankViewModelsList;
-            }
-            var inputBankViewModel = new InputBankViewModel();
-            inputBankViewModel.accountNumber = query.AccountNo;
-            inputBankViewModel.accountName = query.AccountName;
-            inputBankViewModel.accountBankName = query.BankId;
-            inputBankViewModel.appNo = query.ReqNo;
-            inputBankViewModelsList.Add(inputBankViewModel);
-            return inputBankViewModelsList;
+            return await digitalclaimContext.IclaimBankAccount.Where(w => w.AccNo == accNo && w.VictimNo == victimNo)
+                .Select(s => new InputBank
+                {
+                    accountNumber = s.AccountNo,
+                    accountName = s.AccountName,
+                    accountBankName = s.BankId,
+                    appNo = s.ReqNo
+
+                }).OrderByDescending(o => o.appNo).FirstOrDefaultAsync();
         }
 
 
@@ -826,7 +799,7 @@ namespace Services
             return "Error";
         }
 
-        public async Task<List<InvoicehdViewModel>> GetInvoicehdAsync(string accNo, int victimNo, int reqNo, int status)
+        public async Task<List<InvoiceHeader>> GetInvoicehdAsync(string accNo, int victimNo, int reqNo, int status)
         {
             var idInvhdList = new List<long>();
             if (status == 0)
@@ -835,10 +808,10 @@ namespace Services
                     .Select(s => new { s.IdInvhd, s.ReqMoney }).ToListAsync();
                 var query = await rvpofficeContext.Invoicehd.Where(w => invStatusList.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
 
-                List<InvoicehdViewModel> invList = new List<InvoicehdViewModel>();
+                List<InvoiceHeader> invList = new List<InvoiceHeader>();
                 for (int i = 0; i < query.Count(); i++)
                 {
-                    InvoicehdViewModel inv = new InvoicehdViewModel();
+                    InvoiceHeader inv = new InvoiceHeader();
                     var refId = query[i].IdInvhd + "|" + accNo + "|" + victimNo;
                     inv.IdInvhd = query[i].IdInvhd;
                     inv.Mainconsider = query[i].Mainconsider;
@@ -875,10 +848,10 @@ namespace Services
                 var query = await rvpofficeContext.Invoicehd.Where(w => invStatusList.Select(s => s.IdInvhd).Contains(w.IdInvhd)).ToListAsync();
                 
 
-                List<InvoicehdViewModel> invNotPassList = new List<InvoicehdViewModel>();
+                List<InvoiceHeader> invNotPassList = new List<InvoiceHeader>();
                 for (int i = 0; i < query.Count(); i++)
                 {
-                    InvoicehdViewModel invNotPass = new InvoicehdViewModel();
+                    InvoiceHeader invNotPass = new InvoiceHeader();
                     invNotPass.AccNo = query[i].AccNo;
                     invNotPass.VictimNo = query[i].VictimNo;
                     invNotPass.AppNo = query[i].AppNo;
@@ -910,7 +883,7 @@ namespace Services
             return await digitalclaimContext.IclaimCheckDocuments.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).FirstOrDefaultAsync();
         }
 
-        public async Task<ConfirmMoneyViewModel> GetDataForConfirmMoney(string accNo, int victimNo, int reqNo)
+        public async Task<ConfirmMoney> GetDataForConfirmMoney(string accNo, int victimNo, int reqNo)
         {
 
 
@@ -919,12 +892,12 @@ namespace Services
             var car = await rvpofficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
             var iclaimInvoiceStatusList = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.IdInvhd, s.ReqMoney, s.PayMoney }).ToListAsync();
 
-            CarViewModel carViewModel = new CarViewModel();
+            CarHasPolicy carViewModel = new CarHasPolicy();
             carViewModel.FoundCarLicense = car.FoundCarLicense;
             carViewModel.FoundChassisNo = car.FoundChassisNo;
             carViewModel.FoundPolicyNo = car.FoundPolicyNo;
 
-            ConfirmMoneyViewModel confirmMoney = new ConfirmMoneyViewModel();
+            ConfirmMoney confirmMoney = new ConfirmMoney();
             confirmMoney.ReqNo = reqNo;
             confirmMoney.ReqDate = iclaimApproval.InsertDate.Value.Date.ToString("dd/MM/yyyy");
             confirmMoney.ReqTime = iclaimApproval.InsertDate.Value.ToString("HH:mm");
@@ -937,7 +910,7 @@ namespace Services
             var invoicehds = await rvpofficeContext.Invoicehd
                 .Join(rvpofficeContext.Hospital, invhd => invhd.Hosid, hos => hos.Hospitalid, (invhd, hos) => new { Invhd = invhd, HospitalName = hos.Hospitalname })
                 .Where(w => iclaimInvoiceStatusList.Select(s => s.IdInvhd).ToList().Contains(w.Invhd.IdInvhd))
-                .Select(s => new InvoicehdViewModel {
+                .Select(s => new InvoiceHeader {
                     IdInvhd = s.Invhd.IdInvhd,
                     IdInvdt = s.Invhd.IdInvdt,
                     Hostype = s.Invhd.Hostype,
@@ -952,14 +925,14 @@ namespace Services
             var invdtVerify = await GetIclaimInvoicedtVerify(invoicehds);
             var invCutList = await digitalclaimContext.IclaimInvoiceCutLists
                 .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo)
-                .Select(s => new IclaimInvoiceCutListViewModel { IdInvhd = s.IdInvhd, CutListNo = s.CutListNo, CutListName = s.CutListName, CutListPrice = s.CutListPrice })
+                .Select(s => new IclaimInvoiceCutList { IdInvhd = s.IdInvhd, CutListNo = s.CutListNo, CutListName = s.CutListName, CutListPrice = s.CutListPrice })
                 .ToListAsync();
-            List<InvoiceStatusViewModel> invStatusList = new List<InvoiceStatusViewModel>();
+            List<InvoiceStatus> invStatusList = new List<InvoiceStatus>();
             for (int i = 0; i < iclaimInvoiceStatusList.Count; i++)
             {
                 var invhd = invoicehds.Where(w => w.IdInvhd == iclaimInvoiceStatusList[i].IdInvhd).Select(s => new { s.BookNo, s.ReceiptNo }).FirstOrDefault();
                 var idInvdt = invoicehds.Where(w => w.IdInvhd == iclaimInvoiceStatusList[i].IdInvhd).Select(s => s.IdInvdt).FirstOrDefault();
-                InvoiceStatusViewModel invStatus = new InvoiceStatusViewModel();
+                InvoiceStatus invStatus = new InvoiceStatus();
                 var refId = iclaimInvoiceStatusList[i].IdInvhd + "|" + accNo + "|" + victimNo;
                 invStatus.IdInvhd = iclaimInvoiceStatusList[i].IdInvhd;
                 invStatus.BookNo = invhd.BookNo;
@@ -985,7 +958,7 @@ namespace Services
 
             return confirmMoney;
         }
-        private async Task<List<IclaimInvoicedtVerifyViewModel>> GetIclaimInvoicedtVerify(List<InvoicehdViewModel> invoicehds)
+        private async Task<List<IclaimInvoicedtVerify>> GetIclaimInvoicedtVerify(List<InvoiceHeader> invoicehds)
         {
             var iclaimInvdtVerify = await digitalclaimContext.IclaimInvoiceDtVerify.Where(w => invoicehds.Select(s => s.IdInvdt).Contains(w.IdInvdt)).ToListAsync();                     
             if (invoicehds.Count > 0)
@@ -1015,7 +988,7 @@ namespace Services
                     var mergeHospital = invhdHosTypeP.Concat(invhdHosTypeG).ToList();
 
                     return mergeInvdtList.GroupBy(item => item.invdtID,
-                    (key, group) => new IclaimInvoicedtVerifyViewModel
+                    (key, group) => new IclaimInvoicedtVerify
                     {
                         IdInvdt = key,
                         Hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
@@ -1036,7 +1009,7 @@ namespace Services
                         .Select(s => new { invdtID = s.invDt.invdtID, listNo = s.invDt.listNo, treatName = s.invDt.treatName, reqMoney = s.reqMoney, paidMoney = s.paidMoney })
                         .ToList();
                     return invdtItemsPJoinInvdtVerify.GroupBy(item => item.invdtID,
-                   (key, group) => new IclaimInvoicedtVerifyViewModel
+                   (key, group) => new IclaimInvoicedtVerify
                    {
                        IdInvdt = key,
                        Hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
@@ -1058,7 +1031,7 @@ namespace Services
                         .ToList();
 
                     return invdtItemsGJoinInvdtVerify.GroupBy(item => item.invdtID,
-                    (key, group) => new IclaimInvoicedtVerifyViewModel
+                    (key, group) => new IclaimInvoicedtVerify
                     {
                         IdInvdt = key,
                         Hospital = invhdHosTypeG.Where(w => w.IdInvdt == key).Select(s => s.HospitalName).FirstOrDefault(),
@@ -1073,9 +1046,9 @@ namespace Services
             return null;
         }
 
-        public async Task<ApprovalDetailViewModel> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard)
+        public async Task<ApprovalDetail> GetApprovalDetail(string accNo, int victimNo, int reqNo, string userIdCard)
         {
-            var victimViewModel = new VictimtViewModel();
+            var victim = new Victim();
             var accVic = await (from hs in rvpofficeContext.HosVicTimAccident
                                 join ch in rvpofficeContext.Changwat on hs.Province equals ch.Changwatshortname into result1
                                 from hschi in result1.DefaultIfEmpty()
@@ -1110,29 +1083,29 @@ namespace Services
             var kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.IdcardNo == userIdCard && w.Status == "Y").OrderByDescending(o => o.Kycno).FirstOrDefaultAsync();
 
             if (accVic == null) return null;
-            victimViewModel.IdCardNo = kyc.IdcardNo;
-            victimViewModel.Fname = accVic.Fname;
-            victimViewModel.Lname = accVic.Lname;
-            victimViewModel.Prefix = accVic.Prefix;
-            victimViewModel.Age = accVic.Age;
-            victimViewModel.Sex = accVic.Sex;
-            victimViewModel.TelNo = kyc.MobileNo;
+            victim.IdCardNo = kyc.IdcardNo;
+            victim.Fname = accVic.Fname;
+            victim.Lname = accVic.Lname;
+            victim.Prefix = accVic.Prefix;
+            victim.Age = accVic.Age;
+            victim.Sex = accVic.Sex;
+            victim.TelNo = kyc.MobileNo;
 
-            victimViewModel.HomeId = accVic.HomeId;
-            victimViewModel.Moo = accVic.Moo;
-            victimViewModel.Soi = accVic.Soi;
-            victimViewModel.Road = accVic.Road;
-            victimViewModel.Tumbol = accVic.TumbolId;
-            victimViewModel.TumbolName = accVic.TumbolName;
-            victimViewModel.District = accVic.AmphurId;
-            victimViewModel.DistrictName = accVic.AmphurName;
-            victimViewModel.Province = accVic.ChangwatShort;
-            victimViewModel.ProvinceName = accVic.ChangwatName;
-            victimViewModel.Zipcode = accVic.Zipcode;
+            victim.HomeId = accVic.HomeId;
+            victim.Moo = accVic.Moo;
+            victim.Soi = accVic.Soi;
+            victim.Road = accVic.Road;
+            victim.Tumbol = accVic.TumbolId;
+            victim.TumbolName = accVic.TumbolName;
+            victim.District = accVic.AmphurId;
+            victim.DistrictName = accVic.AmphurName;
+            victim.Province = accVic.ChangwatShort;
+            victim.ProvinceName = accVic.ChangwatName;
+            victim.Zipcode = accVic.Zipcode;
 
             //ข้อมูลรถ
             var car = await rvpofficeContext.HosCarAccident.Where(w => w.AccNo == accNo).Select(s => new { s.FoundCarLicense, s.FoundChassisNo, s.FoundPolicyNo }).FirstOrDefaultAsync();
-            CarViewModel carViewModel = new CarViewModel();
+            CarHasPolicy carViewModel = new CarHasPolicy();
             carViewModel.FoundCarLicense = car.FoundCarLicense;
             carViewModel.FoundChassisNo = car.FoundChassisNo;
             carViewModel.FoundPolicyNo = car.FoundPolicyNo;
@@ -1140,12 +1113,12 @@ namespace Services
             var iclaimApproval = await digitalclaimContext.IclaimApproval
                 .Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.InsertDate }).FirstOrDefaultAsync();
 
-            ApprovalDetailViewModel approvalDetailViewModel = new ApprovalDetailViewModel();
+            ApprovalDetail approvalDetailViewModel = new ApprovalDetail();
             approvalDetailViewModel.ReqNo = reqNo;
             approvalDetailViewModel.ReqDate = iclaimApproval.InsertDate.Value.Date.ToString("dd/MM/yyyy");
             approvalDetailViewModel.ReqTime = iclaimApproval.InsertDate.Value.ToString("HH:mm");
             approvalDetailViewModel.SumReqMoney = (double)iclaimApproval.SumReqMoney;
-            approvalDetailViewModel.Victim = victimViewModel;
+            approvalDetailViewModel.Victim = victim;
             approvalDetailViewModel.Car = carViewModel;
             approvalDetailViewModel.Invoicehds = await GetInvoicehdAsync(accNo, victimNo, reqNo, 0);
             approvalDetailViewModel.BankAccount = await GetIClaimBankAccountAsync(accNo, victimNo, reqNo);
@@ -1155,7 +1128,7 @@ namespace Services
             return approvalDetailViewModel;
         }
 
-        public async Task<ApprovalPDFViewModel> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo)
+        public async Task<ApprovalPDF> GetApprovalDataForGenPDF(string accNo, int victimNo, int reqNo)
         {
             var iclaimIdInvhd = await digitalclaimContext.IclaimInvoiceStatus.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => s.IdInvhd).ToListAsync();
             var hosIdList = await rvpofficeContext.Invoicehd.Where(w => w.IdInvhd == iclaimIdInvhd[0]).Select(s => s.Hosid).ToListAsync();
@@ -1163,7 +1136,7 @@ namespace Services
             var query = await rvpofficeContext.HosApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.AppNo == invhd.AppNo).FirstOrDefaultAsync();
             var iclaimApp = await digitalclaimContext.IclaimApproval.Where(w => w.AccNo == accNo && w.VictimNo == victimNo && w.ReqNo == reqNo).Select(s => new { s.SumReqMoney, s.RefCodeOtp, s.IsEverAuthorize, s.EverAuthorizeHosId, s.EverAuthorizeMoney}).FirstOrDefaultAsync();
 
-            ApprovalPDFViewModel approvalPDF = new ApprovalPDFViewModel();
+            ApprovalPDF approvalPDF = new ApprovalPDF();
             if (query == null)
             {
                 approvalPDF.CureMoney = (double)iclaimApp.SumReqMoney;
@@ -1314,7 +1287,7 @@ namespace Services
             return BahtText;
         }
 
-        public async Task<CheckDuplicateInvoiceViewModel[]> CheckDuplicateInvoice(CheckDuplicateInvoiceViewModel[] invoicehds)
+        public async Task<CheckDuplicateInvoice[]> CheckDuplicateInvoice(CheckDuplicateInvoice[] invoicehds)
         {
             if (invoicehds[0].ReqNo > 0) //คำร้องที่มีอยู่
             {

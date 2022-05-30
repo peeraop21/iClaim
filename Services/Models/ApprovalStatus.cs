@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class ApprovalStatusViewModel
+    public class ApprovalStatus
     {
         public int StatusId { get; set; }
         public string StatusName { get; set; }

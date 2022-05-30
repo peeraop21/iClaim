@@ -1,9 +1,9 @@
 ﻿
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class InputBankViewModel
+    public class InputBank
     {
         public int appNo { get; set; }
         public string accountName { get; set; }

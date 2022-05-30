@@ -11,13 +11,13 @@
     using Services.Models;
 
     public class DataMapperProfile : Profile {
-        public DataMapperProfile() {           
-            CreateMap<ApprovalViewModel, IclaimApproval>()
+        public DataMapperProfile() {
+            CreateMap<ApprovalViewModel, DataAccess.EFCore.DigitalClaimModels.IclaimApproval>()
                 .ForMember(m => m.SumReqMoney, opt => opt.MapFrom(src => src.SumMoney))
                 .ForMember(m => m.CureMoney, opt => opt.MapFrom(src => src.SumMoney));
-            CreateMap<BankViewModel, InputBankViewModel>();
-            CreateMap<VictimViewModel, VictimtViewModel>();
-            CreateMap<BillViewModel, CheckDuplicateInvoiceViewModel>()
+            CreateMap<BankViewModel, InputBank>();
+            CreateMap<VictimViewModel, Victim>();
+            CreateMap<BillViewModel, CheckDuplicateInvoice>()
                 .ForMember(m => m.AccNo, opt => opt.MapFrom(src => src.accNo))
                 .ForMember(m => m.VictimNo, opt => opt.MapFrom(src => src.victimNo))
                 .ForMember(m => m.ReqNo, opt => opt.MapFrom(src => src.reqNo))
@@ -44,8 +44,8 @@
                 .ForMember(m => m.RefId, opt => opt.MapFrom(src => src.RefNo))
                 .ForMember(m => m.CreateDate, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(m => m.StatusDoc, opt => opt.MapFrom(src => "A"));
-            CreateMap<BillViewModel, UpdateInvoiceViewModel>();
-            CreateMap<BankViewModel, UpdateBankViewModel>();
+            CreateMap<BillViewModel, UpdateInvoice>();
+            CreateMap<BankViewModel, UpdateBank>();
             CreateMap<ReqEkyc, EkycReqBody>()
                 .ForMember(m => m.IdentityImage, opt => opt.MapFrom(src => src.IdCardBase64))
                 .ForMember(m => m.FaceImage, opt => opt.MapFrom(src => src.FaceBase64));

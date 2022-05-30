@@ -2,10 +2,10 @@
 using System;
 
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class ClaimViewModel
+    public class Claim
     {
 
         public string AccNo { get; set; }

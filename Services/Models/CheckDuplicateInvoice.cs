@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
-    public class CheckDuplicateInvoiceViewModel
+    public class CheckDuplicateInvoice
     {
         public string AccNo { get; set; }
         public int VictimNo { get; set; }

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class UpdateInvoiceViewModel
+    public class UpdateInvoice
     {
         public int billNo { get; set; }
         public string bill_no { get; set; }

@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ViewModels
+namespace Services.Models
 {
     
-    public class AccidentViewModel
+    public class Accident
     {
         public string AccNo { get; set; }     
         public int? VictimNo { get; set; }
         public string BranchId { get; set; }
-        public ClaimViewModel LastClaim { get; set; }
+        public Claim LastClaim { get; set; }
         public string StringAccNo { get; set; }
         public DateTime AccDate { get; set; }
         public string StringAccDate { get; set; }
@@ -22,7 +22,7 @@ namespace Services.ViewModels
         public string AccNature { get; set; }
         public string PlaceAcc { get; set; }
         public string ProvAcc { get; set; }
-        public List<VictimtViewModel> Victim { get; set; }
+        public List<Victim> Victim { get; set; }
         public List<string> Car { get; set; }
         public double? CureRightsBalance { get; set; }
         public double? CrippledRightsBalance { get; set; }
