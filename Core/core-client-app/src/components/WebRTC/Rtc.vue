@@ -70,7 +70,6 @@
         methods: {
             onClickCanselBtn(action) {
                 if (action === 'close-cam') {
-                    this.stopStreaming();
                     this.$emit('clickCanselBtn', action)
                 }
             },
