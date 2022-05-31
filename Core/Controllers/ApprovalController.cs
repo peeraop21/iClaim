@@ -19,6 +19,7 @@ using Core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Cors;
 using Services.Models;
+using Microsoft.Extensions.Logging;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -37,7 +38,8 @@ namespace Core.Controllers
         private readonly IConverter converter;
         private readonly IAttachmentService attachmentService;
         private readonly IMasterService masterService;
-        public ApprovalController(IConfiguration configuration, IApprovalService approvalService, IAccidentService accidentService, IMapper _mapper, IConverter converter, IAttachmentService attachmentService, IMasterService masterService)
+        private readonly ILogger<ApprovalController> logger;
+        public ApprovalController(IConfiguration configuration, IApprovalService approvalService, IAccidentService accidentService, IMapper _mapper, IConverter converter, IAttachmentService attachmentService, IMasterService masterService, ILogger<ApprovalController> logger)
         {
             this.configuration = configuration;
             this.converter = converter;
@@ -46,20 +48,57 @@ namespace Core.Controllers
             this.attachmentService = attachmentService;
             this.masterService = masterService;
             this.accidentService = accidentService;
+            this.logger = logger;
         }
 
         [Authorize]
         [HttpPost("HistoryRights")]
-        public async Task<IActionResult> GetHistoryRights([FromBody] ApprovalReq model)
+        public async Task<IActionResult> GetHistoryRights([FromBody] ApprovalReq appReq)
         {
-            return Ok(await approvalService.GetApprovalRegis(model.AccNo.Replace("-", "/"), model.VictimNo, model.RightsType));
+            try
+            {
+                return Ok(await approvalService.GetApprovalRegis(appReq.AccNo.Replace("-", "/"), appReq.VictimNo, appReq.RightsType));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(appReq.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetHistoryRight, User: {0}, Exception: {1}", appReq.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetHistoryRight, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [Authorize]
         [HttpPost("IclaimApproval")]
-        public async Task<IActionResult> GetIclaimApproval([FromBody] ReqData model)
+        public async Task<IActionResult> GetIclaimApproval([FromBody] ReqData req)
         {
-            return Ok(await approvalService.GetIClaimApprovalAsync(model.AccNo.Replace("-", "/"), model.VictimNo));
+            try
+            {
+                return Ok(await approvalService.GetIClaimApprovalAsync(req.AccNo.Replace("-", "/"), req.VictimNo));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetIclaimApproval, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetIclaimApproval, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         
@@ -67,197 +106,390 @@ namespace Core.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] ApprovalReq model)
         {
-            model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
-            var resultMapIclaimApproval = _mapper.Map<DataAccess.EFCore.DigitalClaimModels.IclaimApproval>(model);
-            var resultMapBank = _mapper.Map<InputBank>(model.BankData);
-            var resultMapVictim = _mapper.Map<Victim>(model.VictimData);
-            var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
+            try
+            {
+                model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
+                var resultMapIclaimApproval = _mapper.Map<DataAccess.EFCore.DigitalClaimModels.IclaimApproval>(model);
+                var resultMapBank = _mapper.Map<InputBank>(model.BankData);
+                var resultMapVictim = _mapper.Map<Victim>(model.VictimData);
+                var resultMapToInvoicehd = _mapper.Map<Invoicehd[]>(model.BillsData);
 
-            var result = await approvalService.AddAsync(resultMapIclaimApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
-            ECM ecmModel = new ECM();
-            
-            for (int i = 0; i < model.BillsData.Count; i++)
-            {             
-                for(int j = 0; j< model.BillsData[i].billFileShow.Count;j++)
+                var result = await approvalService.AddAsync(resultMapIclaimApproval, resultMapBank, resultMapVictim, resultMapToInvoicehd, model.UserIdLine);
+                ECM ecmModel = new ECM();
+
+                for (int i = 0; i < model.BillsData.Count; i++)
                 {
-                    ecmModel.SystemId = "02";
-                    ecmModel.TemplateId = "03";
-                    ecmModel.DocID = "01";
+                    for (int j = 0; j < model.BillsData[i].billFileShow.Count; j++)
+                    {
+                        ecmModel.SystemId = "02";
+                        ecmModel.TemplateId = "03";
+                        ecmModel.DocID = "01";
 
-                    ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "-" + (j+1);
-                    ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename[j];
-                    ecmModel.Base64String = model.BillsData[i].billFileShow[j];
-                    var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                    var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-                    resultMapEdocDetail.Paths = invoiceEcmRes.Path;
-                    await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                        ecmModel.RefNo = result[i].IdInvhd + "|" + result[0].AccNo + "|" + result[0].VictimNo + "-" + (j + 1);
+                        ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BillsData[i].filename[j];
+                        ecmModel.Base64String = model.BillsData[i].billFileShow[j];
+                        var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                        resultMapEdocDetail.Paths = invoiceEcmRes.Path;
+                        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    }
+
                 }
-                
-            }    
-            ecmModel.SystemId = "03";
-            ecmModel.TemplateId = "09";
-            ecmModel.DocID = "01";
-           
-            ecmModel.RefNo = result[0].IclaimAppNo + "|" + result[0].AccNo + "|" + result[0].VictimNo;
-            ecmModel.FileName = (string.IsNullOrEmpty(model.BankData.bankFilename)) ? DateTime.Now.ToString("ddMMyyyyHHmmss") + "bankold.png" : DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
-            ecmModel.Base64String = model.BankData.bankBase64String;
-            var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-            var bookbankResultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-            bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
-            await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
+                ecmModel.SystemId = "03";
+                ecmModel.TemplateId = "09";
+                ecmModel.DocID = "01";
 
-            return Ok(new { reqNo = result[0].IclaimAppNo });
+                ecmModel.RefNo = result[0].IclaimAppNo + "|" + result[0].AccNo + "|" + result[0].VictimNo;
+                ecmModel.FileName = (string.IsNullOrEmpty(model.BankData.bankFilename)) ? DateTime.Now.ToString("ddMMyyyyHHmmss") + "bankold.png" : DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
+                ecmModel.Base64String = model.BankData.bankBase64String;
+                var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                var bookbankResultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
+                await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
+
+                return Ok(new { reqNo = result[0].IclaimAppNo });
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(model.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: PostApproval, User: {0}, Exception: {1}", model.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: PostApproval, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
+            }
+
+           
         }
      
         [Authorize]
         [HttpPost("ConfirmMoney")]
-        public async Task<IActionResult> ConfirmMoney([FromBody] ReqData model)
+        public async Task<IActionResult> ConfirmMoney([FromBody] ReqData req)
         {
-            var result = await approvalService.UpdateApprovalStatusAsync(model.AccNo.Replace('-', '/'), model.VictimNo, model.ReqNo, "ConfirmMoney", false);
-            await CreateAndSignBoto(model);
-            return Ok(result);
+            try
+            {
+                var result = await approvalService.UpdateApprovalStatusAsync(req.AccNo.Replace('-', '/'), req.VictimNo, req.ReqNo, "ConfirmMoney", false);
+                await CreateAndSignBoto(req);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: ConfirmMoney, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: ConfirmMoney, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [Authorize]
         [HttpPost("LastDocumentReceive")]
-        public async Task<IActionResult> GetLastDocumentReceive([FromBody] ReqData model)
+        public async Task<IActionResult> GetLastDocumentReceive([FromBody] ReqData req)
         {
-            return Ok(await approvalService.GetLastIClaimBankAccountAsync(model.AccNo.Replace("-", "/"), model.VictimNo));
+            try
+            {
+                return Ok(await approvalService.GetLastIClaimBankAccountAsync(req.AccNo.Replace("-", "/"), req.VictimNo));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetLastDocumentReceive, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetLastDocumentReceive, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
        
         [Authorize]//-dev
         [HttpPost("DataForEditApprovalPage")]
-        public async Task<IActionResult> GetDataForEditApprovalPage([FromBody] ReqData model)
+        public async Task<IActionResult> GetDataForEditApprovalPage([FromBody] ReqData req)
         {
-            var wounded = await masterService.GetWoundeds();
-            var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
-            var invoicesNotPass = await approvalService.GetInvoicehdAsync(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo, 2);
-            var changwats = await masterService.GetChangwatsAsync();
-            var banksName = await masterService.GetBank();
-            var typesOfBankAccountNotPass = await masterService.GetTypesOfBankAccountNotPass();
-            var account = await approvalService.GetIClaimBankAccountAsync(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
-            var accountChecks = await approvalService.GetDocumentCheck(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
-            return Ok(new { 
-                Woundeds = wounded,
-                TypesOfInvoiceNotPass = typesOfInvoiceNotPass, 
-                InvoicesNotPass = invoicesNotPass,
-                Changwats = changwats,
-                BankNames = banksName,
-                TypesOfBankAccountNotPass = typesOfBankAccountNotPass,
-                Account = account,
-                accountChecks = accountChecks               
-            });
+            try
+            {
+                var wounded = await masterService.GetWoundeds();
+                var typesOfInvoiceNotPass = await masterService.GetTypesOfInvoiceNotPass();
+                var invoicesNotPass = await approvalService.GetInvoicehdAsync(req.AccNo.Replace("-", "/"), req.VictimNo, req.ReqNo, 2);
+                var changwats = await masterService.GetChangwatsAsync();
+                var banksName = await masterService.GetBank();
+                var typesOfBankAccountNotPass = await masterService.GetTypesOfBankAccountNotPass();
+                var account = await approvalService.GetIClaimBankAccountAsync(req.AccNo.Replace("-", "/"), req.VictimNo, req.ReqNo);
+                var accountChecks = await approvalService.GetDocumentCheck(req.AccNo.Replace("-", "/"), req.VictimNo, req.ReqNo);
+                return Ok(new
+                {
+                    Woundeds = wounded,
+                    TypesOfInvoiceNotPass = typesOfInvoiceNotPass,
+                    InvoicesNotPass = invoicesNotPass,
+                    Changwats = changwats,
+                    BankNames = banksName,
+                    TypesOfBankAccountNotPass = typesOfBankAccountNotPass,
+                    Account = account,
+                    accountChecks = accountChecks
+                });
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetDataForEditApprovalPage, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetDataForEditApprovalPage, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
 
         [Authorize]
         [HttpPost("DownloadFromECM")]
-        public async Task<IActionResult> GetBase64FromECM([FromBody] DocumentDetail model)
+        public async Task<IActionResult> GetBase64FromECM([FromBody] DocumentDetail req)
         {
-            var documentPath = await attachmentService.GetDocumentPath(model);
-            List<string> base64List = new List<string>();
-            for(int i = 0; i < documentPath.Count; i++)
+            try
             {
-                base64List.Add(await attachmentService.DownloadFileFromECM(documentPath[i].Paths)); 
+                var documentPath = await attachmentService.GetDocumentPath(req);
+                List<string> base64List = new List<string>();
+                for (int i = 0; i < documentPath.Count; i++)
+                {
+                    base64List.Add(await attachmentService.DownloadFileFromECM(documentPath[i].Paths));
+                }
+                return Ok(base64List);
             }
-            return Ok(base64List);
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                logger.LogError(baseUrl + ", API: GetBase64FromECM, Exception: {0}", ex);
+                return StatusCode(500);
+            }
+            
         }
 
         [Authorize]
         [HttpPost("UpdateApproval")]
         public async Task<IActionResult> UpdateApproval([FromBody] ApprovalReq model)
         {
-            model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
-            var resultMapBank = _mapper.Map<UpdateBank>(model.BankData);
-            var resultMapToInvoicehd = _mapper.Map<UpdateInvoice[]>(model.BillsData);
-            var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);
-            ECM ecmModel = new ECM();
-
-            if (model.BillsData != null)
+            try
             {
-                for (int i = 0; i < model.BillsData.Count; i++)
+                model.BankData.accountNumber = model.BankData.accountNumber.Replace("-", "");
+                var resultMapBank = _mapper.Map<UpdateBank>(model.BankData);
+                var resultMapToInvoicehd = _mapper.Map<UpdateInvoice[]>(model.BillsData);
+                var result = await approvalService.UpdateAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine, resultMapBank, resultMapToInvoicehd);
+                ECM ecmModel = new ECM();
+
+                if (model.BillsData != null)
                 {
-                    if (resultMapToInvoicehd[i].isEditImage && !resultMapToInvoicehd[i].isCancel)
+                    for (int i = 0; i < model.BillsData.Count; i++)
                     {
-                        for(int j = 0; j < resultMapToInvoicehd[i].editBillImage.Count; j++)
+                        if (resultMapToInvoicehd[i].isEditImage && !resultMapToInvoicehd[i].isCancel)
                         {
-                            ecmModel.SystemId = "02";
-                            ecmModel.TemplateId = "03";
-                            ecmModel.DocID = "01";
-                            ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo + "-" + (j+1)  /*+ "|" + model.AppNo*/;
-                            ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename[j];
-                            ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage[j];
-                            var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                            var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-                            resultMapEdocDetail.Paths = invoiceEcmRes.Path;
-                            await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
-                        }                       
+                            for (int j = 0; j < resultMapToInvoicehd[i].editBillImage.Count; j++)
+                            {
+                                ecmModel.SystemId = "02";
+                                ecmModel.TemplateId = "03";
+                                ecmModel.DocID = "01";
+                                ecmModel.RefNo = resultMapToInvoicehd[i].billNo + "|" + model.AccNo + "|" + model.VictimNo + "-" + (j + 1)  /*+ "|" + model.AppNo*/;
+                                ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + resultMapToInvoicehd[i].filename[j];
+                                ecmModel.Base64String = resultMapToInvoicehd[i].editBillImage[j];
+                                var invoiceEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                                var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                                resultMapEdocDetail.Paths = invoiceEcmRes.Path;
+                                await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                            }
+                        }
                     }
                 }
-            }          
-            if (resultMapBank.isEditBankImage)
+                if (resultMapBank.isEditBankImage)
+                {
+                    ecmModel.RefNo = model.AppNo + "|" + model.AccNo + "|" + model.VictimNo;
+                    ecmModel.SystemId = "03";
+                    ecmModel.TemplateId = "09";
+                    ecmModel.DocID = "01";
+                    ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
+                    ecmModel.Base64String = model.BankData.bankBase64String;
+                    var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
+                    var bookbankResultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                    bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
+                    await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
+                }
+                return Ok();
+            }
+            catch (Exception ex)
             {
-                ecmModel.RefNo = model.AppNo + "|" + model.AccNo + "|" + model.VictimNo;
-                ecmModel.SystemId = "03";
-                ecmModel.TemplateId = "09";
-                ecmModel.DocID = "01";
-                ecmModel.FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + model.BankData.bankFilename;
-                ecmModel.Base64String = model.BankData.bankBase64String;
-                var bookbankEcmRes = await attachmentService.UploadFileToECM(ecmModel);
-                var bookbankResultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-                bookbankResultMapEdocDetail.Paths = bookbankEcmRes.Path;
-                await attachmentService.SaveToEdocDetail(bookbankResultMapEdocDetail);
-            }            
-            return Ok();
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(model.UserIdLine))
+                {
+
+                    logger.LogError(baseUrl + ", API: UpdateApproval, User: {0}, Exception: {1}", model.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: UpdateApproval, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
+
+            }
+            
         }
 
         [Authorize]
         [HttpPost("CanselApproval")]
-        public async Task<IActionResult> CanselApproval([FromBody] ApprovalReq model)
-        {         
-            return Ok(await approvalService.CanselApprovalAsync(model.AccNo, model.VictimNo, model.AppNo, model.UserIdLine));
+        public async Task<IActionResult> CanselApproval([FromBody] ApprovalReq req)
+        {
+            try
+            {
+                return Ok(await approvalService.CanselApprovalAsync(req.AccNo, req.VictimNo, req.AppNo, req.UserIdLine));
+            }catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: CanselApproval, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: CanselApproval, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [Authorize]
         [HttpPost("Invoicedt")]
-        public async Task<IActionResult> GetInvoicedtDetail([FromBody] ApprovalReq model)
+        public async Task<IActionResult> GetInvoicedtDetail([FromBody] ApprovalReq req)
         {
-            return Ok(await approvalService.GetHistoryInvoicedt(model.AccNo.Replace("-", "/"), model.VictimNo, model.AppNo));
+            try
+            {
+                return Ok(await approvalService.GetHistoryInvoicedt(req.AccNo.Replace("-", "/"), req.VictimNo, req.AppNo));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetInvoicedtDetail, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetInvoicedtDetail, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [Authorize]
         [HttpPost("DataConfirmMoney")]
-        public async Task<IActionResult> GetDataConfirmMoney([FromBody] ReqData model)
+        public async Task<IActionResult> GetDataConfirmMoney([FromBody] ReqData req)
         {
-            var initConfirmMoney = await approvalService.GetDataForConfirmMoney(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
-            var banks = await masterService.GetBank();
-            return Ok(new {ConfirmMoneyData = initConfirmMoney, Banks = banks });
+            try
+            {
+                var initConfirmMoney = await approvalService.GetDataForConfirmMoney(req.AccNo.Replace("-", "/"), req.VictimNo, req.ReqNo);
+                var banks = await masterService.GetBank();
+                return Ok(new { ConfirmMoneyData = initConfirmMoney, Banks = banks });
+            }catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetDataConfirmMoney, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetDataConfirmMoney, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [Authorize]
         [HttpPost("ApprovalDetail")]
-        public async Task<IActionResult> GetApprovalDataForApprovalDetailPage([FromBody] ReqData model)
+        public async Task<IActionResult> GetApprovalDataForApprovalDetailPage([FromBody] ReqData req)
         {
-            return Ok(await approvalService.GetApprovalDetail(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo, model.UserIdCard));
+            try
+            {
+                return Ok(await approvalService.GetApprovalDetail(req.AccNo.Replace("-", "/"), req.VictimNo, req.ReqNo, req.UserIdCard));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetApprovalDataForApprovalDetailPage, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetApprovalDataForApprovalDetailPage, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [Authorize]
         [HttpPost("CheckInvoiceUsing")]
         public async Task<IActionResult> CheckInvoiceUsing([FromBody] List<Bill> models)
         {
-            var resultMapToInvoicehd = _mapper.Map<CheckDuplicateInvoice[]>(models);                    
-            return Ok(await approvalService.CheckDuplicateInvoice(resultMapToInvoicehd));
+            try
+            {
+                var resultMapToInvoicehd = _mapper.Map<CheckDuplicateInvoice[]>(models);
+                return Ok(await approvalService.CheckDuplicateInvoice(resultMapToInvoicehd));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                logger.LogError(baseUrl + ", API: CheckInvoiceUsing, Exception: {0}", ex);
+                return StatusCode(500);
+            }
+            
         }
 
         [Authorize]
         [HttpPost("DownloadPdfBoto3")]
         public async Task<IActionResult> GetPdfBoto3FromECM([FromBody] DocumentDetail model)
         {
-            var documentPath = await attachmentService.GetDocumentPath(model);
-            var base64pdf = await attachmentService.DownloadFileFromECM(documentPath[0].Paths);
-            var pdfBytes = Convert.FromBase64String(base64pdf);
-            return File(pdfBytes, "application/pdf");
+            try
+            {
+                var documentPath = await attachmentService.GetDocumentPath(model);
+                var base64pdf = await attachmentService.DownloadFileFromECM(documentPath[0].Paths);
+                var pdfBytes = Convert.FromBase64String(base64pdf);
+                return File(pdfBytes, "application/pdf");
+            }catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                logger.LogError(baseUrl + ", API: GetPdfBoto3FromECM, Exception: {0}", ex);
+                return StatusCode(500);
+            }
+            
         }
 
         [Authorize]
@@ -318,12 +550,18 @@ namespace Core.Controllers
                 }
             }catch (Exception ex)
             {
-                return "Something went wrong!";
-            }
-           
-            
-
-
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(model.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: CreateAndSignBoto, User: {0}, Exception: {1}", model.UserIdLine, ex);
+                    return ex.Message;
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: CreateAndSignBoto, User: {0}, Exception: {1}", model.UserIdCard, ex);
+                    return ex.Message;
+                }
+            }                 
         }
         private async Task<SignPdfRes> SignPdfByByte(byte[] unSignedPdf, string accNo, int victimNo, int reqNo)
         {
@@ -359,8 +597,10 @@ namespace Core.Controllers
                     return resp;
                 }
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException ex)
             {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                logger.LogError(baseUrl + ", API: SignPdfByByte, Exception: {0}", ex);
                 return null;
             }
         }

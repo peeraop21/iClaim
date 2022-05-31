@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Nancy.Json;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -18,10 +20,12 @@ namespace Core.Controllers
     public class ApiController : ControllerBase
     {
         private readonly IConfiguration configuration;
+        private readonly ILogger<ApiController> logger;
 
-        public ApiController(IConfiguration configuration)
+        public ApiController(IConfiguration configuration, ILogger<ApiController> logger)
         {
             this.configuration = configuration;
+            this.logger = logger;   
         }
         [Authorize]
         [HttpPost("PushMessage")]
@@ -118,12 +122,23 @@ namespace Core.Controllers
                     var result = streamReader.ReadToEnd();
                     resp = JsonConvert.DeserializeObject<object>(result);
                 }
+                return Ok(resp);
             }
-            catch (HttpRequestException e)
+            catch (Exception ex)
             {
-                resp = "Error";
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(models.To))
+                {
+                    logger.LogError(baseUrl + ", API PushMessage, User: {0}, Exception: {1}", models.To, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API PushMessage, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
             }
-            return Ok(resp);
+            
         }
 
         

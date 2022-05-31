@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Services;
 using Services.Models;
@@ -27,49 +28,126 @@ namespace Core.Controllers
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IAttachmentService attachmentService;
         private readonly ILogger<AccidentController> logger;
-
-        public AccidentController(IAccidentService accidentService, IMasterService masterService, IMapper _mapper, IHttpContextAccessor httpContextAccessor, IAttachmentService attachmentService, ILogger<AccidentController> logger) {
+        private readonly IConfiguration configuration;
+        
+        public AccidentController(IAccidentService accidentService, IMasterService masterService, IMapper _mapper, IHttpContextAccessor httpContextAccessor, IAttachmentService attachmentService, ILogger<AccidentController> logger, IConfiguration configuration) {
             this.accidentService = accidentService;
             this.masterService = masterService;
             this._mapper = _mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.attachmentService = attachmentService;
             this.logger = logger;
+            this.configuration = configuration;
+            
         }
-
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> GetAccident([FromBody] ReqData req)
         {
-            return Ok(new {
-                AccData = await accidentService.GetAccidentByIdLine(req.UserIdLine),
-                PolicyCount = await accidentService.GetEpolicyCountAsync(req.UserIdCard)
-            });
+            try
+            {
+                return Ok(new
+                {
+                    AccData = await accidentService.GetAccidentByIdLine(req.UserIdLine),
+                    PolicyCount = await accidentService.GetEpolicyCountAsync(req.UserIdCard)
+                });
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetAccident, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetAccident, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+                
+            }
+           
         }
 
         [Authorize]
         [HttpPost("Car")]
         public async Task<IActionResult> GetAccidentCar([FromBody] ReqData req)
         {
-            return Ok(await accidentService.GetAccidentCar(req.AccNo.Replace("-","/")));
+            try
+            {
+                return Ok(await accidentService.GetAccidentCar(req.AccNo.Replace("-", "/")));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetAccidentCar, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetAccidentCar, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+                
+            }
+            
         }
 
         [Authorize]
         [HttpPost("Victim")]
         public async Task<IActionResult> GetAccidentVictim([FromBody] ReqData req)
         {
-            return Ok(await accidentService.GetAccidentVictim(req.AccNo.Replace("-", "/"), req.UserIdCard, req.VictimNo));
+            try
+            {
+                return Ok(await accidentService.GetAccidentVictim(req.AccNo.Replace("-", "/"), req.UserIdCard, req.VictimNo));
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetAccidentVictim, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetAccidentVictim, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [HttpPost("DataForAccidentCreatePage")]
         public async Task<IActionResult> GetDataForAccidentCreatePage([FromBody] ReqData req)
         {
-            return Ok(new
+            try
             {
-                Provinces = await masterService.GetChangwatsAsync(),
-                Cars = await accidentService.GetEpoliciesByIdCardAsync(req.UserIdCard),
-                CurrentAddress = await accidentService.GetLastCurrentAddressByIdCardNo(req.UserIdCard)
-            });
+                return Ok(new
+                {
+                    Provinces = await masterService.GetChangwatsAsync(),
+                    Cars = await accidentService.GetEpoliciesByIdCardAsync(req.UserIdCard),
+                    CurrentAddress = await accidentService.GetLastCurrentAddressByIdCardNo(req.UserIdCard)
+                });
+            }catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetDataForAccidentCreatePage, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetDataForAccidentCreatePage, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         [HttpPost("InsertAccident")]
@@ -142,11 +220,17 @@ namespace Core.Controllers
                 });
             }catch (Exception ex)
             {
-                return Ok(new
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.AccidentVictimInput.AccVicUserLineId))
                 {
-                    Status = "Error",
-                    Messages = ex.Message,
-                });
+                    logger.LogError(baseUrl + ", API: PostAccident, User: {0}, Exception: {1}", req.AccidentVictimInput.AccVicUserLineId, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: PostAccident, User: {0}, Exception: {1}", req.AccidentVictimInput.AccVicIdCardNo, ex);
+                    return StatusCode(500);
+                }
             }
             
         }
@@ -154,6 +238,23 @@ namespace Core.Controllers
         [HttpPost("DataForAccidentEditPage")]
         public async Task<IActionResult> GetDataForAccidentEditPage([FromBody] ReqData req)
         {
+            try
+            {
+
+            }catch (Exception ex)
+            {
+                string baseUrl = configuration["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(req.UserIdLine))
+                {
+                    logger.LogError(baseUrl + ", API: GetDataForAccidentEditPage, User: {0}, Exception: {1}", req.UserIdLine, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: GetDataForAccidentEditPage, User: {0}, Exception: {1}", req.UserIdCard, ex);
+                    return StatusCode(500);
+                }
+            }
 
             return Ok();
         }

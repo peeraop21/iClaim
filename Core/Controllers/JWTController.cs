@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Services;
 using System;
@@ -24,11 +25,13 @@ namespace Core.Controllers
     {
         private readonly IConfiguration Config;
         private readonly IUserService userService;
+        private readonly ILogger<JWTController> logger;
 
-        public JWTController(IConfiguration Config, IUserService userService)
+        public JWTController(IConfiguration Config, IUserService userService, ILogger<JWTController> logger)
         {
             this.Config = Config;
             this.userService = userService;
+            this.logger = logger;
         }
 
        
@@ -36,16 +39,34 @@ namespace Core.Controllers
         [HttpPost]
         public IActionResult CreateToken([FromBody]LoginJwt login)
         {
-            IActionResult response = Unauthorized();
-            var user = Authenticate(login);
-            
-            if(user != null && user.Result.IsAccess)
+            try
             {
-                var tokenString = BuildToken(user.Result);
-                response = Ok(new { token = tokenString });
-            }
+                IActionResult response = Unauthorized();
+                var user = Authenticate(login);
 
-            return response;
+                if (user != null && user.Result.IsAccess)
+                {
+                    var tokenString = BuildToken(user.Result);
+                    response = Ok(new { token = tokenString });
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string baseUrl = Config["BaseUrl:Publish"];
+                if (!string.IsNullOrEmpty(login.UserId))
+                {
+                    logger.LogError(baseUrl + ", API: JwtCreateToken, User: {0}, Exception: {1}", login.UserId, ex);
+                    return StatusCode(500);
+                }
+                else
+                {
+                    logger.LogError(baseUrl + ", API: JwtCreateToken, Exception: {0}", ex);
+                    return StatusCode(500);
+                }
+            }
+            
         }
 
         private string BuildToken(LoginJwt user)
