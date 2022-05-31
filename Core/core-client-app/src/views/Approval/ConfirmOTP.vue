@@ -448,7 +448,7 @@
                             }
                             this.isLoading = false;
                         })
-                        .catch(function (error) {
+                        .catch((error) => {
                             this.isLoading = false;
                             alert(error);
                         });

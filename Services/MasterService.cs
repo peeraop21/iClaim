@@ -24,6 +24,7 @@ namespace Services
         Task<List<string>> GetPrefixesAsync();
         Task<object> GetTypesOfInvoiceNotPass();
         Task<object> GetTypesOfBankAccountNotPass();
+        Task<string> GetExtensionFile(string filename);
     }
 
     public class MasterService : IMasterService
@@ -93,5 +94,11 @@ namespace Services
             return await digitalclaimContext.IclaimMasterTypes.Where(w => w.ParentTypeId == 200 && w.IsActive).Select(s => new { s.TypeId, s.TypeName }).ToListAsync();
         }
 
+        public async Task<string> GetExtensionFile(string filename)
+        {
+            int lastIndex = filename.LastIndexOf('.');
+            var ext = filename.Substring(lastIndex + 1);
+            return ext;
+        }
     }
 }

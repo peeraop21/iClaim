@@ -57,10 +57,24 @@ namespace Services
             if (!string.IsNullOrEmpty(userToken))
             {
                 var _kyc = await ipolicyContext.DirectPolicyKyc.Where(w => w.LineId == userToken && w.Status == "Y").Select(s => new { s.IdcardNo, s.Kycno }).OrderByDescending(o => o.Kycno).FirstOrDefaultAsync(); /*"3149900145384";*/
+                var policyNos = await pvrContext.Epolicy.Where(w => w.Idcard == _kyc.IdcardNo && w.Status == "A" && w.Startdate <= DateTime.Now.Date && w.Enddate >= DateTime.Now)
+                .Select(s => s.Policyno).ToListAsync();
+
                 var accHosList = await rvpOfficeContext.HosAccident
-                    .Join(rvpOfficeContext.HosVicTimAccident, accVic => accVic.AccNo, vic => vic.AccNo, (accVic, vic) => new { accJoinVictim = accVic, victimNo = vic.VictimNo, victimIdCard = vic.DrvSocNo, confirmed = vic.Confirmed })
-                    .Where(w => w.victimIdCard == _kyc.IdcardNo && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinVictim.DateAcc, DateTime.Today.AddMonths(-12)) >= 0)
-                    .Select(s => new { s.accJoinVictim.AccNo, s.victimNo, s.accJoinVictim.DateAcc, s.accJoinVictim.AccPlace, s.accJoinVictim.AccProv, s.accJoinVictim.AccNature, s.accJoinVictim.TimeAcc, s.accJoinVictim.BranchId })
+                    .Join(rvpOfficeContext.HosCarAccident, acc => acc.AccNo, accCar => accCar.AccNo, (acc, accCar) => new {
+                        acc = acc,
+                        policyNo = accCar.FoundPolicyNo
+                    })
+                    .Join(rvpOfficeContext.HosVicTimAccident, accJoinAccCar => accJoinAccCar.acc.AccNo, accVic => accVic.AccNo, (accJoinAccCar, accVic) => new { 
+                        accJoinCarJoinVic = accJoinAccCar.acc,
+                        policyNo = accJoinAccCar.policyNo,
+                        victimNo = accVic.VictimNo,
+                        victimIdCard = accVic.DrvSocNo,
+                        confirmed = accVic.Confirmed,
+                        victimIs = accVic.VicTimIs
+                    })
+                    .Where(w => w.victimIdCard == _kyc.IdcardNo && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinCarJoinVic.DateAcc, DateTime.Today.AddMonths(-12)) >= 0 && w.victimIs == "ผขป" && policyNos.Contains(w.policyNo))
+                    .Select(s => new { s.accJoinCarJoinVic.AccNo, s.victimNo, s.accJoinCarJoinVic.DateAcc, s.accJoinCarJoinVic.AccPlace, s.accJoinCarJoinVic.AccProv, s.accJoinCarJoinVic.AccNature, s.accJoinCarJoinVic.TimeAcc, s.accJoinCarJoinVic.BranchId })
                     .ToListAsync();
 
                 var accList = new List<Accident>();
@@ -68,7 +82,7 @@ namespace Services
                 for (int i = 0; i < accHosList.Count; i++)
                 {
                     var acc = new Accident();
-                    acc.AccNo = accHosList[i].AccNo;
+                    acc.AccNo = accHosList[i].AccNo; 
                     acc.VictimNo = accHosList[i].victimNo;
                     acc.BranchId = accHosList[i].BranchId;
                     acc.LastClaim = await approvalService.GetApprovalByAccNo(accHosList[i].AccNo, accHosList[i].victimNo);
@@ -232,7 +246,8 @@ namespace Services
             hosAccidentCheck.Ip = ip;
             hosAccidentCheck.BranchId = hosAccident.BranchId;
             await rvpOfficeContext.HosAccidentCheck.AddAsync(hosAccidentCheck);
-          
+
+            await rvpOfficeContext.SaveChangesAsync();
 
             return hosAccident.AccNo;
         }

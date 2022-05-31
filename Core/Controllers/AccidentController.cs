@@ -163,54 +163,57 @@ namespace Core.Controllers
                 var result = await accidentService.AddAsync(hosAccident, hosCarAccident, hosVicTimAccident, ip);
 
                 /////// รอพี่เหลียง config
-                //if(!string.IsNullOrEmpty(result))
-                //{
-                //    for (int i = 0; i < req.AccidentInput.AccImages.Count; i++)
-                //    {
-                //        ECM ecmModel = new ECM();
-                //        ecmModel.SystemId = "02";
-                //        ecmModel.TemplateId = "03";
-                //        ecmModel.DocID = "07";
+                if (!string.IsNullOrEmpty(result))
+                {
+                    for (int i = 0; i < req.AccidentInput.AccImages.Count; i++)
+                    {
+                        string extensionFile = await masterService.GetExtensionFile(req.AccidentInput.AccImages[i].Filename);
+                        ECM ecmModel = new ECM();
+                        ecmModel.SystemId = "02";
+                        ecmModel.TemplateId = "03";
+                        ecmModel.DocID = "07";
 
-                //        ecmModel.RefNo = result + "-" + "Acc" + "-" + (i + 1);
-                //        ecmModel.FileName = req.AccidentInput.AccImages[i].Filename;
-                //        ecmModel.Base64String = req.AccidentInput.AccImages[i].Base64;
-                //        var accImgRes = await attachmentService.UploadFileToECM(ecmModel);
-                //        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-                //        resultMapEdocDetail.Paths = accImgRes.Path;
-                //        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
-                //    }
-                //    for (int i = 0; i < req.AccidentCarInput.AccCarImages.Count; i++)
-                //    {
-                //        ECM ecmModel = new ECM();
-                //        ecmModel.SystemId = "02";
-                //        ecmModel.TemplateId = "03";
-                //        ecmModel.DocID = "08";
+                        ecmModel.RefNo = result + "-" + (i + 1);
+                        ecmModel.FileName = result.Replace("/","") + "_" + "Acc" + "_" + (i + 1) + "." + extensionFile;
+                        ecmModel.Base64String = req.AccidentInput.AccImages[i].Base64;
+                        var accImgRes = await attachmentService.UploadFileToECM(ecmModel);
+                        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                        resultMapEdocDetail.Paths = accImgRes.Path;
+                        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    }
+                    for (int i = 0; i < req.AccidentCarInput.AccCarImages.Count; i++)
+                    {
+                        string extensionFile = await masterService.GetExtensionFile(req.AccidentCarInput.AccCarImages[i].Filename);
+                        ECM ecmModel = new ECM();
+                        ecmModel.SystemId = "02";
+                        ecmModel.TemplateId = "03";
+                        ecmModel.DocID = "08";
 
-                //        ecmModel.RefNo = result + "-" + "AccCar" + "-" + (i + 1);
-                //        ecmModel.FileName = req.AccidentCarInput.AccCarImages[i].Filename;
-                //        ecmModel.Base64String = req.AccidentCarInput.AccCarImages[i].Base64;
-                //        var accCarImgRes = await attachmentService.UploadFileToECM(ecmModel);
-                //        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-                //        resultMapEdocDetail.Paths = accCarImgRes.Path;
-                //        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
-                //    }
-                //    for (int i = 0; i < req.AccidentVictimInput.AccVicBrokenImages.Count; i++)
-                //    {
-                //        ECM ecmModel = new ECM();
-                //        ecmModel.SystemId = "02";
-                //        ecmModel.TemplateId = "03";
-                //        ecmModel.DocID = "09";
+                        ecmModel.RefNo = result + "-" + (i + 1);
+                        ecmModel.FileName = result.Replace("/", "") + "_" + "AccCar" + "_" + (i + 1) + "." + extensionFile;
+                        ecmModel.Base64String = req.AccidentCarInput.AccCarImages[i].Base64;
+                        var accCarImgRes = await attachmentService.UploadFileToECM(ecmModel);
+                        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                        resultMapEdocDetail.Paths = accCarImgRes.Path;
+                        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    }
+                    for (int i = 0; i < req.AccidentVictimInput.AccVicBrokenImages.Count; i++)
+                    {
+                        string extensionFile = await masterService.GetExtensionFile(req.AccidentVictimInput.AccVicBrokenImages[i].Filename);
+                        ECM ecmModel = new ECM();
+                        ecmModel.SystemId = "02";
+                        ecmModel.TemplateId = "03";
+                        ecmModel.DocID = "09";
 
-                //        ecmModel.RefNo = result + "-" + "AccVic" + "-" + (i + 1);
-                //        ecmModel.FileName = req.AccidentVictimInput.AccVicBrokenImages[i].Filename;
-                //        ecmModel.Base64String = req.AccidentVictimInput.AccVicBrokenImages[i].Base64;
-                //        var accVicImgRes = await attachmentService.UploadFileToECM(ecmModel);
-                //        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
-                //        resultMapEdocDetail.Paths = accVicImgRes.Path;
-                //        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
-                //    }
-                //}
+                        ecmModel.RefNo = result + "-" + (i + 1);
+                        ecmModel.FileName = result.Replace("/", "") + "_" + "AccVictim" + "_" + (i + 1) + "." + extensionFile;
+                        ecmModel.Base64String = req.AccidentVictimInput.AccVicBrokenImages[i].Base64;
+                        var accVicImgRes = await attachmentService.UploadFileToECM(ecmModel);
+                        var resultMapEdocDetail = _mapper.Map<DocumentDetail>(ecmModel);
+                        resultMapEdocDetail.Paths = accVicImgRes.Path;
+                        await attachmentService.SaveToEdocDetail(resultMapEdocDetail);
+                    }
+                }
 
                 return Ok(new
                 {
@@ -241,7 +244,9 @@ namespace Core.Controllers
             try
             {
 
-            }catch (Exception ex)
+                return Ok();
+            }
+            catch (Exception ex)
             {
                 string baseUrl = configuration["BaseUrl:Publish"];
                 if (!string.IsNullOrEmpty(req.UserIdLine))
@@ -254,9 +259,10 @@ namespace Core.Controllers
                     logger.LogError(baseUrl + ", API: GetDataForAccidentEditPage, User: {0}, Exception: {1}", req.UserIdCard, ex);
                     return StatusCode(500);
                 }
-            }
-
-            return Ok();
+            } 
         }
+
+
+      
     }
 }
