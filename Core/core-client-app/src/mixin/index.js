@@ -18,5 +18,20 @@ export default {
                 })
             }           
         },
+        downloadFileFromECM(systemId, templateId, documentId, refId) {
+            var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
+            const body = {
+                SystemId: systemId,
+                TemplateId: templateId,
+                DocumentId: documentId,
+                RefId: refId,
+            };
+            return axios.post(url, JSON.stringify(body), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': "Bearer " + this.$store.state.jwtToken.token
+                }
+            })
+        },
     }
 }

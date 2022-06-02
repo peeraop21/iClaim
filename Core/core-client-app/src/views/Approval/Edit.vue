@@ -55,7 +55,7 @@
                     <div style="color: red; padding-left: 5px" v-for="(value, index) in bookbankNotPassDescList" :key="index">
                         - {{bookbankNotPassDescList[index]}}
                     </div>
-                    <div style="color: #2C3E50; padding-left: 5px"  v-if="documentCheck.bookbankComment">
+                    <div style="color: #2C3E50; padding-left: 5px" v-if="documentCheck.bookbankComment">
                         *หมายเหตุเพิ่มเติม : {{documentCheck.bookbankComment}}
                     </div>
                 </div>
@@ -354,7 +354,7 @@
                                     </div>
                                 </div>
                                 <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" step="any" @change="rmLeadingZero(index)"   :class="{ 'is-invalid': input.money.$error }" />
+                                <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" step="any" @change="rmLeadingZero(index)" :class="{ 'is-invalid': input.money.$error }" />
                                 <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                                 <div class="row">
                                     <div class="col-8">
@@ -588,7 +588,7 @@
         },
         validations() {
             if (this.bills.length == 1 && this.bills[0].bill_no == "" && this.bills[0].billNo == 1) {
-                return {                   
+                return {
                     inputBank: {
                         accountName: { required },
                         accountNumber: { required },
@@ -731,7 +731,7 @@
                                     this.displayBills[index].isHideBtnCansel = true
                                     this.total_amount = this.total_amount - this.bills[index].money
                                 }
-                            }                           
+                            }
                         }
                     });
 
@@ -848,7 +848,7 @@
                 this.invMustCanselList = billsMustCansel;
                 this.invNotPassMustCansel(billsMustCansel);
             },
-            
+
             getHospitalNames() {
                 var url = process.env.VUE_APP_API_UTILITY_HOSPITAL_URL;
                 axios.post(url)
@@ -861,7 +861,7 @@
                         alert(error);
                     });
             },
-            initialDataEditApprovalPage() {                             
+            initialDataEditApprovalPage() {
                 var url = this.$store.state.envUrl + '/api/approval/DataForEditApprovalPage';
                 const body = {
                     AccNo: this.accData.stringAccNo,
@@ -898,7 +898,7 @@
                         this.getBankFileFromECM();
                         if (response.data.account != null) {
                             for (let i = 0; i < this.bankNames.length; i++) {
-                                if (response.data.account.accountBankName == this.bankNames[i].bankCode) {                                   
+                                if (response.data.account.accountBankName == this.bankNames[i].bankCode) {
                                     this.inputBank.accountBankName = this.bankNames[i].name
                                     this.inputBank.bankId = this.bankNames[i].bankCode
                                     this.inputBank.accountName = response.data.account.accountName
@@ -914,7 +914,7 @@
                                 }
                             }
                         }
-                        
+
                         //from api documentCheck
                         if (this.documentCheck != null) {
                             if (this.documentCheck.bookbankStatus == "N") {
@@ -976,53 +976,31 @@
                         }
                     });
             },
-          
+
             getBillFileFromECM(idInvhd) {
-                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
-                const body = {
-                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_SYSTEM_ID,
-                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_TEMPLATE_ID,
-                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_DOCUMENT_ID,
-                    RefId: idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo,
-                };
-                axios.post(url, JSON.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }).then((response) => {
-                    for (let i = 0; i < this.invoicehd.length; i++) {
-                        if (this.invoicehd[i].idInvhd == idInvhd) {
-                            for (let j = 0; j < response.data.length; j++) {
-                                this.bills[i].billFileShow[j] = 'data:image/png;base64,' + response.data[j]
-                            }                            
+                this.downloadFileFromECM(process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_SYSTEM_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_TEMPLATE_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_INVOICE_FILE_DOCUMENT_ID, idInvhd + '|' + this.accData.accNo + '|' + this.accData.victimNo)
+                    .then((response) => {
+                        for (let i = 0; i < this.invoicehd.length; i++) {
+                            if (this.invoicehd[i].idInvhd == idInvhd) {
+                                for (let j = 0; j < response.data.length; j++) {
+                                    this.bills[i].billFileShow[j] = 'data:image/png;base64,' + response.data[j]
+                                }
+                            }
+                            this.changeBillImage(i)
+                            this.changeBillImage(i)
                         }
-                        this.changeBillImage(i)
-                        this.changeBillImage(i)
-                    }
-                }).catch(function (error) {
-                    alert(error);
-                });
+                    }).catch(function (error) {
+                        alert(error);
+                    });
 
             },
             getBankFileFromECM() {
-                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
-                const body = {
-                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID,
-                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID,
-                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID,
-                    RefId: this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
-                };
-                axios.post(url, JSON.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }).then((response) => {
-                    this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
-                }).catch(function (error) {
-                    alert(error);
-                });
+                this.downloadFileFromECM(process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID, this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo)
+                    .then((response) => {
+                        this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
+                    }).catch(function (error) {
+                        alert(error);
+                    });
 
             },
             onAddBankAccountFile: function (error, file) {
@@ -1238,7 +1216,7 @@
 
                     }
                 })
-                
+
             },
             submit() {
                 this.submitted = true;
@@ -1335,7 +1313,7 @@
                         }
                     }
                 }
-                
+
 
                 var checkBankAccountEditList = this.bookbankNotPassDescList
                 if (checkBankAccountEditList) {

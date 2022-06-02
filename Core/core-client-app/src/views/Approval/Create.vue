@@ -147,8 +147,7 @@
                                        maxFileSize="7MB"
                                        labelMaxFileSizeExceeded="รูปมีขนาดใหญ่เกินไป"
                                        labelMaxFileSize="ขนาดของรูปภาพต้องไม่เกิน {filesize}"
-                                       imagePreviewHeight="150"
-                                       />
+                                       imagePreviewHeight="150" />
                             <vs-dialog width="550px" not-center v-model="modalHospital">
                                 <template #header>
                                     <h4 class="not-margin">
@@ -260,7 +259,7 @@
                             </div>
 
                             <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
-                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" step="any"  @change="rmLeadingZero(index)"  :class="{ 'is-invalid': input.money.$error }" />
+                            <b-form-input class="mt-0 mb-2" v-model="input.money.$model" type="number" step="any" @change="rmLeadingZero(index)" :class="{ 'is-invalid': input.money.$error }" />
                             <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
                             <div class="row">
                                 <div class="col-8">
@@ -962,7 +961,7 @@
                 //----Get Bank Name
                 bankNames: [],
                 //----Get Last Document Receive
-                lastDocumentReceive: [{ bankFilename:''}],
+                lastDocumentReceive: [{ bankFilename: '' }],
                 haslastDocumentReceive: false,
                 isBtnChangAccountBankShow: false,
                 //----Get Hospital Name
@@ -1123,7 +1122,7 @@
                 }
                 axios.post(url, JSON.stringify(body), apiConfig)
                     .then((response) => {
-                        
+
                         this.lastDocumentReceive = response.data
                         if (!this.lastDocumentReceive) {
                             this.isBtnChangAccountBankShow = false;
@@ -1226,24 +1225,14 @@
                     });
             },
             getFileFromECM() {
-                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
-                const body = {
-                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID,
-                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID,
-                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID,
-                    RefId: this.lastDocumentReceive.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
-                };
-                axios.post(url, JSON.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }).then((response) => {
-                    this.lastDocumentReceive.bankBase64String = 'data:image/png;base64,' + response.data;
-                    this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
-                    this.isLoading = false
-                }).catch(function () {
-                });
+                this.downloadFileFromECM(process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID, this.lastDocumentReceive.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo)
+                    .then((response) => {
+                        this.lastDocumentReceive.bankBase64String = 'data:image/png;base64,' + response.data;
+                        this.bankFileDisplay.base64 = 'data:image/png;base64,' + response.data;
+                        this.isLoading = false
+                    }).catch((error) => {
+                        alert(error);
+                    });
 
             },
             onAddDiaryFile: function (error, file) {
@@ -1370,7 +1359,7 @@
                     this.resizeBillImages(billIndex, imageIndex, e.target.result, fileObject.type)
                 }
             },
-            onBillFileUpdated: async function(index) {
+            onBillFileUpdated: async function (index) {
                 this.isLoading = true
                 this.bills[index].billFileShow = []
                 this.bills[index].filename = []
@@ -1378,7 +1367,7 @@
                     for (let i = 0; i < this.bills[index].file.length; i++) {
                         if (this.bills[index].file[i].fileSize < 7000000) {
                             this.bills[index].filename[i] = this.bills[index].file[i].filename
-                            this.createBillImageDataUrl(this.bills[index].file[i].file, index ,i )
+                            this.createBillImageDataUrl(this.bills[index].file[i].file, index, i)
                         }
                     }
                 } else {
@@ -1700,6 +1689,7 @@
     #invFile .filepond--list-scroller .filepond--list .filepond--item {
         width: calc(50% - 0.5em);
     }
+
     .v-select-claim > .vs__dropdown-toggle {
         height: 36px;
     }

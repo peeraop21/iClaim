@@ -28,6 +28,7 @@ namespace Services.Models
         public double? CrippledRightsBalance { get; set; }
         public int CountHosApp { get; set; }
         public int CountNotify { get; set; }
+        public int? LastStatus { get; set; }
 
     }
 }

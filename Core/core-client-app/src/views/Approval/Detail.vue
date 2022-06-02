@@ -493,23 +493,14 @@
                     });
             },
             getBankFileFromECM() {
-                var url = this.$store.state.envUrl + '/api/Approval/DownloadFromECM'
-                const body = {
-                    SystemId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID,
-                    TemplateId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID,
-                    DocumentId: process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID,
-                    RefId: this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo,
-                };
-                axios.post(url, JSON.stringify(body), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': "Bearer " + this.$store.state.jwtToken.token
-                    }
-                }).then((response) => {
-                    this.approvalData.bankAccount.base64Image = 'data:image/png;base64,' + response.data;
-                    this.isLoading = false;
-                }).catch(function () {
-                });
+
+                this.downloadFileFromECM(process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_SYSTEM_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_TEMPLATE_ID, process.env.VUE_APP_API_ECM_DOWNLOAD_BANK_ACCOUNT_FILE_DOCUMENT_ID, this.$route.params.appNo + '|' + this.accData.accNo + '|' + this.accData.victimNo)
+                    .then((response) => {
+                        this.approvalData.bankAccount.base64Image = 'data:image/png;base64,' + response.data;
+                        this.isLoading = false;
+                    }).catch((error) => {
+                        alert(error)
+                    });
 
             },
             showBigImage(src) {

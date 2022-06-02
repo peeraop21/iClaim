@@ -10,6 +10,7 @@ namespace Core.Models
         public AccidentInput AccidentInput { get; set; }
         public AccidentCarInput AccidentCarInput { get; set; }
         public AccidentVictimInput AccidentVictimInput { get; set; }
+        public string AccNo { get; set; }
     }
 
     public class AccidentInput
@@ -23,6 +24,7 @@ namespace Core.Models
         public string AccDetail { get; set; }
         public string AccBranchId { get; set; }
         public List<FileInput> AccImages { get; set; }
+        public bool IsEditImage { get; set; }
 
     }
     public class AccidentCarInput
@@ -43,6 +45,7 @@ namespace Core.Models
         public string AccCarDriveProtectEndDate { get; set; }
         public string AccCarDriveProtectEndTime { get; set; }
         public List<FileInput> AccCarImages { get; set; }
+        public bool IsEditImage { get; set; }
     }
     public class AccidentVictimInput
     {
@@ -63,6 +66,7 @@ namespace Core.Models
         public string AccVicTelNo { get; set; }
         public string AccVicDateOfBirth { get; set; }
         public List<FileInput> AccVicBrokenImages { get; set; }
+        public bool IsEditImage { get; set; }
     }
     public class FileInput
     {

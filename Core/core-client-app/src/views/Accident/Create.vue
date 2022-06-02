@@ -73,7 +73,24 @@
 
                 if (this.$refs.createAccident.checkValidity() && this.$refs.accidentCarInfo.input.accCarPolicyNo && this.$refs.accidentInfo.input.accImages.length > 0 && this.$refs.accidentCarInfo.input.accCarImages.length > 0 && this.$refs.accidentVictimInfo.input.accVicBrokenImages.length > 0) {
                     this.formIsValid = true
-                    this.goToConfirmOTP();
+                    this.$swal({
+                        icon: 'question',
+                        text: 'ท่านยืนยันที่จะส่งข้อมูลอุบัติเหตุ เพื่อให้เจ้าหน้าที่ตรวจสอบหรือไม่?',
+                        showCancelButton: false,
+                        showDenyButton: true,
+                        denyButtonText: "<a style='color: #5c2e91; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยกเลิก",
+                        denyButtonColor: '#dad5e9',
+                        confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ยืนยัน",
+                        confirmButtonColor: '#5c2e91',
+                        willClose: () => {
+
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.goToConfirmOTP();
+                        }
+
+                    });
                     console.log(this.formIsValid, this.$store.state.inputAccidentData)
                 } else {
                     this.formIsValid = false

@@ -23,6 +23,7 @@ namespace Services.Models
         /// จังหวัดทะเบียนรถ
         /// </summary>
         public string CarProvince { get; set; }
+        public string CarProvinceName { get; set; }
         /// <summary>
         /// เลขกรมธรรม์
         /// </summary>

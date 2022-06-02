@@ -34,7 +34,9 @@
                     this.$router.push({ name: 'Advice' })
                 } else if (routeName == "AccidentCreate") {
                     this.$router.push({ name: 'Accident' })
-                } else if (routeName == "Rights") {               
+                } else if (routeName == "AccidentEdit") {
+                    this.$router.push({ name: 'Accident' })
+                } else if (routeName == "Rights") {
                     this.$router.push({ name: 'Accident' })
                 } else if (routeName == "RightsHistory") {
                     this.$router.push({ name: 'Rights' })

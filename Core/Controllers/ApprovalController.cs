@@ -498,7 +498,7 @@ namespace Core.Controllers
         {
             try
             {
-                var acc = await accidentService.GetAccidentForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
+                var acc = await accidentService.GetAccidentDetail(model.AccNo.Replace("-", "/"));
                 var accVictim = await accidentService.GetAccidentVictim(model.AccNo.Replace("-", "/"), model.UserIdCard, model.VictimNo);
                 var accCar = await accidentService.GetAccidentCar(model.AccNo.Replace("-", "/"));
                 var approvalData = await approvalService.GetApprovalDataForGenPDF(model.AccNo.Replace("-", "/"), model.VictimNo, model.ReqNo);
@@ -604,7 +604,7 @@ namespace Core.Controllers
                 return null;
             }
         }
-        private async Task<string> GenBotoBody(AccidentPDF acc, Victim accVictim, CarHasPolicy accCar, ApprovalPDF approvalData)
+        private async Task<string> GenBotoBody(AccidentDetail acc, Victim accVictim, CarHasPolicy accCar, ApprovalPDF approvalData)
         {
             var template = System.IO.Directory.GetCurrentDirectory() + @"\Templates\Boto3_Template.html";
             using (StreamReader reader = new StreamReader(template))

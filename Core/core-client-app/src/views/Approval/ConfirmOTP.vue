@@ -452,10 +452,38 @@
                             this.isLoading = false;
                             alert(error);
                         });
+                } else if (this.$route.params.from == "AccidentEdit") {
+                    var urlEditAccident = this.$store.state.envUrl + '/api/accident/EditAccident';
+                    var config = {
+                        headers: {
+                            Authorization: "Bearer " + this.$store.state.jwtToken.token,
+                            'Content-Type': 'application/json',
+                        }
+                    }
+                    axios.post(urlEditAccident, JSON.stringify(this.$store.state.inputAccidentData), config)
+                        .then((response) => {
+                            console.log(response)
+                            if (response.data.status == "Success") {
+                                this.$swal({
+                                    icon: 'success',
+                                    title: 'ส่งข้อมูลอุบัติเหตุเพิ่มเติมให้เจ้าหน้าที่ตรวจสอบ เพื่อขอใช้สิทธิ์สำเร็จ',
+                                    showCancelButton: false,
+                                    showDenyButton: false,
+                                    confirmButtonText: "<a style='color: white; text-decoration: none; font-family: Mitr; font-weight: bold; border-radius: 4px;'>ปิด",
+                                    confirmButtonColor: '#5c2e91',
+                                    willClose: () => {
+                                        this.$router.push('/Accident')
+                                    }
+                                })
+                            }
+                            this.isLoading = false;
+                        })
+                        .catch((error) => {
+                            this.isLoading = false;
+                            alert(error);
+                        });
                 }
                 
-
-
             },
             pushMessageToUser(reqNo) {
                 const body = {
@@ -1253,6 +1281,10 @@
             } else if (this.$route.params.from == "AccidentCreate") {
                 this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
                 this.fromText = "ส่งข้อมูลอุบัติเหตุเพื่อขอใช้สิทธิ์"
+                this.stampWatermarksFromAccidentCreate()
+            } else if (this.$route.params.from == "AccidentEdit") {
+                this.displayMaskTelNo = "xxx-xxx-" + this.userData.mobileNo.substr(this.userData.mobileNo.length - 4)
+                this.fromText = "ส่งข้อมูลอุบัติเหตุเพิ่มเติมให้เจ้าหน้าที่ตรวจสอบ เพื่อขอใช้สิทธิ์"
                 this.stampWatermarksFromAccidentCreate()
             }
         }

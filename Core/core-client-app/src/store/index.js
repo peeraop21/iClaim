@@ -14,7 +14,8 @@ export default new Vuex.Store({
         inputAccidentData: {
             AccidentInput: null,
             AccidentCarInput: null,
-            AccidentVictimInput:null
+            AccidentVictimInput: null,
+            AccNo:null
         },
         inputApprovalData: {
             AccNo: null,

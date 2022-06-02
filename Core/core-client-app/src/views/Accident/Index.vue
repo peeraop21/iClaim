@@ -61,21 +61,24 @@
                 </div>
                 <section>
                     <div style="height: 98%; width: 100%;">
-                        <div v-for="accident in accData" v-bind:key="accident.stringAccNo">
-                            <div v-if="accident.stringAccDate.startsWith(dateSearch) || dateSearch == null" class="accordion">
-                                <div class="accordion-item" :id="'list' + accident.stringAccNo">
-                                    <a class="accordion-link" :href="'#list' + accident.stringAccNo">
+                        <div v-for="(accident, index ) in accData" :key="index">
+                            <div v-if="accident.stringAccDate.startsWith(dateSearch) || dateSearch == null" class="accordion" >
+                                <div class="accordion-item" :id="'list' + accident.stringAccNo" :style="accidentStyleBgColorByIndex(index)">
+                                    <a class="accordion-link" :href="'#list' + accident.stringAccNo" >
                                         <div>
                                             <p>
                                                 <label>
                                                     <ion-icon name="newspaper-outline"></ion-icon>เลขที่รับแจ้ง: {{ accident.accNo }}
                                                 </label>
                                                 <br>
-                                                <label v-if="accident.lastClaim.claimNo">
-                                                    <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: {{ accident.lastClaim.claimNo }}
+                                                <label v-if="accident.lastStatus == 101">
+                                                    <ion-icon name="checkbox-outline"></ion-icon>สถานะ: <label :style="accidentStyleColorByIndex(index)">รอตรวจสอบ</label>
                                                 </label>
-                                                <label v-if="!accident.lastClaim.claimNo">
-                                                    <ion-icon name="checkbox-outline"></ion-icon>เลขที่เคลม: ยังไม่เปิดเคลม
+                                                <label v-else-if="accident.lastStatus == 102" >
+                                                    <ion-icon name="checkbox-outline"></ion-icon>สถานะ: <label :style="accidentStyleColorByIndex(index)">ไม่ผ่านการตรวจสอบ กรุณาแก้ไขข้อมูล</label> 
+                                                </label>
+                                                <label v-else>
+                                                    <ion-icon name="checkbox-outline"></ion-icon>สถานะ: <label :style="accidentStyleColorByIndex(index)">สามารถใช้สิทธิ์เบิกค่ารักษาพยาบาล</label>
                                                 </label>
                                                 <br>
                                                 <label>
@@ -92,16 +95,15 @@
                                             <br />
                                             <label v-if="accident.cureRightsBalance >= 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: {{ accident.cureRightsBalance }} บาท</label>
                                             <label v-if="accident.cureRightsBalance < 0">สิทธิ์ค่ารักษาเบื้องต้นคงเหลือ: 0 บาท</label>
-                                            <!--<br />
-
-                                <label v-if="accident.crippledRightsBalance >= 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: {{ accident.crippledRightsBalance }} บาท</label>
-                                <label v-if="accident.crippledRightsBalance < 0">สิทธิ์ค่าสูญเสียอวัยวะคงเหลือ: 0 บาท</label>-->
-
+                                            <label v-if="accident.lastClaim.claimNo">เลขที่เคลม: {{ accident.lastClaim.claimNo }}</label>
+                                            <label v-if="!accident.lastClaim.claimNo">เลขที่เคลม: ยังไม่เปิดเคลม</label>
+                             
                                             <br />
                                         </p>
                                     </div>
                                     <div style="text-align: center">
-                                        <router-link class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ข้อมูลสิทธิ์</router-link>
+                                        <router-link v-if="accident.lastStatus == 102" class="btn-select"  :to="{ name: 'AccidentEdit', params: { accNo: accident.accNo, victimNo: accident.victimNo}}" >แก้ไข</router-link>
+                                        <router-link v-if="!accident.lastStatus || accident.lastStatus == 103" class="btn-select" :to="{ name: 'Rights', params: { id: accident.stringAccNo}}">ข้อมูลสิทธิ์</router-link>
                                         <router-link v-if="accident.countHosApp > 0" class="btn-checked" :to="{ name: 'Approvals', params: { id: accident.stringAccNo}}">ติดตามสถานะ<span v-if="accident.countNotify > 0" class="icon-count-notify">{{accident.countNotify}}</span></router-link>
                                     </div>
                                 </div>
@@ -151,9 +153,47 @@
                 isLoading: true
             }
         },
-
+        computed: {
+      
+        },
 
         methods: {
+            accidentStyleColorByIndex(index) {
+                if (this.accData[index].lastStatus == 101) {
+                    const styleObject = {
+                        'color': '#03a9f4 !important'
+                    }
+                    return styleObject
+                } else if (this.accData[index].lastStatus == 102) {
+                    const styleObject = {
+                        'color': 'orange !important'
+                    }
+                    return styleObject
+                } else {
+                    const styleObject = {
+                        'color': '#4caf50 !important'
+                    }
+                    return styleObject
+                }
+            },
+            accidentStyleBgColorByIndex(index) {
+                if (this.accData[index].lastStatus == 101) {
+                    const styleObject = {
+                        'border-right': '3px solid #03a9f4 !important'
+                    }
+                    return styleObject
+                } else if (this.accData[index].lastStatus == 102) {
+                    const styleObject = {
+                        'border-right': '3px solid orange !important'
+                    }
+                    return styleObject
+                } else {
+                    const styleObject = {
+                        'border-right': '3px solid #4caf50 !important'
+                    }
+                    return styleObject
+                }
+            },
             clearDateSearch() {
                 this.dateSearch = null
             },
@@ -225,6 +265,7 @@
 
 
         },
+
         async created() {
             await this.getJwtToken();
             

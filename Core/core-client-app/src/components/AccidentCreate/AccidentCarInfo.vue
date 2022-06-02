@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
         <div class="box-container shadow-box px-2">
-            <div class="accident-car-title">ข้อมูลรถที่เกิดอุบัติเหตุ</div>
+            <div class="accident-car-title fw-bold">ข้อมูลรถที่เกิดอุบัติเหตุ</div>
             <label class="form-label my-1">
                 เลือกรถที่เกิดเหตุ<span class="star-require">*</span>
             </label>

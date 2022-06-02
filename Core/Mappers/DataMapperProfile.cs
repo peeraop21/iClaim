@@ -81,6 +81,7 @@
                 .ForMember(m => m.InsureCover, opt => opt.MapFrom(src => "I"));
             CreateMap<AccidentCarInput, HosCarAccident>()
                 .ForMember(m => m.TpNo, opt => opt.MapFrom(src => 1))
+                .ForMember(m => m.PolNo, opt => opt.MapFrom(src => src.AccCarPolicyNo))
                 .ForMember(m => m.CushiNo, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.AccCarTankNo) ? src.AccCarTankNo : null))
                 .ForMember(m => m.CarLicense, opt => opt.MapFrom(src => src.AccCarLicense))
                 .ForMember(m => m.CarProv, opt => opt.MapFrom(src => src.AccCarLicenseProv))
@@ -155,7 +156,14 @@
                 .ForMember(m => m.AlterDistrict, opt => opt.MapFrom(src => src.AccVicCurrentDist))
                 .ForMember(m => m.AlterProvince, opt => opt.MapFrom(src => src.AccVicCurrentProv))
                 ;
-
+            CreateMap<ReqPostAccident, HosAccidentCheck>()
+                .ForMember(m => m.AccNo, opt => opt.MapFrom(src => src.AccNo))
+                .ForMember(m => m.Status, opt => opt.MapFrom(src => 101))
+                .ForMember(m => m.InsertDate, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(m => m.AccNatureImgCheckType, opt => opt.MapFrom(src => (!src.AccidentInput.IsEditImage) ? "Y" : null))
+                .ForMember(m => m.AccCarImgCheckType, opt => opt.MapFrom(src => (!src.AccidentCarInput.IsEditImage) ? "Y" : null))
+                .ForMember(m => m.AccVictimImgCheckType, opt => opt.MapFrom(src => (!src.AccidentVictimInput.IsEditImage) ? "Y" : null))
+                .ForMember(m => m.RecordBy, opt => opt.MapFrom(src => src.AccidentVictimInput.AccVicUserLineId));
 
         }
     }

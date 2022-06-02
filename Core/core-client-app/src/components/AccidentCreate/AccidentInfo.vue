@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
         <div class="box-container shadow-box px-2 validate-me">
-            <div class="accident-title">ข้อมูลรายละเอียดอุบัติเหตุ</div>
+            <div class="accident-title fw-bold">ข้อมูลรายละเอียดอุบัติเหตุ</div>
             <div class="row">
                 <div class="col-8">
                     <label for="accDateInput" class="form-label">วันที่เกิดเหตุ<span class="star-require">*</span></label>

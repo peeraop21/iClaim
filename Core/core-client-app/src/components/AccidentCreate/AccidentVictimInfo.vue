@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
         <div class="box-container shadow-box px-2 validate-me">
-            <div class="accident-victim-title">ข้อมูลผู้ประสบภัย</div>
+            <div class="accident-victim-title fw-bold">ข้อมูลผู้ประสบภัย</div>
             <div class="row">
                 <div class="col-8">
                     <label for="accVicCurrentHomeId" class="form-label">บ้านเลขที่<span class="star-require">*</span></label>
