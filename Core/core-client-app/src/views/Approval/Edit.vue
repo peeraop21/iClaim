@@ -325,7 +325,7 @@
                             </vs-dialog>
                             <div v-if="!displayBills[index].isHideFormInput">
                                 <label class="px-2">อาการบาดเจ็บ<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledConsider" class="mt-0 mb-2" v-model="input.injuri.$model" placeholder="" type="text" @click="modalWounded=!modalWounded" :class="{ 'is-invalid': input.injuri.$error }"></b-form-input>
+                                <b-form-input :disabled="displayBills[index].isDisabledConsider" class="mt-0 mb-2" v-model="input.injuri.$model" placeholder="" type="text" @click="modalWounded=!modalWounded" :class="{ 'is-invalid': input.injuri.$error }" readonly ></b-form-input>
                                 <div v-if="submitted && !input.injuri.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกอาการบาดเจ็บ</div>
                                 <label class="px-2">ประเภทผู้ป่วย<span class="star-require">*</span></label>
                                 <br />
@@ -339,23 +339,26 @@
 
                                 </div>
                                 <label class="px-2">โรงพยาบาล<span class="star-require">*</span></label>
-                                <b-form-input :disabled="displayBills[index].isDisabledHospital" class="mt-0 mb-2" v-model="input.selectHospital.$model" type="text" @click="modalHospital=!modalHospital" :class="{ 'is-invalid': input.selectHospital.$error }" />
+                                <b-form-input :disabled="displayBills[index].isDisabledHospital" class="mt-0 mb-2" v-model="input.selectHospital.$model" type="text" @click="modalHospital=!modalHospital" :class="{ 'is-invalid': input.selectHospital.$error }" readonly />
                                 <div v-if="submitted && !input.selectHospital.required" class="invalid-feedback" style="margin-top: -5px;">กรุณาเลือกโรงพยาบาล</div>
                                 <div class="row">
                                     <div class="col-6">
                                         <label class="px-2">ใบเสร็จเล่มที่<span class="star-require">*</span></label>
-                                        <b-form-input :disabled="displayBills[index].isDisabledBookNo" class="mt-0 mb-2" v-model="input.bookNo.$model" type="number" :maxlength="10" placeholder="" :class="{ 'is-invalid': input.bookNo.$error }" />
+                                        <b-form-input :disabled="displayBills[index].isDisabledBookNo" class="mt-0 mb-2" v-model="input.bookNo.$model" type="number"  placeholder="" :class="{ 'is-invalid': input.bookNo.$error }" />
                                         <div v-if="submitted && !input.bookNo.required" class="invalid-feedback" style="margin-top: -5px;">กรุณากรอกเล่มที่ใบเสร็จ</div>
+                                        <div v-if="!input.bookNo.maxLength" class="invalid-feedback" style="margin-top: -5px;">ต้องไม่เกิน 20 ตัวอักษร</div>
                                     </div>
                                     <div class="col-6">
                                         <label class="px-2">เลขที่ใบเสร็จ<span class="star-require">*</span></label>
-                                        <b-form-input :disabled="displayBills[index].isDisabledReceiptNo" class="mt-0 mb-2" v-model="input.bill_no.$model" type="number" :maxlength="10" placeholder="" :class="{ 'is-invalid': input.bill_no.$error }" />
+                                        <b-form-input :disabled="displayBills[index].isDisabledReceiptNo" class="mt-0 mb-2" v-model="input.bill_no.$model" type="number"  placeholder="" :class="{ 'is-invalid': input.bill_no.$error }" />
                                         <div v-if="submitted && !input.bill_no.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกเลขที่ใบเสร็จ</div>
+                                        <div v-if="!input.bill_no.maxLength" class="invalid-feedback" style="margin-top: -5px;">ต้องไม่เกิน 20 ตัวอักษร</div>
                                     </div>
                                 </div>
                                 <label class="px-2">จำนวนเงิน<span class="star-require">*</span></label>
                                 <b-form-input :disabled="displayBills[index].isDisabledMoney" class="mt-0 mb-2" v-model="input.money.$model" type="number" step="any" @change="rmLeadingZero(index)" :class="{ 'is-invalid': input.money.$error }" />
                                 <div v-if="submitted && !input.money.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกจำนวนเงิน</div>
+                                <div v-if="!input.money.maxLength" class="invalid-feedback" style="margin-top: -5px;">ต้องไม่เกิน 10 ตัวอักษร</div>
                                 <div class="row">
                                     <div class="col-8">
                                         <label class="px-2">วันที่เข้ารักษา<span class="star-require">*</span></label>
@@ -471,7 +474,7 @@
 
     import Loading from 'vue-loading-overlay';
 
-    import { required } from "vuelidate/lib/validators";
+    import { required, maxLength } from "vuelidate/lib/validators";
 
     export default {
         name: "AddDocument",
@@ -604,9 +607,9 @@
                             injuri: { required },
                             typePatient: { required },
                             selectHospital: { required },
-                            bookNo: { required },
-                            bill_no: { required },
-                            money: { required },
+                            bookNo: { required, maxLength: maxLength(20) },
+                            bill_no: { required, maxLength: maxLength(20) },
+                            money: { required, maxLength: maxLength(10) },
                             hospitalized_date: { required },
                             hospitalized_time: { required },
                             out_hospital_date: { required },
@@ -629,9 +632,9 @@
                             injuri: { required },
                             typePatient: { required },
                             selectHospital: { required },
-                            bookNo: { required },
-                            bill_no: { required },
-                            money: { required },
+                            bookNo: { required, maxLength: maxLength(20) },
+                            bill_no: { required, maxLength: maxLength(20) },
+                            money: { required, maxLength: maxLength(10) },
                             hospitalized_date: { required },
                             hospitalized_time: { required },
 
@@ -1630,9 +1633,10 @@
 
         },
         async created() {
+            this.getJwtToken()
             await this.getHospitalNames();
             /*await this.getDocumentCheck();*/
-
+            
             this.selectChangwat = 0;
             this.selectHospital = 0;
         },

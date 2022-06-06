@@ -165,6 +165,7 @@
             }
         },
         mounted() {
+            this.getJwtToken();
             this.calRightsUsed();
             this.getApprovals();
         }

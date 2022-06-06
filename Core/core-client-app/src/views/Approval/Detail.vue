@@ -510,6 +510,7 @@
             }
         },
         async mounted() {
+            this.getJwtToken();
             await this.getApprovalDetail();
 
 

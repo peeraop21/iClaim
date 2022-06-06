@@ -76,7 +76,7 @@ namespace Services
                         confirmed = accVic.Confirmed,
                         victimIs = accVic.VicTimIs
                     })
-                    .Where(w => w.victimIdCard == _kyc.IdcardNo && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinCarJoinVic.DateAcc, DateTime.Today.AddMonths(-12)) >= 0 && w.victimIs == "ผขป" /*&& policyNos.Contains(w.policyNo)*/)
+                    .Where(w => w.victimIdCard == _kyc.IdcardNo && (w.confirmed == "1" || w.confirmed == "3" || w.confirmed == "Y") && DateTime.Compare((DateTime)w.accJoinCarJoinVic.DateAcc, DateTime.Today.AddMonths(-12)) >= 0 && w.victimIs == "ผขป" && policyNos.Contains(w.policyNo))
                     .Select(s => new { s.accJoinCarJoinVic.AccNo, s.victimNo, s.accJoinCarJoinVic.DateAcc, s.accJoinCarJoinVic.AccPlace, s.accJoinCarJoinVic.AccProv, s.accJoinCarJoinVic.AccNature, s.accJoinCarJoinVic.TimeAcc, s.accJoinCarJoinVic.BranchId })
                     .ToListAsync();
 

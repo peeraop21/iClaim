@@ -124,13 +124,15 @@
                         </div>
                         <div class="col-5 ">
                             <label class="form-label-ocr">ชื่อ<span class="star-require">*</span></label>
-                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="$v.input.firstname.$model" :class="{ 'is-invalid': $v.input.firstname.$error }" :maxlength="50"></b-form-input>
+                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="$v.input.firstname.$model" :class="{ 'is-invalid': $v.input.firstname.$error }" ></b-form-input>
                             <div v-if="submitted && !$v.input.firstname.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกชื่อ</div>
+                            <div v-if="!$v.input.firstname.required" class="invalid-feedback" style="margin-top:-5px;">ต้องไม่เกิน 100 ตัวอักษร</div>
                         </div>
                         <div class="col-4 " style="padding-left:0px">
                             <label class="form-label-ocr">นามสกุล<span class="star-require">*</span></label>
-                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="$v.input.lastname.$model" :class="{ 'is-invalid': $v.input.lastname.$error }" :maxlength="50"></b-form-input>
+                            <b-form-input class="mt-0 mb-2" placeholder="" v-model="$v.input.lastname.$model" :class="{ 'is-invalid': $v.input.lastname.$error }" ></b-form-input>
                             <div v-if="submitted && !$v.input.lastname.required" class="invalid-feedback" style="margin-top:-5px;">กรุณากรอกนามสกุล</div>
+                            <div v-if="!$v.input.lastname.required" class="invalid-feedback" style="margin-top:-5px;">ต้องไม่เกิน 100 ตัวอักษร</div>
                         </div>
                     </div>
                     <div class="row">
@@ -220,7 +222,7 @@
 
     import Loading from 'vue-loading-overlay';
 
-    import { required } from "vuelidate/lib/validators";
+    import { required, maxLength } from "vuelidate/lib/validators";
 
     // Create component
     const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginFileEncode, FilePondPluginFileValidateSize);
@@ -273,8 +275,8 @@
                     idCardNo: { required },
                     idcardLaserCode: { required },
                     prefix: { required },
-                    firstname: { required },
-                    lastname: { required },
+                    firstname: { required, maxLength: maxLength(100) },
+                    lastname: { required, maxLength: maxLength(100) },
                     dateBirth: { required },
                     telNo: { required },
                 },

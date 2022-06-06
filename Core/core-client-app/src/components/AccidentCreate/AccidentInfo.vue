@@ -72,7 +72,7 @@
                 </div>
                 <div class="col-6">
                     <label for="accPlaceInput" class="form-label">สถานที่เกิดเหตุ<span class="star-require">*</span></label>
-                    <b-form-input v-model="input.accPlace" class="mt-0 mb-2" id="accPlaceInput" type="text" required></b-form-input>
+                    <b-form-input v-model="input.accPlace" class="mt-0 mb-2" id="accPlaceInput" type="text" maxlength="200" required ></b-form-input>
                     <div class="invalid-feedback">
                         กรุณากรอกสถานที่เกิดเหตุ.
                     </div>
@@ -81,7 +81,7 @@
             <div class="row">
                 <div class="col-12">
                     <label for="accDetailInput" class="form-label">ลักษณะการเกิดเหตุ<span class="star-require">*</span></label>
-                    <textarea v-model="input.accDetail" class="form-control mt-0 mb-2" id="accDetailInput" placeholder="เช่น ขี่รถตกหลุมรถพลิกคว่ำ" required></textarea>
+                    <textarea v-model="input.accDetail" class="form-control mt-0 mb-2" id="accDetailInput" placeholder="เช่น ขี่รถตกหลุมรถพลิกคว่ำ"  maxlength="1000" required></textarea>
                     <div class="invalid-feedback">
                         กรุณากรอกลักษณะการเกิดเหตุ.
                     </div>

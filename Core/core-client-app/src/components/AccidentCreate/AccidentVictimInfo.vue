@@ -5,14 +5,14 @@
             <div class="row">
                 <div class="col-8">
                     <label for="accVicCurrentHomeId" class="form-label">บ้านเลขที่<span class="star-require">*</span></label>
-                    <b-form-input v-model="input.accVicCurrentHomeId" class="mt-0 mb-2" id="accVicCurrentHomeId" type="text" required></b-form-input>
+                    <b-form-input v-model="input.accVicCurrentHomeId" class="mt-0 mb-2" id="accVicCurrentHomeId" type="text"  maxlength="180" required></b-form-input>
                     <div class="invalid-feedback">
                         กรุณากรอกบ้านเลขที่.
                     </div>
                 </div>
                 <div class="col-4">
                     <label for="accVicCurrentMoo" class="form-label">หมู่ที่<span class="star-require">*</span></label>
-                    <b-form-input v-model="input.accVicCurrentMoo" class="mt-0 mb-2" id="accVicCurrentMoo" type="text" required></b-form-input>
+                    <b-form-input v-model="input.accVicCurrentMoo" class="mt-0 mb-2" id="accVicCurrentMoo" type="text" maxlength="20" required></b-form-input>
                     <div class="invalid-feedback">
                         กรุณากรอกหมู่ที่.
                     </div>
@@ -21,14 +21,14 @@
             <div class="row">
                 <div class="col-6">
                     <label for="accVicCurrentSoi" class="form-label">ซอย<span class="star-require">*</span></label>
-                    <b-form-input v-model="input.accVicCurrentSoi" class="mt-0 mb-2" id="accVicCurrentSoi" type="text" required></b-form-input>
+                    <b-form-input v-model="input.accVicCurrentSoi" class="mt-0 mb-2" id="accVicCurrentSoi" type="text"  maxlength="50" required></b-form-input>
                     <div class="invalid-feedback">
                         กรุณากรอกซอย.
                     </div>
                 </div>
                 <div class="col-6">
                     <label for="accVicCurrentRoad" class="form-label">ถนน<span class="star-require">*</span></label>
-                    <b-form-input v-model="input.accVicCurrentRoad" class="mt-0 mb-2" id="accVicCurrentRoad" type="text" required></b-form-input>
+                    <b-form-input v-model="input.accVicCurrentRoad" class="mt-0 mb-2" id="accVicCurrentRoad" type="text"  maxlength="50"  required></b-form-input>
                     <div class="invalid-feedback">
                         กรุณากรอกถนน.
                     </div>
@@ -82,7 +82,7 @@
             <div class="row">
                 <div class="col-12">
                     <label for="accVicBrokenDetail" class="form-label">ลักษณะอาการบาดเจ็บ<span class="star-require">*</span></label>
-                    <textarea v-model="input.accVicBrokenDetail" class="form-control mt-0 mb-2" id="accVicBrokenDetail" placeholder="เช่น แผลถลอก, แขน/ขาถลอก, มีแผลตามร่างกาย, แผลเย็บ, หัวแตก" required></textarea>
+                    <textarea v-model="input.accVicBrokenDetail" class="form-control mt-0 mb-2" id="accVicBrokenDetail" placeholder="เช่น แผลถลอก, แขน/ขาถลอก, มีแผลตามร่างกาย, แผลเย็บ, หัวแตก" maxlength="450" required></textarea>
                     <div class="invalid-feedback">
                         กรุณากรอกลักษณะอาการบาดเจ็บ.
                     </div>

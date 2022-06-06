@@ -115,8 +115,10 @@
 </template>
 
 <script>
+    import mixin from '../../mixin/index.js'
     export default {
         name: 'Rights',
+        mixins: [mixin],
         data() {
             return {
                 rights_receives: [
@@ -148,6 +150,9 @@
         },
         methods: {                        
         },
+        created() {
+            this.getJwtToken()
+        }
     }
 </script>
 

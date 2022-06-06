@@ -278,6 +278,7 @@
             },
         },
         async created() {
+            this.getJwtToken()
             await this.getIclaimApproval();
 
         },

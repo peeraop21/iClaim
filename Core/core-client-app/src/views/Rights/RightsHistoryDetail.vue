@@ -126,6 +126,7 @@
             },
         },
         created() {
+            this.getJwtToken()
             this.getInvoicedtDetail();
         }
     }

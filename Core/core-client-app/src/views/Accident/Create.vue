@@ -148,6 +148,7 @@
             }
         },
         created() {
+            this.getJwtToken()
             this.getDataForThisPage()
         },
 
