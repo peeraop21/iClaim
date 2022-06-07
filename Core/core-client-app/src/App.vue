@@ -34,8 +34,9 @@
         },
         created() {
             if (process.env.NODE_ENV == "production") {
-                this.$store.state.envUrl = "https://ts2digitalclaim.rvp.co.th" // demo
-                this.$store.state.liffId = "1655252355-n08QYdAA" //demo
+                
+                this.$store.state.envUrl = process.env.VUE_APP_API_ICLAIM_URL// demo
+                this.$store.state.liffId = process.env.VUE_APP_LIFF_ID //demo
 
                 //this.$store.state.envUrl = "https://iclaimapi.rvpeservice.com" // UAT
                 //this.$store.state.liffId = "1655252355-Jla4mbZZ" //UAT
@@ -45,6 +46,7 @@
                 
 
             } else if (process.env.NODE_ENV == "development") {
+                console.log(process.env.VUE_APP_LIFF_ID)
                 this.$store.state.envUrl = "http://localhost:50598"
                 this.$store.state.liffId = "1655252355-n08QYdAA" //demo
 
